@@ -378,11 +378,10 @@ struct COLRv1
 
 ## Font Tooling
 
-Cosimo ([@anthrotype](https://github.com/anthrotype)) to implement a *port* to
-[svg-native-viewer](https://github.com/adobe/svg-native-viewer) that will
-distill data in JSON format convenient for compiling into proposed COLR v1
-table.  Then use that to generate COLRv1 fonts from Python using
-to-be-implemented fontTools.colorLib.
+Cosimo ([@anthrotype](https://github.com/anthrotype)) ad Rod ([@rsheeter](https://github.com/rsheeter))
+to implement a tool to distill SVG data into a simplified format convenient for compiling into proposed
+COLR v1 table (see [prototype](https://github.com/rsheeter/playground/svg).  Then use that to generate
+COLRv1 fonts from Python using to-be-implemented fontTools.colorLib.
 
 ## Rendering
 
