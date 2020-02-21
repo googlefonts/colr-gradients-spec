@@ -378,7 +378,7 @@ struct COLRv1
 
 ## Font Tooling
 
-Cosimo ([@anthrotype](https://github.com/anthrotype)) ad Rod ([@rsheeter](https://github.com/rsheeter))
+Cosimo ([@anthrotype](https://github.com/anthrotype)) and Rod ([@rsheeter](https://github.com/rsheeter))
 to implement a tool to distill SVG data into a simplified format convenient for compiling into proposed
 COLR v1 table (see [prototype](https://github.com/rsheeter/playground/svg)).  Then use that to generate
 COLRv1 fonts from Python using to-be-implemented fontTools.colorLib.
