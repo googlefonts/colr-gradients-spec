@@ -6,6 +6,29 @@ December 2019
 * Behdad Esfahbod ([@behdad](https://github.com/behdad))
 * Dominik Röttsches ([@drott](https://github.com/drott))
 
+## Table of Contents
+
+- [Introduction](#introduction)
+- [Backwards Compatibility](#backwards-compatibility)
+- [Color Palette Variation](#color-palette-variation)
+- [High-level Design](#high-level-design)
+- [Graphical Primitives](#graphical-primitives)
+  * [Color Line](#color-line)
+    + [Extend Mode](#extend-mode)
+      - [Extend Pad](#extend-pad)
+      - [Extend Repeat](#extend-repeat)
+      - [Extend Reflect](#extend-reflect)
+  * [Linear Gradients](#linear-gradients)
+  * [Radial Gradients](#radial-gradients)
+- [Structure of gradient COLR v1 extensions](#structure-of-gradient-colr-v1-extensions)
+- [Implementation](#implementation)
+  * [Font Tooling](#font-tooling)
+  * [Rendering](#rendering)
+    + [FreeType](#freetype)
+    + [Chromium](#chromium)
+  * [HarfBuzz](#harfbuzz)
+- [Acknowledgements](#acknowledgements)
+
 
 # Introduction
 
