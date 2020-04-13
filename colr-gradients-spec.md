@@ -402,10 +402,10 @@ struct COLRv1
 ## Font Tooling
 
 Cosimo ([@anthrotype](https://github.com/anthrotype)) and Rod ([@rsheeter](https://github.com/rsheeter))
-have implemented [nanoemoji](https://github.com/rsheeter/nanoemoji) to compile a set of SVGs into color
+have implemented [nanoemoji](https://github.com/googlefonts/nanoemoji) to compile a set of SVGs into color
 font formats, including COLR v1.
 
-[color-fonts](https://github.com/rsheeter/color-fonts) has a collection of sample color fonts.
+[color-fonts](https://github.com/googlefonts/color-fonts) has a collection of sample color fonts.
 
 ## Rendering
 
