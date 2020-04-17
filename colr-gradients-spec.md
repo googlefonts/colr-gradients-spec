@@ -402,9 +402,10 @@ struct COLRv1
 ## Font Tooling
 
 Cosimo ([@anthrotype](https://github.com/anthrotype)) and Rod ([@rsheeter](https://github.com/rsheeter))
-to implement a tool to distill SVG data into a simplified format convenient for compiling into proposed
-COLR v1 table (see [prototype](https://github.com/rsheeter/playground/svg)).  Then use that to generate
-COLRv1 fonts from Python using to-be-implemented fontTools.colorLib.
+have implemented [nanoemoji](https://github.com/googlefonts/nanoemoji) to compile a set of SVGs into color
+font formats, including COLR v1.
+
+[color-fonts](https://github.com/googlefonts/color-fonts) has a collection of sample color fonts.
 
 ## Rendering
 
