@@ -390,6 +390,7 @@ struct COLRv1
   uint16                                            numBaseGlyphsV0;
   Offset32<SortedUnsizedArrayOf<BaseGlyphRecordV0>> baseGlyphsV0;
   Offset32<UnsizedArrayOf<LayerRecordV0>>           layersV0;
+  uint16                                            numLayersV0;
   // Version-1 additions
   Offset32<BaseGlyphV1Array>                        baseGlyphsV1;
   Offset32<ItemVariationStore>                      varStore;
