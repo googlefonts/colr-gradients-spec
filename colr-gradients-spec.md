@@ -256,8 +256,7 @@ transforms.
 ```C++
 // Base types
 
-template <typename T, typename Len=uint16>
-
+template <typename T, typename Length=uint16>
 struct ArrayOf
 {
   Length count;
