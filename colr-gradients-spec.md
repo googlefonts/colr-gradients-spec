@@ -367,7 +367,7 @@ struct PaintRadialGradient
 
 struct LayerV1Record
 {
-  uint32          gid;
+  uint16          gid;
   Offset32<Paint> paint;
 };
 
@@ -375,7 +375,7 @@ typedef ArrayOf<LayerV1Record, uint32> LayerV1List;
 
 struct BaseGlyphV1Record
 {
-  uint32                gid;
+  uint16                gid;
   Offset32<LayerV1List> layers;
 };
 
