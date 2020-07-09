@@ -78,12 +78,12 @@ layer includes a glyph id of shape as well as a *paint*.  There are three types
 of paint defined currently, with capacity for future extensions: solid, linear
 gradient, radial gradient.
 
-We have added a transparency scalar to each invocation of a palette color.  This
-allows for the expression of translucent versions of palette entries, as well as
-foreground, which we find useful.  Without this, various translucent shades of
-the same color would need to be encoded separately in the color palette, which
-is undesirable since color palette entries are designed to be exposed to
-end-users.
+We have added an "alpha" (transparency) scalar to each invocation of a palette
+color. This allows for the expression of translucent versions of palette
+entries, as well as foreground, which we find useful.  Without this, various
+translucent shades of the same color would need to be encoded separately in
+the color palette, which is undesirable since color palette entries are designed
+to be exposed to end-users.
 
 All values expressed are *variable* by way of OpenType 1.8 Font Variations
 mechanisms.
@@ -279,40 +279,34 @@ struct Variable
   VarIdx varIdx;
 };
 
-typedef Variable<Fixed> Scalar;
+typedef Variable<Fixed> VarFixed;
 
-typedef Variable<FWORD> Position;
+typedef Variable<FWORD> VarFWORD;
 
-typedef Variable<FUWORD> Distance;
+typedef Variable<UFWORD> VarUFWORD;
 
-Typedef Variable<F2DOT14> NormalizedScalar; // [-1.0, 1.0]
+Typedef Variable<F2DOT14> VarF2DOT14; // [-1.0, 1.0]
 
 struct Affine2x2
 {
-  Scalar    xx;
-  Scalar    xy;
-  Scalar    yx;
-  Scalar    yy;
-};
-
-Struct Point
-{
-  Position  x;
-  Position  y;
+  VarFixed xx;
+  VarFixed xy;
+  VarFixed yx;
+  VarFixed yy;
 };
 
 // Building blocks
 
-struct Color
+struct ColorIndex
 {
-  uint16           paletteIndex;
-  NormalizedScalar transparency; // Values outside [0.,1.] reserved.
+  uint16     paletteIndex;
+  VarF2DOT14 alpha; // Default 1.0. Values outside [0.,1.] reserved.
 };
 
 struct ColorStop
 {
-  NormalizedScalar stopOffset;
-  Color            color;
+  VarF2DOT14 stopOffset;
+  ColorIndex color;
 };
 
 enum Extend : uint16
@@ -348,39 +342,44 @@ struct PaintLinearGradient
 {
   uint16              format; // = 2
   Offset32<ColorLine> colorLine;
-  Point               p0;
-  Point               p1;
-  Point               p2; // Normal; Equal to p1 in simple cases.
+  VarFWORD            x0;
+  VarFWORD            y0;
+  VarFWORD            x1;
+  VarFWORD            y1;
+  VarFWORD            x2; // Normal; Equal to (x1,y1) in simple cases.
+  VarFWORD            y2;
 };
 
 struct PaintRadialGradient
 {
   uint16              format; // = 3
   Offset32<ColorLine> colorLine;
-  Point               c0;
-  Point               c1;
-  Distance            r0;
-  Distance            r1;
-  Offset32<Affine2x2> affine; // May be NULL.
+  VarFWORD            x0;
+  VarFWORD            y0;
+  VarUFWORD           radius0;
+  VarFWORD            x1;
+  VarFWORD            y1;
+  VarUFWORD           radius1;
+  Offset32<Affine2x2> transform; // May be NULL.
 };
 
 // Header
 
 struct LayerV1Record
 {
-  uint32          gid;
+  uint16          gid;
   Offset32<Paint> paint;
 };
 
-typedef ArrayOf<LayerV1Record, uint32> LayerV1Array;
+typedef ArrayOf<LayerV1Record, uint32> LayerV1List;
 
 struct BaseGlyphV1Record
 {
-  uint32                 gid;
-  Offset32<LayerV1Array> layers;
+  uint16                gid;
+  Offset32<LayerV1List> layers;
 };
 
-typedef ArrayOf<BaseGlyphV1Record, uint32> BaseGlyphV1Array;
+typedef ArrayOf<BaseGlyphV1Record, uint32> BaseGlyphV1List;
 
 struct COLRv1
 {
@@ -391,7 +390,7 @@ struct COLRv1
   Offset32<UnsizedArrayOf<LayerRecordV0>>           layersV0;
   uint16                                            numLayersV0;
   // Version-1 additions
-  Offset32<BaseGlyphV1Array>                        baseGlyphsV1;
+  Offset32<BaseGlyphV1List>                         baseGlyphsV1;
   Offset32<ItemVariationStore>                      varStore;
 };
 
