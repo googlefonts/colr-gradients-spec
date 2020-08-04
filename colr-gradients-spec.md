@@ -263,13 +263,6 @@ struct ArrayOf
   T      array[/*count*/];
 };
 
-template <typename T>
-struct Variable
-{
-  T      value;
-  VarIdx varIdx;
-};
-
 typedef uint32 VarIdx;
 
 template <typename T>
