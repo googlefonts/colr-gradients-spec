@@ -76,7 +76,7 @@ vector and fall back to no-color if the glyph is not found there either.
 A glyph using the new extension is mapped to an ordered list of layers.  Each
 layer includes a glyph id of shape as well as a *paint*.  There are three types
 of paint defined currently, with capacity for future extensions: solid, linear
-gradient, radial gradient.
+gradient, conical-radial gradient.
 
 We have added an "alpha" (transparency) scalar to each invocation of a palette
 color. This allows for the expression of translucent versions of palette
@@ -90,22 +90,22 @@ mechanisms.
 
 # Graphical Primitives
 
-The two main graphical primitives that are added are linear gradients and radial
+The two main graphical primitives that are added are linear gradients and conical-radial
 gradients.
 
 In most graphics systems, linear gradients are declared using two points, and
-radial gradients are declared using two circles.  Such graphics systems also
+conical-radial gradients are declared using two circles.  Such graphics systems also
 support a transformation matrix, via which one can get shear in linear
-gradients, or arbitrary ellipses with radial gradients.  Since our proposed
+gradients, or arbitrary ellipses with conical-radial gradients.  Since our proposed
 format does *not* have such universal transform underneath, the definition of
-linear and radial gradients are extended from their typical form to accommodate
+linear and conical-radial gradients are extended from their typical form to accommodate
 for these transformations in the gradient declaration itself.
 
 ## Color Line
 
 A color line is a function that maps real numbers to a color value to define a
 1-dimensional gradient, to be used and referenced from [Linear
-Gradients](#heading=h.696rgjwvuoq9) and [Radial
+Gradients](#heading=h.696rgjwvuoq9) and [Conical-Radial
 Gradients](#heading=h.2iel67nie7a). Colors of the gradient are defined by *color
 stops*.
 
@@ -135,7 +135,7 @@ functions.
 
 In order to achieve:
 
-* one gradient along the gradient positions (linear, or radial) and padded
+* one gradient along the gradient positions (linear, or conical-radial) and padded
   colors outside this range, color stops at 0 and 1 must be defined, and color
   line extend mode *pad* must be used. This achieves similarly behavior as
   defined in CSS
@@ -144,7 +144,7 @@ In order to achieve:
   [radial-gradient()](https://developer.mozilla.org/en-US/docs/Web/CSS/radial-gradient)
   functions.
 
-* a repeated gradient along the gradient positions (linear or radial): divide 1
+* a repeated gradient along the gradient positions (linear or conical-radial): divide 1
   by the number of desired repetitions and use the result as your maximum color
   stop, then use color line extend mode *repeat* to have it continue outside the
   defined interval.
@@ -154,9 +154,9 @@ In order to achieve:
   result of this division, then use color line extend mode *reflect* to have it
   continue mirrored.
 
-![Repeating linear gradient](images/repeating_linear.png) ![Repeating radial gradient](images/repeating_radial.png)
+![Repeating linear gradient](images/repeating_linear.png) ![Repeating conical-radial gradient](images/repeating_radial.png)
 
-***Figure 1:** Repeating linear and radial gradients
+***Figure 1:** Repeating linear and conical-radial gradients
 ([source](https://cssnewbie.com/apply-cool-linear-and-radial-gradients-using-css/))*
 
 ### Extend Mode
@@ -196,25 +196,32 @@ be rendered.
 
 *__Figure 2:__ Linear gradient defining points*
 
-## Radial Gradients
+## Conical-Radial Gradients
 
-A radial gradient in this proposal is a gradient between two—optionally
+A conical-radial gradient in this proposal is a gradient between two—optionally
 transformed—circles, namely with center c0 and radius r0, and center c1 and
 radius r1 and a specified color line.  The circle c0, r0 will be drawn with the
 color at color line position 0. The circle c1, r1 will be drawn with the color
-at color line colorLine position 1.
+at color line colorLine position 1. The gradation of colors occurs along the
+length of the cylinder extending from the circumference of the circle at c0 to
+the circumference of the circle at c1. 
+
+As the radii of the circles can differ, the cylindrical surface is, typically, 
+conical. If one circle is entirely within the other circle, the appearance
+will be that of a radial gradient in the strictest sense: with color gradition
+along rays from a focal point.
 
 The optionally defined affine transformation matrix is used to transform the
-circles into ellipses around their center.
+circles into ellipses around their centers.
 
-The drawing algorithm radial gradients follows the [HTML WHATWG Canvas spec for
+The algorithm for drawing radial gradients follows the [HTML WHATWG Canvas spec for
 createRadialGradient()](https://html.spec.whatwg.org/multipage/canvas.html#dom-context-2d-createradialgradient).
 Quoting and adapting from there.  With circle center points c0 and c1 defined as
 c0 = (x0, y0) and c1 = (x1, y1):
 
-Radial gradients must be rendered by following these steps:
+Conical-radial gradients must be rendered by following these steps:
 
-1. If c0 = c1 and r0 = r1 then the radial gradient must paint nothing. Return.
+1. If c0 = c1 and r0 = r1 then the conical-radial gradient must paint nothing. Return.
 
 2. Let x(ω) = (x1-x0)ω + x0
 Let y(ω) = (y1-y0)ω + y0
@@ -229,9 +236,9 @@ Let the color at ω be the color at that position on the gradient color line (wi
    yet been painted on by earlier circles in this step for this rendering of the
    gradient.
 
-![Example radial gradient rendering](images/example_radial.png)
+![Example conical-radial gradient rendering](images/example_radial.png)
 
-***Figure 3:** Example of a radial gradient rendering.*
+***Figure 3:** Example of a conical-radial gradient rendering.*
 
 **TODO:** Add illustration of center points, radii, etc. similar to the radial
 one.
@@ -242,10 +249,10 @@ apply the inverse of the affine matrix to center coordinates before passing all
 to underlying graphics systems like Skia or Cairo that apply their (often called
 *user-*) transformation matrix to everything.
 
-**Note:** Implementations must be careful to properly render radial gradient
+**Note:** Implementations must be careful to properly render conical-radial gradients
 even if the provided affine matrix is
 *[degenerate](https://en.wikipedia.org/wiki/Invertible_matrix)* or
-*near-degenerate*. Such radial gradients do have a well-defined shape, which is
+*near-degenerate*. Such conical-radial gradients do have a well-defined shape, which is
 a strip or a cone filled with a linear gradient.  Implementations using the
 inverse-transform approach noted above can fall back to a linear-gradient
 combined with a clipping path to achieve proper rendering of problematic affine
