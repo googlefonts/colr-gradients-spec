@@ -258,7 +258,7 @@ A group allows a set of layers to be composited independently and then have the
 final result composited into the end result as a single layer with alpha. This
 is similar to a `group` with `opacity` in an SVG.
 
-Concretely, a group reuses another COLR glyph with alpha and transform applied. For example:
+Concretely, a group reuses another glyph with alpha and transform applied. For example:
 
 1. A clock with marks at each hour
    - Define the first mark as a COLR glyph
@@ -267,6 +267,11 @@ Concretely, a group reuses another COLR glyph with alpha and transform applied. 
    - Define a glyph that has all twelve marks as above
    - Define a glyph for the hour-hand of the clock
    - Define N o’clock as the 12 marks untransformed, plus the hour-hand rotated
+
+If the `LayerV1Glyph` `gid` for the layer with paint format 4 (group) corresponds
+to a `BaseGlyphV1Record` then the layers of that glyph are taken as the layers in
+the group. If not, the referenced glyph is taken as a single layer with a solid paint
+in the text foreground color.
 
 
 # Structure of gradient COLR v1 extensions
