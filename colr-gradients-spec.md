@@ -20,6 +20,7 @@ December 2019
       - [Extend Reflect](#extend-reflect)
   * [Linear Gradients](#linear-gradients)
   * [Radial Gradients](#radial-gradients)
+- [Group](#group)
 - [Structure of gradient COLR v1 extensions](#structure-of-gradient-colr-v1-extensions)
 - [Implementation](#implementation)
   * [Font Tooling](#font-tooling)
@@ -74,9 +75,9 @@ is not found in the new vector, client will try finding it in the COLR v0 glyph
 vector and fall back to no-color if the glyph is not found there either.
 
 A glyph using the new extension is mapped to an ordered list of layers.  Each
-layer includes a glyph id of shape as well as a *paint*.  There are three types
+layer includes a glyph id of shape as well as a *paint*.  There are four types
 of paint defined currently, with capacity for future extensions: solid, linear
-gradient, radial gradient.
+gradient, radial gradient, and group.
 
 We have added an "alpha" (transparency) scalar to each invocation of a palette
 color. This allows for the expression of translucent versions of palette
@@ -251,6 +252,25 @@ inverse-transform approach noted above can fall back to a linear-gradient
 combined with a clipping path to achieve proper rendering of problematic affine
 transforms.
 
+# Group
+
+A group allows a set of layers to be composited independently and then have the
+final result composited into the end result as a single layer with alpha. This
+is similar to a `group` with `opacity` in an SVG.
+
+Further, a group may specify a transform. This allows for reuse of a shape in
+a new position. For example:
+
+1. A clock with marks at each hour
+   - Define the first mark as a COLR glyph
+   - Define the remaining 11 as the first mark transformed
+1. A set of clocks for one o’clock, two o’clock, etc in an emoji font
+   - Define a glyph that has all twelve marks as above
+   - Define a glyph for the hour-hand of the clock
+   - Define N o’clock as the 12 marks untransformed, plus the hour-hand rotated
+
+Concretely, a group reuses another COLR glyph with alpha and transform applied.
+
 # Structure of gradient COLR v1 extensions
 
 ```C++
@@ -280,12 +300,24 @@ typedef Variable<UFWORD> VarUFWORD;
 
 Typedef Variable<F2DOT14> VarF2DOT14; // [-1.0, 1.0]
 
+// Scale and/or rotate
 struct Affine2x2
 {
   VarFixed xx;
   VarFixed xy;
   VarFixed yx;
   VarFixed yy;
+};
+
+// Scale, rotate, translate
+struct Affine2x3
+{
+  VarFixed xx;
+  VarFixed xy;
+  VarFixed yx;
+  VarFixed yy;
+  VarFixed dx;
+  VarFixed dy;
 };
 
 // Building blocks
@@ -323,6 +355,7 @@ union Paint
   PaintSolid          solid;
   PaintLinearGradient linearGradient;
   PaintRadialGradient radialGradient;
+  PaintGroup          group;
 };
 
 struct PaintSolid
@@ -354,6 +387,13 @@ struct PaintRadialGradient
   VarFWORD            y1;
   VarUFWORD           radius1;
   Offset32<Affine2x2> transform; // May be NULL.
+};
+
+struct PaintGroup
+{
+  uint16              format; // = 4
+  VarF2DOT14          alpha;
+  Offset32<Affine2x3> transform; // May be NULL.
 };
 
 // Header
