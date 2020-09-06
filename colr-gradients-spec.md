@@ -268,6 +268,20 @@ Concretely, a group reuses another glyph with alpha and transform applied. For e
    - Define a glyph for the hour-hand of the clock
    - Define N o’clock as the 12 marks untransformed, plus the hour-hand rotated
 
+The `LayerV1Glyph` `gid` field is resolved per [Self-referential gids](#self-referential-gids).
+
+# Composite
+
+By default layers are drawn on top of each other. Composite permits a variety of additional methods of combining layers.
+
+The compositing algorithms are specified by https://www.w3.org/TR/compositing-1/, with
+one exception: Alpha Channel. For alpha channel the dest colors are converted to the alpha channel for source by averaging the (R, G, B) parts.
+
+The `LayerV1Glyph` `gid` and the `PaintBlend` `dest_gid` are resolved per [Self-referential gids](#self-referential-gids).
+
+
+# Self-referential gids
+
 If the `LayerV1Glyph` `gid` for the layer with paint format 4 (group) corresponds
 to a `BaseGlyphV1Record` then the layers of that glyph are taken as the layers in
 the group. If not, the referenced glyph is taken as a single layer with a solid paint
@@ -344,6 +358,52 @@ enum Extend : uint16
   EXTEND_REFLECT = 2,
 };
 
+// Compositing modes are taken from https://www.w3.org/TR/compositing-1/
+// NOTE: a brief audit of major implementations suggests most support most
+// or all of the specified modes.
+enum Composite : uint16
+{
+  // Porter-Duff modes
+  // https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators
+  COMPOSITE_CLEAR          =  0,  // https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_clear
+  COMPOSITE_SRC            =  1,  // https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_src
+  COMPOSITE_DEST           =  2,  // https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_dst
+  COMPOSITE_SRC_OVER       =  3,  // https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_srcover
+  COMPOSITE_DEST_OVER      =  4,  // https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_dstover
+  COMPOSITE_SRC_IN         =  5,  // https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_srcin
+  COMPOSITE_DEST_IN        =  6,  // https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_dstin
+  COMPOSITE_SRC_OUT        =  7,  // https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_srcout
+  COMPOSITE_DEST_OUT       =  8,  // https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_dstout
+  COMPOSITE_SRC_ATOP       =  9,  // https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_srcatop
+  COMPOSITE_DEST_ATOP      = 10,  // https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_dstatop
+  COMPOSITE_XOR            = 11,  // https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_xor
+  COMPOSITE_PLUS           = 12,  // https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_plus
+  COMPOSITE_SCREEN         = 13,  // https://www.w3.org/TR/compositing-1/#blendingscreen
+
+  // Blend modes
+  // https://www.w3.org/TR/compositing-1/#blending
+  COMPOSITE_OVERLAY        = 14,  // https://www.w3.org/TR/compositing-1/#blendingoverlay
+  COMPOSITE_DARKEN         = 15,  // https://www.w3.org/TR/compositing-1/#blendingdarken
+  COMPOSITE_LIGHTEN        = 16,  // https://www.w3.org/TR/compositing-1/#blendinglighten
+  COMPOSITE_COLOR_DODGE    = 17,  // https://www.w3.org/TR/compositing-1/#blendingcolordodge
+  COMPOSITE_COLOR_BURN     = 18,  // https://www.w3.org/TR/compositing-1/#blendingcolorburn
+  COMPOSITE_HARD_LIGHT     = 19,  // https://www.w3.org/TR/compositing-1/#blendinghardlight
+  COMPOSITE_SOFT_LIGHT     = 20,  // https://www.w3.org/TR/compositing-1/#blendingsoftlight
+  COMPOSITE_DIFFERENCE     = 21,  // https://www.w3.org/TR/compositing-1/#blendingdifference
+  COMPOSITE_EXCLUSION      = 22,  // https://www.w3.org/TR/compositing-1/#blendingexclusion
+  COMPOSITE_MULTIPLY       = 23,  // https://www.w3.org/TR/compositing-1/#blendingmultiply
+
+  // Modes that, uniquely, do not operate on components
+  // https://www.w3.org/TR/compositing-1/#blendingnonseparable
+  COMPOSITE_HSL_HUE        = 24,  // https://www.w3.org/TR/compositing-1/#blendinghue
+  COMPOSITE_HSL_SATURATION = 25,  // https://www.w3.org/TR/compositing-1/#blendingsaturation
+  COMPOSITE_HSL_COLOR      = 26,  // https://www.w3.org/TR/compositing-1/#blendingcolor
+  COMPOSITE_HSL_LUMINOSITY = 27,  // https://www.w3.org/TR/compositing-1/#blendingluminosity
+
+  // Use dest as the alpha channel for source
+  COMPOSITE_ALPHA_CHANNEL  = 28,
+};
+
 struct ColorLine
 {
   Extend             extend;
@@ -397,6 +457,15 @@ struct PaintGroup
   uint16              format; // = 4
   VarF2DOT14          alpha;
   Offset32<Affine2x3> transform; // May be NULL.
+};
+
+// The LayerV1Record gid is the source
+// The dest_gid is the dest
+struct PaintComposite
+{
+  uint16              format; // = 5
+  BlendMode           blend;
+  uint16              dest_gid;
 };
 
 // Header
