@@ -21,6 +21,7 @@ December 2019
   * [Linear Gradients](#linear-gradients)
   * [Radial Gradients](#radial-gradients)
 - [Group](#group)
+- [Compositing](#compositing)
 - [Structure of gradient COLR v1 extensions](#structure-of-gradient-colr-v1-extensions)
 - [Implementation](#implementation)
   * [Font Tooling](#font-tooling)
@@ -268,16 +269,17 @@ Concretely, a group reuses another glyph with alpha and transform applied. For e
    - Define a glyph for the hour-hand of the clock
    - Define N o’clock as the 12 marks untransformed, plus the hour-hand rotated
 
-The `LayerV1Glyph` `gid` field is resolved per [Self-referential gids](#self-referential-gids).
+The `LayerV1Glyph` `gid` field is resolved per [self-referential gids](#self-referential-gids).
 
-# Composite
+# Compositing
 
-By default layers are drawn on top of each other. Composite permits a variety of additional methods of combining layers.
+By default layers are drawn on top of each other. Composite permits a variety of additional methods by specifying two glyphs to be combined according to a well defined
+algorithm.
 
 The compositing algorithms are specified by https://www.w3.org/TR/compositing-1/, with
 one exception: Alpha Channel. For alpha channel the dest colors are converted to the alpha channel for source by averaging the (R, G, B) parts.
 
-The `LayerV1Glyph` `gid` and the `PaintBlend` `dest_gid` are resolved per [Self-referential gids](#self-referential-gids).
+The `LayerV1Glyph` `gid` and the `PaintBlend` `dest_gid` are resolved per [self-referential gids](#self-referential-gids).
 
 
 # Self-referential gids
