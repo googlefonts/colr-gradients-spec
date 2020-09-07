@@ -466,7 +466,7 @@ struct PaintGroup
 struct PaintComposite
 {
   uint16              format; // = 5
-  BlendMode           blend;
+  Composite           composite;
   uint16              dest_gid;
 };
 
