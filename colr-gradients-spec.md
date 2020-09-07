@@ -268,10 +268,15 @@ Concretely, a group reuses another glyph with alpha and transform applied. For e
    - Define a glyph for the hour-hand of the clock
    - Define N o’clock as the 12 marks untransformed, plus the hour-hand rotated
 
-If the `LayerV1Glyph` `gid` for the layer with paint format 4 (group) corresponds
-to a `BaseGlyphV1Record` then the layers of that glyph are taken as the layers in
-the group. If not, the referenced glyph is taken as a single layer with a solid paint
-in the text foreground color.
+If the `LayerV1Record` `gid` for the layer with paint format 4 (group) matches
+the `gid` of a `BaseGlyphV1Record` in `baseGlyphsV1` then the layers of that
+`BaseGlyphV1Record` are taken as the layers in the group. If not, the referenced
+glyph is taken as a single layer with a solid paint in the text foreground
+color.
+
+The `alpha` value of the group is multiplied with the `alpha` values of the
+individual `ColorIndex` values that are part of the `ColorLine` of the nested
+`Paint` structures.
 
 
 # Structure of gradient COLR v1 extensions
