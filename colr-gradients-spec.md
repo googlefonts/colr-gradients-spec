@@ -22,6 +22,7 @@ December 2019
   * [Radial Gradients](#radial-gradients)
 - [Reusable Parts](#reusable-parts)
 - [Acyclic Graphs Only](#acyclic-graphs-only)
+- [Alpha](#alpha)
 - [Structure of gradient COLR v1 extensions](#structure-of-gradient-colr-v1-extensions)
 - [Implementation](#implementation)
   * [Font Tooling](#font-tooling)
@@ -274,6 +275,14 @@ The hour hand is reusable as a transformed glyph.
 Another example might be emoji faces: many have the same backdrop
 with different eyes, noses, tears, etc drawn on top.
 
+# Alpha
+
+The alpha channel for a layer can be populated using `PaintComposite`:
+
+- `PaintSolid` can be used to set a blanket alpha
+- `PaindLinearGradient` and `PaintRadialGradient` can be set gradient alpha
+- Mode [Source In](https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_srcin) can be used to mask
+
 # Acyclic Graphs Only
 
 `PaintColrGlyph` allows recursive composition of COLR glyphs. This
@@ -440,10 +449,6 @@ struct PaintTransformed
   Affine2x3           transform;
 };
 
-// Set alpha using Source In
-//    - a solid color can set uniform alpha
-//    - a gradient can set less uniform alpha
-//    - a glyph painted in alpha can be used to mask
 struct PaintComposite
 {
   uint8               format; // = 5
@@ -466,7 +471,6 @@ struct PaintColrGlyph
   uint8               format; // = 7
   uint16              gid;    // shall be a COLR gid
 }
-
 
 // Glyph root
 // NOTE: uint8 size saves bytes in most cases and does not
