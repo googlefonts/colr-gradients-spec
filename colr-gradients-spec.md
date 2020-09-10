@@ -20,9 +20,9 @@ December 2019
       - [Extend Reflect](#extend-reflect)
   * [Linear Gradients](#linear-gradients)
   * [Radial Gradients](#radial-gradients)
+- [Alpha](#alpha)
 - [Reusable Parts](#reusable-parts)
 - [Acyclic Graphs Only](#acyclic-graphs-only)
-- [Alpha](#alpha)
 - [Structure of gradient COLR v1 extensions](#structure-of-gradient-colr-v1-extensions)
 - [Implementation](#implementation)
   * [Font Tooling](#font-tooling)
@@ -254,6 +254,14 @@ inverse-transform approach noted above can fall back to a linear-gradient
 combined with a clipping path to achieve proper rendering of problematic affine
 transforms.
 
+# Alpha
+
+The alpha channel for a layer can be populated using `PaintComposite`:
+
+- `PaintSolid` can be used to set a blanket alpha
+- `PaindLinearGradient` and `PaintRadialGradient` can be set gradient alpha
+- Mode [Source In](https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_srcin) can be used to mask
+
 # Reusable Parts
 
 Use `PaintTransformed` to reuse parts in different positions or sizes.
@@ -274,14 +282,6 @@ The hour hand is reusable as a transformed glyph.
 
 Another example might be emoji faces: many have the same backdrop
 with different eyes, noses, tears, etc drawn on top.
-
-# Alpha
-
-The alpha channel for a layer can be populated using `PaintComposite`:
-
-- `PaintSolid` can be used to set a blanket alpha
-- `PaindLinearGradient` and `PaintRadialGradient` can be set gradient alpha
-- Mode [Source In](https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_srcin) can be used to mask
 
 # Acyclic Graphs Only
 
