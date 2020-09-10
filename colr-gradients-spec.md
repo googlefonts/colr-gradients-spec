@@ -20,8 +20,8 @@ December 2019
       - [Extend Reflect](#extend-reflect)
   * [Linear Gradients](#linear-gradients)
   * [Radial Gradients](#radial-gradients)
-- [Group](#group)
-- [Compositing](#compositing)
+- [Reusable Parts](#reusable-parts)
+- [Acyclic Graphs Only](#acyclic-graphs-only)
 - [Structure of gradient COLR v1 extensions](#structure-of-gradient-colr-v1-extensions)
 - [Implementation](#implementation)
   * [Font Tooling](#font-tooling)
@@ -253,42 +253,33 @@ inverse-transform approach noted above can fall back to a linear-gradient
 combined with a clipping path to achieve proper rendering of problematic affine
 transforms.
 
-# Group
+# Reusable Parts
 
-A group allows a set of layers to be composited independently and then have the
-final result composited into the end result as a single layer with alpha. This
-is similar to a `group` with `opacity` in an SVG.
+Use `PaintTransformed` to reuse parts in different positions or sizes.
 
-Concretely, a group reuses another glyph with alpha and transform applied. For example:
+Use `PaintColrGlyph` to reuse entire COLR glyphs.
 
-1. A clock with marks at each hour
-   - Define the first mark as a COLR glyph
-   - Define the remaining 11 as the first mark transformed
-1. A set of clocks for one o’clock, two o’clock, etc in an emoji font
-   - Define a glyph that has all twelve marks as above
-   - Define a glyph for the hour-hand of the clock
-   - Define N o’clock as the 12 marks untransformed, plus the hour-hand rotated
+For example, consider the Noto clock emoji (hand colored for emphasis):
 
-The `LayerV1Glyph` `gid` field is resolved per [self-referential gids](#self-referential-gids).
+![Noto 1pm](images/clock-1.svg)
+![Noto 2pm](images/clock-2.svg)
 
-# Compositing
+The entire backdrop (outline, gradient-circle, 4 dots, the minute
+hand) is reusable for all versions of the clock:
 
-By default layers are drawn on top of each other. Composite permits a variety of additional methods by specifying two glyphs to be combined according to a well defined
-algorithm.
+![Noto 2pm](images/clock-common.svg)
 
-The compositing algorithms are specified by https://www.w3.org/TR/compositing-1/, with
-one exception: Alpha Channel. For alpha channel the dest colors are converted to the alpha channel for source by averaging the (R, G, B) parts.
+The hour hand is reusable as a transformed glyph.
 
-The `LayerV1Glyph` `gid` and the `PaintBlend` `dest_gid` are resolved per [self-referential gids](#self-referential-gids).
+Another example might be emoji faces: many have the same backdrop
+with different eyes, noses, tears, etc drawn on top.
 
+# Acyclic Graphs Only
 
-# Self-referential gids
-
-If the `LayerV1Glyph` `gid` for the layer with paint format 4 (group) corresponds
-to a `BaseGlyphV1Record` then the layers of that glyph are taken as the layers in
-the group. If not, the referenced glyph is taken as a single layer with a solid paint
-in the text foreground color.
-
+`PaintColrGlyph` allows recursive composition of COLR glyphs. This
+is desirable for reusable parts but introduces the possibility of
+a cyclic graph. Implementations should track the COLR gids they have
+seen in processing and fail if a gid is reached repeatedly.
 
 # Structure of gradient COLR v1 extensions
 
@@ -353,7 +344,7 @@ struct ColorStop
   ColorIndex color;
 };
 
-enum Extend : uint16
+enum Extend : uint8
 {
   EXTEND_PAD     = 0,
   EXTEND_REPEAT  = 1,
@@ -363,7 +354,7 @@ enum Extend : uint16
 // Compositing modes are taken from https://www.w3.org/TR/compositing-1/
 // NOTE: a brief audit of major implementations suggests most support most
 // or all of the specified modes.
-enum Composite : uint16
+enum CompositeMode : uint8
 {
   // Porter-Duff modes
   // https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators
@@ -379,31 +370,27 @@ enum Composite : uint16
   COMPOSITE_SRC_ATOP       =  9,  // https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_srcatop
   COMPOSITE_DEST_ATOP      = 10,  // https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_dstatop
   COMPOSITE_XOR            = 11,  // https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_xor
-  COMPOSITE_PLUS           = 12,  // https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_plus
-  COMPOSITE_SCREEN         = 13,  // https://www.w3.org/TR/compositing-1/#blendingscreen
+  COMPOSITE_SCREEN         = 12,  // https://www.w3.org/TR/compositing-1/#blendingscreen
 
   // Blend modes
   // https://www.w3.org/TR/compositing-1/#blending
-  COMPOSITE_OVERLAY        = 14,  // https://www.w3.org/TR/compositing-1/#blendingoverlay
-  COMPOSITE_DARKEN         = 15,  // https://www.w3.org/TR/compositing-1/#blendingdarken
-  COMPOSITE_LIGHTEN        = 16,  // https://www.w3.org/TR/compositing-1/#blendinglighten
-  COMPOSITE_COLOR_DODGE    = 17,  // https://www.w3.org/TR/compositing-1/#blendingcolordodge
-  COMPOSITE_COLOR_BURN     = 18,  // https://www.w3.org/TR/compositing-1/#blendingcolorburn
-  COMPOSITE_HARD_LIGHT     = 19,  // https://www.w3.org/TR/compositing-1/#blendinghardlight
-  COMPOSITE_SOFT_LIGHT     = 20,  // https://www.w3.org/TR/compositing-1/#blendingsoftlight
-  COMPOSITE_DIFFERENCE     = 21,  // https://www.w3.org/TR/compositing-1/#blendingdifference
-  COMPOSITE_EXCLUSION      = 22,  // https://www.w3.org/TR/compositing-1/#blendingexclusion
-  COMPOSITE_MULTIPLY       = 23,  // https://www.w3.org/TR/compositing-1/#blendingmultiply
+  COMPOSITE_OVERLAY        = 13,  // https://www.w3.org/TR/compositing-1/#blendingoverlay
+  COMPOSITE_DARKEN         = 14,  // https://www.w3.org/TR/compositing-1/#blendingdarken
+  COMPOSITE_LIGHTEN        = 15,  // https://www.w3.org/TR/compositing-1/#blendinglighten
+  COMPOSITE_COLOR_DODGE    = 16,  // https://www.w3.org/TR/compositing-1/#blendingcolordodge
+  COMPOSITE_COLOR_BURN     = 17,  // https://www.w3.org/TR/compositing-1/#blendingcolorburn
+  COMPOSITE_HARD_LIGHT     = 18,  // https://www.w3.org/TR/compositing-1/#blendinghardlight
+  COMPOSITE_SOFT_LIGHT     = 19,  // https://www.w3.org/TR/compositing-1/#blendingsoftlight
+  COMPOSITE_DIFFERENCE     = 20,  // https://www.w3.org/TR/compositing-1/#blendingdifference
+  COMPOSITE_EXCLUSION      = 21,  // https://www.w3.org/TR/compositing-1/#blendingexclusion
+  COMPOSITE_MULTIPLY       = 22,  // https://www.w3.org/TR/compositing-1/#blendingmultiply
 
   // Modes that, uniquely, do not operate on components
   // https://www.w3.org/TR/compositing-1/#blendingnonseparable
-  COMPOSITE_HSL_HUE        = 24,  // https://www.w3.org/TR/compositing-1/#blendinghue
-  COMPOSITE_HSL_SATURATION = 25,  // https://www.w3.org/TR/compositing-1/#blendingsaturation
-  COMPOSITE_HSL_COLOR      = 26,  // https://www.w3.org/TR/compositing-1/#blendingcolor
-  COMPOSITE_HSL_LUMINOSITY = 27,  // https://www.w3.org/TR/compositing-1/#blendingluminosity
-
-  // Use dest as the alpha channel for source
-  COMPOSITE_ALPHA_CHANNEL  = 28,
+  COMPOSITE_HSL_HUE        = 23,  // https://www.w3.org/TR/compositing-1/#blendinghue
+  COMPOSITE_HSL_SATURATION = 24,  // https://www.w3.org/TR/compositing-1/#blendingsaturation
+  COMPOSITE_HSL_COLOR      = 25,  // https://www.w3.org/TR/compositing-1/#blendingcolor
+  COMPOSITE_HSL_LUMINOSITY = 26,  // https://www.w3.org/TR/compositing-1/#blendingluminosity
 };
 
 struct ColorLine
@@ -412,26 +399,18 @@ struct ColorLine
   ArrayOf<ColorStop> stops;
 };
 
-// Paint types
+// Layer DAG
 
-union Paint
-{
-  uint16              format;
-  PaintSolid          solid;
-  PaintLinearGradient linearGradient;
-  PaintRadialGradient radialGradient;
-  PaintGroup          group;
-};
 
 struct PaintSolid
 {
-  uint16 format; // = 1
+  uint8  format; // = 1
   Color  color;
 };
 
 struct PaintLinearGradient
 {
-  uint16              format; // = 2
+  uint8               format; // = 2
   Offset32<ColorLine> colorLine;
   VarFWORD            x0;
   VarFWORD            y0;
@@ -443,7 +422,7 @@ struct PaintLinearGradient
 
 struct PaintRadialGradient
 {
-  uint16              format; // = 3
+  uint8               format; // = 3
   Offset32<ColorLine> colorLine;
   VarFWORD            x0;
   VarFWORD            y0;
@@ -454,32 +433,47 @@ struct PaintRadialGradient
   Offset32<Affine2x2> transform; // May be NULL.
 };
 
-struct PaintGroup
+struct PaintTransformed
 {
-  uint16              format; // = 4
-  VarF2DOT14          alpha;
-  Offset32<Affine2x3> transform; // May be NULL.
+  uint8               format; // = 4
+  Offset16<Paint>     src;
+  Affine2x3           transform;
 };
 
-// The LayerV1Record gid is the source
-// The dest_gid is the dest
+// Set alpha using Source In
+//    - a solid color can set uniform alpha
+//    - a gradient can set less uniform alpha
+//    - a glyph painted in alpha can be used to mask
 struct PaintComposite
 {
-  uint16              format; // = 5
-  Composite           composite;
-  uint16              dest_gid;
+  uint8               format; // = 5
+  CompositeMode       mode;
+  Offset16<Paint>     src;
+  Offset16<Paint>     backdrop;
 };
 
-// Header
-
-struct LayerV1Record
+// Clip paint to the region inked by gid
+// Paint must be unbounded
+struct PaintGlyph
 {
-  uint16          gid;
-  Offset32<Paint> paint;
-};
+  uint8               format; // = 6
+  uint16              gid;    // shall not be a COLR gid
+  Offset16<Paint>     paint;  // shall be format 1, 2, or 3
+}
 
-typedef ArrayOf<LayerV1Record, uint32> LayerV1List;
+struct PaintColrGlyph
+{
+  uint8               format; // = 7
+  uint16              gid;    // shall be a COLR gid
+}
 
+
+// Glyph root
+// NOTE: uint8 size saves bytes in most cases and does not
+// preclude use of large layer counts via PaintComposite OVER
+typedef ArrayOf<Offset16<Paint>, uint8> LayerV1List;
+
+// Each layer is OVER previous
 struct BaseGlyphV1Record
 {
   uint16                gid;
