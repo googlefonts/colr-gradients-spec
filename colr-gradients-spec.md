@@ -259,7 +259,7 @@ transforms.
 The alpha channel for a layer can be populated using `PaintComposite`:
 
 - `PaintSolid` can be used to set a blanket alpha
-- `PaindLinearGradient` and `PaintRadialGradient` can be set gradient alpha
+- `PaindLinearGradient` and `PaintRadialGradient` can be used to set gradient alpha
 - Mode [Source In](https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_srcin) can be used to mask
 
 # Reusable Parts
