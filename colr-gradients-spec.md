@@ -76,10 +76,18 @@ COLR table is extended to expose a new vector of layers per glyph.  If a glyph
 is not found in the new vector, client will try finding it in the COLR v0 glyph
 vector and fall back to no-color if the glyph is not found there either.
 
-A glyph using the new extension is mapped to an ordered list of layers.  Each
-layer includes a glyph id of shape as well as a *paint*.  There are four types
-of paint defined currently, with capacity for future extensions: solid, linear
-gradient, radial gradient, and group.
+A glyph using the new extension is mapped to a list of layers. Each layers is formed by a directed acyclic graph of paints. Several different types of paint
+are defined:
+
+1. **Solid** paints a solid color
+1. **Linear gradient** paints a linear gradient
+1. **Radial gradient** paints a radial gradient
+1. **Transformed** reuses another paint, applying an affine transformation
+1. **Composite** reuses two other paints, applying a compositing rule to combine them
+   * We draw on https://www.w3.org/TR/compositing-1/ for our composite modes
+1. **Glyph** draws a non-COLR glyph, filled using a type 1, 2, or 3 paint.
+   * A COLR v1 glyph made up of a list of Glyph paints is equivalent to a COLR v0 Layer Record with the added ability to use gradients.
+1. **Colr Glyph** reuses a COLR v1 glyph at a new position in the graph
 
 We have added an "alpha" (transparency) scalar to each invocation of a palette
 color. This allows for the expression of translucent versions of palette
@@ -379,10 +387,10 @@ enum CompositeMode : uint8
   COMPOSITE_SRC_ATOP       =  9,  // https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_srcatop
   COMPOSITE_DEST_ATOP      = 10,  // https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_dstatop
   COMPOSITE_XOR            = 11,  // https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_xor
-  COMPOSITE_SCREEN         = 12,  // https://www.w3.org/TR/compositing-1/#blendingscreen
 
   // Blend modes
   // https://www.w3.org/TR/compositing-1/#blending
+  COMPOSITE_SCREEN         = 12,  // https://www.w3.org/TR/compositing-1/#blendingscreen
   COMPOSITE_OVERLAY        = 13,  // https://www.w3.org/TR/compositing-1/#blendingoverlay
   COMPOSITE_DARKEN         = 14,  // https://www.w3.org/TR/compositing-1/#blendingdarken
   COMPOSITE_LIGHTEN        = 15,  // https://www.w3.org/TR/compositing-1/#blendinglighten
@@ -457,6 +465,8 @@ struct PaintComposite
   Offset16<Paint>     backdrop;
 };
 
+// Paint a non-COLR glyph, filled as indicated by paint.
+// Akin to the COLRv0 Layer Record.
 // Clip paint to the region inked by gid
 // Paint must be unbounded
 struct PaintGlyph
