@@ -23,6 +23,7 @@ December 2019
 - [Alpha](#alpha)
 - [Reusable Parts](#reusable-parts)
 - [Acyclic Graphs Only](#acyclic-graphs-only)
+- [Bounded Layers Only](#bounded-layers-only)
 - [Structure of gradient COLR v1 extensions](#structure-of-gradient-colr-v1-extensions)
 - [Implementation](#implementation)
   * [Font Tooling](#font-tooling)
@@ -297,6 +298,41 @@ with different eyes, noses, tears, etc drawn on top.
 is desirable for reusable parts but introduces the possibility of
 a cyclic graph. Implementations should track the COLR gids they have
 seen in processing and fail if a gid is reached repeatedly.
+
+# Bounded Layers Only
+
+Every entry in the `LayerV1List` must define a bounded region.
+Implementations must confirm this invariant. Unbounded layers must
+not render.
+
+The following paints are always bounded:
+
+- `PaintGlyph`
+- `PaintColrGlyph`
+
+The following paints are always unbounded:
+
+- `PaintSolid`
+- `PaintLinearGradient`
+- `PaintRadialGradient`
+
+The following paints *may* be bounded:
+
+- `PaintTransformed` is bounded IFF the source is bounded
+- `PaintComposite` boundedness varies by mode:
+   - Always bounded
+      - `COMPOSITE_CLEAR`
+   - Bounded IFF src is bounded
+      - `COMPOSITE_SRC`
+      - `COMPOSITE_SRC_OUT`
+   - Bounded IFF backdrop is bounded
+      - `COMPOSITE_DEST`
+      - `COMPOSITE_DEST_OUT`
+   - Bounded IFF src OR backdrop is bounded
+      - `COMPOSITE_SRC_IN`
+      - `COMPOSITE_DEST_IN`
+   - Bounded IFF src AND backdrop are bounded
+      - *all other modes*
 
 # Structure of gradient COLR v1 extensions
 
