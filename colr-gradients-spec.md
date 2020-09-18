@@ -5,6 +5,7 @@ December 2019
 ### Authors:
 * Behdad Esfahbod ([@behdad](https://github.com/behdad))
 * Dominik Röttsches ([@drott](https://github.com/drott))
+* Roderick Sheeter ([@rsheeter](https://github.com/rsheeter))
 
 ## Table of Contents
 
