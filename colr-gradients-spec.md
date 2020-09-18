@@ -85,7 +85,7 @@ are defined:
 1. **Transformed** reuses another paint, applying an affine transformation
 1. **Composite** reuses two other paints, applying a compositing rule to combine them
    * We draw on https://www.w3.org/TR/compositing-1/ for our composite modes
-1. **Glyph** draws a non-COLR glyph, filled using a type 1, 2, or 3 paint.
+1. **Glyph** draws a non-COLR glyph
    * A COLR v1 glyph made up of a list of Glyph paints is equivalent to a COLR v0 Layer Record with the added ability to use gradients.
 1. **Colr Glyph** reuses a COLR v1 glyph at a new position in the graph
 
@@ -468,12 +468,11 @@ struct PaintComposite
 // Paint a non-COLR glyph, filled as indicated by paint.
 // Akin to the COLRv0 Layer Record.
 // Clip paint to the region inked by gid
-// Paint must be unbounded
 struct PaintGlyph
 {
   uint8               format; // = 6
   uint16              gid;    // shall not be a COLR gid
-  Offset16<Paint>     paint;  // shall be format 1, 2, or 3
+  Offset16<Paint>     paint;
 }
 
 struct PaintColrGlyph
