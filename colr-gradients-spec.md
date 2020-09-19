@@ -31,6 +31,7 @@ December 2019
 - [Implementation](#implementation)
   * [Font Tooling](#font-tooling)
   * [Rendering](#rendering)
+    + [Pseudocode](#pseudocode)
     + [FreeType](#freetype)
     + [Chromium](#chromium)
   * [HarfBuzz](#harfbuzz)
@@ -571,6 +572,44 @@ font formats, including COLR v1.
 [color-fonts](https://github.com/googlefonts/color-fonts) has a collection of sample color fonts.
 
 ## Rendering
+
+### Pseudocode
+
+```
+Allocate a bitmap for the glyph according to glyf table entry extents for gid
+0) Traverse layers for gid, add current gid to blacklist *1
+ a) Paint a paint, switch:
+    1) PaintGlyph
+         gid must not COLRv1
+         saveLayer
+         setClipPath to gid path
+           recurse to a)
+         restore
+    2) PaintColorGlyph
+         gid must be from
+         if gid on recursion blacklist, do nothing
+         recurse to 0) with different gid
+    3) PaintComposite
+          paint Paint for backdrop, call a)
+          saveLayer() with setting composite mode, on SkPaint
+          paint Paint for src, call a)
+          restore with save composite mode
+    4) PaintTransformed
+          saveLayer()
+          apply transform
+          call a) for paint
+          restore
+    5) PaintRadialGradient
+          SkCanvas::drawPaint with radial gradient configured
+          (expected to be bounded by parent composite mode or clipped by current clip, check bounds?)
+    6) PaintLinearGradient
+          SkCanvas::drawPaint with liner gradient configured
+          (expected to be bounded by parent composite mode or clipped by current clip, check bounds?)
+    7) PaintSolid
+          SkCanvas::drawColor with color configured
+
+ *1 (in the implementation, potentially collapse each pair as PaintComposite (3) with first gid as backdrop, second as src, or just draw on root SkCanvas directly)
+```
 
 ### FreeType
 
