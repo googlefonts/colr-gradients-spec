@@ -5,6 +5,7 @@ December 2019
 ### Authors:
 * Behdad Esfahbod ([@behdad](https://github.com/behdad))
 * Dominik Röttsches ([@drott](https://github.com/drott))
+* Roderick Sheeter ([@rsheeter](https://github.com/rsheeter))
 
 ## Table of Contents
 
@@ -20,11 +21,17 @@ December 2019
       - [Extend Reflect](#extend-reflect)
   * [Linear Gradients](#linear-gradients)
   * [Radial Gradients](#radial-gradients)
-- [Group](#group)
+- [Understanding the format](#understanding-the-format)
+   - [Alpha](#alpha)
+   - [Reusable Parts](#reusable-parts)
+   - [Acyclic Graphs Only](#acyclic-graphs-only)
+   - [Bounded Layers Only](#bounded-layers-only)
+   - [Bounding Box](#bounding-box)
 - [Structure of gradient COLR v1 extensions](#structure-of-gradient-colr-v1-extensions)
 - [Implementation](#implementation)
   * [Font Tooling](#font-tooling)
   * [Rendering](#rendering)
+    + [Pseudocode](#pseudocode)
     + [FreeType](#freetype)
     + [Chromium](#chromium)
   * [HarfBuzz](#harfbuzz)
@@ -74,10 +81,19 @@ COLR table is extended to expose a new vector of layers per glyph.  If a glyph
 is not found in the new vector, client will try finding it in the COLR v0 glyph
 vector and fall back to no-color if the glyph is not found there either.
 
-A glyph using the new extension is mapped to an ordered list of layers.  Each
-layer includes a glyph id of shape as well as a *paint*.  There are four types
-of paint defined currently, with capacity for future extensions: solid, linear
-gradient, radial gradient, and group.
+A glyph using the new extension is mapped to a list of layers. Each layer is
+formed by a directed acyclic graph of paints. Several different types of paint
+are defined:
+
+1. **Solid** paints a solid color
+1. **Linear gradient** paints a linear gradient
+1. **Radial gradient** paints a radial gradient
+1. **Transformed** reuses another paint, applying an affine transformation
+1. **Composite** reuses two other paints, applying a compositing rule to combine them
+   * We draw on https://www.w3.org/TR/compositing-1/ for our composite modes
+1. **Glyph** draws a non-COLR glyph
+   * A COLR v1 glyph made up of a list of Glyph paints is equivalent to a COLR v0 Layer Record with the added ability to use gradients.
+1. **Colr Glyph** reuses a COLR v1 glyph at a new position in the graph
 
 We have added an "alpha" (transparency) scalar to each invocation of a palette
 color. This allows for the expression of translucent versions of palette
@@ -252,29 +268,90 @@ inverse-transform approach noted above can fall back to a linear-gradient
 combined with a clipping path to achieve proper rendering of problematic affine
 transforms.
 
-# Group
+# Understanding the format
 
-A group allows a set of layers to be composited independently and then have the
-final result composited into the end result as a single layer with alpha. This
-is similar to a `group` with `opacity` in an SVG.
+## Alpha
 
-Concretely, a group reuses another glyph with alpha and transform applied. For example:
+The alpha channel for a layer can be populated using `PaintComposite`:
 
-1. A clock with marks at each hour
-   - Define the first mark as a COLR glyph
-   - Define the remaining 11 as the first mark transformed
-1. A set of clocks for one o’clock, two o’clock, etc in an emoji font
-   - Define a glyph that has all twelve marks as above
-   - Define a glyph for the hour-hand of the clock
-   - Define N o’clock as the 12 marks untransformed, plus the hour-hand rotated
+- `PaintSolid` can be used to set a blanket alpha
+- `PaindLinearGradient` and `PaintRadialGradient` can be used to set gradient alpha
+- Mode [Source In](https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_srcin) can be used to mask
 
-If the `LayerV1Glyph` `gid` for the layer with paint format 4 (group) corresponds
-to a `BaseGlyphV1Record` then the layers of that glyph are taken as the layers in
-the group. If not, the referenced glyph is taken as a single layer with a solid paint
-in the text foreground color.
+## Reusable Parts
 
+Use `PaintTransformed` to reuse parts in different positions or sizes.
+
+Use `PaintColrGlyph` to reuse entire COLR glyphs.
+
+For example, consider the Noto clock emoji (hand colored for emphasis):
+
+![Noto 1pm](images/clock-1.svg)
+![Noto 2pm](images/clock-2.svg)
+
+The entire backdrop (outline, gradient-circle, 4 dots, the minute
+hand) is reusable for all versions of the clock:
+
+![Noto 2pm](images/clock-common.svg)
+
+The hour hand is reusable as a transformed glyph.
+
+Another example might be emoji faces: many have the same backdrop
+with different eyes, noses, tears, etc drawn on top.
+
+## Acyclic Graphs Only
+
+`PaintColrGlyph` allows recursive composition of COLR glyphs. This
+is desirable for reusable parts but introduces the possibility of
+a cyclic graph. Implementations should track the COLR gids they have
+seen in processing and fail if a gid is reached repeatedly.
+
+## Bounded Layers Only
+
+Every entry in the `LayerV1List` must define a bounded region.
+Implementations must confirm this invariant. Unbounded layers must
+not render.
+
+The following paints are always bounded:
+
+- `PaintGlyph`
+- `PaintColrGlyph`
+
+The following paints are always unbounded:
+
+- `PaintSolid`
+- `PaintLinearGradient`
+- `PaintRadialGradient`
+
+The following paints *may* be bounded:
+
+- `PaintTransformed` is bounded IFF the source is bounded
+- `PaintComposite` boundedness varies by mode:
+   - Always bounded
+      - `COMPOSITE_CLEAR`
+   - Bounded IFF src is bounded
+      - `COMPOSITE_SRC`
+      - `COMPOSITE_SRC_OUT`
+   - Bounded IFF backdrop is bounded
+      - `COMPOSITE_DEST`
+      - `COMPOSITE_DEST_OUT`
+   - Bounded IFF src OR backdrop is bounded
+      - `COMPOSITE_SRC_IN`
+      - `COMPOSITE_DEST_IN`
+   - Bounded IFF src AND backdrop are bounded
+      - *all other modes*
+
+## Bounding Box
+
+To simplify implementation allocation of a drawing surface the
+bounding box of the glyph corresponding to the `BaseGlyphV1Record`
+should be taken to describe the drawing area for the COLR v1 glyph.
+
+Note: A `glyf` entry with two points at the diagonal extrema would suffice.
 
 # Structure of gradient COLR v1 extensions
+
+Offsets are always relative to the start of the containing struct.
 
 ```C++
 // Base types
@@ -337,11 +414,53 @@ struct ColorStop
   ColorIndex color;
 };
 
-enum Extend : uint16
+enum Extend : uint8
 {
   EXTEND_PAD     = 0,
   EXTEND_REPEAT  = 1,
   EXTEND_REFLECT = 2,
+};
+
+// Compositing modes are taken from https://www.w3.org/TR/compositing-1/
+// NOTE: a brief audit of major implementations suggests most support most
+// or all of the specified modes.
+enum CompositeMode : uint8
+{
+  // Porter-Duff modes
+  // https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators
+  COMPOSITE_CLEAR          =  0,  // https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_clear
+  COMPOSITE_SRC            =  1,  // https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_src
+  COMPOSITE_DEST           =  2,  // https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_dst
+  COMPOSITE_SRC_OVER       =  3,  // https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_srcover
+  COMPOSITE_DEST_OVER      =  4,  // https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_dstover
+  COMPOSITE_SRC_IN         =  5,  // https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_srcin
+  COMPOSITE_DEST_IN        =  6,  // https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_dstin
+  COMPOSITE_SRC_OUT        =  7,  // https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_srcout
+  COMPOSITE_DEST_OUT       =  8,  // https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_dstout
+  COMPOSITE_SRC_ATOP       =  9,  // https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_srcatop
+  COMPOSITE_DEST_ATOP      = 10,  // https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_dstatop
+  COMPOSITE_XOR            = 11,  // https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_xor
+
+  // Blend modes
+  // https://www.w3.org/TR/compositing-1/#blending
+  COMPOSITE_SCREEN         = 12,  // https://www.w3.org/TR/compositing-1/#blendingscreen
+  COMPOSITE_OVERLAY        = 13,  // https://www.w3.org/TR/compositing-1/#blendingoverlay
+  COMPOSITE_DARKEN         = 14,  // https://www.w3.org/TR/compositing-1/#blendingdarken
+  COMPOSITE_LIGHTEN        = 15,  // https://www.w3.org/TR/compositing-1/#blendinglighten
+  COMPOSITE_COLOR_DODGE    = 16,  // https://www.w3.org/TR/compositing-1/#blendingcolordodge
+  COMPOSITE_COLOR_BURN     = 17,  // https://www.w3.org/TR/compositing-1/#blendingcolorburn
+  COMPOSITE_HARD_LIGHT     = 18,  // https://www.w3.org/TR/compositing-1/#blendinghardlight
+  COMPOSITE_SOFT_LIGHT     = 19,  // https://www.w3.org/TR/compositing-1/#blendingsoftlight
+  COMPOSITE_DIFFERENCE     = 20,  // https://www.w3.org/TR/compositing-1/#blendingdifference
+  COMPOSITE_EXCLUSION      = 21,  // https://www.w3.org/TR/compositing-1/#blendingexclusion
+  COMPOSITE_MULTIPLY       = 22,  // https://www.w3.org/TR/compositing-1/#blendingmultiply
+
+  // Modes that, uniquely, do not operate on components
+  // https://www.w3.org/TR/compositing-1/#blendingnonseparable
+  COMPOSITE_HSL_HUE        = 23,  // https://www.w3.org/TR/compositing-1/#blendinghue
+  COMPOSITE_HSL_SATURATION = 24,  // https://www.w3.org/TR/compositing-1/#blendingsaturation
+  COMPOSITE_HSL_COLOR      = 25,  // https://www.w3.org/TR/compositing-1/#blendingcolor
+  COMPOSITE_HSL_LUMINOSITY = 26,  // https://www.w3.org/TR/compositing-1/#blendingluminosity
 };
 
 struct ColorLine
@@ -350,26 +469,18 @@ struct ColorLine
   ArrayOf<ColorStop> stops;
 };
 
-// Paint types
+// Layer DAG
 
-union Paint
-{
-  uint16              format;
-  PaintSolid          solid;
-  PaintLinearGradient linearGradient;
-  PaintRadialGradient radialGradient;
-  PaintGroup          group;
-};
 
 struct PaintSolid
 {
-  uint16 format; // = 1
+  uint8  format; // = 1
   Color  color;
 };
 
 struct PaintLinearGradient
 {
-  uint16              format; // = 2
+  uint8               format; // = 2
   Offset32<ColorLine> colorLine;
   VarFWORD            x0;
   VarFWORD            y0;
@@ -381,7 +492,7 @@ struct PaintLinearGradient
 
 struct PaintRadialGradient
 {
-  uint16              format; // = 3
+  uint8               format; // = 3
   Offset32<ColorLine> colorLine;
   VarFWORD            x0;
   VarFWORD            y0;
@@ -392,23 +503,41 @@ struct PaintRadialGradient
   Offset32<Affine2x2> transform; // May be NULL.
 };
 
-struct PaintGroup
+struct PaintTransformed
 {
-  uint16              format; // = 4
-  VarF2DOT14          alpha;
-  Offset32<Affine2x3> transform; // May be NULL.
+  uint8               format; // = 4
+  Offset16<Paint>     src;
+  Affine2x3           transform;
 };
 
-// Header
-
-struct LayerV1Record
+struct PaintComposite
 {
-  uint16          gid;
-  Offset32<Paint> paint;
+  uint8               format; // = 5
+  CompositeMode       mode;
+  Offset16<Paint>     src;
+  Offset16<Paint>     backdrop;
 };
 
-typedef ArrayOf<LayerV1Record, uint32> LayerV1List;
+// Paint a non-COLR glyph, filled as indicated by paint.
+struct PaintGlyph
+{
+  uint8               format; // = 6
+  uint16              gid;    // shall not be a COLR gid
+  Offset16<Paint>     paint;
+}
 
+struct PaintColrGlyph
+{
+  uint8               format; // = 7
+  uint16              gid;    // shall be a COLR gid
+}
+
+// Glyph root
+// NOTE: uint8 size saves bytes in most cases and does not
+// preclude use of large layer counts via PaintComposite.
+typedef ArrayOf<Offset16<Paint>, uint8> LayerV1List;
+
+// Each layer is OVER previous
 struct BaseGlyphV1Record
 {
   uint16                gid;
@@ -443,6 +572,44 @@ font formats, including COLR v1.
 [color-fonts](https://github.com/googlefonts/color-fonts) has a collection of sample color fonts.
 
 ## Rendering
+
+### Pseudocode
+
+```
+Allocate a bitmap for the glyph according to glyf table entry extents for gid
+0) Traverse layers for gid, add current gid to blacklist *1
+ a) Paint a paint, switch:
+    1) PaintGlyph
+         gid must not COLRv1
+         saveLayer
+         setClipPath to gid path
+           recurse to a)
+         restore
+    2) PaintColorGlyph
+         gid must be from
+         if gid on recursion blacklist, do nothing
+         recurse to 0) with different gid
+    3) PaintComposite
+          paint Paint for backdrop, call a)
+          saveLayer() with setting composite mode, on SkPaint
+          paint Paint for src, call a)
+          restore with save composite mode
+    4) PaintTransformed
+          saveLayer()
+          apply transform
+          call a) for paint
+          restore
+    5) PaintRadialGradient
+          SkCanvas::drawPaint with radial gradient configured
+          (expected to be bounded by parent composite mode or clipped by current clip, check bounds?)
+    6) PaintLinearGradient
+          SkCanvas::drawPaint with liner gradient configured
+          (expected to be bounded by parent composite mode or clipped by current clip, check bounds?)
+    7) PaintSolid
+          SkCanvas::drawColor with color configured
+
+ *1 (in the implementation, potentially collapse each pair as PaintComposite (3) with first gid as backdrop, second as src, or just draw on root SkCanvas directly)
+```
 
 ### FreeType
 
