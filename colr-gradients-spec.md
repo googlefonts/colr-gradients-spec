@@ -517,8 +517,6 @@ struct PaintComposite
 };
 
 // Paint a non-COLR glyph, filled as indicated by paint.
-// Akin to the COLRv0 Layer Record.
-// Clip paint to the region inked by gid
 struct PaintGlyph
 {
   uint8               format; // = 6
@@ -534,7 +532,7 @@ struct PaintColrGlyph
 
 // Glyph root
 // NOTE: uint8 size saves bytes in most cases and does not
-// preclude use of large layer counts via PaintComposite OVER
+// preclude use of large layer counts via PaintComposite.
 typedef ArrayOf<Offset16<Paint>, uint8> LayerV1List;
 
 // Each layer is OVER previous
