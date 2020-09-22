@@ -81,7 +81,8 @@ COLR table is extended to expose a new vector of layers per glyph.  If a glyph
 is not found in the new vector, client will try finding it in the COLR v0 glyph
 vector and fall back to no-color if the glyph is not found there either.
 
-A glyph using the new extension is mapped to a list of layers. Each layers is formed by a directed acyclic graph of paints. Several different types of paint
+A glyph using the new extension is mapped to a list of layers. Each layer is
+formed by a directed acyclic graph of paints. Several different types of paint
 are defined:
 
 1. **Solid** paints a solid color
