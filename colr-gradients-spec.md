@@ -342,10 +342,11 @@ The following paints *may* be bounded:
 
 ## Bounding Box
 
-To simplify implementation allocation of drawing surface the
-`BaseGlyphV1Record` `gid` entry in the `glyf` table must provide
-the bounding box for the final COLR glyph by providing two
-on-curve points, one at `(min-x, min-y)` and one at `(max-x, max-y)`.
+To simplify implementation allocation of a drawing surface the
+bounding box of the glyph corresponding to the `BaseGlyphV1Record`
+should be taken to describe the drawing area for the COLR v1 glyph.
+
+Note: A `glyf` entry with two points at the diagonal extrema would suffice.
 
 # Structure of gradient COLR v1 extensions
 
