@@ -405,6 +405,8 @@ struct Affine2x3
 
 // Building blocks
 
+// The ColorIndex alpha is multiplied into the CPAL color looked up using
+// paletteIndex to produce a final color
 struct ColorIndex
 {
   uint16     paletteIndex;
