@@ -88,12 +88,12 @@ are defined:
 1. **Solid** paints a solid color
 1. **Linear gradient** paints a linear gradient
 1. **Radial gradient** paints a radial gradient
+1. **Filled Glyph** draws a non-COLR glyph
+   * A COLR v1 glyph made up of a list of Glyph paints is equivalent to a COLR v0 Layer Record with the added ability to use gradients.
+1. **COLR Glyph** reuses a COLR v1 glyph at a new position in the graph
 1. **Transformed** reuses another paint, applying an affine transformation
 1. **Composite** reuses two other paints, applying a compositing rule to combine them
    * We draw on https://www.w3.org/TR/compositing-1/ for our composite modes
-1. **Glyph** draws a non-COLR glyph
-   * A COLR v1 glyph made up of a list of Glyph paints is equivalent to a COLR v0 Layer Record with the added ability to use gradients.
-1. **Colr Glyph** reuses a COLR v1 glyph at a new position in the graph
 
 We have added an "alpha" (transparency) scalar to each invocation of a palette
 color. This allows for the expression of translucent versions of palette
@@ -314,7 +314,7 @@ not render.
 
 The following paints are always bounded:
 
-- `PaintGlyph`
+- `PaintFilledGlyph`
 - `PaintColrGlyph`
 
 The following paints are always unbounded:
@@ -508,34 +508,34 @@ struct PaintRadialGradient
   Offset32<Affine2x2> transform; // May be NULL.
 };
 
-struct PaintTransformed
+// Paint a non-COLR glyph, filled as indicated by paint.
+struct PaintFilledGlyph
 {
   uint8               format; // = 4
-  Offset16<Paint>     src;
-  Affine2x3           transform;
-};
-
-struct PaintComposite
-{
-  uint8               format; // = 5
-  CompositeMode       mode;   // If mode is unrecognized use 0 (Clear)
-  Offset16<Paint>     src;
-  Offset16<Paint>     backdrop;
-};
-
-// Paint a non-COLR glyph, filled as indicated by paint.
-struct PaintGlyph
-{
-  uint8               format; // = 6
   uint16              gid;    // shall not be a COLR gid
   Offset16<Paint>     paint;
 }
 
 struct PaintColrGlyph
 {
-  uint8               format; // = 7
+  uint8               format; // = 5
   uint16              gid;    // shall be a COLR gid
 }
+
+struct PaintTransformed
+{
+  uint8               format; // = 6
+  Offset16<Paint>     src;
+  Affine2x3           transform;
+};
+
+struct PaintComposite
+{
+  uint8               format; // = 7
+  CompositeMode       mode;   // If mode is unrecognized use 0 (Clear)
+  Offset16<Paint>     src;
+  Offset16<Paint>     backdrop;
+};
 
 // Glyph root
 // NOTE: uint8 size saves bytes in most cases and does not
@@ -584,7 +584,7 @@ font formats, including COLR v1.
 Allocate a bitmap for the glyph according to glyf table entry extents for gid
 0) Traverse layers for gid, add current gid to blacklist *1
  a) Paint a paint, switch:
-    1) PaintGlyph
+    1) PaintFilledGlyph
          gid must not COLRv1
          saveLayer
          setClipPath to gid path
