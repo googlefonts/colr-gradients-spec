@@ -343,11 +343,14 @@ The following paints *may* be bounded:
 
 ## Bounding Box
 
-To simplify implementation allocation of a drawing surface the
-bounding box of the glyph corresponding to the `BaseGlyphV1Record`
-should be taken to describe the drawing area for the COLR v1 glyph.
+The bounding box of the base (non-COLR) glyph referenced from the
+`BaseGlyphV1Record` (by `BaseGlyphV1Record::gid`) should be taken
+to describe the bounding box for the COLR v1 glyph.
 
 Note: A `glyf` entry with two points at the diagonal extrema would suffice.
+
+Note: This can be used to allocate a drawing surface without traversing
+the COLR v1 glyph structure.
 
 # Structure of gradient COLR v1 extensions
 
