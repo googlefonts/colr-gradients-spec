@@ -518,7 +518,7 @@ struct PaintTransformed
 struct PaintComposite
 {
   uint8               format; // = 5
-  CompositeMode       mode;
+  CompositeMode       mode;   // If mode is unrecognized use 0 (Clear)
   Offset16<Paint>     src;
   Offset16<Paint>     backdrop;
 };
