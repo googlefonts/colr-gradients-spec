@@ -201,8 +201,18 @@ defining stripes in rotating colors.
 
 ## Linear Gradients
 
-We propose definitions of linear gradients with two color line points P0 and P1
-between which a gradient is interpolated.
+We propose definitions of linear gradients with two color line points P₀ and P₁
+between which a gradient is interpolated. Both points have an implicit y coordinate
+of 0. This can be adjusted via transform. A third point P₂ is implicitly present
+at (0, 1). A line through P₀, P₂ is thus initially orthogonal to a line
+through P₀, P₁. All points are subject to transform (via `PaintTransformed`).
+A shear can therefore alter the angle of the gradient.
+
+If the dot-product (P₁ - P₀) . (P₂ - P₀) is zero (or near-zero for an
+implementation-defined definition) then gradient is ill-formed and nothing must
+be rendered.
+
+**TODO redraw figure 2**
 
 ![Defining points for linear gradients](images/linear_defining_points.png)
 
@@ -463,10 +473,8 @@ struct PaintLinearGradient
 {
   uint8               format; // = 2
   Offset32<ColorLine> colorLine;
-  VarFWORD            x0;
-  VarFWORD            y0;
-  VarFWORD            x1;
-  VarFWORD            y1;
+  VarFWORD            x0;     // y0 implicitly 0
+  VarFWORD            x1;     // y1 implicitly 0
 };
 
 struct PaintRadialGradient
