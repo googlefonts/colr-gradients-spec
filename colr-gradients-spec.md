@@ -215,14 +215,14 @@ be rendered.
 
 ## Radial Gradients
 
+Radial gradients in this proposal are defined based on circles. If subject to
+a transform (via `PaintTransformed`) those circles may become ellipses.
+
 A radial gradient in this proposal is a gradient between two—optionally
 transformed—circles, namely with center c0 and radius r0, and center c1 and
 radius r1 and a specified color line.  The circle c0, r0 will be drawn with the
 color at color line position 0. The circle c1, r1 will be drawn with the color
 at color line colorLine position 1.
-
-The optionally defined affine transformation matrix is used to transform the
-circles into ellipses around their center.
 
 The drawing algorithm radial gradients follows the [HTML WHATWG Canvas spec for
 createRadialGradient()](https://html.spec.whatwg.org/multipage/canvas.html#dom-context-2d-createradialgradient).
@@ -253,20 +253,10 @@ Let the color at ω be the color at that position on the gradient color line (wi
 **TODO:** Add illustration of center points, radii, etc. similar to the radial
 one.
 
-**Note:** The coordinates for the circle/ellipse centers are *not*
-transformed by the affine matrix if present.  Implementations might need to
-apply the inverse of the affine matrix to center coordinates before passing all
-to underlying graphics systems like Skia or Cairo that apply their (often called
-*user-*) transformation matrix to everything.
-
 **Note:** Implementations must be careful to properly render radial gradient
-even if the provided affine matrix is
-*[degenerate](https://en.wikipedia.org/wiki/Invertible_matrix)* or
-*near-degenerate*. Such radial gradients do have a well-defined shape, which is
-a strip or a cone filled with a linear gradient.  Implementations using the
-inverse-transform approach noted above can fall back to a linear-gradient
-combined with a clipping path to achieve proper rendering of problematic affine
-transforms.
+even if they are subject to a *[degenerate](https://en.wikipedia.org/wiki/Invertible_matrix)*
+or *near-degenerate* transform. Such radial gradients do have a well-defined shape, which is
+a strip or a cone filled with a linear gradient.
 
 # Understanding the format
 
@@ -383,15 +373,6 @@ typedef Variable<UFWORD> VarUFWORD;
 
 Typedef Variable<F2DOT14> VarF2DOT14; // [-1.0, 1.0]
 
-// Scale and/or rotate
-struct Affine2x2
-{
-  VarFixed xx;
-  VarFixed xy;
-  VarFixed yx;
-  VarFixed yy;
-};
-
 // Scale, rotate, translate
 struct Affine2x3
 {
@@ -505,7 +486,6 @@ struct PaintRadialGradient
   VarFWORD            x1;
   VarFWORD            y1;
   VarUFWORD           radius1;
-  Offset32<Affine2x2> transform; // May be NULL.
 };
 
 // Paint a non-COLR glyph, filled as indicated by paint.
