@@ -513,7 +513,7 @@ struct PaintFilledGlyph
 {
   uint8               format; // = 4
   uint16              gid;    // shall not be a COLR gid
-  Offset16<Paint>     paint;
+  Offset32<Paint>     paint;
 }
 
 struct PaintColrGlyph
@@ -525,7 +525,7 @@ struct PaintColrGlyph
 struct PaintTransformed
 {
   uint8               format; // = 6
-  Offset16<Paint>     src;
+  Offset32<Paint>     src;
   Affine2x3           transform;
 };
 
@@ -533,14 +533,14 @@ struct PaintComposite
 {
   uint8               format; // = 7
   CompositeMode       mode;   // If mode is unrecognized use 0 (Clear)
-  Offset16<Paint>     src;
-  Offset16<Paint>     backdrop;
+  Offset32<Paint>     src;
+  Offset32<Paint>     backdrop;
 };
 
 // Glyph root
 // NOTE: uint8 size saves bytes in most cases and does not
 // preclude use of large layer counts via PaintComposite.
-typedef ArrayOf<Offset16<Paint>, uint8> LayerV1List;
+typedef ArrayOf<Offset32<Paint>, uint8> LayerV1List;
 
 // Each layer is OVER previous
 struct BaseGlyphV1Record
