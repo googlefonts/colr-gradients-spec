@@ -202,12 +202,7 @@ defining stripes in rotating colors.
 ## Linear Gradients
 
 We propose definitions of linear gradients with two color line points P0 and P1
-between which a gradient is interpolated. A point P2 is defined to rotate the
-gradient angle / orientation separately from the color line endpoints.
-
-If the dot-product (P₁ - P₀) . (P₂ - P₀) is zero (or near-zero for an
-implementation-defined definition) then gradient is ill-formed and nothing must
-be rendered.
+between which a gradient is interpolated.
 
 ![Defining points for linear gradients](images/linear_defining_points.png)
 
@@ -472,8 +467,6 @@ struct PaintLinearGradient
   VarFWORD            y0;
   VarFWORD            x1;
   VarFWORD            y1;
-  VarFWORD            x2; // Normal; Equal to (x1,y1) in simple cases.
-  VarFWORD            y2;
 };
 
 struct PaintRadialGradient
