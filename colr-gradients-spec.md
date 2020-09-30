@@ -248,10 +248,7 @@ Let the color at ω be the color at that position on the gradient color line (wi
 
 ![Example radial gradient rendering](images/example_radial.png)
 
-***Figure 3:** Example of a radial gradient rendering.*
-
-**TODO:** Add illustration of center points, radii, etc. similar to the radial
-one.
+*__Figure 3:__ Example of a radial gradient rendering with extend modes pad, repeat and reflect (top to bottom) with color stops for blue at 0, yellow at 0.5 and red at 1.*
 
 **Note:** Implementations must be careful to properly render radial gradient
 even if they are subject to a *[degenerate](https://en.wikipedia.org/wiki/Invertible_matrix)*
