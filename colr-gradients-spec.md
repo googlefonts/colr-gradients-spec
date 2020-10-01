@@ -467,7 +467,7 @@ struct PaintSolid
 struct PaintLinearGradient
 {
   uint8               format; // = 2
-  Offset32<ColorLine> colorLine;
+  Offset24<ColorLine> colorLine;
   VarFWORD            x0;
   VarFWORD            y0;
   VarFWORD            x1;
@@ -479,7 +479,7 @@ struct PaintLinearGradient
 struct PaintRadialGradient
 {
   uint8               format; // = 3
-  Offset32<ColorLine> colorLine;
+  Offset24<ColorLine> colorLine;
   VarFWORD            x0;
   VarFWORD            y0;
   VarUFWORD           radius0;
@@ -492,8 +492,8 @@ struct PaintRadialGradient
 struct PaintFilledGlyph
 {
   uint8               format; // = 4
+  Offset24<Paint>     paint;
   uint16              gid;    // shall not be a COLR gid
-  Offset32<Paint>     paint;
 }
 
 struct PaintColrGlyph
@@ -505,16 +505,16 @@ struct PaintColrGlyph
 struct PaintTransformed
 {
   uint8               format; // = 6
-  Offset32<Paint>     src;
+  Offset24<Paint>     src;
   Affine2x3           transform;
 };
 
 struct PaintComposite
 {
   uint8               format; // = 7
+  Offset24<Paint>     src;
   CompositeMode       mode;   // If mode is unrecognized use 0 (Clear)
-  Offset32<Paint>     src;
-  Offset32<Paint>     backdrop;
+  Offset24<Paint>     backdrop;
 };
 
 // Glyph root
