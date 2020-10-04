@@ -397,7 +397,9 @@ Values are inherently limited to [-2., 2). In some contexts, limited to the [-1.
 | uint16 | paletteIndex | Index for a CPAL palette entry. |
 | VarF2Dot14 | alpha | Variable alpha value. |
 
-The alpha.value is limited to [0., 1.].
+Values for alpha outside [0.,1.] are reserved.
+
+The ColorIndex alpha is multiplied into the alpha of the CPAL entry (converted to float -- divide by 255) to produce a final alpha.
 
 *ColorStop record:*
 
@@ -406,7 +408,7 @@ The alpha.value is limited to [0., 1.].
 | VarF2Dot14 | stopOffset | Proportional distance on a color line; variable. |
 | ColorIndex | color | |
 
-The stopOffset.value is limited to [0., 1.].
+Values for stopOffset outside [0.,1.] are reserved.
 
 *ColorLine table:*
 
@@ -476,6 +478,8 @@ Supported composition modes are taken from the W3C [Compositing and Blending Lev
 | VarFixed | dx | Translation in x direction. |
 | VarFixed | dy | Translation in y direction. |
 
+This is a standard 2x3 matrix for affine 2D transformations: scale, skew, reflect, rotate, translate. Position vectors are an extended column matrix: (x,y,1).
+
 ## Paint tables
 
 *PaintSolid table (format 1):*
@@ -498,6 +502,8 @@ Supported composition modes are taken from the W3C [Compositing and Blending Lev
 | VarFWord | x2 | Rotation vector end point x coordinate. |
 | VarFWord | y2 | Rotation vector end point y coordinate. |
 
+For linear gradient without skew, set x2,y2 to x1,y1.
+
 *PaintRadialGradient table (format 3):*
 
 |Type | Field name | Description |
@@ -513,15 +519,15 @@ Supported composition modes are taken from the W3C [Compositing and Blending Lev
 
 Defines a class of gradients that are a functional superset of a radial gradient: color gradation along a conic cylinder defined by two circles.
 
-*PaintFilledGlyph table (format 4):*
+*PaintGlyph table (format 4):*
 
 | Type | Field name | Description |
 |-|-|-|
 | uint8 | format | Set to 4. |
-| Offset24 | paintOffset | Offset to a Paint table, from start of PaintFilledGlyph table. |
+| Offset24 | paintOffset | Offset to a Paint table, from start of PaintGlyph table. |
 | uint16 | glyphID | Glyph ID for the source outline. |
 
-Glyph outline is used as clip mask for the content in the Paint subtable. Glyph ID must be less than maxp.numGlyphs.
+Glyph outline is used as clip mask for the content in the Paint subtable. Glyph ID must be less than the numGlyphs value in the &#39;maxp&#39; table.
 
 *PaintColrGlyph table (format 5):*
 
@@ -537,7 +543,7 @@ Glyph ID must be in the BaseGlyphV1List; may be greater than maxp.numGlyphs.
 | Type | Field name | Description |
 |-|-|-|
 | uint8 | format | Set to 6. |
-| Offset24 | paintOffset | Offset to a Paint subtable, from start of PaintTransform table. |
+| Offset24 | paintOffset | Offset to a Paint subtable, from start of PaintTransformed table. |
 | Affine2x3 | transform | An Affine2x3 record (inline). |
 
 *PaintComposite table (format 7):*
@@ -579,12 +585,14 @@ If compositeMode value is not recognized, COMPOSITE_CLEAR is used.
 | uint16 | glyphID | Glyph ID of the base glyph. |
 | Offset32 | layerListOffset | Offset to LayerV1List table, from start of BaseGlyphsV1List table. |
 
+*Note:* The glyph ID is not limited to the numGlyphs value in the &#39;maxp&#39; table.
+
 *LayerV1List table:*
 
 | Type | Field name | Description |
 |-|-|-|
 | uint8 | numLayers |  |
-| Offset32 | paintOffset[numLayers] | Offsets to Paint tables, each from the start of the LayerV1List table. |
+| Offset32 | paintOffset[numLayers] | Offsets to Paint tables, from the start of the LayerV1List table. |
 
 # Implementation
 
@@ -593,7 +601,7 @@ If compositeMode value is not recognized, COMPOSITE_CLEAR is used.
 The following provides a C++ implementation of the structures defined above.
 
 ```C++
-// Base types
+// Base template types
 
 template <typename T, typename Length=uint16>
 struct ArrayOf
@@ -608,32 +616,24 @@ template <typename T>
 struct Variable
 {
   T      value;
-  VarIdx varIdx;
+  VarIdx varIdx; // Use 0xFFFFFFFF to indicate no variation.
 };
 
-typedef Variable<Fixed> VarFixed;
+//Variation structures
 
 typedef Variable<FWORD> VarFWORD;
 
 typedef Variable<UFWORD> VarUFWORD;
 
-Typedef Variable<F2DOT14> VarF2DOT14; // [-1.0, 1.0]
+typedef Variable<Fixed> VarFixed;
 
-// Scale, rotate, translate
-struct Affine2x3
-{
-  VarFixed xx;
-  VarFixed xy;
-  VarFixed yx;
-  VarFixed yy;
-  VarFixed dx;
-  VarFixed dy;
-};
+Typedef Variable<F2DOT14> VarF2DOT14;
 
-// Building blocks
+// Color structures
 
-// The ColorIndex alpha is multiplied into the CPAL color looked up using
-// paletteIndex to produce a final color
+// The ColorIndex alpha is multiplied into the alpha of the CPAL entry
+// (converted to float -- divide by 255) looked up using paletteIndex to
+// produce a final alpha.
 struct ColorIndex
 {
   uint16     paletteIndex;
@@ -642,7 +642,7 @@ struct ColorIndex
 
 struct ColorStop
 {
-  VarF2DOT14 stopOffset;
+  VarF2DOT14 stopOffset; // Values outside [0.,1.] reserved.
   ColorIndex color;
 };
 
@@ -652,6 +652,15 @@ enum Extend : uint8
   EXTEND_REPEAT  = 1,
   EXTEND_REFLECT = 2,
 };
+
+struct ColorLine
+{
+  Extend             extend;
+  ArrayOf<ColorStop> stops;
+};
+
+
+// Composition modes
 
 // Compositing modes are taken from https://www.w3.org/TR/compositing-1/
 // NOTE: a brief audit of major implementations suggests most support most
@@ -695,14 +704,22 @@ enum CompositeMode : uint8
   COMPOSITE_HSL_LUMINOSITY = 26,  // https://www.w3.org/TR/compositing-1/#blendingluminosity
 };
 
-struct ColorLine
+// Affine 2D transformations
+
+// This is a standard 2x3 matrix for affine 2D transformations: scale, skew,
+// reflect, rotate, translate. Position vectors are an extended column matrix:
+// (x,y,1).
+struct Affine2x3
 {
-  Extend             extend;
-  ArrayOf<ColorStop> stops;
+  VarFixed xx;
+  VarFixed xy;
+  VarFixed yx;
+  VarFixed yy;
+  VarFixed dx;
+  VarFixed dy;
 };
 
-// Layer DAG
-
+// Paint tables
 
 struct PaintSolid
 {
@@ -735,11 +752,12 @@ struct PaintRadialGradient
 };
 
 // Paint a non-COLR glyph, filled as indicated by paint.
-struct PaintFilledGlyph
+struct PaintGlyph
 {
   uint8               format; // = 4
   Offset24<Paint>     paint;
-  uint16              gid;    // shall not be a COLR gid
+  uint16              gid;    // not a COLR-only gid
+                              // must be less than maxp.numGlyphs
 }
 
 struct PaintColrGlyph
@@ -759,9 +777,11 @@ struct PaintComposite
 {
   uint8               format; // = 7
   Offset24<Paint>     src;
-  CompositeMode       mode;   // If mode is unrecognized use 0 (Clear)
+  CompositeMode       mode;   // If mode is unrecognized use COMPOSITE_CLEAR
   Offset24<Paint>     backdrop;
 };
+
+// Layer DAG
 
 // Glyph root
 // NOTE: uint8 size saves bytes in most cases and does not
