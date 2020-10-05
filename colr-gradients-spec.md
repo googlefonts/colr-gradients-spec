@@ -246,9 +246,9 @@ Let the color at ω be the color at that position on the gradient color line (wi
    yet been painted on by earlier circles in this step for this rendering of the
    gradient.
 
-![Example radial gradient rendering](images/example_radial.png)
+![Example radial gradient rendering](images/radial_gradients.png)
 
-*__Figure 3:__ Example of a radial gradient rendering with extend modes pad, repeat and reflect (top to bottom) with color stops for blue at 0, yellow at 0.5 and red at 1.*
+*__Figure 3:__ Example of a radial gradient rendering with extend modes pad, repeat and reflect (top to bottom) with color stops for blue at 0, yellow at 0.5 and red at 1. (Example generated from images/radial_gradients.svg)*
 
 **Note:** Implementations must be careful to properly render radial gradient
 even if they are subject to a *[degenerate](https://en.wikipedia.org/wiki/Invertible_matrix)*
