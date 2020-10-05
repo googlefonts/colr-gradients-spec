@@ -14,27 +14,28 @@ December 2019
 - [Color Palette Variation](#color-palette-variation)
 - [High-level Design](#high-level-design)
 - [Graphical Primitives](#graphical-primitives)
-  * [Color Line](#color-line)
-    + [Extend Mode](#extend-mode)
-      - [Extend Pad](#extend-pad)
-      - [Extend Repeat](#extend-repeat)
-      - [Extend Reflect](#extend-reflect)
-  * [Linear Gradients](#linear-gradients)
-  * [Radial Gradients](#radial-gradients)
+    - [Color Line](#color-line)
+        - [Extend Mode](#extend-mode)
+            - [Extend Pad](#extend-pad)
+            - [Extend Repeat](#extend-repeat)
+            - [Extend Reflect](#extend-reflect)
+    - [Linear Gradients](#linear-gradients)
+    - [Radial Gradients](#radial-gradients)
+- [Constraints](#constraints)
+    - [Acyclic Graphs Only](#acyclic-graphs-only)
+    - [Bounded Layers Only](#bounded-layers-only)
+    - [Bounding Box](#bounding-box)
 - [Understanding the format](#understanding-the-format)
-   - [Alpha](#alpha)
-   - [Reusable Parts](#reusable-parts)
-   - [Acyclic Graphs Only](#acyclic-graphs-only)
-   - [Bounded Layers Only](#bounded-layers-only)
-   - [Bounding Box](#bounding-box)
+    - [Alpha](#alpha)
+    - [Reusable Parts](#reusable-parts)
 - [Structure of gradient COLR v1 extensions](#structure-of-gradient-colr-v1-extensions)
 - [Implementation](#implementation)
-  * [Font Tooling](#font-tooling)
-  * [Rendering](#rendering)
-    + [Pseudocode](#pseudocode)
-    + [FreeType](#freetype)
-    + [Chromium](#chromium)
-  * [HarfBuzz](#harfbuzz)
+    - [Font Tooling](#font-tooling)
+    - [Rendering](#rendering)
+        - [Pseudocode](#pseudocode)
+        - [FreeType](#freetype)
+        - [Chromium](#chromium)
+    - [HarfBuzz](#harfbuzz)
 - [Acknowledgements](#acknowledgements)
 
 
@@ -262,36 +263,7 @@ even if they are subject to a *[degenerate](https://en.wikipedia.org/wiki/Invert
 or *near-degenerate* transform. Such radial gradients do have a well-defined shape, which is
 a strip or a cone filled with a linear gradient.
 
-# Understanding the format
-
-## Alpha
-
-The alpha channel for a layer can be populated using `PaintComposite`:
-
-- `PaintSolid` can be used to set a blanket alpha
-- `PaindLinearGradient` and `PaintRadialGradient` can be used to set gradient alpha
-- Mode [Source In](https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_srcin) can be used to mask
-
-## Reusable Parts
-
-Use `PaintTransformed` to reuse parts in different positions or sizes.
-
-Use `PaintColrGlyph` to reuse entire COLR glyphs.
-
-For example, consider the Noto clock emoji (hand colored for emphasis):
-
-![Noto 1pm](images/clock-1.svg)
-![Noto 2pm](images/clock-2.svg)
-
-The entire backdrop (outline, gradient-circle, 4 dots, the minute
-hand) is reusable for all versions of the clock:
-
-![Noto 2pm](images/clock-common.svg)
-
-The hour hand is reusable as a transformed glyph.
-
-Another example might be emoji faces: many have the same backdrop
-with different eyes, noses, tears, etc drawn on top.
+# Constraints
 
 ## Acyclic Graphs Only
 
@@ -345,6 +317,38 @@ Note: A `glyf` entry with two points at the diagonal extrema would suffice.
 
 Note: This can be used to allocate a drawing surface without traversing
 the COLR v1 glyph structure.
+
+
+# Understanding the format
+
+## Alpha
+
+The alpha channel for a layer can be populated using `PaintComposite`:
+
+- `PaintSolid` can be used to set a blanket alpha
+- `PaindLinearGradient` and `PaintRadialGradient` can be used to set gradient alpha
+- Mode [Source In](https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_srcin) can be used to mask
+
+## Reusable Parts
+
+Use `PaintTransformed` to reuse parts in different positions or sizes.
+
+Use `PaintColrGlyph` to reuse entire COLR glyphs.
+
+For example, consider the Noto clock emoji (hand colored for emphasis):
+
+![Noto 1pm](images/clock-1.svg)
+![Noto 2pm](images/clock-2.svg)
+
+The entire backdrop (outline, gradient-circle, 4 dots, the minute
+hand) is reusable for all versions of the clock:
+
+![Noto 2pm](images/clock-common.svg)
+
+The hour hand is reusable as a transformed glyph.
+
+Another example might be emoji faces: many have the same backdrop
+with different eyes, noses, tears, etc drawn on top.
 
 # Structure of gradient COLR v1 extensions
 
