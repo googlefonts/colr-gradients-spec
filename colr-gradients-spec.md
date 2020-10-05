@@ -426,8 +426,6 @@ The ColorIndex alpha is multiplied into the alpha of the CPAL entry (converted t
 | VarF2Dot14 | stopOffset | Proportional distance on a color line; variable. |
 | ColorIndex | color | |
 
-Values for stopOffset outside [0.,1.] are reserved.
-
 ### ColorLine table
 
 | Type | Name | Description |
