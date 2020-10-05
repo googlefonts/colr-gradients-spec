@@ -358,7 +358,7 @@ Offsets are always relative to the start of the containing struct.
 
 To indicate no variation, set varOuterIndex and varInnerIndex to 0xFFFF.
 
-*VarFWord record:*
+### VarFWord record
 
 | Type | Name | Description |
 |-|-|-|
@@ -366,7 +366,7 @@ To indicate no variation, set varOuterIndex and varInnerIndex to 0xFFFF.
 | uint16 | varOuterIndex | |
 | uint16 | varInnerIndex | |
 
-*VarUFWord record:*
+### VarUFWord record
 
 | Type | Name | Description |
 |-|-|-|
@@ -374,7 +374,7 @@ To indicate no variation, set varOuterIndex and varInnerIndex to 0xFFFF.
 | uint16 | varOuterIndex | |
 | uint16 | varInnerIndex | |
 
-*VarFixed record:*
+### VarFixed record
 
 | Type | Name | Description |
 |-|-|-|
@@ -384,7 +384,7 @@ To indicate no variation, set varOuterIndex and varInnerIndex to 0xFFFF.
 
 *Note:* In order to combine deltas with Fixed values, the ItemVariationStore format is extended to allow for int32 deltas. When combining a Fixed value with 32-bit deltas, the Fixed value is treated as though it were int32.
 
-*VarF2Dot14 record:*
+### VarF2Dot14 record
 
 | Type | Name | Description |
 |-|-|-|
@@ -398,7 +398,7 @@ Values are inherently limited to [-2., 2). In some contexts, limited to the [-1.
 
 ## Color structures
 
-*Extend enumeration:*
+### Extend enumeration
 
 | Value | Name | Description |
 |-|-|-|
@@ -408,7 +408,7 @@ Values are inherently limited to [-2., 2). In some contexts, limited to the [-1.
 
 If a ColorLine.extend value is not recognized, use EXTEND_PAD.
 
-*ColorIndex record:*
+### ColorIndex record
 
 | Type | Name | Description |
 |-|-|-|
@@ -419,7 +419,7 @@ Values for alpha outside [0.,1.] are reserved.
 
 The ColorIndex alpha is multiplied into the alpha of the CPAL entry (converted to float -- divide by 255) to produce a final alpha.
 
-*ColorStop record:*
+### ColorStop record
 
 | Type | Name | Description |
 |-|-|-|
@@ -428,7 +428,7 @@ The ColorIndex alpha is multiplied into the alpha of the CPAL entry (converted t
 
 Values for stopOffset outside [0.,1.] are reserved.
 
-*ColorLine table:*
+### ColorLine table
 
 | Type | Name | Description |
 |-|-|-|
@@ -440,7 +440,7 @@ Values for stopOffset outside [0.,1.] are reserved.
 
 Supported composition modes are taken from the W3C [Compositing and Blending Level 1][1] specification.
 
-*CompositeMode enumeration:*
+### CompositeMode enumeration
 
 | Value | Name | Description |
 |-|-|-|
@@ -475,7 +475,7 @@ Supported composition modes are taken from the W3C [Compositing and Blending Lev
 | 25 | COMPOSITE_HSL_COLOR | See [color blend mode][27] |
 | 26 | COMPOSITE_HSL_LUMINOSITY | See [luminosity blend mode][28] |
 
-*Affine2x3 record:*
+### Affine2x3 record
 
 | Type | Name | Description |
 |-|-|-|
@@ -490,14 +490,14 @@ This is a standard 2x3 matrix for 2D affine transformation.
 
 ## Paint tables
 
-*PaintSolid table (format 1):*
+### PaintSolid table (format 1)
 
 | Type | Field name | Description |
 |-|-|-|
 | uint8 | format | Set to 1. |
 | ColorIndex | color | Solid color fill. |
 
-*PaintLinearGradient table (format 2):*
+### PaintLinearGradient table (format 2)
 
 | Type | Field name | Description |
 |-|-|-|
@@ -512,7 +512,7 @@ This is a standard 2x3 matrix for 2D affine transformation.
 
 For linear gradient without skew, set x2,y2 to x1,y1.
 
-*PaintRadialGradient table (format 3):*
+### PaintRadialGradient table (format 3)
 
 |Type | Field name | Description |
 |-|-|-|
@@ -527,7 +527,7 @@ For linear gradient without skew, set x2,y2 to x1,y1.
 
 Defines a class of gradients that are a functional superset of a radial gradient: color gradation along a conic cylinder defined by two circles.
 
-*PaintGlyph table (format 4):*
+### PaintGlyph table (format 4)
 
 | Type | Field name | Description |
 |-|-|-|
@@ -537,7 +537,7 @@ Defines a class of gradients that are a functional superset of a radial gradient
 
 Glyph outline is used as clip mask for the content in the Paint subtable. Glyph ID must be less than the numGlyphs value in the &#39;maxp&#39; table.
 
-*PaintColrGlyph table (format 5):*
+### PaintColrGlyph table (format 5)
 
 | Type | Field name | Description |
 |-|-|-|
@@ -546,7 +546,7 @@ Glyph outline is used as clip mask for the content in the Paint subtable. Glyph 
 
 Glyph ID must be in the BaseGlyphV1List; may be greater than maxp.numGlyphs.
 
-*PaintTransformed table (format 6):*
+### PaintTransformed table (format 6)
 
 | Type | Field name | Description |
 |-|-|-|
@@ -554,7 +554,7 @@ Glyph ID must be in the BaseGlyphV1List; may be greater than maxp.numGlyphs.
 | Offset24 | paintOffset | Offset to a Paint subtable, from start of PaintTransformed table. |
 | Affine2x3 | transform | An Affine2x3 record (inline). |
 
-*PaintComposite table (format 7):*
+### PaintComposite table (format 7)
 
 | Type | Field name | Description |
 |-|-|-|
@@ -567,7 +567,7 @@ If compositeMode value is not recognized, COMPOSITE_CLEAR is used.
 
 ## COLR version 1, BaseGlyphV1List and LayerV1List
 
-*COLR version 1:*
+### COLR version 1
 
 | Type | Field name | Description |
 |-|-|-|
@@ -579,14 +579,14 @@ If compositeMode value is not recognized, COMPOSITE_CLEAR is used.
 | Offset32 | baseGlyphV1ListOffset | Offset to BaseGlyphV1List table. |
 | Offset32 | itemVariationStoreOffset | Offset to ItemVariationStore (may be NULL). |
 
-*BaseGlyphV1List table:*
+### BaseGlyphV1List table
 
 | Type | Name | Description |
 |-|-|-|
 | uint32 | numBaseGlyphV1Records |  |
 | BaseGlyphV1Record | baseGlyphV1Records[numBaseGlyphV1Records] | |
 
-*BaseGlyphV1Record:*
+### BaseGlyphV1Record
 
 | Type | Name | Description |
 |-|-|-|
@@ -595,7 +595,7 @@ If compositeMode value is not recognized, COMPOSITE_CLEAR is used.
 
 *Note:* The glyph ID is not limited to the numGlyphs value in the &#39;maxp&#39; table.
 
-*LayerV1List table:*
+### LayerV1List table
 
 | Type | Field name | Description |
 |-|-|-|
