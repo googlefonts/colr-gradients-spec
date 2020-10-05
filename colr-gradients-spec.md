@@ -307,7 +307,6 @@ The following paints *may* be bounded:
    - Bounded IFF src AND backdrop are bounded
       - *all other modes*
 
-
 ## Bounding Box
 
 The bounding box of the base (non-COLR) glyph referenced from the
