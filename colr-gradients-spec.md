@@ -398,6 +398,16 @@ Values are inherently limited to [-2., 2). In some contexts, limited to the [-1.
 
 ## Color structures
 
+*Extend enumeration:*
+
+| Value | Name | Description |
+|-|-|-|
+| 0 | EXTEND_PAD     | Use nearest color stop. |
+| 1 | EXTEND_REPEAT  | Repeat from farthest color stop. |
+| 2 | EXTEND_REFLECT | Mirror color line from nearest end. |
+
+If a ColorLine.extend value is not recognized, use EXTEND_PAD.
+
 *ColorIndex record:*
 
 | Type | Name | Description |
@@ -425,16 +435,6 @@ Values for stopOffset outside [0.,1.] are reserved.
 | uint8 | extend | An Extend enum value. |
 | uint16 | numStops | Number of ColorStop records. |
 | ColorStop | colorStops[numStops] | |
-
-*Extend enumeration:*
-
-| Value | Name | Description |
-|-|-|-|
-| 0 | EXTEND_PAD     | Use nearest color stop. |
-| 1 | EXTEND_REPEAT  | Repeat from farthest color stop. |
-| 2 | EXTEND_REFLECT | Mirror color line from nearest end. |
-
-If a ColorLine.extend value is not recognized, use EXTEND_PAD.
 
 ## Composition modes and affine transformations
 
@@ -486,7 +486,7 @@ Supported composition modes are taken from the W3C [Compositing and Blending Lev
 | VarFixed | dx | Translation in x direction. |
 | VarFixed | dy | Translation in y direction. |
 
-This is a standard 2x3 matrix for affine 2D transformations: scale, skew, reflect, rotate, translate. Position vectors are an extended column matrix: (x,y,1).
+This is a standard 2x3 matrix for 2D affine transformation.
 
 ## Paint tables
 
@@ -602,6 +602,8 @@ If compositeMode value is not recognized, COMPOSITE_CLEAR is used.
 | uint8 | numLayers |  |
 | Offset32 | paintOffset[numLayers] | Offsets to Paint tables, from the start of the LayerV1List table. |
 
+*Note:* For large layer counts PaintComposite can be used to combine multiple COLR v1 glyphs.
+
 # Implementation
 
 ## C++ Structures
@@ -627,7 +629,7 @@ struct Variable
   VarIdx varIdx; // Use 0xFFFFFFFF to indicate no variation.
 };
 
-//Variation structures
+// Variation structures
 
 typedef Variable<FWORD> VarFWORD;
 
@@ -635,7 +637,7 @@ typedef Variable<UFWORD> VarUFWORD;
 
 typedef Variable<Fixed> VarFixed;
 
-Typedef Variable<F2DOT14> VarF2DOT14;
+typedef Variable<F2DOT14> VarF2DOT14;
 
 // Color structures
 
@@ -714,9 +716,7 @@ enum CompositeMode : uint8
 
 // Affine 2D transformations
 
-// This is a standard 2x3 matrix for affine 2D transformations: scale, skew,
-// reflect, rotate, translate. Position vectors are an extended column matrix:
-// (x,y,1).
+// This is a standard 2x3 matrix for 2D affine transformation.
 struct Affine2x3
 {
   VarFixed xx;
