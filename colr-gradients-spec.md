@@ -460,8 +460,8 @@ struct ColorLine
 
 struct PaintSolid
 {
-  uint8  format; // = 1
-  Color  color;
+  uint8      format; // = 1
+  ColorIndex color;
 };
 
 struct PaintLinearGradient
