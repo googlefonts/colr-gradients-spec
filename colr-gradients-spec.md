@@ -190,7 +190,7 @@ defined color stop value, it maps to the rightmost defined color value.
 
 #### Extend Repeat
 
-For numbers outside outside the interval, the color line continues to map as if
+For numbers outside the interval, the color line continues to map as if
 the defined interval was repeated.
 
 #### Extend Reflect
@@ -209,9 +209,13 @@ If the dot-product (P₁ - P₀) . (P₂ - P₀) is zero (or near-zero for an
 implementation-defined definition) then gradient is ill-formed and nothing must
 be rendered.
 
-![Defining points for linear gradients](images/linear_defining_points.png)
+![Defining points for linear gradients](images/linear_gradients.png)
 
-*__Figure 2:__ Linear gradient defining points*
+*__Figure 2:__ Examples of linear gradients and their defining points with
+extend modes pad, repeat and reflect (top to bottom) with color stops for blue
+at 0, yellow at 0.5 and red at 1. (Illustration generated from <a
+href="images/linear_gradients.html">images/radial_gradients.svg</a>, requires
+glMatrix.js to work)*
 
 ## Radial Gradients
 
@@ -246,12 +250,12 @@ Let the color at ω be the color at that position on the gradient color line (wi
    yet been painted on by earlier circles in this step for this rendering of the
    gradient.
 
-![Example radial gradient rendering](images/example_radial.png)
+![Example radial gradient rendering](images/radial_gradients.png)
 
-***Figure 3:** Example of a radial gradient rendering.*
-
-**TODO:** Add illustration of center points, radii, etc. similar to the radial
-one.
+*__Figure 3:__ Example of a radial gradient rendering with extend modes pad,
+repeat and reflect (top to bottom) with color stops for blue at 0, yellow at 0.5
+and red at 1. (Illustration generated from <a
+href="images/radial_gradients.svg">images/radial_gradients.svg</a>)*
 
 **Note:** Implementations must be careful to properly render radial gradient
 even if they are subject to a *[degenerate](https://en.wikipedia.org/wiki/Invertible_matrix)*
