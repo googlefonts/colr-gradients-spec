@@ -89,7 +89,7 @@ are defined:
 1. **Solid** paints a solid color
 1. **Linear gradient** paints a linear gradient
 1. **Radial gradient** paints a radial gradient
-1. **Filled Glyph** draws a non-COLR glyph
+1. **Glyph** draws a non-COLR glyph filled by some other paint
    * A COLR v1 glyph made up of a list of Glyph paints is equivalent to a COLR v0 Layer Record with the added ability to use gradients.
 1. **COLR Glyph** reuses a COLR v1 glyph at a new position in the graph
 1. **Transformed** reuses another paint, applying an affine transformation
@@ -280,7 +280,7 @@ not render.
 
 The following paints are always bounded:
 
-- `PaintFilledGlyph`
+- `PaintGlyph`
 - `PaintColrGlyph`
 
 The following paints are always unbounded:
@@ -834,7 +834,7 @@ font formats, including COLR v1.
 Allocate a bitmap for the glyph according to glyf table entry extents for gid
 0) Traverse layers for gid, add current gid to blacklist *1
  a) Paint a paint, switch:
-    1) PaintFilledGlyph
+    1) PaintGlyph
          gid must not COLRv1
          saveLayer
          setClipPath to gid path
