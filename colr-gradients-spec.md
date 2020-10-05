@@ -190,7 +190,7 @@ defined color stop value, it maps to the rightmost defined color value.
 
 #### Extend Repeat
 
-For numbers outside outside the interval, the color line continues to map as if
+For numbers outside the interval, the color line continues to map as if
 the defined interval was repeated.
 
 #### Extend Reflect
