@@ -330,7 +330,7 @@ One new data type is proposed:
 
 | Data Type | Description |
 |-|-|
-| Offset24 | 24-bit offset to a table, same as uin24. NULL offset= 0x0000 |
+| Offset24 | 24-bit offset to a table, same as uint24. NULL offset= 0x0000 |
 
 
 ## OFF 5.7.11 COLR – Color Table
