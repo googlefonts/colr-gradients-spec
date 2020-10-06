@@ -10,31 +10,40 @@ December 2019
 ## Table of Contents
 
 - [Introduction](#introduction)
-- [Backwards Compatibility](#backwards-compatibility)
-- [Color Palette Variation](#color-palette-variation)
-- [High-level Design](#high-level-design)
-- [Graphical Primitives / Paints](#graphical-primitives--paints)
-    - [Filled Glyph](#filled-glyph)
-    - [Solid Color and Gradient Paints](#solid-color-and-gradient-paints)
-        - [Solid](#solid)
-        - [Color Line](#color-line)
-        - [Extend Mode](#extend-mode)
-            - [Extend Pad](#extend-pad)
-            - [Extend Repeat](#extend-repeat)
-            - [Extend Reflect](#extend-reflect)
-        - [Linear Gradient](#linear-gradient)
-        - [Radial Gradient](#radial-gradient)
-    - [Transformation](#transformation)
-    - [Composition](#composition)
-    - [COLR Glyph](#colr-glyph)
-- [Constraints](#constraints)
-    - [Acyclic Graphs Only](#acyclic-graphs-only)
-    - [Bounded Layers Only](#bounded-layers-only)
-    - [Bounding Box](#bounding-box)
-- [Understanding the format](#understanding-the-format)
-    - [Alpha](#alpha)
-    - [Reusable Parts](#reusable-parts)
-- [Structure of gradient COLR v1 extensions](#structure-of-gradient-colr-v1-extensions)
+    - [High-level Design](#high-level-design)
+    - [Backwards Compatibility](#backwards-compatibility)
+    - [Graphical Primitives / Paints](#graphical-primitives--paints)
+        - [Filled Glyph](#filled-glyph)
+        - [Solid Color and Gradient Paints](#solid-color-and-gradient-paints)
+            - [Solid](#solid)
+            - [Color Line](#color-line)
+            - [Extend Mode](#extend-mode)
+                - [Extend Pad](#extend-pad)
+                - [Extend Repeat](#extend-repeat)
+                - [Extend Reflect](#extend-reflect)
+            - [Linear Gradient](#linear-gradient)
+            - [Radial Gradient](#radial-gradient)
+        - [Transformation](#transformation)
+        - [Composition](#composition)
+        - [COLR Glyph](#colr-glyph)
+- [OFF Changes](#off-changes)
+    - [Normative References](#off-2-normative-references)
+    - [Data types](#off-43-data-types)
+    - [COLR table](off-5711-colr--color-table)
+        - [Constraints](#constraints)
+            - [Acyclic Graphs Only](#acyclic-graphs-only)
+            - [Bounded Layers Only](#bounded-layers-only)
+            - [Bounding Box](#bounding-box)
+        - [Understanding COLR v1](#understanding-colr-v1)
+            - [Alpha](#alpha)
+            - [Reusable Parts](#reusable-parts)
+        - [Data structures](##colr-v1-data-structures)
+            - [Header, glyphs, and layers](#header-glyphs-layers)
+            - [Variation structures](#variation-structures)
+            - [Color structures](#color-structures)
+            - [Paint structures](#paint-structures)
+            - [Composite modes](#composite-modes)
+            - [Transform](#transform)
 - [Implementation](#implementation)
     - [Font Tooling](#font-tooling)
     - [Rendering](#rendering)
@@ -45,45 +54,21 @@ December 2019
 - [References](#references)
 - [Acknowledgements](#acknowledgements)
 
-
 # Introduction
 
-We’re proposing a format extension to the
-[COLR](https://docs.microsoft.com/en-us/typography/opentype/spec/COLR) table to
-allow gradient fills in addition to the existing solid color fills defined for
-COLR. Current version number of COLR table is 0.  We propose this as COLR table
-format version 1.  Older proposal and discussion [are
-here](https://docs.google.com/document/d/1--J9CubVEIC1Pe9r7Nri6MNtZM0I92MjrYOCdJZteEI/edit).
-This version addresses all issues raised with, and supersedes, the older
-proposal.
+**The Introduction section is expected be converted into specific OFF section edits
+later in the specification process**
+
+We propose extension of the COLR table to allow gradient fills in addition to
+the existing solid color fills. The current version number of COLR table is 0.
+We propose this as COLR table format version 1.
 
 It is our understanding that this brings the capabilities of COLR/CPAL to match
 those of SVG Native for vector graphics.  SVG Native allows embedding PNG and
 JPEG images while this proposal does not.  We like to explore in the future, how
 COLR/CPAL can be mixed with sbix to address that limitation as well.
 
-# Backwards Compatibility
-
-The proposed design allows full backwards compatibility. This means, that a font
-designed for COLR format v1 specification, can contain sufficient information to
-be readable by a layout and rasterization engine that understands the v0 format.
-This is possible because the format version of the COLR table is a short format,
-as such considered a "minor", not a “major” version number.
-
-If table format v1 is chosen, additional data will be read which specifies the
-additional information for gradients.  All backward-compatibility concerns from
-the earlier proposal are addressed in this version.
-
-# Color Palette Variation
-
-Allowing palette colors in
-[CPAL](https://docs.microsoft.com/en-us/typography/opentype/spec/CPAL) to change
-by variations is desired.  However, this needs more thought.  Colors expressed
-in sRGB r/g/b channels *cannot* be easily interpolated.  Another solution is
-needed, perhaps involving transforming to a linear color space and back.  To be
-pursued separately.
-
-# High-level Design
+## High-level Design
 
 The COLR table is extended to expose a new vector of layers per glyph.  If a
 glyph is not found in the new vector, the client will try finding it in the COLR
@@ -121,8 +106,18 @@ translucent shades of the same color would need to be encoded separately in
 the color palette, which is undesirable since color palette entries are designed
 to be exposed to end-users.
 
-All values expressed are *variable* by way of OpenType 1.8 Font Variations
-mechanisms.
+All values expressed are *variable* by way of OFF Font Variations.
+
+## Backwards Compatibility
+
+The proposed design allows full backwards compatibility. This means, that a font
+designed for COLR format v1 specification, can contain sufficient information to
+be readable by a layout and rasterization engine that understands the v0 format.
+This is possible because the format version of the COLR table is a short format,
+as such considered a "minor", not a “major” version number.
+
+If table format v1 is chosen, additional data will be read which specifies the
+additional information for gradients.
 
 # Graphical Primitives / Paints
 
@@ -153,8 +148,8 @@ palette, and applies alpha value `alpha` when drawing.
 
 A color line is a function that maps real numbers to a color value to define a
 1-dimensional gradient, to be used and referenced from [Linear
-Gradients](#heading=h.696rgjwvuoq9) and [Radial
-Gradients](#heading=h.2iel67nie7a). Colors of the gradient are defined by *color
+Gradients](#linear-gradients) and [Radial
+Gradients](#radial-gradients). Colors of the gradient are defined by *color
 stops*.
 
 Color stops are defined at color stop positions. Color stop position 0 maps to
@@ -207,24 +202,24 @@ In order to achieve:
 ***Figure 1:** Repeating linear and radial gradients
 ([source](https://cssnewbie.com/apply-cool-linear-and-radial-gradients-using-css/))*
 
-### Extend Mode
+#### Extend Mode
 
 We propose three extend modes to control the behavior of the gradient outside
 its specified endpoints:
 
-#### Extend Pad
+##### Extend Pad
 
 For numbers outside the defined interval the color line continues to map to the
 outer color values, i.e. for values less than the leftmost defined color stop,
 it maps to the leftmost color stop value; for values greater than the rightmost
 defined color stop value, it maps to the rightmost defined color value.
 
-#### Extend Repeat
+##### Extend Repeat
 
 For numbers outside the interval, the color line continues to map as if
 the defined interval was repeated.
 
-#### Extend Reflect
+##### Extend Reflect
 
 For numbers outside the defined interval, the color continues to map as if the
 interval would continue mirrored from the previous interval. This allows
@@ -319,16 +314,48 @@ paint operations that are described by the `BaseGlyphV1Record` matching the
 glyph id `gid` specified in `PaintColorGlyph`. See section [Reusable
 Parts](#reusable-parts).
 
-# Constraints
+# OFF Changes
 
-## Acyclic Graphs Only
+We're proposing changes to the following sections of ISO/IEC 14496-22:2019 “OFF”:
+
+1. 2 Normative references
+1. 4.3 Data types
+1. 5.7.11 COLR – Color Table
+
+An overview of the design is provided, followed by the suggested specific changes.
+
+# OFF 2 Normative references
+
+Add a normative reference to https://www.w3.org/TR/compositing-1/.
+
+# OFF 4.3 Data types
+
+One new data type is proposed:
+
+| Data Type | Description |
+|-|-|
+| Offset24 | 24-bit offset to a table, same as uin24. NULL offset= 0x0000 |
+
+
+# OFF 5.7.11 COLR – Color Table
+
+The current header should be noted as *COLR version 0 header*.
+
+A new section for *COLR version 1 header* should be added:
+
+## Constraints
+
+Constraints on the data structures making up a COLR version 1 should
+be noted.
+
+### Acyclic Graphs Only
 
 `PaintColrGlyph` allows recursive composition of COLR glyphs. This
 is desirable for reusable parts but introduces the possibility of
 a cyclic graph. Implementations should track the COLR gids they have
 seen in processing and fail if a gid is reached repeatedly.
 
-## Bounded Layers Only
+### Bounded Layers Only
 
 Every entry in the `LayerV1List` must define a bounded region.
 Implementations must confirm this invariant. Unbounded layers must
@@ -363,7 +390,7 @@ The following paints *may* be bounded:
    - Bounded IFF src AND backdrop are bounded
       - *all other modes*
 
-## Bounding Box
+### Bounding Box
 
 The bounding box of the base (non-COLR) glyph referenced from the
 `BaseGlyphV1Record` (by `BaseGlyphV1Record::gid`) should be taken
@@ -375,9 +402,12 @@ Note: This can be used to allocate a drawing surface without traversing
 the COLR v1 glyph structure.
 
 
-# Understanding the format
+## Understanding COLR v1
 
-## Alpha
+Addition of explanatory content explaining how COLR version 1 functions
+should be added.
+
+### Alpha
 
 The alpha channel for a layer can be populated using `PaintComposite`:
 
@@ -385,7 +415,7 @@ The alpha channel for a layer can be populated using `PaintComposite`:
 - `PaindLinearGradient` and `PaintRadialGradient` can be used to set gradient alpha
 - Mode [Source In](https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_srcin) can be used to mask
 
-## Reusable Parts
+### Reusable Parts
 
 Use `PaintTransformed` to reuse parts in different positions or sizes.
 
@@ -406,11 +436,55 @@ The hour hand is reusable as a transformed glyph.
 Another example might be emoji faces: many have the same backdrop
 with different eyes, noses, tears, etc drawn on top.
 
-# Structure of gradient COLR v1 extensions
+# COLR v1 data structures
+
+This section describes new and modified tables and records for COLR v1.
 
 Offsets are always relative to the start of the containing struct.
 
+## Header, glyphs, layers
+
+### V1 Header
+
+| Type | Field name | Description |
+|-|-|-|
+| uint16 | version | Table version number—set to 1. |
+| uint16 | numBaseGlyphRecords | May be 0 in a version 1 table. |
+| Offset32 | baseGlyphRecordsOffset | Offset to baseGlyphRecords array (may be NULL). |
+| Offset32 | layerRecordsOffset | Offset to layerRecords array (may be NULL). |
+| uint16 | numLayerRecords | May be 0 in a version 1 table. |
+| Offset32 | baseGlyphV1ListOffset | Offset to BaseGlyphV1List table. |
+| Offset32 | itemVariationStoreOffset | Offset to ItemVariationStore (may be NULL). |
+
+### BaseGlyphV1List table
+
+| Type | Name | Description |
+|-|-|-|
+| uint32 | numBaseGlyphV1Records |  |
+| BaseGlyphV1Record | baseGlyphV1Records[numBaseGlyphV1Records] | |
+
+### BaseGlyphV1Record
+
+| Type | Name | Description |
+|-|-|-|
+| uint16 | glyphID | Glyph ID of the base glyph. |
+| Offset32 | layerListOffset | Offset to LayerV1List table, from start of BaseGlyphsV1List table. |
+
+*Note:* The glyph ID is not limited to the numGlyphs value in the &#39;maxp&#39; table.
+
+### LayerV1List table
+
+| Type | Field name | Description |
+|-|-|-|
+| uint8 | numLayers |  |
+| Offset32 | paintOffset[numLayers] | Offsets to Paint tables, from the start of the LayerV1List table. |
+
+*Note:* For large layer counts PaintComposite can be used to combine multiple COLR v1 glyphs.
+
 ## Variation structures
+
+The following records are defined to facilitate COLR v1 font variation
+support.
 
 To indicate no variation, set varOuterIndex and varInnerIndex to 0xFFFF.
 
@@ -438,7 +512,9 @@ To indicate no variation, set varOuterIndex and varInnerIndex to 0xFFFF.
 | uint16 | varOuterIndex | |
 | uint16 | varInnerIndex | |
 
-*Note:* In order to combine deltas with Fixed values, the ItemVariationStore format is extended to allow for int32 deltas. When combining a Fixed value with 32-bit deltas, the Fixed value is treated as though it were int32.
+*Note:* In order to combine deltas with Fixed values, the ItemVariationStore format is
+extended to allow for int32 deltas. When combining a Fixed value with 32-bit deltas,
+the Fixed value is treated as though it were int32.
 
 ### VarF2Dot14 record
 
@@ -490,59 +566,7 @@ The ColorIndex alpha is multiplied into the alpha of the CPAL entry (converted t
 | uint16 | numStops | Number of ColorStop records. |
 | ColorStop | colorStops[numStops] | |
 
-## Composition modes and affine transformations
-
-Supported composition modes are taken from the W3C [Compositing and Blending Level 1][1] specification.
-
-### CompositeMode enumeration
-
-| Value | Name | Description |
-|-|-|-|
-| | *Porter-Duff modes* | |
-| 0 | COMPOSITE_CLEAR | See [Clear][2] |
-| 1 | COMPOSITE_SRC | See [Copy][3] |
-| 2 | COMPOSITE_DEST | See [Destination][4] |
-| 3 | COMPOSITE_SRC_OVER | See [Source Over][5] |
-| 4 | COMPOSITE_DEST_OVER | See [Destination Over][6] |
-| 5 | COMPOSITE_SRC_IN | See [Source In][7] |
-| 6 | COMPOSITE_DEST_IN | See [Destination In][8] |
-| 7 | COMPOSITE_SRC_OUT | See [Source Out][9] |
-| 8 | COMPOSITE_DEST_OUT | See [Destination Out][10] |
-| 9 | COMPOSITE_SRC_ATOP | See [Source Atop][11] |
-| 10 | COMPOSITE_DEST_ATOP | See [Destination Atop][12] |
-| 11 | COMPOSITE_XOR | See [XOR][13] |
-| | *Separable color blend modes:* | |
-| 12 | COMPOSITE_SCREEN | See [screen blend mode][14] |
-| 13 | COMPOSITE_OVERLAY | See [overlay blend mode][15] |
-| 14 | COMPOSITE_DARKEN | See [darken blend mode][16] |
-| 15 | COMPOSITE_LIGHTEN | See [lighten blend mode][17] |
-| 16 | COMPOSITE_COLOR_DODGE | See [color-dodge blend mode][18] |
-| 17 | COMPOSITE_COLOR_BURN | See [color-burn blend mode][19] |
-| 18 | COMPOSITE_HARD_LIGHT | See [hard-light blend mode][20] |
-| 19 | COMPOSITE_SOFT_LIGHT | See [soft-light blend mode][21] |
-| 20 | COMPOSITE_DIFFERENCE | See [difference blend mode][22] |
-| 21 | COMPOSITE_EXCLUSION | See [exclusion blend mode][23] |
-| 22 | COMPOSITE_MULTIPLY | See [multiply blend mode][24] |
-| | *Non-separable color blend modes:* | |
-| 23 | COMPOSITE_HSL_HUE | See [hue blend mode][25] |
-| 24 | COMPOSITE_HSL_SATURATION | See [saturation blend mode][26] |
-| 25 | COMPOSITE_HSL_COLOR | See [color blend mode][27] |
-| 26 | COMPOSITE_HSL_LUMINOSITY | See [luminosity blend mode][28] |
-
-### Affine2x3 record
-
-| Type | Name | Description |
-|-|-|-|
-| VarFixed | xx | |
-| VarFixed | xy | |
-| VarFixed | yx | |
-| VarFixed | yy | |
-| VarFixed | dx | Translation in x direction. |
-| VarFixed | dy | Translation in y direction. |
-
-This is a standard 2x3 matrix for 2D affine transformation.
-
-## Paint tables
+## Paint structures
 
 ### PaintSolid table (format 1)
 
@@ -619,44 +643,59 @@ Glyph ID must be in the BaseGlyphV1List; may be greater than maxp.numGlyphs.
 
 If compositeMode value is not recognized, COMPOSITE_CLEAR is used.
 
-## COLR version 1, BaseGlyphV1List and LayerV1List
+## Composite modes
 
-### COLR version 1
+Supported composition modes are taken from the W3C [Compositing and Blending Level 1][1] specification.
 
-| Type | Field name | Description |
+### CompositeMode enumeration
+
+| Value | Name | Description |
 |-|-|-|
-| uint16 | version | Table version number—set to 1. |
-| uint16 | numBaseGlyphRecords | May be 0 in a version 1 table. |
-| Offset32 | baseGlyphRecordsOffset | Offset to baseGlyphRecords array (may be NULL). |
-| Offset32 | layerRecordsOffset | Offset to layerRecords array (may be NULL). |
-| uint16 | numLayerRecords | May be 0 in a version 1 table. |
-| Offset32 | baseGlyphV1ListOffset | Offset to BaseGlyphV1List table. |
-| Offset32 | itemVariationStoreOffset | Offset to ItemVariationStore (may be NULL). |
+| | *Porter-Duff modes* | |
+| 0 | COMPOSITE_CLEAR | See [Clear][2] |
+| 1 | COMPOSITE_SRC | See [Copy][3] |
+| 2 | COMPOSITE_DEST | See [Destination][4] |
+| 3 | COMPOSITE_SRC_OVER | See [Source Over][5] |
+| 4 | COMPOSITE_DEST_OVER | See [Destination Over][6] |
+| 5 | COMPOSITE_SRC_IN | See [Source In][7] |
+| 6 | COMPOSITE_DEST_IN | See [Destination In][8] |
+| 7 | COMPOSITE_SRC_OUT | See [Source Out][9] |
+| 8 | COMPOSITE_DEST_OUT | See [Destination Out][10] |
+| 9 | COMPOSITE_SRC_ATOP | See [Source Atop][11] |
+| 10 | COMPOSITE_DEST_ATOP | See [Destination Atop][12] |
+| 11 | COMPOSITE_XOR | See [XOR][13] |
+| | *Separable color blend modes:* | |
+| 12 | COMPOSITE_SCREEN | See [screen blend mode][14] |
+| 13 | COMPOSITE_OVERLAY | See [overlay blend mode][15] |
+| 14 | COMPOSITE_DARKEN | See [darken blend mode][16] |
+| 15 | COMPOSITE_LIGHTEN | See [lighten blend mode][17] |
+| 16 | COMPOSITE_COLOR_DODGE | See [color-dodge blend mode][18] |
+| 17 | COMPOSITE_COLOR_BURN | See [color-burn blend mode][19] |
+| 18 | COMPOSITE_HARD_LIGHT | See [hard-light blend mode][20] |
+| 19 | COMPOSITE_SOFT_LIGHT | See [soft-light blend mode][21] |
+| 20 | COMPOSITE_DIFFERENCE | See [difference blend mode][22] |
+| 21 | COMPOSITE_EXCLUSION | See [exclusion blend mode][23] |
+| 22 | COMPOSITE_MULTIPLY | See [multiply blend mode][24] |
+| | *Non-separable color blend modes:* | |
+| 23 | COMPOSITE_HSL_HUE | See [hue blend mode][25] |
+| 24 | COMPOSITE_HSL_SATURATION | See [saturation blend mode][26] |
+| 25 | COMPOSITE_HSL_COLOR | See [color blend mode][27] |
+| 26 | COMPOSITE_HSL_LUMINOSITY | See [luminosity blend mode][28] |
 
-### BaseGlyphV1List table
+## Transform
+
+### Affine2x3 record
 
 | Type | Name | Description |
 |-|-|-|
-| uint32 | numBaseGlyphV1Records |  |
-| BaseGlyphV1Record | baseGlyphV1Records[numBaseGlyphV1Records] | |
+| VarFixed | xx | |
+| VarFixed | xy | |
+| VarFixed | yx | |
+| VarFixed | yy | |
+| VarFixed | dx | Translation in x direction. |
+| VarFixed | dy | Translation in y direction. |
 
-### BaseGlyphV1Record
-
-| Type | Name | Description |
-|-|-|-|
-| uint16 | glyphID | Glyph ID of the base glyph. |
-| Offset32 | layerListOffset | Offset to LayerV1List table, from start of BaseGlyphsV1List table. |
-
-*Note:* The glyph ID is not limited to the numGlyphs value in the &#39;maxp&#39; table.
-
-### LayerV1List table
-
-| Type | Field name | Description |
-|-|-|-|
-| uint8 | numLayers |  |
-| Offset32 | paintOffset[numLayers] | Offsets to Paint tables, from the start of the LayerV1List table. |
-
-*Note:* For large layer counts PaintComposite can be used to combine multiple COLR v1 glyphs.
+This is a standard 2x3 matrix for 2D affine transformation.
 
 # Implementation
 
@@ -876,13 +915,17 @@ struct COLRv1
 
 ## Font Tooling
 
+** This section is NOT meant for inclusion in ISO submissions**
+
 Cosimo ([@anthrotype](https://github.com/anthrotype)) and Rod ([@rsheeter](https://github.com/rsheeter))
 have implemented [nanoemoji](https://github.com/googlefonts/nanoemoji) to compile a set of SVGs into color
 font formats, including COLR v1.
 
 [color-fonts](https://github.com/googlefonts/color-fonts) has a collection of sample color fonts.
 
-## Rendering
+##  Appendix 2: Rendering
+
+** This section is NOT meant for inclusion in ISO submissions**
 
 ### Pseudocode
 
@@ -951,10 +994,17 @@ clients who like to remove FreeType dependency completely.
 
 # Acknowledgements
 
+** This section is NOT meant for inclusion in ISO submissions**
+
 Thanks to Benjamin Wagner ([@bungeman](https://github.com/bungeman)), Dave
 Crossland ([@davelab6](https://github.com/davelab6)), and Roderick Sheeter
 ([@rsheeter](https://github.com/rsheeter)) for review and detailed feedback on
 earlier proposal.
+
+Older proposal and discussion [are
+here](https://docs.google.com/document/d/1--J9CubVEIC1Pe9r7Nri6MNtZM0I92MjrYOCdJZteEI/edit).
+This version addresses all issues raised with, and supersedes, the older
+proposal.
 
 [1]: https://www.w3.org/TR/compositing-1/
 [2]: https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_clear
