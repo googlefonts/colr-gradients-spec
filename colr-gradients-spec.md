@@ -13,14 +13,20 @@ December 2019
 - [Backwards Compatibility](#backwards-compatibility)
 - [Color Palette Variation](#color-palette-variation)
 - [High-level Design](#high-level-design)
-- [Graphical Primitives](#graphical-primitives)
-    - [Color Line](#color-line)
+- [Graphical Primitives / Paints](#graphical-primitives--paints)
+    - [Filled Glyph](#filled-glyph)
+    - [Solid Color and Gradient Paints](#solid-color-and-gradient-paints)
+        - [Solid](#solid)
+        - [Color Line](#color-line)
         - [Extend Mode](#extend-mode)
             - [Extend Pad](#extend-pad)
             - [Extend Repeat](#extend-repeat)
             - [Extend Reflect](#extend-reflect)
-    - [Linear Gradients](#linear-gradients)
-    - [Radial Gradients](#radial-gradients)
+        - [Linear Gradients](#linear-gradients)
+        - [Radial Gradients](#radial-gradients)
+    - [Transformation](#transformation)
+    - [Composition](#composition)
+    - [COLR Glyph](#colr-glyph)
 - [Constraints](#constraints)
     - [Acyclic Graphs Only](#acyclic-graphs-only)
     - [Bounded Layers Only](#bounded-layers-only)
@@ -36,6 +42,7 @@ December 2019
         - [FreeType](#freetype)
         - [Chromium](#chromium)
     - [HarfBuzz](#harfbuzz)
+- [References](#references)
 - [Acknowledgements](#acknowledgements)
 
 
@@ -78,23 +85,34 @@ pursued separately.
 
 # High-level Design
 
-COLR table is extended to expose a new vector of layers per glyph.  If a glyph
-is not found in the new vector, client will try finding it in the COLR v0 glyph
-vector and fall back to no-color if the glyph is not found there either.
+The COLR table is extended to expose a new vector of layers per glyph.  If a
+glyph is not found in the new vector, the client will try finding it in the COLR
+v0 glyph vector and fall back to no-color if the glyph is not found there
+either.
 
-A glyph using the new extension is mapped to a list of layers. Each layer is
-formed by a directed acyclic graph of paints. Several different types of paint
-are defined:
+A glyph using the new extension is mapped to a list of layers. Each layer in
+this vector of layers is formed by a directed acyclic graph of paints. The glyph
+rendering is defined by executing and combining the paint operations as
+described by this graph.
 
-1. **Solid** paints a solid color
-1. **Linear gradient** paints a linear gradient
-1. **Radial gradient** paints a radial gradient
-1. **Glyph** draws a non-COLR glyph filled by some other paint
-   * A COLR v1 glyph made up of a list of Glyph paints is equivalent to a COLR v0 Layer Record with the added ability to use gradients.
-1. **COLR Glyph** reuses a COLR v1 glyph at a new position in the graph
-1. **Transformed** reuses another paint, applying an affine transformation
-1. **Composite** reuses two other paints, applying a compositing rule to combine them
+*__Note:__ Each paint reflects typical operations found in
+[2D graphics libraries](#2d-graphics-libraries).*
+
+Several different types of paint are defined:
+
+1. **[Glyph](#glyph)** fills the shape of a
+   non-COLR glyph with subsequent paints
+1. **[Solid color and gradient paints](#solid-color-and-gradient-paints)**
+   1. **[Solid](#solid)** paints a solid color
+   1. **[Linear gradient](#linear-gradient)** paints a linear gradient
+   1. **[Radial gradient](#radial-gradient)** paints a radial gradient
+1. **[Transformation](#transformation)** reuses another paint, applying an
+   affine transformation
+1. **[Composition](#composition)** reuses two other paints, applying a
+   compositing rule to combine them
    * We draw on https://www.w3.org/TR/compositing-1/ for our composite modes
+1. **[COLR Glyph](#colr-glyph)** reuses a COLR v1 glyph at a new position in the
+   graph
 
 We have added an "alpha" (transparency) scalar to each invocation of a palette
 color. This allows for the expression of translucent versions of palette
@@ -106,20 +124,32 @@ to be exposed to end-users.
 All values expressed are *variable* by way of OpenType 1.8 Font Variations
 mechanisms.
 
-# Graphical Primitives
+# Graphical Primitives / Paints
 
-The two main graphical primitives that are added are linear gradients and radial
-gradients.
+## Glyph
 
-In most graphics systems, linear gradients are declared using two points, and
-radial gradients are declared using two circles.  Such graphics systems also
-support a transformation matrix, via which one can get shear in linear
-gradients, or arbitrary ellipses with radial gradients.  Since our proposed
-format does *not* have such universal transform underneath, the definition of
-linear and radial gradients are extended from their typical form to accommodate
-for these transformations in the gradient declaration itself.
+A glyph paint `PaintGlyph` fills the region within the glyph shape
+identified by `gid` with downstream paint operations specified by `paint`.
 
-## Color Line
+*__Note__: An implementation may chose to implement this as clipping the drawing
+region to the shape specified by `gid`, then opening a temporary layer and
+recurse to the subsequent paint opperations specified by `paint`, after which
+the temporary layer is merged.*
+
+## Solid Color and Gradient Paints
+
+The main graphical primitives that are added in this proposal are linear and
+radial gradients, transformations and compositions. Solid fills, which are also
+defined, are similar to COLR v0. Gradients are defined by the help of [Color
+Line](#color-line)s and color stops, explained in the sections further below.
+
+### Solid
+
+A solid paint fills the drawing region with a solid color specified by
+`ColorIndex`. `ColorIndex` references color `paletteIndex` from the `CPAL`
+palette, and applies alpha value `alpha` when drawing.
+
+### Color Line
 
 A color line is a function that maps real numbers to a color value to define a
 1-dimensional gradient, to be used and referenced from [Linear
@@ -200,7 +230,7 @@ For numbers outside the defined interval, the color continues to map as if the
 interval would continue mirrored from the previous interval. This allows
 defining stripes in rotating colors.
 
-## Linear Gradients
+### Linear Gradient
 
 We propose definitions of linear gradients with two color line points P0 and P1
 between which a gradient is interpolated. A point P2 is defined to rotate the
@@ -218,7 +248,7 @@ at 0, yellow at 0.5 and red at 1. (Illustration generated from <a
 href="images/linear_gradients.html">images/radial_gradients.svg</a>, requires
 glMatrix.js to work)*
 
-## Radial Gradients
+### Radial Gradient
 
 Radial gradients in this proposal are defined based on circles. If subject to
 a transform (via `PaintTransformed`) those circles may become ellipses.
@@ -262,6 +292,34 @@ href="images/radial_gradients.svg">images/radial_gradients.svg</a>)*
 even if they are subject to a *[degenerate](https://en.wikipedia.org/wiki/Invertible_matrix)*
 or *near-degenerate* transform. Such radial gradients do have a well-defined shape, which is
 a strip or a cone filled with a linear gradient.
+
+## Transformation
+
+A transformation as defined by a `PaintTransformed` applies a matrix
+transformation `transform` to the current drawing region.  The transformation is
+to be applied for subsequent nested paints, as defined by the paint referenced
+in `src`. The transformation affects all nested drawing operations. It affects
+how nested solid paints and gradients are drawn, as well as how nested clip
+operations or nested COLR glyph reuse operations are performed.
+
+
+## Composition
+
+A composition is a graphical primitive that allows combining two paints given a
+blending rule for each pixel. A composition as defined by a `PaintComposite`
+references two nested paints, `backdrop` and `src`. First, the paint operations
+for `backdrop` are executed, then the drawing operations for `src` are executed
+and combined with `backdrop` given the blending rule specified in
+`mode`. Compositing modes are taken from Compositing modes are taken from the
+[W3C Compositing specification](https://www.w3.org/TR/compositing-1/).
+
+## COLR Glyph
+
+`PaintColrGlyph` is a special paint which allows reuse of a COLR glyph of this
+proposed exension as a paint. Painting a `PaintColorGlyph` means executing the
+paint operations that are described by the `BaseGlyphV1Record` matching the
+glyph id `gid` specified in `PaintColorGlyph`. See section [Reusable
+Parts](#reusable-parts).
 
 # Constraints
 
@@ -884,6 +942,14 @@ gradient fill implementation from FreeType. See
 HarfBuzz implementation will follow later.  No major client relies on HarfBuzz
 for color fonts currently, but we certainly want to implement later as there are
 clients who like to remove FreeType dependency completely.
+
+# References
+
+* <a name="2d-graphics-libraries">2D Graphics Libraries</a>
+   * [Cairo](https://cairographics.org/)
+   * [Skia](https://skia.org/)
+   * [CoreGraphics](https://developer.apple.com/documentation/coregraphics)
+   * [Direct2D](https://docs.microsoft.com/en-us/windows/win32/direct2d/direct2d-portal)
 
 # Acknowledgements
 
