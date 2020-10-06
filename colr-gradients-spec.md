@@ -22,8 +22,8 @@ December 2019
             - [Extend Pad](#extend-pad)
             - [Extend Repeat](#extend-repeat)
             - [Extend Reflect](#extend-reflect)
-        - [Linear Gradients](#linear-gradients)
-        - [Radial Gradients](#radial-gradients)
+        - [Linear Gradient](#linear-gradient)
+        - [Radial Gradient](#radial-gradient)
     - [Transformation](#transformation)
     - [Composition](#composition)
     - [COLR Glyph](#colr-glyph)
@@ -267,9 +267,9 @@ c₀ = (x₀, y₀) and c₁ = (x₁, y₁):
 Radial gradients must be rendered by following these steps:
 
 1. If c₀ = c₁ and r₀ = r₁ then the radial gradient must paint nothing. Return.
-2. Let x(ω) = (x₁-x₀)ω + x₀
-  Let y(ω) = (y₁-y₀)ω + y₀
-  Let r(ω) = (r₁-r₀)ω + r₀
+2. Let x(ω) = (x₁-x₀)ω + x₀<br>
+  Let y(ω) = (y₁-y₀)ω + y₀<br>
+  Let r(ω) = (r₁-r₀)ω + r₀<br>
   Let the color at ω be the color at that position on the gradient color line (with the colors coming from the interpolation and extrapolation described above).
 3. For all values of ω where r(ω) > 0, starting with the value of ω nearest to
    positive infinity and ending with the value of ω nearest to negative
