@@ -29,7 +29,7 @@ December 2019
 - [OFF Changes](#off-changes)
     - [Data types](#off-43-data-types)
     - [COLR table](#off-5711-colr--color-table)
-        - [Data structures](##colr-v1-data-structures)
+        - [Data structures](#colr-v1-data-structures)
             - [Header, glyphs, and layers](#header-glyphs-layers)
             - [Variation structures](#variation-structures)
             - [Color structures](#color-structures)
