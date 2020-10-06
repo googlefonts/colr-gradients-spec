@@ -1006,11 +1006,6 @@ Crossland ([@davelab6](https://github.com/davelab6)), and Roderick Sheeter
 ([@rsheeter](https://github.com/rsheeter)) for review and detailed feedback on
 earlier proposal.
 
-Older proposal and discussion [are
-here](https://docs.google.com/document/d/1--J9CubVEIC1Pe9r7Nri6MNtZM0I92MjrYOCdJZteEI/edit).
-This version addresses all issues raised with, and supersedes, the older
-proposal.
-
 [1]: https://www.w3.org/TR/compositing-1/
 [2]: https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_clear
 [3]: https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_src
