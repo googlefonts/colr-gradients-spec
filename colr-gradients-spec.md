@@ -59,7 +59,7 @@ December 2019
 **The Introduction section is expected be converted into specific OFF section edits
 later in the specification process**
 
-We propose extension of the COLR table to allow gradient fills in addition to
+We propose an extension of the COLR table to allow gradient fills in addition to
 the existing solid color fills. The current version number of COLR table is 0.
 We propose this as COLR table format version 1.
 
