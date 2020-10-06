@@ -706,7 +706,7 @@ struct ColorIndex
 
 struct ColorStop
 {
-  VarF2DOT14 stopOffset; // Values outside [0.,1.] reserved.
+  VarF2DOT14 stopOffset;
   ColorIndex color;
 };
 
