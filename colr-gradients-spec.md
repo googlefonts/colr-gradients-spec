@@ -702,7 +702,7 @@ Add references to:
 
 # Implementation
 
-**This section is NOT meant for OFF inclusion**
+**This section is NOT meant for ISO submissions**
 
 ## C++ Structures
 
@@ -920,17 +920,13 @@ struct COLRv1
 
 ## Font Tooling
 
-** This section is NOT meant for inclusion in ISO submissions**
-
 Cosimo ([@anthrotype](https://github.com/anthrotype)) and Rod ([@rsheeter](https://github.com/rsheeter))
 have implemented [nanoemoji](https://github.com/googlefonts/nanoemoji) to compile a set of SVGs into color
 font formats, including COLR v1.
 
 [color-fonts](https://github.com/googlefonts/color-fonts) has a collection of sample color fonts.
 
-##  Appendix 2: Rendering
-
-** This section is NOT meant for inclusion in ISO submissions**
+## Rendering
 
 ### Pseudocode
 
@@ -999,7 +995,7 @@ clients who like to remove FreeType dependency completely.
 
 # Acknowledgements
 
-** This section is NOT meant for inclusion in ISO submissions**
+**This section is NOT meant for inclusion in ISO submissions**
 
 Thanks to Benjamin Wagner ([@bungeman](https://github.com/bungeman)), Dave
 Crossland ([@davelab6](https://github.com/davelab6)), and Roderick Sheeter
