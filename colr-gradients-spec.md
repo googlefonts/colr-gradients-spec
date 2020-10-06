@@ -29,7 +29,7 @@ December 2019
 - [OFF Changes](#off-changes)
     - [Normative References](#off-2-normative-references)
     - [Data types](#off-43-data-types)
-    - [COLR table](off-5711-colr--color-table)
+    - [COLR table](#off-5711-colr--color-table)
         - [Constraints](#constraints)
             - [Acyclic Graphs Only](#acyclic-graphs-only)
             - [Bounded Layers Only](#bounded-layers-only)
