@@ -507,8 +507,6 @@ For linear gradient without skew, set x2,y2 to x1,y1.
 | VarFWord | y1 | end circle center y coordinate |
 | VarUFWord | radius1 | end circle radius |
 
-Defines a class of gradients that are a functional superset of a radial gradient: color gradation along a conic cylinder defined by two circles.
-
 ##### PaintGlyph table (format 4)
 
 | Type | Field name | Description |
