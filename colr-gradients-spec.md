@@ -27,7 +27,6 @@ December 2019
         - [Composition](#composition)
         - [COLR Glyph](#colr-glyph)
 - [OFF Changes](#off-changes)
-    - [Normative References](#off-2-normative-references)
     - [Data types](#off-43-data-types)
     - [COLR table](#off-5711-colr--color-table)
         - [Data structures](##colr-v1-data-structures)
@@ -44,6 +43,7 @@ December 2019
         - [Understanding COLR v1](#understanding-colr-v1)
             - [Alpha](#alpha)
             - [Reusable Parts](#reusable-parts)
+    - [Bibliography](#bibliography)
 - [Implementation](#implementation)
     - [Font Tooling](#font-tooling)
     - [Rendering](#rendering)
@@ -318,15 +318,11 @@ Parts](#reusable-parts).
 
 We're proposing changes to the following sections of ISO/IEC 14496-22:2019 “OFF”:
 
-1. 2 Normative references
-1. 4.3 Data types
-1. 5.7.11 COLR – Color Table
+- 4.3 Data types
+- 5.7.11 COLR – Color Table
+- Bibliography
 
 An overview of the design is provided, followed by the suggested specific changes.
-
-## OFF 2 Normative references
-
-Add a normative reference to https://www.w3.org/TR/compositing-1/.
 
 ## OFF 4.3 Data types
 
@@ -698,7 +694,15 @@ The hour hand is reusable as a transformed glyph.
 Another example might be emoji faces: many have the same backdrop
 with different eyes, noses, tears, etc drawn on top.
 
+## Bibliography
+
+Add references to:
+
+- https://www.w3.org/TR/compositing-1/.
+
 # Implementation
+
+**This section is NOT meant for OFF inclusion**
 
 ## C++ Structures
 
