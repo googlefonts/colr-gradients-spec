@@ -233,7 +233,7 @@ defining stripes in rotating colors.
 ### Linear Gradient
 
 We propose definitions of linear gradients with two color line points P0 and P1
-between which a gradient is interpolated. A point P2 is defined to rotate the
+between which a gradient is interpolated. A point P₂ is defined to rotate the
 gradient angle / orientation separately from the color line endpoints.
 
 If the dot-product (P₁ - P₀) . (P₂ - P₀) is zero (or near-zero for an
@@ -254,25 +254,23 @@ Radial gradients in this proposal are defined based on circles. If subject to
 a transform (via `PaintTransformed`) those circles may become ellipses.
 
 A radial gradient in this proposal is a gradient between two—optionally
-transformed—circles, namely with center c0 and radius r0, and center c1 and
-radius r1 and a specified color line.  The circle c0, r0 will be drawn with the
-color at color line position 0. The circle c1, r1 will be drawn with the color
+transformed—circles, namely with center c₀ and radius r₀, and center c₁ and
+radius r₁ and a specified color line.  The circle c₀, r₀ will be drawn with the
+color at color line position 0. The circle c₁, r₁ will be drawn with the color
 at color line colorLine position 1.
 
 The drawing algorithm radial gradients follows the [HTML WHATWG Canvas spec for
 createRadialGradient()](https://html.spec.whatwg.org/multipage/canvas.html#dom-context-2d-createradialgradient).
-Quoting and adapting from there.  With circle center points c0 and c1 defined as
-c0 = (x0, y0) and c1 = (x1, y1):
+Quoting and adapting from there.  With circle center points c₀ and c₁ defined as
+c₀ = (x₀, y₀) and c₁ = (x₁, y₁):
 
 Radial gradients must be rendered by following these steps:
 
-1. If c0 = c1 and r0 = r1 then the radial gradient must paint nothing. Return.
-
-2. Let x(ω) = (x1-x0)ω + x0
-Let y(ω) = (y1-y0)ω + y0
-Let r(ω) = (r1-r0)ω + r0  
-Let the color at ω be the color at that position on the gradient color line (with the colors coming from the interpolation and extrapolation described above).
-
+1. If c₀ = c₁ and r₀ = r₁ then the radial gradient must paint nothing. Return.
+2. Let x(ω) = (x₁-x₀)ω + x₀
+  Let y(ω) = (y₁-y₀)ω + y₀
+  Let r(ω) = (r₁-r₀)ω + r₀
+  Let the color at ω be the color at that position on the gradient color line (with the colors coming from the interpolation and extrapolation described above).
 3. For all values of ω where r(ω) > 0, starting with the value of ω nearest to
    positive infinity and ending with the value of ω nearest to negative
    infinity, draw the circumference of the ellipse resulting from translating
