@@ -148,8 +148,8 @@ palette, and applies alpha value `alpha` when drawing.
 
 A color line is a function that maps real numbers to a color value to define a
 1-dimensional gradient, to be used and referenced from [Linear
-Gradients](#linear-gradients) and [Radial
-Gradients](#radial-gradients). Colors of the gradient are defined by *color
+Gradients](#linear-gradient) and [Radial
+Gradients](#radial-gradient). Colors of the gradient are defined by *color
 stops*.
 
 Color stops are defined at color stop positions. Color stop position 0 maps to
