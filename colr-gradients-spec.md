@@ -10,31 +10,40 @@ December 2019
 ## Table of Contents
 
 - [Introduction](#introduction)
-- [Backwards Compatibility](#backwards-compatibility)
-- [Color Palette Variation](#color-palette-variation)
-- [High-level Design](#high-level-design)
-- [Graphical Primitives / Paints](#graphical-primitives--paints)
-    - [Filled Glyph](#filled-glyph)
-    - [Solid Color and Gradient Paints](#solid-color-and-gradient-paints)
-        - [Solid](#solid)
-        - [Color Line](#color-line)
-        - [Extend Mode](#extend-mode)
-            - [Extend Pad](#extend-pad)
-            - [Extend Repeat](#extend-repeat)
-            - [Extend Reflect](#extend-reflect)
-        - [Linear Gradient](#linear-gradient)
-        - [Radial Gradient](#radial-gradient)
-    - [Transformation](#transformation)
-    - [Composition](#composition)
-    - [COLR Glyph](#colr-glyph)
-- [Constraints](#constraints)
-    - [Acyclic Graphs Only](#acyclic-graphs-only)
-    - [Bounded Layers Only](#bounded-layers-only)
-    - [Bounding Box](#bounding-box)
-- [Understanding the format](#understanding-the-format)
-    - [Alpha](#alpha)
-    - [Reusable Parts](#reusable-parts)
-- [Structure of gradient COLR v1 extensions](#structure-of-gradient-colr-v1-extensions)
+    - [High-level Design](#high-level-design)
+    - [Backwards Compatibility](#backwards-compatibility)
+    - [Graphical Primitives / Paints](#graphical-primitives--paints)
+        - [Filled Glyph](#filled-glyph)
+        - [Solid Color and Gradient Paints](#solid-color-and-gradient-paints)
+            - [Solid](#solid)
+            - [Color Line](#color-line)
+            - [Extend Mode](#extend-mode)
+                - [Extend Pad](#extend-pad)
+                - [Extend Repeat](#extend-repeat)
+                - [Extend Reflect](#extend-reflect)
+            - [Linear Gradient](#linear-gradient)
+            - [Radial Gradient](#radial-gradient)
+        - [Transformation](#transformation)
+        - [Composition](#composition)
+        - [COLR Glyph](#colr-glyph)
+- [OFF Changes](#off-changes)
+    - [Data types](#off-43-data-types)
+    - [COLR table](#off-5711-colr--color-table)
+        - [Data structures](#colr-v1-data-structures)
+            - [Header, glyphs, and layers](#header-glyphs-layers)
+            - [Variation structures](#variation-structures)
+            - [Color structures](#color-structures)
+            - [Paint structures](#paint-structures)
+            - [Composite modes](#composite-modes)
+            - [Transform](#transform)
+        - [Constraints](#constraints)
+            - [Acyclic Graphs Only](#acyclic-graphs-only)
+            - [Bounded Layers Only](#bounded-layers-only)
+            - [Bounding Box](#bounding-box)
+        - [Understanding COLR v1](#understanding-colr-v1)
+            - [Alpha](#alpha)
+            - [Reusable Parts](#reusable-parts)
+    - [Bibliography](#bibliography)
 - [Implementation](#implementation)
     - [Font Tooling](#font-tooling)
     - [Rendering](#rendering)
@@ -45,45 +54,21 @@ December 2019
 - [References](#references)
 - [Acknowledgements](#acknowledgements)
 
-
 # Introduction
 
-We’re proposing a format extension to the
-[COLR](https://docs.microsoft.com/en-us/typography/opentype/spec/COLR) table to
-allow gradient fills in addition to the existing solid color fills defined for
-COLR. Current version number of COLR table is 0.  We propose this as COLR table
-format version 1.  Older proposal and discussion [are
-here](https://docs.google.com/document/d/1--J9CubVEIC1Pe9r7Nri6MNtZM0I92MjrYOCdJZteEI/edit).
-This version addresses all issues raised with, and supersedes, the older
-proposal.
+**The Introduction section is expected be converted into specific OFF section edits
+later in the specification process**
+
+We propose an extension of the COLR table to allow gradient fills in addition to
+the existing solid color fills. The current version number of COLR table is 0.
+We propose this as COLR table format version 1.
 
 It is our understanding that this brings the capabilities of COLR/CPAL to match
 those of SVG Native for vector graphics.  SVG Native allows embedding PNG and
 JPEG images while this proposal does not.  We like to explore in the future, how
 COLR/CPAL can be mixed with sbix to address that limitation as well.
 
-# Backwards Compatibility
-
-The proposed design allows full backwards compatibility. This means, that a font
-designed for COLR format v1 specification, can contain sufficient information to
-be readable by a layout and rasterization engine that understands the v0 format.
-This is possible because the format version of the COLR table is a short format,
-as such considered a "minor", not a “major” version number.
-
-If table format v1 is chosen, additional data will be read which specifies the
-additional information for gradients.  All backward-compatibility concerns from
-the earlier proposal are addressed in this version.
-
-# Color Palette Variation
-
-Allowing palette colors in
-[CPAL](https://docs.microsoft.com/en-us/typography/opentype/spec/CPAL) to change
-by variations is desired.  However, this needs more thought.  Colors expressed
-in sRGB r/g/b channels *cannot* be easily interpolated.  Another solution is
-needed, perhaps involving transforming to a linear color space and back.  To be
-pursued separately.
-
-# High-level Design
+## High-level Design
 
 The COLR table is extended to expose a new vector of layers per glyph.  If a
 glyph is not found in the new vector, the client will try finding it in the COLR
@@ -121,8 +106,18 @@ translucent shades of the same color would need to be encoded separately in
 the color palette, which is undesirable since color palette entries are designed
 to be exposed to end-users.
 
-All values expressed are *variable* by way of OpenType 1.8 Font Variations
-mechanisms.
+All values expressed are *variable* by way of OFF Font Variations.
+
+## Backwards Compatibility
+
+The proposed design allows full backwards compatibility. This means, that a font
+designed for COLR format v1 specification, can contain sufficient information to
+be readable by a layout and rasterization engine that understands the v0 format.
+This is possible because the format version of the COLR table is a short format,
+as such considered a "minor", not a “major” version number.
+
+If table format v1 is chosen, additional data will be read which specifies the
+additional information for gradients.
 
 # Graphical Primitives / Paints
 
@@ -153,8 +148,8 @@ palette, and applies alpha value `alpha` when drawing.
 
 A color line is a function that maps real numbers to a color value to define a
 1-dimensional gradient, to be used and referenced from [Linear
-Gradients](#heading=h.696rgjwvuoq9) and [Radial
-Gradients](#heading=h.2iel67nie7a). Colors of the gradient are defined by *color
+Gradients](#linear-gradient) and [Radial
+Gradients](#radial-gradient). Colors of the gradient are defined by *color
 stops*.
 
 Color stops are defined at color stop positions. Color stop position 0 maps to
@@ -166,7 +161,7 @@ contain multiple color stops that define the gradient.
 
 Outside the defined interval, the gradient pattern in between the outer defined
 positions is repeated according to the color line [extend
-mode](#heading=h.4dwrambuyuzf).
+mode](#extend-mode).
 
 If there are multiple color stops defined for the same coordinate, the first one
 is used for computing the color value for values below the coordinate, the last
@@ -207,24 +202,24 @@ In order to achieve:
 ***Figure 1:** Repeating linear and radial gradients
 ([source](https://cssnewbie.com/apply-cool-linear-and-radial-gradients-using-css/))*
 
-### Extend Mode
+#### Extend Mode
 
 We propose three extend modes to control the behavior of the gradient outside
 its specified endpoints:
 
-#### Extend Pad
+##### Extend Pad
 
 For numbers outside the defined interval the color line continues to map to the
 outer color values, i.e. for values less than the leftmost defined color stop,
 it maps to the leftmost color stop value; for values greater than the rightmost
 defined color stop value, it maps to the rightmost defined color value.
 
-#### Extend Repeat
+##### Extend Repeat
 
 For numbers outside the interval, the color line continues to map as if
 the defined interval was repeated.
 
-#### Extend Reflect
+##### Extend Reflect
 
 For numbers outside the defined interval, the color continues to map as if the
 interval would continue mirrored from the previous interval. This allows
@@ -319,102 +314,85 @@ paint operations that are described by the `BaseGlyphV1Record` matching the
 glyph id `gid` specified in `PaintColorGlyph`. See section [Reusable
 Parts](#reusable-parts).
 
-# Constraints
+# OFF Changes
 
-## Acyclic Graphs Only
+We're proposing changes to the following sections of ISO/IEC 14496-22:2019 “OFF”:
 
-`PaintColrGlyph` allows recursive composition of COLR glyphs. This
-is desirable for reusable parts but introduces the possibility of
-a cyclic graph. Implementations should track the COLR gids they have
-seen in processing and fail if a gid is reached repeatedly.
+- 4.3 Data types
+- 5.7.11 COLR – Color Table
+- Bibliography
 
-## Bounded Layers Only
+An overview of the design is provided, followed by the suggested specific changes.
 
-Every entry in the `LayerV1List` must define a bounded region.
-Implementations must confirm this invariant. Unbounded layers must
-not render.
+## OFF 4.3 Data types
 
-The following paints are always bounded:
+One new data type is proposed:
 
-- `PaintGlyph`
-- `PaintColrGlyph`
-
-The following paints are always unbounded:
-
-- `PaintSolid`
-- `PaintLinearGradient`
-- `PaintRadialGradient`
-
-The following paints *may* be bounded:
-
-- `PaintTransformed` is bounded IFF the source is bounded
-- `PaintComposite` boundedness varies by mode:
-   - Always bounded
-      - `COMPOSITE_CLEAR`
-   - Bounded IFF src is bounded
-      - `COMPOSITE_SRC`
-      - `COMPOSITE_SRC_OUT`
-   - Bounded IFF backdrop is bounded
-      - `COMPOSITE_DEST`
-      - `COMPOSITE_DEST_OUT`
-   - Bounded IFF src OR backdrop is bounded
-      - `COMPOSITE_SRC_IN`
-      - `COMPOSITE_DEST_IN`
-   - Bounded IFF src AND backdrop are bounded
-      - *all other modes*
-
-## Bounding Box
-
-The bounding box of the base (non-COLR) glyph referenced from the
-`BaseGlyphV1Record` (by `BaseGlyphV1Record::gid`) should be taken
-to describe the bounding box for the COLR v1 glyph.
-
-Note: A `glyf` entry with two points at the diagonal extrema would suffice.
-
-Note: This can be used to allocate a drawing surface without traversing
-the COLR v1 glyph structure.
+| Data Type | Description |
+|-|-|
+| Offset24 | 24-bit offset to a table, same as uint24. NULL offset= 0x0000 |
 
 
-# Understanding the format
+## OFF 5.7.11 COLR – Color Table
 
-## Alpha
+The current header should be noted as *COLR version 0 header*.
 
-The alpha channel for a layer can be populated using `PaintComposite`:
+A new section for *COLR version 1 header* should be added, along with a
+set of related records and tables.
 
-- `PaintSolid` can be used to set a blanket alpha
-- `PaindLinearGradient` and `PaintRadialGradient` can be used to set gradient alpha
-- Mode [Source In](https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_srcin) can be used to mask
+### COLR v1 data structures
 
-## Reusable Parts
-
-Use `PaintTransformed` to reuse parts in different positions or sizes.
-
-Use `PaintColrGlyph` to reuse entire COLR glyphs.
-
-For example, consider the Noto clock emoji (hand colored for emphasis):
-
-![Noto 1pm](images/clock-1.svg)
-![Noto 2pm](images/clock-2.svg)
-
-The entire backdrop (outline, gradient-circle, 4 dots, the minute
-hand) is reusable for all versions of the clock:
-
-![Noto 2pm](images/clock-common.svg)
-
-The hour hand is reusable as a transformed glyph.
-
-Another example might be emoji faces: many have the same backdrop
-with different eyes, noses, tears, etc drawn on top.
-
-# Structure of gradient COLR v1 extensions
+This section describes new and modified tables and records for COLR v1.
 
 Offsets are always relative to the start of the containing struct.
 
-## Variation structures
+#### Header, glyphs, layers
+
+##### V1 Header
+
+| Type | Field name | Description |
+|-|-|-|
+| uint16 | version | Table version number—set to 1. |
+| uint16 | numBaseGlyphRecords | May be 0 in a version 1 table. |
+| Offset32 | baseGlyphRecordsOffset | Offset to baseGlyphRecords array (may be NULL). |
+| Offset32 | layerRecordsOffset | Offset to layerRecords array (may be NULL). |
+| uint16 | numLayerRecords | May be 0 in a version 1 table. |
+| Offset32 | baseGlyphV1ListOffset | Offset to BaseGlyphV1List table. |
+| Offset32 | itemVariationStoreOffset | Offset to ItemVariationStore (may be NULL). |
+
+##### BaseGlyphV1List table
+
+| Type | Name | Description |
+|-|-|-|
+| uint32 | numBaseGlyphV1Records |  |
+| BaseGlyphV1Record | baseGlyphV1Records[numBaseGlyphV1Records] | |
+
+##### BaseGlyphV1Record
+
+| Type | Name | Description |
+|-|-|-|
+| uint16 | glyphID | Glyph ID of the base glyph. |
+| Offset32 | layerListOffset | Offset to LayerV1List table, from start of BaseGlyphsV1List table. |
+
+*Note:* The glyph ID is not limited to the numGlyphs value in the &#39;maxp&#39; table.
+
+##### LayerV1List table
+
+| Type | Field name | Description |
+|-|-|-|
+| uint8 | numLayers |  |
+| Offset32 | paintOffset[numLayers] | Offsets to Paint tables, from the start of the LayerV1List table. |
+
+*Note:* For large layer counts PaintComposite can be used to combine multiple COLR v1 glyphs.
+
+#### Variation structures
+
+The following records are defined to facilitate COLR v1 font variation
+support.
 
 To indicate no variation, set varOuterIndex and varInnerIndex to 0xFFFF.
 
-### VarFWord record
+##### VarFWord record
 
 | Type | Name | Description |
 |-|-|-|
@@ -422,7 +400,7 @@ To indicate no variation, set varOuterIndex and varInnerIndex to 0xFFFF.
 | uint16 | varOuterIndex | |
 | uint16 | varInnerIndex | |
 
-### VarUFWord record
+##### VarUFWord record
 
 | Type | Name | Description |
 |-|-|-|
@@ -430,7 +408,7 @@ To indicate no variation, set varOuterIndex and varInnerIndex to 0xFFFF.
 | uint16 | varOuterIndex | |
 | uint16 | varInnerIndex | |
 
-### VarFixed record
+##### VarFixed record
 
 | Type | Name | Description |
 |-|-|-|
@@ -438,9 +416,11 @@ To indicate no variation, set varOuterIndex and varInnerIndex to 0xFFFF.
 | uint16 | varOuterIndex | |
 | uint16 | varInnerIndex | |
 
-*Note:* In order to combine deltas with Fixed values, the ItemVariationStore format is extended to allow for int32 deltas. When combining a Fixed value with 32-bit deltas, the Fixed value is treated as though it were int32.
+*Note:* In order to combine deltas with Fixed values, the ItemVariationStore format is
+extended to allow for int32 deltas. When combining a Fixed value with 32-bit deltas,
+the Fixed value is treated as though it were int32.
 
-### VarF2Dot14 record
+##### VarF2Dot14 record
 
 | Type | Name | Description |
 |-|-|-|
@@ -452,9 +432,9 @@ Values are inherently limited to [-2., 2). In some contexts, limited to the [-1.
 
 *Note:* When combining an F2Dot14 with 16-bit deltas, the F2Dot14 is treated as though it were int16.
 
-## Color structures
+#### Color structures
 
-### Extend enumeration
+##### Extend enumeration
 
 | Value | Name | Description |
 |-|-|-|
@@ -464,7 +444,7 @@ Values are inherently limited to [-2., 2). In some contexts, limited to the [-1.
 
 If a ColorLine.extend value is not recognized, use EXTEND_PAD.
 
-### ColorIndex record
+##### ColorIndex record
 
 | Type | Name | Description |
 |-|-|-|
@@ -475,14 +455,14 @@ Values for alpha outside [0.,1.] are reserved.
 
 The ColorIndex alpha is multiplied into the alpha of the CPAL entry (converted to float -- divide by 255) to produce a final alpha.
 
-### ColorStop record
+##### ColorStop record
 
 | Type | Name | Description |
 |-|-|-|
 | VarF2Dot14 | stopOffset | Proportional distance on a color line; variable. |
 | ColorIndex | color | |
 
-### ColorLine table
+##### ColorLine table
 
 | Type | Name | Description |
 |-|-|-|
@@ -490,11 +470,86 @@ The ColorIndex alpha is multiplied into the alpha of the CPAL entry (converted t
 | uint16 | numStops | Number of ColorStop records. |
 | ColorStop | colorStops[numStops] | |
 
-## Composition modes and affine transformations
+#### Paint structures
+
+##### PaintSolid table (format 1)
+
+| Type | Field name | Description |
+|-|-|-|
+| uint8 | format | Set to 1. |
+| ColorIndex | color | Solid color fill. |
+
+##### PaintLinearGradient table (format 2)
+
+| Type | Field name | Description |
+|-|-|-|
+| uint8 | format | Set to 2. |
+| Offset24 | colorLineOffset | Offset to ColorLine, from start of PaintLinearGradient table. |
+| VarFWord | x0 | Start point x coordinate. |
+| VarFWord | y0 | Start point y coordinate. |
+| VarFWord | x1 | End point x coordinate. |
+| VarFWord | y1 | End point y coordinate. |
+| VarFWord | x2 | Rotation vector end point x coordinate. |
+| VarFWord | y2 | Rotation vector end point y coordinate. |
+
+For linear gradient without skew, set x2,y2 to x1,y1.
+
+##### PaintRadialGradient table (format 3)
+
+|Type | Field name | Description |
+|-|-|-|
+| uint16 | format | set to 3 |
+| Offset32 | colorLineOffset | offset from start of PaintRadialGradient table |
+| VarFWord | x0 | start circle center x coordinate |
+| VarFWord | y0 | start circle center y coordinate |
+| VarUFWord | radius0 | start circle radius |
+| VarFWord | x1 | end circle center x coordinate |
+| VarFWord | y1 | end circle center y coordinate |
+| VarUFWord | radius1 | end circle radius |
+
+##### PaintGlyph table (format 4)
+
+| Type | Field name | Description |
+|-|-|-|
+| uint8 | format | Set to 4. |
+| Offset24 | paintOffset | Offset to a Paint table, from start of PaintGlyph table. |
+| uint16 | glyphID | Glyph ID for the source outline. |
+
+Glyph outline is used as clip mask for the content in the Paint subtable. Glyph ID must be less than the numGlyphs value in the &#39;maxp&#39; table.
+
+##### PaintColrGlyph table (format 5)
+
+| Type | Field name | Description |
+|-|-|-|
+| uint8 | format | Set to 5. |
+| uint16 | glyphID | Virtual glyph ID for a BaseGlyphV1List base glyph. |
+
+Glyph ID must be in the BaseGlyphV1List; may be greater than maxp.numGlyphs.
+
+##### PaintTransformed table (format 6)
+
+| Type | Field name | Description |
+|-|-|-|
+| uint8 | format | Set to 6. |
+| Offset24 | paintOffset | Offset to a Paint subtable, from start of PaintTransformed table. |
+| Affine2x3 | transform | An Affine2x3 record (inline). |
+
+##### PaintComposite table (format 7)
+
+| Type | Field name | Description |
+|-|-|-|
+| uint8 | format | Set to 7. |
+| Offset24 | sourcePaintOffset | Offset to a source Paint table, from start of PaintComposite table. |
+| uint8 | compositeMode | A CompositeMode enumeration value. |
+| Offset24 | backdropPaintOffset | Offset to a backdrop Paint table, from start of PaintComposite table. |
+
+If compositeMode value is not recognized, COMPOSITE_CLEAR is used.
+
+#### Composite modes
 
 Supported composition modes are taken from the W3C [Compositing and Blending Level 1][1] specification.
 
-### CompositeMode enumeration
+##### CompositeMode enumeration
 
 | Value | Name | Description |
 |-|-|-|
@@ -529,7 +584,9 @@ Supported composition modes are taken from the W3C [Compositing and Blending Lev
 | 25 | COMPOSITE_HSL_COLOR | See [color blend mode][27] |
 | 26 | COMPOSITE_HSL_LUMINOSITY | See [luminosity blend mode][28] |
 
-### Affine2x3 record
+#### Transform
+
+##### Affine2x3 record
 
 | Type | Name | Description |
 |-|-|-|
@@ -542,123 +599,108 @@ Supported composition modes are taken from the W3C [Compositing and Blending Lev
 
 This is a standard 2x3 matrix for 2D affine transformation.
 
-## Paint tables
+#### Constraints
 
-### PaintSolid table (format 1)
+Constraints on the data structures making up a COLR version 1 should
+be noted.
 
-| Type | Field name | Description |
-|-|-|-|
-| uint8 | format | Set to 1. |
-| ColorIndex | color | Solid color fill. |
+##### Acyclic Graphs Only
 
-### PaintLinearGradient table (format 2)
+`PaintColrGlyph` allows recursive composition of COLR glyphs. This
+is desirable for reusable parts but introduces the possibility of
+a cyclic graph. Implementations should track the COLR gids they have
+seen in processing and fail if a gid is reached repeatedly.
 
-| Type | Field name | Description |
-|-|-|-|
-| uint8 | format | Set to 2. |
-| Offset24 | colorLineOffset | Offset to ColorLine, from start of PaintLinearGradient table. |
-| VarFWord | x0 | Start point x coordinate. |
-| VarFWord | y0 | Start point y coordinate. |
-| VarFWord | x1 | End point x coordinate. |
-| VarFWord | y1 | End point y coordinate. |
-| VarFWord | x2 | Rotation vector end point x coordinate. |
-| VarFWord | y2 | Rotation vector end point y coordinate. |
+##### Bounded Layers Only
 
-For linear gradient without skew, set x2,y2 to x1,y1.
+Every entry in the `LayerV1List` must define a bounded region.
+Implementations must confirm this invariant. Unbounded layers must
+not render.
 
-### PaintRadialGradient table (format 3)
+The following paints are always bounded:
 
-|Type | Field name | Description |
-|-|-|-|
-| uint16 | format | set to 3 |
-| Offset32 | colorLineOffset | offset from start of PaintRadialGradient table |
-| VarFWord | x0 | start circle center x coordinate |
-| VarFWord | y0 | start circle center y coordinate |
-| VarUFWord | radius0 | start circle radius |
-| VarFWord | x1 | end circle center x coordinate |
-| VarFWord | y1 | end circle center y coordinate |
-| VarUFWord | radius1 | end circle radius |
+- `PaintGlyph`
+- `PaintColrGlyph`
 
-Defines a class of gradients that are a functional superset of a radial gradient: color gradation along a conic cylinder defined by two circles.
+The following paints are always unbounded:
 
-### PaintGlyph table (format 4)
+- `PaintSolid`
+- `PaintLinearGradient`
+- `PaintRadialGradient`
 
-| Type | Field name | Description |
-|-|-|-|
-| uint8 | format | Set to 4. |
-| Offset24 | paintOffset | Offset to a Paint table, from start of PaintGlyph table. |
-| uint16 | glyphID | Glyph ID for the source outline. |
+The following paints *may* be bounded:
 
-Glyph outline is used as clip mask for the content in the Paint subtable. Glyph ID must be less than the numGlyphs value in the &#39;maxp&#39; table.
+- `PaintTransformed` is bounded IFF the source is bounded
+- `PaintComposite` boundedness varies by mode:
+   - Always bounded
+      - `COMPOSITE_CLEAR`
+   - Bounded IFF src is bounded
+      - `COMPOSITE_SRC`
+      - `COMPOSITE_SRC_OUT`
+   - Bounded IFF backdrop is bounded
+      - `COMPOSITE_DEST`
+      - `COMPOSITE_DEST_OUT`
+   - Bounded IFF src OR backdrop is bounded
+      - `COMPOSITE_SRC_IN`
+      - `COMPOSITE_DEST_IN`
+   - Bounded IFF src AND backdrop are bounded
+      - *all other modes*
 
-### PaintColrGlyph table (format 5)
+##### Bounding Box
 
-| Type | Field name | Description |
-|-|-|-|
-| uint8 | format | Set to 5. |
-| uint16 | glyphID | Virtual glyph ID for a BaseGlyphV1List base glyph. |
+The bounding box of the base (non-COLR) glyph referenced from the
+`BaseGlyphV1Record` (by `BaseGlyphV1Record::gid`) should be taken
+to describe the bounding box for the COLR v1 glyph.
 
-Glyph ID must be in the BaseGlyphV1List; may be greater than maxp.numGlyphs.
+Note: A `glyf` entry with two points at the diagonal extrema would suffice.
 
-### PaintTransformed table (format 6)
+Note: This can be used to allocate a drawing surface without traversing
+the COLR v1 glyph structure.
 
-| Type | Field name | Description |
-|-|-|-|
-| uint8 | format | Set to 6. |
-| Offset24 | paintOffset | Offset to a Paint subtable, from start of PaintTransformed table. |
-| Affine2x3 | transform | An Affine2x3 record (inline). |
 
-### PaintComposite table (format 7)
+#### Understanding COLR v1
 
-| Type | Field name | Description |
-|-|-|-|
-| uint8 | format | Set to 7. |
-| Offset24 | sourcePaintOffset | Offset to a source Paint table, from start of PaintComposite table. |
-| uint8 | compositeMode | A CompositeMode enumeration value. |
-| Offset24 | backdropPaintOffset | Offset to a backdrop Paint table, from start of PaintComposite table. |
+Addition of explanatory content explaining how COLR version 1 functions
+should be added.
 
-If compositeMode value is not recognized, COMPOSITE_CLEAR is used.
+##### Alpha
 
-## COLR version 1, BaseGlyphV1List and LayerV1List
+The alpha channel for a layer can be populated using `PaintComposite`:
 
-### COLR version 1
+- `PaintSolid` can be used to set a blanket alpha
+- `PaindLinearGradient` and `PaintRadialGradient` can be used to set gradient alpha
+- Mode [Source In](https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_srcin) can be used to mask
 
-| Type | Field name | Description |
-|-|-|-|
-| uint16 | version | Table version number—set to 1. |
-| uint16 | numBaseGlyphRecords | May be 0 in a version 1 table. |
-| Offset32 | baseGlyphRecordsOffset | Offset to baseGlyphRecords array (may be NULL). |
-| Offset32 | layerRecordsOffset | Offset to layerRecords array (may be NULL). |
-| uint16 | numLayerRecords | May be 0 in a version 1 table. |
-| Offset32 | baseGlyphV1ListOffset | Offset to BaseGlyphV1List table. |
-| Offset32 | itemVariationStoreOffset | Offset to ItemVariationStore (may be NULL). |
+##### Reusable Parts
 
-### BaseGlyphV1List table
+Use `PaintTransformed` to reuse parts in different positions or sizes.
 
-| Type | Name | Description |
-|-|-|-|
-| uint32 | numBaseGlyphV1Records |  |
-| BaseGlyphV1Record | baseGlyphV1Records[numBaseGlyphV1Records] | |
+Use `PaintColrGlyph` to reuse entire COLR glyphs.
 
-### BaseGlyphV1Record
+For example, consider the Noto clock emoji (hand colored for emphasis):
 
-| Type | Name | Description |
-|-|-|-|
-| uint16 | glyphID | Glyph ID of the base glyph. |
-| Offset32 | layerListOffset | Offset to LayerV1List table, from start of BaseGlyphsV1List table. |
+![Noto 1pm](images/clock-1.svg)
+![Noto 2pm](images/clock-2.svg)
 
-*Note:* The glyph ID is not limited to the numGlyphs value in the &#39;maxp&#39; table.
+The entire backdrop (outline, gradient-circle, 4 dots, the minute
+hand) is reusable for all versions of the clock:
 
-### LayerV1List table
+![Noto 2pm](images/clock-common.svg)
 
-| Type | Field name | Description |
-|-|-|-|
-| uint8 | numLayers |  |
-| Offset32 | paintOffset[numLayers] | Offsets to Paint tables, from the start of the LayerV1List table. |
+The hour hand is reusable as a transformed glyph.
 
-*Note:* For large layer counts PaintComposite can be used to combine multiple COLR v1 glyphs.
+Another example might be emoji faces: many have the same backdrop
+with different eyes, noses, tears, etc drawn on top.
+
+## Bibliography
+
+Add references to:
+
+- https://www.w3.org/TR/compositing-1/.
 
 # Implementation
+
+**This section is NOT meant for ISO submissions**
 
 ## C++ Structures
 
@@ -950,6 +992,8 @@ clients who like to remove FreeType dependency completely.
    * [Direct2D](https://docs.microsoft.com/en-us/windows/win32/direct2d/direct2d-portal)
 
 # Acknowledgements
+
+**This section is NOT meant for inclusion in ISO submissions**
 
 Thanks to Benjamin Wagner ([@bungeman](https://github.com/bungeman)), Dave
 Crossland ([@davelab6](https://github.com/davelab6)), and Roderick Sheeter
