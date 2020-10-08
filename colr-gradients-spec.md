@@ -892,7 +892,7 @@ struct PaintComposite
 // preclude use of large layer counts via PaintComposite.
 typedef ArrayOf<Offset32<Paint>, uint8> LayerV1List;
 
-// Each layer is OVER previous
+// Each layer is COMPOSITE_SRC_OVER previous
 struct BaseGlyphV1Record
 {
   uint16                gid;
