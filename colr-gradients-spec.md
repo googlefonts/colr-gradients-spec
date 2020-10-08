@@ -499,7 +499,7 @@ For linear gradient without skew, set x2,y2 to x1,y1.
 |Type | Field name | Description |
 |-|-|-|
 | uint16 | format | set to 3 |
-| Offset32 | colorLineOffset | offset from start of PaintRadialGradient table |
+| Offset24 | colorLineOffset | offset from start of PaintRadialGradient table |
 | VarFWord | x0 | start circle center x coordinate |
 | VarFWord | y0 | start circle center y coordinate |
 | VarUFWord | radius0 | start circle radius |
