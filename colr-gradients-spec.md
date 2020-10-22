@@ -597,7 +597,15 @@ Supported composition modes are taken from the W3C [Compositing and Blending Lev
 | VarFixed | dx | Translation in x direction. |
 | VarFixed | dy | Translation in y direction. |
 
-This is a standard 2x3 matrix for 2D affine transformation.
+This is a standard 2x3 matrix for 2D affine transformation, so that the
+transformation matrix when applying the transform looks as follows.
+
+<table>
+<tr><td>xx</td><td>yx</td><td>dx</dx></tr>
+<tr><td>xy</td><td>yy</td><td>dy</dx></tr>
+<tr><td>0</td><td>0</td><td>1</dx></tr>
+</table>
+
 
 #### Constraints
 
