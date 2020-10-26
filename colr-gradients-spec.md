@@ -25,7 +25,7 @@ December 2019
             - [Radial Gradient](#radial-gradient)
         - [Transformation](#transformation)
         - [Composition](#composition)
-        - [COLR Glyph](#colr-glyph)
+        - [COLR Slice](#colr-slice)
 - [OFF Changes](#off-changes)
     - [Data types](#off-43-data-types)
     - [COLR table](#off-5711-colr--color-table)
@@ -96,8 +96,7 @@ Several different types of paint are defined:
 1. **[Composition](#composition)** reuses two other paints, applying a
    compositing rule to combine them
    * We draw on https://www.w3.org/TR/compositing-1/ for our composite modes
-1. **[COLR Glyph](#colr-glyph)** reuses a COLR v1 glyph at a new position in the
-   graph
+1. **[COLR Slice](#colr-slice)** reuses layers from another COLR v1 glyph
 
 We have added an "alpha" (transparency) scalar to each invocation of a palette
 color. This allows for the expression of translucent versions of palette
@@ -306,13 +305,14 @@ and combined with `backdrop` given the blending rule specified in
 `mode`. Compositing modes are taken from Compositing modes are taken from the
 [W3C Compositing specification](https://www.w3.org/TR/compositing-1/).
 
-## COLR Glyph
+## COLR Slice
 
-`PaintColrGlyph` is a special paint which allows reuse of a COLR glyph of this
-proposed exension as a paint. Painting a `PaintColorGlyph` means executing the
+`PaintColrSlice` is a special paint which allows reuse of some or all of a COLR
+v1 glyph as a paint. Painting a `PaintColrSlice` means executing the
 paint operations that are described by the `BaseGlyphV1Record` matching the
-glyph id `gid` specified in `PaintColorGlyph`. See section [Reusable
-Parts](#reusable-parts).
+glyph id `gid` specified in `PaintColorGlyph` for the subset of layers specified.
+
+See section [Reusable Parts](#reusable-parts).
 
 # OFF Changes
 
@@ -517,12 +517,14 @@ For linear gradient without skew, set x2,y2 to x1,y1.
 
 Glyph outline is used as clip mask for the content in the Paint subtable. Glyph ID must be less than the numGlyphs value in the &#39;maxp&#39; table.
 
-##### PaintColrGlyph table (format 5)
+##### PaintColrSlice table (format 5)
 
 | Type | Field name | Description |
 |-|-|-|
 | uint8 | format | Set to 5. |
 | uint16 | glyphID | Virtual glyph ID for a BaseGlyphV1List base glyph. |
+| uint8 | firstLayer | First layer to take from the glyph identified by glyphID  |
+| uint8 | lastLayer | Last layer to take from the glyph identified by glyphID |
 
 Glyph ID must be in the BaseGlyphV1List; may be greater than maxp.numGlyphs.
 
@@ -606,10 +608,10 @@ be noted.
 
 ##### Acyclic Graphs Only
 
-`PaintColrGlyph` allows recursive composition of COLR glyphs. This
+`PaintColrSlice` allows recursive composition of COLR glyphs. This
 is desirable for reusable parts but introduces the possibility of
 a cyclic graph. Implementations should track the COLR gids they have
-seen in processing and fail if a gid is reached repeatedly.
+seen in processing and fail if a cycle is detected.
 
 ##### Bounded Layers Only
 
@@ -620,7 +622,7 @@ not render.
 The following paints are always bounded:
 
 - `PaintGlyph`
-- `PaintColrGlyph`
+- `PaintColrSlice`
 
 The following paints are always unbounded:
 
@@ -675,7 +677,7 @@ The alpha channel for a layer can be populated using `PaintComposite`:
 
 Use `PaintTransformed` to reuse parts in different positions or sizes.
 
-Use `PaintColrGlyph` to reuse entire COLR glyphs.
+Use `PaintColrSlice` to reuse layers from other COLR glyphs.
 
 For example, consider the Noto clock emoji (hand colored for emphasis):
 
@@ -864,10 +866,12 @@ struct PaintGlyph
                               // must be less than maxp.numGlyphs
 }
 
-struct PaintColrGlyph
+struct PaintColrSlice
 {
   uint8               format; // = 5
   uint16              gid;    // shall be a COLR gid
+  uint8               firstLayer;
+  uint8               lastLayer;
 }
 
 struct PaintTransformed
