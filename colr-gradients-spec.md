@@ -870,7 +870,7 @@ struct PaintColrSlice
 {
   uint8               format; // = 5
   uint16              gid;    // shall be a COLR gid
-  uint8               firstLayer;
+  uint8               firstLayerIndex;
   uint8               lastLayer;
 }
 
