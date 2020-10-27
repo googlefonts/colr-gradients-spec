@@ -523,10 +523,14 @@ Glyph outline is used as clip mask for the content in the Paint subtable. Glyph 
 |-|-|-|
 | uint8 | format | Set to 5. |
 | uint16 | glyphID | Virtual glyph ID for a BaseGlyphV1List base glyph. |
-| uint8 | firstLayer | First layer to take from the glyph identified by glyphID  |
-| uint8 | lastLayerIndex | Index of the last layer to take from the glyph identified by glyphID |
+| uint8 | firstLayerIndex | First layer to take from the glyph identified by glyphID. 0-based. |
+| uint8 | lastLayerIndex | Index of the last layer to take from the glyph identified by glyphID, inclusive. 0-based. |
 
-Glyph ID must be in the BaseGlyphV1List; may be greater than maxp.numGlyphs.
+Glyph ID must be in the BaseGlyphV1List; may be greater than maxp.numGlyphs. If firstLayerIndex is greater than the number of layers
+available in the base glyph or lastLayerIndex < firstLayerIndex
+the `PaintColrSlice` is invalid. If lastLayerIndex > the number of
+layers available in the base glyph then all layers from firstLayerIndex
+to the last available layer should be retained.
 
 ##### PaintTransformed table (format 6)
 
