@@ -524,7 +524,7 @@ Glyph outline is used as clip mask for the content in the Paint subtable. Glyph 
 | uint8 | format | Set to 5. |
 | uint16 | glyphID | Virtual glyph ID for a BaseGlyphV1List base glyph. |
 | uint8 | firstLayer | First layer to take from the glyph identified by glyphID  |
-| uint8 | lastLayer | Last layer to take from the glyph identified by glyphID |
+| uint8 | lastLayerIndex | Index of the last layer to take from the glyph identified by glyphID |
 
 Glyph ID must be in the BaseGlyphV1List; may be greater than maxp.numGlyphs.
 
