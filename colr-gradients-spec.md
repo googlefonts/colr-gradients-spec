@@ -532,6 +532,9 @@ the `PaintColrSlice` is invalid. If lastLayerIndex > the number of
 layers available in the base glyph then all layers from firstLayerIndex
 to the last available layer should be retained.
 
+A range 0..255 therefore means "all available layers." A range 0..0 means
+just the first layer.
+
 ##### PaintTransformed table (format 6)
 
 | Type | Field name | Description |
