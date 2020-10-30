@@ -590,10 +590,10 @@ Supported composition modes are taken from the W3C [Compositing and Blending Lev
 
 | Type | Name | Description |
 |-|-|-|
-| VarFixed | xx | x part of x-basis vector |
-| VarFixed | xy | x part of y-basis vector |
-| VarFixed | yx | y part of x-basis vector |
-| VarFixed | yy | y part of y-basis vector |
+| VarFixed | xx | Coefficient of x for x-coordinate of v' |
+| VarFixed | yx | Coefficient of x for y-coordinate of v' |
+| VarFixed | xy | Coefficient of y for x-coordinate of v' |
+| VarFixed | yy | Coefficient of y for y-coordinate of v' |
 | VarFixed | dx | Translation in x direction. |
 | VarFixed | dy | Translation in y direction. |
 
@@ -601,7 +601,7 @@ The `Affine2x3` record is a 2x3 matrix for 2D affine transformations, so
 that for a transformation matrix _M_ and an existing vector _v = (x, y)_
 the mapped vector _v'_ is calculated as
 
-_v' = M * v = (xx * x + xy * y + dx, xy * x + yy * y + dy)_
+_v' = M * v = (xx * x + xy * y + dx, yx * x + yy * y + dy)_
 
 _Note:_ After the transform, vectors _î = (xx, yx)_ and _ĵ = (xy, yy)_ can be
 considered the basis vectors at origin _(dx, dy)_.
