@@ -824,8 +824,8 @@ enum CompositeMode : uint8
 struct Affine2x3
 {
   VarFixed xx;
-  VarFixed xy;
   VarFixed yx;
+  VarFixed xy;
   VarFixed yy;
   VarFixed dx;
   VarFixed dy;
