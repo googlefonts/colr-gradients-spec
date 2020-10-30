@@ -597,9 +597,9 @@ Supported composition modes are taken from the W3C [Compositing and Blending Lev
 | VarFixed | dx | Translation in x direction. |
 | VarFixed | dy | Translation in y direction. |
 
-The `Affine2x3` record is a 2x3 matrix for 2D affine transformation, so that for
-a transformation matrix _M_ and an existing vector _v = (x, y)_ the mapped
-vector _v'_ is calculated as
+The `Affine2x3` record is a 2x3 matrix for 2D affine transformations, so
+that for a transformation matrix _M_ and an existing vector _v = (x, y)_
+the mapped vector _v'_ is calculated as
 
 _v' = M * v = (xx * x + xy * y + dx, xy * x + yy * y + dy)_
 
