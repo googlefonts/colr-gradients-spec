@@ -590,10 +590,10 @@ Supported composition modes are taken from the W3C [Compositing and Blending Lev
 
 | Type | Name | Description |
 |-|-|-|
-| VarFixed | xx | Coefficient of x for x-coordinate of v' |
-| VarFixed | yx | Coefficient of x for y-coordinate of v' |
-| VarFixed | xy | Coefficient of y for x-coordinate of v' |
-| VarFixed | yy | Coefficient of y for y-coordinate of v' |
+| VarFixed | xx | x-part of x-basis vector |
+| VarFixed | yx | y-part of x-basis vector |
+| VarFixed | xy | x-part of y-basis vector |
+| VarFixed | yy | y-part of y-basis vector |
 | VarFixed | dx | Translation in x direction. |
 | VarFixed | dy | Translation in y direction. |
 
