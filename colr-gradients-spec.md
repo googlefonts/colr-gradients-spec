@@ -386,7 +386,7 @@ Offsets are always relative to the start of the containing struct.
 | Type | Name | Description |
 |-|-|-|
 | uint16 | glyphID | Glyph ID of the base glyph. |
-| Offset32 | layerListOffset | Offset to LayerV1List table, from start of BaseGlyphsV1List table. |
+| Offset32 | paintOffset | Offset to Paint, typically a `PaintColrLayers` |
 
 *Note:* The glyph ID is not limited to the numGlyphs value in the &#39;maxp&#39; table.
 
