@@ -567,7 +567,7 @@ If compositeMode value is not recognized, COMPOSITE_CLEAR is used.
 |-|-|-|
 | uint8 | format | Set to 8. |
 | uint8 | numLayers | Number of offsets to Paint to read from layers. |
-| uint32 | firstLayerIndex | Index into the LayerV1List referenced by the COLR v1 header. |
+| uint32 | firstLayerIndex | Index into the LayerV1List. |
 
 Each layer is composited on top of previous with mode COMPOSITE_SRC_OVER.
 
