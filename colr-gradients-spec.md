@@ -590,14 +590,22 @@ Supported composition modes are taken from the W3C [Compositing and Blending Lev
 
 | Type | Name | Description |
 |-|-|-|
-| VarFixed | xx | |
-| VarFixed | xy | |
-| VarFixed | yx | |
-| VarFixed | yy | |
+| VarFixed | xx | x-part of x-basis vector |
+| VarFixed | yx | y-part of x-basis vector |
+| VarFixed | xy | x-part of y-basis vector |
+| VarFixed | yy | y-part of y-basis vector |
 | VarFixed | dx | Translation in x direction. |
 | VarFixed | dy | Translation in y direction. |
 
-This is a standard 2x3 matrix for 2D affine transformation.
+The `Affine2x3` record is a 2x3 matrix for 2D affine transformations, so
+that for a transformation matrix _M_ and an existing vector _v = (x, y)_
+the mapped vector _v'_ is calculated as
+
+_v' = M * v = (xx * x + xy * y + dx, yx * x + yy * y + dy)_
+
+_Note:_ After the transform, vectors _î = (xx, yx)_ and _ĵ = (xy, yy)_ can be
+considered the basis vectors at origin _(dx, dy)_.
+
 
 #### Constraints
 
@@ -816,8 +824,8 @@ enum CompositeMode : uint8
 struct Affine2x3
 {
   VarFixed xx;
-  VarFixed xy;
   VarFixed yx;
+  VarFixed xy;
   VarFixed yy;
   VarFixed dx;
   VarFixed dy;
