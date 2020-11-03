@@ -26,6 +26,7 @@ December 2019
         - [Transformation](#transformation)
         - [Composition](#composition)
         - [COLR Glyph](#colr-glyph)
+        - [COLR Layers](#colr-layers)
 - [OFF Changes](#off-changes)
     - [Data types](#off-43-data-types)
     - [COLR table](#off-5711-colr--color-table)
@@ -96,8 +97,8 @@ Several different types of paint are defined:
 1. **[Composition](#composition)** reuses two other paints, applying a
    compositing rule to combine them
    * We draw on https://www.w3.org/TR/compositing-1/ for our composite modes
-1. **[COLR Glyph](#colr-glyph)** reuses a COLR v1 glyph at a new position in the
-   graph
+1. **[COLR Glyph](#colr-glyph)** reuses a COLR v1 glyph at a new position in the graph
+1. **[COLR Layers](#colr-layers)** paint one or more layers
 
 We have added an "alpha" (transparency) scalar to each invocation of a palette
 color. This allows for the expression of translucent versions of palette
@@ -309,10 +310,22 @@ and combined with `backdrop` given the blending rule specified in
 ## COLR Glyph
 
 `PaintColrGlyph` is a special paint which allows reuse of a COLR glyph of this
-proposed exension as a paint. Painting a `PaintColorGlyph` means executing the
+proposed exension as a paint. Painting a `PaintColrGlyph` means executing the
 paint operations that are described by the `BaseGlyphV1Record` matching the
-glyph id `gid` specified in `PaintColorGlyph`. See section [Reusable
-Parts](#reusable-parts).
+glyph id `gid` specified in `PaintColrGlyph`. See section [Reusable Parts](#reusable-parts).  
+
+## COLR Layers
+
+`PaintColrLayers` points to a sequence of Paint pointers and specifies how many
+to consume. The mechanism can be used to share layers or sequences of layers
+between multiple COLR glyphs.
+
+*Example:* Suppose glyph
+A has 10 layers, 3 of which are a common backdrop that glyph B also uses. Glyph B
+can define a PaintColrLayers record that points to the same layers as A for the
+common parts.
+
+See section [Reusable Parts](#reusable-parts).
 
 # OFF Changes
 
@@ -358,6 +371,7 @@ Offsets are always relative to the start of the containing struct.
 | Offset32 | layerRecordsOffset | Offset to layerRecords array (may be NULL). |
 | uint16 | numLayerRecords | May be 0 in a version 1 table. |
 | Offset32 | baseGlyphV1ListOffset | Offset to BaseGlyphV1List table. |
+| Offset32 | layersV1Offset | Offset to LayerV1List table. |
 | Offset32 | itemVariationStoreOffset | Offset to ItemVariationStore (may be NULL). |
 
 ##### BaseGlyphV1List table
@@ -372,7 +386,7 @@ Offsets are always relative to the start of the containing struct.
 | Type | Name | Description |
 |-|-|-|
 | uint16 | glyphID | Glyph ID of the base glyph. |
-| Offset32 | layerListOffset | Offset to LayerV1List table, from start of BaseGlyphsV1List table. |
+| Offset32 | paintOffset | Offset to Paint, typically a `PaintColrLayers` |
 
 *Note:* The glyph ID is not limited to the numGlyphs value in the &#39;maxp&#39; table.
 
@@ -380,10 +394,11 @@ Offsets are always relative to the start of the containing struct.
 
 | Type | Field name | Description |
 |-|-|-|
-| uint8 | numLayers |  |
-| Offset32 | paintOffset[numLayers] | Offsets to Paint tables, from the start of the LayerV1List table. |
+| uint32 | numLayers |  |
+| Offset32 | paintOffset[numLayers] | Offsets to Paint tables. |
 
-*Note:* For large layer counts PaintComposite can be used to combine multiple COLR v1 glyphs.
+Only layers referenced by `PaintColrLayers` (format 8) records need to 
+be encoded here.
 
 #### Variation structures
 
@@ -526,6 +541,7 @@ Glyph outline is used as clip mask for the content in the Paint subtable. Glyph 
 
 Glyph ID must be in the BaseGlyphV1List; may be greater than maxp.numGlyphs.
 
+
 ##### PaintTransformed table (format 6)
 
 | Type | Field name | Description |
@@ -544,6 +560,20 @@ Glyph ID must be in the BaseGlyphV1List; may be greater than maxp.numGlyphs.
 | Offset24 | backdropPaintOffset | Offset to a backdrop Paint table, from start of PaintComposite table. |
 
 If compositeMode value is not recognized, COMPOSITE_CLEAR is used.
+
+##### PaintColrLayers table (format 8)
+
+| Type | Field name | Description |
+|-|-|-|
+| uint8 | format | Set to 8. |
+| uint8 | numLayers | Number of offsets to Paint to read from layers. |
+| uint32 | firstLayerIndex | Index into the LayerV1List. |
+
+Each layer is composited on top of previous with mode COMPOSITE_SRC_OVER.
+
+*Note:* uint8 size saves bytes in most cases. Large layer counts can be
+achieved by way of PaintComposite or a tree of PaintColrLayers.
+
 
 #### Composite modes
 
@@ -614,16 +644,35 @@ be noted.
 
 ##### Acyclic Graphs Only
 
-`PaintColrGlyph` allows recursive composition of COLR glyphs. This
-is desirable for reusable parts but introduces the possibility of
-a cyclic graph. Implementations should track the COLR gids they have
-seen in processing and fail if a gid is reached repeatedly.
+`PaintColrGlyph` and `PaintColrLayers` allow recursive composition of
+COLR glyphs. This is desirable for reusable parts but introduces the
+possibility of a cyclic graph. Implementations should fail if a cycle
+is detected.
+
+*Note:* Cycle detection can be achieved by keeping a set of addresses of visited paints.
+Before processing a paint check if it's address is in the set, if it is we have a cycle
+and should fail. Once done processing a given paint, including children, take it's address
+out of the set. This allows the same paint to be reached repeatedly as long as no
+cycle is formed. Pseudocode:
+
+```
+# called initially with the base glyph paint and an empty set.
+def paint(paint, active_paints)
+  if paint in active_paints
+    fail, we have a cyle
+  add paint to active_paints
+
+  process paint, potentially calling paint again for referenced paints
+
+  remove paint from active_paints
+```
 
 ##### Bounded Layers Only
 
-Every entry in the `LayerV1List` must define a bounded region.
-Implementations must confirm this invariant. Unbounded layers must
-not render.
+The `BaseGlyphV1Record` paint must define a bounded region. That is,
+is must paint within an area for which a finite bounding box could be
+defined. Implementations must confirm this invariant.
+A `BaseGlyphV1Record` with an unbounded paint must not render.
 
 The following paints are always bounded:
 
@@ -653,6 +702,7 @@ The following paints *may* be bounded:
       - `COMPOSITE_DEST_IN`
    - Bounded IFF src AND backdrop are bounded
       - *all other modes*
+- `PaintColrLayers` is bounded IFF all referenced layers are bounded
 
 ##### Bounding Box
 
@@ -684,6 +734,9 @@ The alpha channel for a layer can be populated using `PaintComposite`:
 Use `PaintTransformed` to reuse parts in different positions or sizes.
 
 Use `PaintColrGlyph` to reuse entire COLR glyphs.
+
+Use `PaintColrLayers` to reuse parts of COLR glyphs. For example, a common
+backdrop made up of several layers.
 
 For example, consider the Noto clock emoji (hand colored for emphasis):
 
@@ -893,21 +946,27 @@ struct PaintComposite
   Offset24<Paint>     backdrop;
 };
 
-// Layer DAG
-
-// Glyph root
+// Each layer is composited on top of previous with mode COMPOSITE_SRC_OVER.
 // NOTE: uint8 size saves bytes in most cases and does not
-// preclude use of large layer counts via PaintComposite.
-typedef ArrayOf<Offset32<Paint>, uint8> LayerV1List;
+// preclude use of large layer counts via PaintComposite or a tree
+// of PaintColrLayers.
+struct PaintColrLayers
+{
+  uint8               format; // = 8
+  uint8               numLayers;
+  uint32              firstLayerIndex;  // index into COLRv1::layersV1
+}
 
-// Each layer is COMPOSITE_SRC_OVER previous
 struct BaseGlyphV1Record
 {
   uint16                gid;
-  Offset32<LayerV1List> layers;
+  Offset32<Paint>       paint;  // Typically PaintColrLayers
 };
 
 typedef ArrayOf<BaseGlyphV1Record, uint32> BaseGlyphV1List;
+
+// Only layers accessed via PaintColrLayers (format 8) need be encoded here.
+typedef ArrayOf<Offset32<Paint>, uint32> LayerV1List;
 
 struct COLRv1
 {
@@ -919,6 +978,7 @@ struct COLRv1
   uint16                                            numLayersV0;
   // Version-1 additions
   Offset32<BaseGlyphV1List>                         baseGlyphsV1;
+  Offset32<LayerV1List>                             layersV1;
   Offset32<ItemVariationStore>                      varStore;
 };
 
@@ -938,7 +998,7 @@ font formats, including COLR v1.
 
 ```
 Allocate a bitmap for the glyph according to glyf table entry extents for gid
-0) Traverse layers for gid, add current gid to blacklist *1
+0) Start at base glyph paint.
  a) Paint a paint, switch:
     1) PaintGlyph
          gid must not COLRv1
@@ -946,7 +1006,7 @@ Allocate a bitmap for the glyph according to glyf table entry extents for gid
          setClipPath to gid path
            recurse to a)
          restore
-    2) PaintColorGlyph
+    2) PaintColrGlyph
          gid must be from
          if gid on recursion blacklist, do nothing
          recurse to 0) with different gid
@@ -968,8 +1028,8 @@ Allocate a bitmap for the glyph according to glyf table entry extents for gid
           (expected to be bounded by parent composite mode or clipped by current clip, check bounds?)
     7) PaintSolid
           SkCanvas::drawColor with color configured
-
- *1 (in the implementation, potentially collapse each pair as PaintComposite (3) with first gid as backdrop, second as src, or just draw on root SkCanvas directly)
+    8) PaintColrLayers
+        Paint each referenced layer by performing a)
 ```
 
 ### FreeType
