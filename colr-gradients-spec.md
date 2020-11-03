@@ -395,7 +395,7 @@ Offsets are always relative to the start of the containing struct.
 | Type | Field name | Description |
 |-|-|-|
 | uint32 | numLayers |  |
-| Offset32 | paintOffset[numLayers] | Offsets to Paint tables. |
+| Offset32 | paintOffsets[numLayers] | Offsets to Paint tables. |
 
 Only layers referenced by `PaintColrLayers` (format 1) records need to be
 encoded here.
@@ -620,21 +620,24 @@ Supported composition modes are taken from the W3C [Compositing and Blending Lev
 
 | Type | Name | Description |
 |-|-|-|
-| VarFixed | xx | x-part of x-basis vector |
-| VarFixed | yx | y-part of x-basis vector |
-| VarFixed | xy | x-part of y-basis vector |
-| VarFixed | yy | y-part of y-basis vector |
+| VarFixed | xx | x-component of transformed x-basis vector (*î*) |
+| VarFixed | yx | y-component of transformed x-basis vector (*î*) |
+| VarFixed | xy | x-component of transformed y-basis vector (*ĵ*) |
+| VarFixed | yy | y-component of transformed y-basis vector (*ĵ*) |
 | VarFixed | dx | Translation in x direction. |
 | VarFixed | dy | Translation in y direction. |
 
 The `Affine2x3` record is a 2x3 matrix for 2D affine transformations, so
-that for a transformation matrix _M_ and an existing vector _v = (x, y)_
-the mapped vector _v'_ is calculated as
+that for a transformation matrix _M_ and an extended starting vector _v = (x, y, 1)_
+the mapped vector _v′_ is calculated as _v′ = M * v_. That is:
 
-_v' = M * v = (xx * x + xy * y + dx, yx * x + yy * y + dy)_
+_v′<sub>x</sub>_ = _xx * x + xy * y + dx_  
+_v′<sub>y</sub>_ = _yx * x + yy * y + dy_
 
-_Note:_ After the transform, vectors _î = (xx, yx)_ and _ĵ = (xy, yy)_ can be
-considered the basis vectors at origin _(dx, dy)_.
+_Note:_ It is helpful to understand linear transformations by their effect
+on *x-* and *y-basis* vectors _î = (1, 0)_ and _ĵ = (0, 1)_. The transform
+described by the Affine2x3 record maps the basis vectors to _î′ = (xx, yx)_ 
+and _ĵ′ = (xy, yy)_, and translates the origin to _(dx, dy)_.
 
 
 #### Constraints
@@ -656,13 +659,13 @@ out of the set. This allows the same paint to be reached repeatedly as long as n
 cycle is formed. Pseudocode:
 
 ```
-# called initially with the base glyph paint and an empty set.
-def paint(paint, active_paints)
+# called initially with the base glyph paint and an empty set
+function paintIsAcyclic(paint, active_paints)
   if paint in active_paints
-    fail, we have a cyle
+    fail: we have a cycle
   add paint to active_paints
 
-  process paint, potentially calling paint again for referenced paints
+  process paint, calling paintIsAcyclic() recursively for referenced paints
 
   remove paint from active_paints
 ```
