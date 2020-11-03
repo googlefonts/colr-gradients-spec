@@ -569,7 +569,7 @@ If compositeMode value is not recognized, COMPOSITE_CLEAR is used.
 | uint8 | numLayers | Number of offsets to Paint to read from layers. |
 | uint32 | firstLayerIndex | Index into the LayerV1List referenced by the COLR v1 header. |
 
-Each layer is COMPOSITE_SRC_OVER previous.
+Each layer is composited on top of previous with mode COMPOSITE_SRC_OVER.
 
 *Note:* uint8 size saves bytes in most cases. Large layer counts can be
 achieved by way of PaintComposite or a tree of PaintColrLayers.
@@ -662,7 +662,7 @@ def paint(paint, active_paints)
 ##### Bounded Layers Only
 
 The `BaseGlyphV1Record` paint must define a bounded region. That is,
-is must paint within an area for which a bounding box could be
+is must paint within an area for which a finite bounding box could be
 defined. Implementations must confirm this invariant.
 A `BaseGlyphV1Record` with an unbounded paint must not render.
 
@@ -938,7 +938,7 @@ struct PaintComposite
   Offset24<Paint>     backdrop;
 };
 
-// Each layer is COMPOSITE_SRC_OVER previous
+// Each layer is composited on top of previous with mode COMPOSITE_SRC_OVER.
 // NOTE: uint8 size saves bytes in most cases and does not
 // preclude use of large layer counts via PaintComposite or a tree
 // of PaintColrLayers.
