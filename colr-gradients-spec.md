@@ -282,17 +282,22 @@ repeat and reflect (top to bottom) with color stops for blue at 0, yellow at 0.5
 and red at 1. (Illustration generated from <a
 href="images/radial_gradients.svg">images/radial_gradients.svg</a>)*
 
-*__Note:__ It follows from the algorithm that: a) When both radii are 0, r₀ = r₁
-= 0, then r(ω) is always 0 and nothing is painted. b) If the centers of the
-circles are distinct, one has a zero radius and lies outside the radius of the
-other, the other has a non-zero radius, the resulting shape resembles a cone
-that is open to one side, see Figure 3 below. c) If the circles centers are
-identical, one has a zero radius, one has a non-zero radius, then the gradient
-is well-defined and is painted according to the algorithm.*
+Note that, because the rendering algorithm progresses ω in a particular direction,
+from positive to negative, and because pixels are not re-painted as ω progresses, 
+which circle is considered circle 0 and which is circle 1 makes a difference in
+the appearance. In the following figure, two gradients are shown with the circles
+swapped (and order of stops reversed). The difference in appearance may be useful
+for creating different perceived 3D effects.
 
-*__Note:__ When a radial gradient is nested below a transformation which flattens
-the circles so that they resemble lines, a radial gradient may appear as a
-strip or a cone filled with a linear gradient.*
+![Radial gradients with start and end circles swapped](images/radial_gradients_direction.png)
+
+*__Figure 4:__ Two radial gradients with start and end circles swapped. (Illustration
+generated from <a href="images/radial_gradient_direction.svg">images/radial_gradient_direction.svg</a>*
+
+**Note:** Implementations must be careful to properly render radial gradient
+even if they are subject to a *[degenerate](https://en.wikipedia.org/wiki/Invertible_matrix)*
+or *near-degenerate* transform. Such radial gradients do have a well-defined shape, which is
+a strip or a cone filled with a linear gradient.
 
 ## Transformation
 
