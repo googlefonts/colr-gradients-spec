@@ -1,0 +1,61 @@
+<svg viewBox="-301 -206 802 1271" xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink">
+  <style>
+    .label { font: 64px sans-serif; stroke-width: 0; stroke: black; fill: #1a2127; }
+  </style>
+  <defs>
+    <radialGradient id="radgrad-pad"
+                    gradientUnits="userSpaceOnUse"
+                    fx="0" fy="0" fr="35"
+                    cx="100" cy="0" r="190"
+                    spreadMethod="pad">
+      <stop offset="0%" stop-color="#DA0025"/>
+      <stop offset="50%" stop-color="#FFC600"/>
+      <stop offset="100%" stop-color="#0052AB"/>
+    </radialGradient>
+    <radialGradient id="radgrad-repeat"
+                    gradientUnits="userSpaceOnUse"
+                    fx="0" fy="0" fr="35"
+                    cx="100" cy="0" r="190"
+                    spreadMethod="repeat">
+      <stop offset="0%" stop-color="#DA0025"/>
+      <stop offset="50%" stop-color="#FFC600"/>
+      <stop offset="100%" stop-color="#0052AB"/>
+    </radialGradient>
+    <radialGradient id="radgrad-reflect"
+                    gradientUnits="userSpaceOnUse"
+                    fx="0" fy="0" fr="35"
+                    cx="100" cy="0" r="190"
+                    spreadMethod="reflect">
+      <stop offset="0%" stop-color="#DA0025"/>
+      <stop offset="50%" stop-color="#FFC600"/>
+      <stop offset="100%" stop-color="#0052AB"/>
+    </radialGradient>
+    <rect id="filled-rect" x="-300" y="-200" width="800" height="400" stroke-width="2" stroke="gray"/>
+  </defs>
+  <g transform="" class="spreadmethod-repeat">
+    <use href="#filled-rect" fill="url(#radgrad-pad)"/>
+    <g id="points" fill="none" stroke="#1a2127" stroke-width="2">
+      <circle cx="0" cy="0" r="35" />
+      <circle cx="0" cy="0" r="4" fill="#1a2127"/>
+      <line x1="0" y1="0" x2="18.386" y2="-29.781" />
+      <text class="label" x="-40" y="40">c₀</text>
+      <text class="label" x="14" y="20">r₀</text>
+      <circle cx="100" cy="0" r="190"  />
+      <circle cx="100" cy="0" r="4" fill="#1a2127"/>
+      <line x1="100" y1="0" x2="199.7785" y2="-161.61875" />
+      <text class="label" x="67" y="40">c₁</text>
+      <text class="label" x="152" y="-40">r₁</text>
+    </g>
+  </g>
+
+  <g transform="translate(0, 430)">
+    <use href="#filled-rect" fill="url(#radgrad-repeat)"/>
+    <use href="#points" />
+  </g>
+
+  <g transform="translate(0, 860)">
+    <use href="#filled-rect" fill="url(#radgrad-reflect)"/>
+    <use href="#points"/>
+  </g>
+</svg>

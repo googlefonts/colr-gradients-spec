@@ -280,7 +280,15 @@ Radial gradients must be rendered by following these steps:
 *__Figure 3:__ Example of a radial gradient rendering with extend modes pad,
 repeat and reflect (top to bottom) with color stops for blue at 0, yellow at 0.5
 and red at 1. (Illustration generated from <a
-href="images/radial_gradients.svg">images/radial_gradients.svg</a>)*
+href="images/radial_gradients.png">images/radial_gradients.svg</a>)*
+
+![Example radial gradient rendering, circles contained](images/radial_gradients_contained.png)
+
+*__Figure 4:__ Example of a radial gradient rendering with extend modes pad,
+repeat and reflect (top to bottom) with color stops for blue at 0, yellow at 0.5
+and red at 1 where the first circle is contained within the second (Illustration
+generated from <a
+href="images/radial_gradients_contained.svg">images/radial_gradients_contained.svg</a>)*
 
 **Note:** Implementations must be careful to properly render radial gradient
 even if they are subject to a *[degenerate](https://en.wikipedia.org/wiki/Invertible_matrix)*
