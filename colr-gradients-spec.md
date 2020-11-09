@@ -292,7 +292,7 @@ href="images/radial_gradients.svg">images/radial_gradients.svg</a>)*
 
 **Note:** When a radial gradient is nested below a transformation which flattens
 the circles so that they resemble lines, a radial gradient may appear as a
-strip filled with a linear gradient.
+strip or a cone filled with a linear gradient.
 
 ## Transformation
 
