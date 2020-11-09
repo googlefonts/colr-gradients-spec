@@ -280,7 +280,7 @@ Radial gradients must be rendered by following these steps:
 **Note:** It follows from the algorithm that: a) When both radii are 0, r₀ = r₁
 = 0, then r(ω) is always 0 and nothing is painted. b) If the centers of the
 circles are distinct, one has a zero radius, the other has a non-zero radius,
-the resulting shape resembles a triangle that is open to one side, see Figure 3
+the resulting shape resembles a cone that is open to one side, see Figure 3
 below. c) If the circles centers are identical, one has a zero radius, one has a
 non-zero radius, then the gradient is well-defined and is painted according to
 the algorithm.
@@ -291,8 +291,8 @@ and red at 1. (Illustration generated from <a
 href="images/radial_gradients.svg">images/radial_gradients.svg</a>)*
 
 **Note:** When a radial gradient is nested below a transformation which flattens
-the circles so that they resemble lines, a radial gradient may appear as a a
-strip or a cone filled with a linear gradient.
+the circles so that they resemble lines, a radial gradient may appear as a
+strip filled with a linear gradient.
 
 ## Transformation
 
