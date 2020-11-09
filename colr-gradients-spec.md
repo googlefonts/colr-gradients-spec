@@ -397,8 +397,8 @@ Offsets are always relative to the start of the containing struct.
 | uint32 | numLayers |  |
 | Offset32 | paintOffset[numLayers] | Offsets to Paint tables. |
 
-Only layers referenced by `PaintColrLayers` (format 8) records need to 
-be encoded here.
+Only layers referenced by `PaintColrLayers` (format 1) records need to be
+encoded here.
 
 #### Variation structures
 
@@ -487,18 +487,32 @@ The ColorIndex alpha is multiplied into the alpha of the CPAL entry (converted t
 
 #### Paint structures
 
-##### PaintSolid table (format 1)
+##### PaintColrLayers table (format 1)
 
 | Type | Field name | Description |
 |-|-|-|
 | uint8 | format | Set to 1. |
-| ColorIndex | color | Solid color fill. |
+| uint8 | numLayers | Number of offsets to Paint to read from layers. |
+| uint32 | firstLayerIndex | Index into the LayerV1List. |
 
-##### PaintLinearGradient table (format 2)
+Each layer is composited on top of previous with mode COMPOSITE_SRC_OVER.
+
+*Note:* uint8 size saves bytes in most cases. Large layer counts can be
+achieved by way of PaintComposite or a tree of PaintColrLayers.
+
+
+##### PaintSolid table (format 2)
 
 | Type | Field name | Description |
 |-|-|-|
 | uint8 | format | Set to 2. |
+| ColorIndex | color | Solid color fill. |
+
+##### PaintLinearGradient table (format 3)
+
+| Type | Field name | Description |
+|-|-|-|
+| uint8 | format | Set to 3. |
 | Offset24 | colorLineOffset | Offset to ColorLine, from start of PaintLinearGradient table. |
 | VarFWord | x0 | Start point x coordinate. |
 | VarFWord | y0 | Start point y coordinate. |
@@ -509,11 +523,11 @@ The ColorIndex alpha is multiplied into the alpha of the CPAL entry (converted t
 
 For linear gradient without skew, set x2,y2 to x1,y1.
 
-##### PaintRadialGradient table (format 3)
+##### PaintRadialGradient table (format 4)
 
 |Type | Field name | Description |
 |-|-|-|
-| uint8 | format | set to 3 |
+| uint8 | format | set to 4. |
 | Offset24 | colorLineOffset | offset from start of PaintRadialGradient table |
 | VarFWord | x0 | start circle center x coordinate |
 | VarFWord | y0 | start circle center y coordinate |
@@ -522,58 +536,44 @@ For linear gradient without skew, set x2,y2 to x1,y1.
 | VarFWord | y1 | end circle center y coordinate |
 | VarUFWord | radius1 | end circle radius |
 
-##### PaintGlyph table (format 4)
+##### PaintGlyph table (format 5)
 
 | Type | Field name | Description |
 |-|-|-|
-| uint8 | format | Set to 4. |
+| uint8 | format | Set to 5. |
 | Offset24 | paintOffset | Offset to a Paint table, from start of PaintGlyph table. |
 | uint16 | glyphID | Glyph ID for the source outline. |
 
 Glyph outline is used as clip mask for the content in the Paint subtable. Glyph ID must be less than the numGlyphs value in the &#39;maxp&#39; table.
 
-##### PaintColrGlyph table (format 5)
+##### PaintColrGlyph table (format 6)
 
 | Type | Field name | Description |
 |-|-|-|
-| uint8 | format | Set to 5. |
+| uint8 | format | Set to 6. |
 | uint16 | glyphID | Virtual glyph ID for a BaseGlyphV1List base glyph. |
 
 Glyph ID must be in the BaseGlyphV1List; may be greater than maxp.numGlyphs.
 
 
-##### PaintTransformed table (format 6)
-
-| Type | Field name | Description |
-|-|-|-|
-| uint8 | format | Set to 6. |
-| Offset24 | paintOffset | Offset to a Paint subtable, from start of PaintTransformed table. |
-| Affine2x3 | transform | An Affine2x3 record (inline). |
-
-##### PaintComposite table (format 7)
+##### PaintTransformed table (format 7)
 
 | Type | Field name | Description |
 |-|-|-|
 | uint8 | format | Set to 7. |
+| Offset24 | paintOffset | Offset to a Paint subtable, from start of PaintTransformed table. |
+| Affine2x3 | transform | An Affine2x3 record (inline). |
+
+##### PaintComposite table (format 8)
+
+| Type | Field name | Description |
+|-|-|-|
+| uint8 | format | Set to 8. |
 | Offset24 | sourcePaintOffset | Offset to a source Paint table, from start of PaintComposite table. |
 | uint8 | compositeMode | A CompositeMode enumeration value. |
 | Offset24 | backdropPaintOffset | Offset to a backdrop Paint table, from start of PaintComposite table. |
 
 If compositeMode value is not recognized, COMPOSITE_CLEAR is used.
-
-##### PaintColrLayers table (format 8)
-
-| Type | Field name | Description |
-|-|-|-|
-| uint8 | format | Set to 8. |
-| uint8 | numLayers | Number of offsets to Paint to read from layers. |
-| uint32 | firstLayerIndex | Index into the LayerV1List. |
-
-Each layer is composited on top of previous with mode COMPOSITE_SRC_OVER.
-
-*Note:* uint8 size saves bytes in most cases. Large layer counts can be
-achieved by way of PaintComposite or a tree of PaintColrLayers.
-
 
 #### Composite modes
 
@@ -886,15 +886,26 @@ struct Affine2x3
 
 // Paint tables
 
+// Each layer is composited on top of previous with mode COMPOSITE_SRC_OVER.
+// NOTE: uint8 size saves bytes in most cases and does not
+// preclude use of large layer counts via PaintComposite or a tree
+// of PaintColrLayers.
+struct PaintColrLayers
+{
+  uint8               format; // = 1
+  uint8               numLayers;
+  uint32              firstLayerIndex;  // index into COLRv1::layersV1
+}
+
 struct PaintSolid
 {
-  uint8      format; // = 1
+  uint8      format; // = 2
   ColorIndex color;
 };
 
 struct PaintLinearGradient
 {
-  uint8               format; // = 2
+  uint8               format; // = 3
   Offset24<ColorLine> colorLine;
   VarFWORD            x0;
   VarFWORD            y0;
@@ -906,7 +917,7 @@ struct PaintLinearGradient
 
 struct PaintRadialGradient
 {
-  uint8               format; // = 3
+  uint8               format; // = 4
   Offset24<ColorLine> colorLine;
   VarFWORD            x0;
   VarFWORD            y0;
@@ -919,7 +930,7 @@ struct PaintRadialGradient
 // Paint a non-COLR glyph, filled as indicated by paint.
 struct PaintGlyph
 {
-  uint8               format; // = 4
+  uint8               format; // = 5
   Offset24<Paint>     paint;
   uint16              gid;    // not a COLR-only gid
                               // must be less than maxp.numGlyphs
@@ -927,35 +938,24 @@ struct PaintGlyph
 
 struct PaintColrGlyph
 {
-  uint8               format; // = 5
+  uint8               format; // = 6
   uint16              gid;    // shall be a COLR gid
 }
 
 struct PaintTransformed
 {
-  uint8               format; // = 6
+  uint8               format; // = 7
   Offset24<Paint>     src;
   Affine2x3           transform;
 };
 
 struct PaintComposite
 {
-  uint8               format; // = 7
+  uint8               format; // = 8
   Offset24<Paint>     src;
   CompositeMode       mode;   // If mode is unrecognized use COMPOSITE_CLEAR
   Offset24<Paint>     backdrop;
 };
-
-// Each layer is composited on top of previous with mode COMPOSITE_SRC_OVER.
-// NOTE: uint8 size saves bytes in most cases and does not
-// preclude use of large layer counts via PaintComposite or a tree
-// of PaintColrLayers.
-struct PaintColrLayers
-{
-  uint8               format; // = 8
-  uint8               numLayers;
-  uint32              firstLayerIndex;  // index into COLRv1::layersV1
-}
 
 struct BaseGlyphV1Record
 {
@@ -965,7 +965,7 @@ struct BaseGlyphV1Record
 
 typedef ArrayOf<BaseGlyphV1Record, uint32> BaseGlyphV1List;
 
-// Only layers accessed via PaintColrLayers (format 8) need be encoded here.
+// Only layers accessed via PaintColrLayers (format 1) need be encoded here.
 typedef ArrayOf<Offset32<Paint>, uint32> LayerV1List;
 
 struct COLRv1
@@ -1000,36 +1000,36 @@ font formats, including COLR v1.
 Allocate a bitmap for the glyph according to glyf table entry extents for gid
 0) Start at base glyph paint.
  a) Paint a paint, switch:
-    1) PaintGlyph
+    1) PaintColrLayers
+         Paint each referenced layer by performing a)
+    2) PaintSolid
+          SkCanvas::drawColor with color configured
+    3) PaintLinearGradient
+          SkCanvas::drawPaint with liner gradient configured
+          (expected to be bounded by parent composite mode or clipped by current clip, check bounds?)
+    4) PaintRadialGradient
+          SkCanvas::drawPaint with radial gradient configured
+          (expected to be bounded by parent composite mode or clipped by current clip, check bounds?)
+    5) PaintGlyph
          gid must not COLRv1
          saveLayer
          setClipPath to gid path
            recurse to a)
          restore
-    2) PaintColrGlyph
+    6) PaintColrGlyph
          gid must be from
          if gid on recursion blacklist, do nothing
          recurse to 0) with different gid
-    3) PaintComposite
-          paint Paint for backdrop, call a)
-          saveLayer() with setting composite mode, on SkPaint
-          paint Paint for src, call a)
-          restore with save composite mode
-    4) PaintTransformed
+    7) PaintTransformed
           saveLayer()
           apply transform
           call a) for paint
           restore
-    5) PaintRadialGradient
-          SkCanvas::drawPaint with radial gradient configured
-          (expected to be bounded by parent composite mode or clipped by current clip, check bounds?)
-    6) PaintLinearGradient
-          SkCanvas::drawPaint with liner gradient configured
-          (expected to be bounded by parent composite mode or clipped by current clip, check bounds?)
-    7) PaintSolid
-          SkCanvas::drawColor with color configured
-    8) PaintColrLayers
-        Paint each referenced layer by performing a)
+    8) PaintComposite
+          paint Paint for backdrop, call a)
+          saveLayer() with setting composite mode, on SkPaint
+          paint Paint for src, call a)
+          restore with save composite mode
 ```
 
 ### FreeType
