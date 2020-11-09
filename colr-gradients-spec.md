@@ -277,15 +277,22 @@ Radial gradients must be rendered by following these steps:
 
 ![Example radial gradient rendering](images/radial_gradients.png)
 
+**Note:** It follows from the algorithm that: a) When both radii are 0, r₀ = r₁
+= 0, then r(ω) is always 0 and nothing is painted. b) If the centers of the
+circles are distinct, one has a zero radius, the other has a non-zero radius,
+the resulting shape resembles a triangle that is open to one side, see Figure 3
+below. c) If the circles centers are identical, one has a zero radius, one has a
+non-zero radius, then the gradient is well-defined and is painted according to
+the algorithm.
+
 *__Figure 3:__ Example of a radial gradient rendering with extend modes pad,
 repeat and reflect (top to bottom) with color stops for blue at 0, yellow at 0.5
 and red at 1. (Illustration generated from <a
 href="images/radial_gradients.svg">images/radial_gradients.svg</a>)*
 
-**Note:** Implementations must be careful to properly render radial gradient
-even if they are subject to a *[degenerate](https://en.wikipedia.org/wiki/Invertible_matrix)*
-or *near-degenerate* transform. Such radial gradients do have a well-defined shape, which is
-a strip or a cone filled with a linear gradient.
+**Note:** When a radial gradient is nested below a transformation which flattens
+the circles so that they resemble lines, a radial gradient may appear as a a
+strip or a cone filled with a linear gradient.
 
 ## Transformation
 
