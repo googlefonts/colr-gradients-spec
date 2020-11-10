@@ -286,8 +286,7 @@ Note that, because the rendering algorithm progresses ω in a particular directi
 from positive to negative, and because pixels are not re-painted as ω progresses, 
 which circle is considered circle 0 and which is circle 1 makes a difference in
 the appearance. In the following figure, two gradients are shown with the circles
-swapped (and order of stops reversed). The difference in appearance may be useful
-for creating different perceived 3D effects.
+swapped (and order of stops reversed).
 
 ![Radial gradients with start and end circles swapped](images/radial_gradients_direction.png)
 

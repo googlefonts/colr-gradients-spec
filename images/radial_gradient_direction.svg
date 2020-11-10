@@ -1,4 +1,4 @@
-<svg viewBox="-301 -206 802 1271" xmlns="http://www.w3.org/2000/svg"
+<svg viewBox="-301 -206 802 841" xmlns="http://www.w3.org/2000/svg"
      xmlns:xlink="http://www.w3.org/1999/xlink">
   <style>
     .label { font-size: 64px; font-family: sans-serif; stroke-width: 0; stroke: black; fill: #1a2127; }
@@ -33,16 +33,22 @@
   <g id="points" fill="none" stroke-width="2" stroke="#1a2127">
     <circle cx="0" cy="0" r="35" />
     <circle cx="0" cy="0" r="4" fill="#1a2127"/>
+    <line x1="0" y1="0" x2="18.386" y2="-29.781" />
     <circle cx="250" cy="0" r="80" />
     <circle cx="250" cy="0" r="4" fill="#1a2127"/>
+    <line x1="250" y1="0" x2="292.012" y2="-68.05" />
   </g>
   <text class="label" x="-40" y="40">c₀</text>
+  <text class="label" x="14" y="20">r₀</text>
   <text class="label" x="217" y="40">c₁</text>
+  <text class="label" x="277" y="0">r₁</text>
   
   <g transform="translate(0, 430)">
     <use href="#filled-rect" fill="url(#radgrad-pad2)" />
     <use href="#points" />
     <text class="label" x="-40" y="40">c₁</text>
+    <text class="label" x="14" y="20">r₁</text>
     <text class="label" x="217" y="40">c₀</text>
+    <text class="label" x="277" y="0">r₀</text>
   </g>
 </svg>
