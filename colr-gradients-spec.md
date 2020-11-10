@@ -285,8 +285,8 @@ href="images/radial_gradients.svg">images/radial_gradients.svg</a>)*
 Note that, because the rendering algorithm progresses ω in a particular direction,
 from positive to negative, and because pixels are not re-painted as ω progresses, 
 which circle is considered circle 0 and which is circle 1 makes a difference in
-the appearance. In the following figure, two gradients are shown with the circles
-swapped (and order of stops reversed).
+the appearance. In the following figure, two gradients are shown with the start and end circles
+swapped. In the top gradient, circle 0 is the small circle, on the left; in the bottom gradient, circle 0 is the large circle, on the right. (The order of stops are reversed so that, in both gradients, red is at the left end and blue at the right end.)
 
 ![Radial gradients with start and end circles swapped](images/radial_gradients_direction.png)
 
