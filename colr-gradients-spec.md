@@ -620,10 +620,10 @@ Supported composition modes are taken from the W3C [Compositing and Blending Lev
 
 | Type | Name | Description |
 |-|-|-|
-| VarFixed | xx | x-component of transformed x-basis vector (*î*) |
-| VarFixed | yx | y-component of transformed x-basis vector (*î*) |
-| VarFixed | xy | x-component of transformed y-basis vector (*ĵ*) |
-| VarFixed | yy | y-component of transformed y-basis vector (*ĵ*) |
+| VarFixed | xx | x-component of transformed x-basis vector |
+| VarFixed | yx | y-component of transformed x-basis vector |
+| VarFixed | xy | x-component of transformed y-basis vector |
+| VarFixed | yy | y-component of transformed y-basis vector |
 | VarFixed | dx | Translation in x direction. |
 | VarFixed | dy | Translation in y direction. |
 
