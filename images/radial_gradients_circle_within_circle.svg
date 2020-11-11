@@ -1,7 +1,7 @@
 <svg viewBox="-301 -206 802 1271" xmlns="http://www.w3.org/2000/svg"
      xmlns:xlink="http://www.w3.org/1999/xlink">
   <style>
-    .label { font-size: 64px; font-family: sans-serif; stroke-width: 0; stroke: black; fill: #1a2127; }
+    .label { font-size: 64px; font-family: Calibri, sans-serif; stroke-width: 0; stroke: black; fill: #1a2127; }
   </style>
   
   <defs>
@@ -44,11 +44,14 @@
     <circle cx="10" cy="50" r="35" />
     <circle cx="10" cy="50" r="4" fill="#1a2127"/>
     <line x1="10" y1="50" x2="28.386" y2="19.781" />
+    <text class="label" x="10" y="100">c₀</text>
+    <text class="label" x="34" y="45">r₀</text>
+
     <circle cx="120" cy="0" r="190" />
     <circle cx="120" cy="0" r="4" fill="#1a2127"/>
     <line x1="120" y1="0" x2="219.7785" y2="-161.61875" />
-    <text class="label" x="10" y="90">c₀</text>
     <text class="label" x="120" y="50">c₁</text>
+    <text class="label" x="190" y="-55">r₁</text>
   </g>
   
   <g transform="translate(0, 430)">
