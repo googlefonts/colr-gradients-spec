@@ -7,8 +7,8 @@
   <defs>
     <radialGradient id="radgrad-pad"
                     gradientUnits="userSpaceOnUse"
-                    fx="140" fy="50" fr="35"
-                    cx="250" cy="0" r="200"
+                    fx="10" fy="50" fr="35"
+                    cx="120" cy="0" r="190"
                     spreadMethod="pad">
       <stop offset="0%" stop-color="#DA0025"/>
       <stop offset="50%" stop-color="#FFC600"/>
@@ -17,8 +17,8 @@
 
     <radialGradient id="radgrad-repeat"
                     gradientUnits="userSpaceOnUse"
-                    fx="140" fy="50" fr="35"
-                    cx="250" cy="0" r="200"
+                    fx="10" fy="50" fr="35"
+                    cx="120" cy="0" r="190"
                     spreadMethod="repeat">
       <stop offset="0%" stop-color="#DA0025"/>
       <stop offset="50%" stop-color="#FFC600"/>
@@ -27,8 +27,8 @@
 
     <radialGradient id="radgrad-reflect"
                     gradientUnits="userSpaceOnUse"
-                    fx="140" fy="50" fr="35"
-                    cx="250" cy="0" r="200"
+                    fx="10" fy="50" fr="35"
+                    cx="120" cy="0" r="190"
                     spreadMethod="reflect">
       <stop offset="0%" stop-color="#DA0025"/>
       <stop offset="50%" stop-color="#FFC600"/>
@@ -41,12 +41,14 @@
   <use href="#filled-rect" fill="url(#radgrad-pad)"/>
   
   <g id="points" fill="none" stroke-width="2" stroke="#1a2127">
-    <circle cx="140" cy="50" r="35" />
-    <circle cx="140" cy="50" r="4" fill="#1a2127"/>
-    <circle cx="250" cy="0" r="200" />
-    <circle cx="250" cy="0" r="4" fill="#1a2127"/>
-    <text class="label" x="140" y="90">c₀</text>
-    <text class="label" x="250" y="50">c₁</text>
+    <circle cx="10" cy="50" r="35" />
+    <circle cx="10" cy="50" r="4" fill="#1a2127"/>
+    <line x1="10" y1="50" x2="28.386" y2="19.781" />
+    <circle cx="120" cy="0" r="190" />
+    <circle cx="120" cy="0" r="4" fill="#1a2127"/>
+    <line x1="120" y1="0" x2="219.7785" y2="-161.61875" />
+    <text class="label" x="10" y="90">c₀</text>
+    <text class="label" x="120" y="50">c₁</text>
   </g>
   
   <g transform="translate(0, 430)">
