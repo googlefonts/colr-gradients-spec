@@ -567,6 +567,16 @@ Glyph outline is used as clip mask for the content in the Paint subtable. Glyph 
 
 Glyph ID must be in the BaseGlyphV1List; may be greater than maxp.numGlyphs.
 
+*__Note:__ The PaintColrGlyph and PaintColrLayers tables are similar in that
+they provide a way to reference a graph of paint tables as a sub-component
+within a color glyph description. (The PaintColrGlyph does this indirectly via a
+base glyph ID.) They may be handled differently in implementations, however. In
+particular, an implementation can process and cache the result of the color
+glyph description for a given base glyph ID. In that case, subsequent references
+to that base glyph ID using a PaintColrGlyph table would not require the
+corresponding graph of paint tables to be re-processed. As a result, using a
+PaintColrGlyph for re-used graphic components could provide performance
+benefits.*
 
 ##### PaintTransformed table (format 7)
 
