@@ -381,6 +381,11 @@ Offsets are always relative to the start of the containing struct.
 | uint32 | numBaseGlyphV1Records |  |
 | BaseGlyphV1Record | baseGlyphV1Records[numBaseGlyphV1Records] | |
 
+Entries must be sorted in ascending order of the `glyphID` field of the `BaseGlyphV1Record`s.
+
+*__Note:__ The sorted order allows implementations to perform binary search to
+find a matching `BaseGlyphV1Record` for a specific `glyphID`.*
+
 ##### BaseGlyphV1Record
 
 | Type | Name | Description |
@@ -966,6 +971,7 @@ struct BaseGlyphV1Record
   Offset32<Paint>       paint;  // Typically PaintColrLayers
 };
 
+// Entries must be sorted in ascending order of the `glyphID` field of the `BaseGlyphV1Record`s.
 typedef ArrayOf<BaseGlyphV1Record, uint32> BaseGlyphV1List;
 
 // Only layers accessed via PaintColrLayers (format 1) need be encoded here.
