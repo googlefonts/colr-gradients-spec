@@ -383,6 +383,9 @@ Offsets are always relative to the start of the containing struct.
 
 Entries must be sorted in ascending order of the `glyphID` field of the `BaseGlyphV1Record`s.
 
+*__Note:__ The sorted order allows implementations to perform binary search to
+find a matching `BaseGlyphV1Record` for a specific `glyphID`.*
+
 ##### BaseGlyphV1Record
 
 | Type | Name | Description |
