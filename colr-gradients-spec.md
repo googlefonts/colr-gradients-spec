@@ -283,11 +283,11 @@ repeat and reflect (top to bottom) with color stops for blue at 0, yellow at 0.5
 and red at 1. (Illustration generated from <a
 href="images/radial_gradients.svg">images/radial_gradients.svg</a>)*
 
-Because the rendering algorithm progresses ω in a particular direction, from 
-positive infinity to negative infinity, and because pixels are not re-painted as 
-ω progresses, which circle is considered circle 0 and which is circle 1 makes a 
+Because the rendering algorithm progresses ω in a particular direction, from
+positive infinity to negative infinity, and because pixels are not re-painted as
+ω progresses, which circle is considered circle 0 and which is circle 1 makes a
 difference in the appearance. In the following figure, two gradients are shown
-with the start and end circles swapped. In the top gradient, circle 0 is the 
+with the start and end circles swapped. In the top gradient, circle 0 is the
 small circle, on the left; in the bottom gradient, circle 0 is the large circle,
 on the right. (The order of stops are reversed so that, in both gradients, red
 is at the left end and blue at the right end.)
@@ -297,31 +297,17 @@ is at the left end and blue at the right end.)
 *__Figure 4:__ Two radial gradients with start and end circles swapped. (Illustration
 generated from <a href="images/radial_gradient_direction.svg">images/radial_gradient_direction.svg</a>*
 
-It follows from the algorithm that, when both radii are zero, then r(ω) is always
-zero, and nothing is painted. 
+*__Note:__ It follows from the algorithm that: a) When both radii are 0, r₀ = r₁
+= 0, then r(ω) is always 0 and nothing is painted. b) If the centers of the
+circles are distinct, one has a zero radius and lies outside the radius of the
+other, the other has a non-zero radius, the resulting shape resembles a cone
+that is open to one side, see Figure 3 below. c) If the circles centers are
+identical, one has a zero radius, one has a non-zero radius, then the gradient
+is well-defined and is painted according to the algorithm.*
 
-It also follows that, if the centers are distinct and neither center is within 
-the circumference of the other circle, then the result will resemble a cone or
-cylinder. If one circle has a zero radius while the other has a non-zero radius,
-the resulting shape resembles a cone that is open to one side, as in the figures 
-above. If the radii are different and both are non-zero, the result resembles 
-a trunctated cone, with the tip cut off. If the radii are the same, the result
-resembles a cylinder.
-
-If either circle is contained within the other, whether the centers are identical
-or different, and whether the inner circle as a zero or non-zero radius, the
-gradient is well-defined and will be drawn by the algorithm. Colors inside the
-inner circle and outside the outer circle will be determined by the extend mode.
-The extension of the gradient beyond the outer circle will fill the entire surface.
-This is illustrated in the following figure for the three extend modes.
-
-![Radial gradients with one circle contained within the other](images/radial_gradients_circle_within_circle.png)
-
-*__Figure 5:__ Radial gradients with one circle contained within the other.
-
-If a radial gradient is nested within the child sub-graph of a transformation
-that flattens the circles so that they resemble lines, the combination is still
-a well-defined shape, which is a strip or a cone filled with a linear gradient.
+*__Note:__ When a radial gradient is nested below a transformation which flattens
+the circles so that they resemble lines, a radial gradient may appear as a
+strip or a cone filled with a linear gradient.*
 
 ## Transformation
 
