@@ -810,7 +810,7 @@ _Delete the fourth paragraph, "Variation data is comprised..."._
 
 _Add a new sub-clause 7.2.3.1 after the third paragraph ("The item variation store formats..."), with text as follows:_
 
-**7.2.3.1 Associatig target items to variation data**
+**7.2.3.1 Associating target items to variation data**
 
 Variation data is comprised of delta adjustment values that apply to particular target items. Some mechanism is needed to associate delta values with target items. In the item variation store, a block of delta values has an implicit delta-set index, and separate data outside the item variation store is provided that indicates the delta-set index associated with a given target item. Depending on the parent table in which an item variation store is used, different means are used to provide these associations:
 
