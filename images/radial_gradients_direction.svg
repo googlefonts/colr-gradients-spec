@@ -1,4 +1,4 @@
-<svg viewBox="-301 -206 802 841" xmlns="http://www.w3.org/2000/svg"
+<svg viewBox="-301 -206 802 1271" xmlns="http://www.w3.org/2000/svg"
      xmlns:xlink="http://www.w3.org/1999/xlink">
   <style>
     .label { font-size: 64px; font-family: Calibri, sans-serif; stroke-width: 0; stroke: black; fill: #1a2127; }
@@ -16,6 +16,16 @@
     </radialGradient>
 
     <radialGradient id="radgrad-pad2"
+                    gradientUnits="userSpaceOnUse"
+                    fx="250" fy="0" fr="80"
+                    cx="0" cy="0" r="35"
+                    spreadMethod="pad">
+      <stop offset="0%" stop-color="#DA0025"/>
+      <stop offset="50%" stop-color="#FFC600"/>
+      <stop offset="100%" stop-color="#0052AB"/>
+    </radialGradient>
+
+    <radialGradient id="radgrad-pad3"
                     gradientUnits="userSpaceOnUse"
                     fx="250" fy="0" fr="80"
                     cx="0" cy="0" r="35"
@@ -51,4 +61,14 @@
     <text class="label" x="217" y="40">c₀</text>
     <text class="label" x="277" y="0">r₀</text>
   </g>
+  
+  <g transform="translate(0, 860)">
+    <use href="#filled-rect" fill="url(#radgrad-pad3)" />
+    <use href="#points" />
+    <text class="label" x="-40" y="40">c₁</text>
+    <text class="label" x="14" y="20">r₁</text>
+    <text class="label" x="217" y="40">c₀</text>
+    <text class="label" x="277" y="0">r₀</text>
+  </g>
+
 </svg>

@@ -285,16 +285,26 @@ href="images/radial_gradients.svg">images/radial_gradients.svg</a>)*
 
 Because the rendering algorithm progresses ω in a particular direction, from
 positive infinity to negative infinity, and because pixels are not re-painted as
-ω progresses, which circle is considered circle 0 and which is circle 1 makes a
-difference in the appearance. In the following figure, two gradients are shown
-with the start and end circles swapped. In the top gradient, circle 0 is the
-small circle, on the left; in the bottom gradient, circle 0 is the large circle,
-on the right. (The order of stops are reversed so that, in both gradients, red
-is at the left end and blue at the right end.)
+ω progresses, the appearance will be affected by which circle is considered
+circle 0 and which is circle 1. 
+
+This is illustrated in the figure 4, in which three radial gradients are shown.
+The first is the same as the first gradient shown in figure 3, using the pad
+extend mode. In this gradient, circle 0 is the small circle, on the left. In
+the second gradient of figure 4, the start and end circles are reversed: circle
+0 is the large circle, on the right. The color line is kept the same, and so the
+red end starts at circle 0, now on the right. In the third gradient, the order
+of stops in the color line is also reversed to put red on the left.
+
+The key difference to notice between the gradients in figure 4 is the way colors
+are painted in the interior: when the two circles are not overlapping, the arc
+of color always bends towards circle 0. This difference does not exist if one
+circle is wholly contained within the other, however: in that case, the
+individual colors are complete, concentric circles.
 
 ![Radial gradients with start and end circles swapped](images/radial_gradients_direction.png)
 
-*__Figure 4:__ Two radial gradients with start and end circles swapped. (Illustration
+*__Figure 4:__ Radial gradients with start and end circles swapped. (Illustration
 generated from <a href="images/radial_gradient_direction.svg">images/radial_gradient_direction.svg</a>*
 
 *__Note:__ It follows from the algorithm that: a) When both radii are 0, r₀ = r₁
