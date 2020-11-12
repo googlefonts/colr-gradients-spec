@@ -281,7 +281,7 @@ Radial gradients must be rendered by following these steps:
 *__Figure 3:__ Example of a radial gradient rendering with extend modes pad,
 repeat and reflect (top to bottom) with color stops for blue at 0, yellow at 0.5
 and red at 1. (Illustration generated from <a
-href="images/radial_gradients.svg">images/radial_gradients.svg</a>)*
+href="images/radial_gradients.svg">images/radial_gradients.svg</a>.)*
 
 Because the rendering algorithm progresses ω in a particular direction, from
 positive infinity to negative infinity, and because pixels are not re-painted as
@@ -314,6 +314,17 @@ other, the other has a non-zero radius, the resulting shape resembles a cone
 that is open to one side, see Figure 3 below. c) If the circles centers are
 identical, one has a zero radius, one has a non-zero radius, then the gradient
 is well-defined and is painted according to the algorithm.*
+
+If either circle is contained within the other, whether the centers are identical
+or different, and whether the inner circle as a zero or non-zero radius, the
+gradient is well-defined and will be drawn by the algorithm. Colors inside the
+inner circle and outside the outer circle will be determined by the extend mode.
+The extension of the gradient beyond the outer circle will fill the entire surface.
+This is illustrated in the following figure for the three extend modes.
+
+![Radial gradients with one circle contained within the other](images/radial_gradients_circle_within_circle.png)
+
+*__Figure 5:__ Radial gradients with one circle contained within the other. (Illustration generated from [images/radial_gradients_circle_within_circle.svg](images/radial_gradients_circle_within_circle.svg).)*
 
 *__Note:__ When a radial gradient is nested below a transformation which flattens
 the circles so that they resemble lines, a radial gradient may appear as a
