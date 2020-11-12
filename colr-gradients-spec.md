@@ -315,12 +315,13 @@ that is open to one side, see Figure 3 below. c) If the circles centers are
 identical, one has a zero radius, one has a non-zero radius, then the gradient
 is well-defined and is painted according to the algorithm.*
 
-If either circle is contained within the other, whether the centers are identical
-or different, and whether the inner circle as a zero or non-zero radius, the
-gradient is well-defined and will be drawn by the algorithm. Colors inside the
-inner circle and outside the outer circle will be determined by the extend mode.
-The extension of the gradient beyond the outer circle will fill the entire surface.
-This is illustrated in the following figure for the three extend modes.
+If either circle is contained within the other, the gradient is well-defined and
+will be drawn by the algorithm. This applies regardless of whether the centers
+are identical or different, or whether the inner circle has a zero or non-zero
+radius,  Colors inside the inner circle and outside the outer circle will be
+determined by the extend mode. The extension of the gradient beyond the outer
+circle will fill the entire surface. This is illustrated in the following
+figure for the three extend modes.
 
 ![Radial gradients with one circle contained within the other](images/radial_gradients_circle_within_circle.png)
 
