@@ -328,8 +328,10 @@ figure for the three extend modes.
 *__Figure 5:__ Radial gradients with one circle contained within the other. (Illustration generated from [images/radial_gradients_circle_within_circle.svg](images/radial_gradients_circle_within_circle.svg).)*
 
 *__Note:__ When a radial gradient is nested below a transformation which flattens
-the circles so that they resemble lines, a radial gradient may appear as a
-strip or a cone filled with a linear gradient.*
+the circles so that they resemble lines, provided that line is not colinear with
+the line between the centers of the two circles, then the combination is still a
+well-formed gradient and will appear as a strip or a cone filled with a linear
+gradient.*
 
 ## Transformation
 
