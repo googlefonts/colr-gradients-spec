@@ -621,8 +621,22 @@ benefits.*
 | Type | Field name | Description |
 |-|-|-|
 | uint8 | format | Set to 7. |
+| uint8 | flags | See below for flag details. |
 | Offset24 | paintOffset | Offset to a Paint subtable, from start of PaintTransformed table. |
-| Affine2x3 | transform | An Affine2x3 record (inline). |
+| Affine2x3 or<br>VarFixed | transform | An Affine2x3 record (inline). |
+
+The following flags are defined:
+
+| Mask | Name | Description |
+|-|-|-|
+| 0x01 | TRANSFORM_AFFINE_2X3 | The transform field is an Affixe2x3 record. |
+| 0x02 | TRANSFORM_ROTATE | The transform field as a VarFixed value for a rotation angle, in clockwise degrees. |
+| 0x04 | TRANSFORM_SKEW_X_DEGREES | The transform field is a VarFixed value for an angle of skew in the direction of the x-axis, in clockwise degrees. |
+| 0x08 | TRANSFORM_SKEW_Y_DEGREES | The transform field is a VarFixed value for an angle of skew in the direction of the y-axis, in clockwise degrees. |
+| 0xF0 | RESERVED | Reserved flag bits: must not be set. |
+
+Flag bit 0 (0x01) is mutually exclusive with the other flag bits. If bit 0 is set,
+all other bits shall be ignored.
 
 ##### PaintComposite table (format 8)
 
