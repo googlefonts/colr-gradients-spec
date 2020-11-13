@@ -630,7 +630,7 @@ benefits.*
 |-|-|-|
 | uint8 | format | Set to 8. |
 | Offset24 | paintOffset | Offset to a Paint subtable, from start of PaintRotateSkew table. |
-| VarFixed | angle | Rotation angle, in clockwise degrees. |
+| VarFixed | angle | Rotation angle, in counter-clockwise degrees. |
 | VarFWord | centerX | x coordinate for the center of rotation. |
 | VarFWord | centerY | y coordinate for the center of rotation. |
 
@@ -642,8 +642,8 @@ benefits.*
 |-|-|-|
 | uint8 | format | Set to 9. |
 | Offset24 | paintOffset | Offset to a Paint subtable, from start of PaintRotateSkew table. |
-| VarFixed | xSkewAngle | Angle of skew in the direction of the x-axis, in clockwise degrees. |
-| VarFixed | ySkewAngle | Angle of skew in the direction of the y-axis, in clockwise degrees. |
+| VarFixed | xSkewAngle | Angle of skew in the direction of the x-axis, in counter-clockwise degrees. |
+| VarFixed | ySkewAngle | Angle of skew in the direction of the y-axis, in counter-clockwise degrees. |
 
 *__Note:__ Skews can also be represented using the PaintTransformed table. The important difference is in being able to specify skew as an angle rather than as changes to basis vectors.*
 
