@@ -621,28 +621,37 @@ benefits.*
 | Type | Field name | Description |
 |-|-|-|
 | uint8 | format | Set to 7. |
-| uint8 | flags | See below for flag details. |
 | Offset24 | paintOffset | Offset to a Paint subtable, from start of PaintTransformed table. |
-| Affine2x3 or<br>VarFixed | transform | An Affine2x3 record (inline). |
+| Affine2x3 | transform | An Affine2x3 record (inline). |
 
-The following flags are defined:
-
-| Mask | Name | Description |
-|-|-|-|
-| 0x01 | TRANSFORM_AFFINE_2X3 | The transform field is an Affixe2x3 record. |
-| 0x02 | TRANSFORM_ROTATE | The transform field as a VarFixed value for a rotation angle, in clockwise degrees. |
-| 0x04 | TRANSFORM_SKEW_X_DEGREES | The transform field is a VarFixed value for an angle of skew in the direction of the x-axis, in clockwise degrees. |
-| 0x08 | TRANSFORM_SKEW_Y_DEGREES | The transform field is a VarFixed value for an angle of skew in the direction of the y-axis, in clockwise degrees. |
-| 0xF0 | RESERVED | Reserved flag bits: must not be set. |
-
-Flag bit 0 (0x01) is mutually exclusive with the other flag bits. If bit 0 is set,
-all other bits shall be ignored.
-
-##### PaintComposite table (format 8)
+#### PaintRotate table (format 8)
 
 | Type | Field name | Description |
 |-|-|-|
 | uint8 | format | Set to 8. |
+| Offset24 | paintOffset | Offset to a Paint subtable, from start of PaintRotateSkew table. |
+| VarFixed | angle | Rotation angle, in clockwise degrees. |
+| VarFWord | centerX | x coordinate for the center of rotation. |
+| VarFWord | centerY | y coordinate for the center of rotation. |
+
+*__Note:__ Rotation can also be represented using the PaintTransformed table. The important difference is in allowing angle to be specified directly in degrees, which is more amenable to smooth variation.*
+
+#### PaintAngularSkew table (format 9)
+
+| Type | Field name | Description |
+|-|-|-|
+| uint8 | format | Set to 9. |
+| Offset24 | paintOffset | Offset to a Paint subtable, from start of PaintRotateSkew table. |
+| VarFixed | xSkewAngle | Angle of skew in the direction of the x-axis, in clockwise degrees. |
+| VarFixed | ySkewAngle | Angle of skew in the direction of the y-axis, in clockwise degrees. |
+
+*__Note:__ Skews can also be represented using the PaintTransformed table. The important difference is in being able to specify skew as an angle rather than as changes to basis vectors.*
+
+##### PaintComposite table (format 10)
+
+| Type | Field name | Description |
+|-|-|-|
+| uint8 | format | Set to 10. |
 | Offset24 | sourcePaintOffset | Offset to a source Paint table, from start of PaintComposite table. |
 | uint8 | compositeMode | A CompositeMode enumeration value. |
 | Offset24 | backdropPaintOffset | Offset to a backdrop Paint table, from start of PaintComposite table. |
