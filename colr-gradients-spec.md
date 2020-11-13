@@ -1165,9 +1165,26 @@ struct PaintTransformed
   Affine2x3           transform;
 };
 
-struct PaintComposite
+struct PaintRotate
 {
   uint8               format; // = 8
+  Offset24<Paint>     src;
+  VarFixed            angle
+  VarFWord            centerX
+  VarFWord            centerY
+};
+
+struct PaintSkew
+{
+  uint8               format; // = 9
+  Offset24<Paint>     src;
+  VarFixed            xSkewAngle
+  VarFixed            ySkewAngle
+};
+
+struct PaintComposite
+{
+  uint8               format; // = 10
   Offset24<Paint>     src;
   CompositeMode       mode;   // If mode is unrecognized use COMPOSITE_CLEAR
   Offset24<Paint>     backdrop;
@@ -1242,7 +1259,17 @@ Allocate a bitmap for the glyph according to glyf table entry extents for gid
           apply transform
           call a) for paint
           restore
-    8) PaintComposite
+    8) PaintRotate
+          saveLayer()
+          apply transform
+          call a) for paint
+          restore
+    9) PaintSkew
+          saveLayer()
+          apply transform
+          call a) for paint
+          restore
+    10) PaintComposite
           paint Paint for backdrop, call a)
           saveLayer() with setting composite mode, on SkPaint
           paint Paint for src, call a)
