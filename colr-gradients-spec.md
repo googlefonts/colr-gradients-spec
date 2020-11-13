@@ -634,7 +634,7 @@ benefits.*
 | VarFixed | centerX | x coordinate for the center of rotation. |
 | VarFixed | centerY | y coordinate for the center of rotation. |
 
-*__Note:__ Rotation can also be represented using the PaintTransformed table. The important difference is in allowing angle to be specified directly in degrees, which is more amenable to smooth variation.*
+*__Note:__ Rotation can also be represented using the PaintTransformed table. The important difference is in allowing an angle to be specified directly in degrees, which is more amenable to smooth variation.*
 
 #### PaintSkew table (format 9)
 
@@ -647,7 +647,7 @@ benefits.*
 | VarFixed | centerX | x coordinate for the center of rotation. |
 | VarFixed | centerY | y coordinate for the center of rotation. |
 
-*__Note:__ Skews can also be represented using the PaintTransformed table. The important difference is in being able to specify skew as an angle rather than as changes to basis vectors.*
+*__Note:__ Skews can also be represented using the PaintTransformed table. The important difference is in being able to specify skew as an angle rather than as changes to basis vectors. Also, when varying angles, a representation directly in degrees is more amenable to smooth variation.*
 
 ##### PaintComposite table (format 10)
 
