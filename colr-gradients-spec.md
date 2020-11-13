@@ -636,7 +636,7 @@ benefits.*
 
 *__Note:__ Rotation can also be represented using the PaintTransformed table. The important difference is in allowing angle to be specified directly in degrees, which is more amenable to smooth variation.*
 
-#### PaintAngularSkew table (format 9)
+#### PaintSkew table (format 9)
 
 | Type | Field name | Description |
 |-|-|-|
