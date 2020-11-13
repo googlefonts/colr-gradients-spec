@@ -631,8 +631,8 @@ benefits.*
 | uint8 | format | Set to 8. |
 | Offset24 | paintOffset | Offset to a Paint subtable, from start of PaintRotateSkew table. |
 | VarFixed | angle | Rotation angle, in counter-clockwise degrees. |
-| VarFWord | centerX | x coordinate for the center of rotation. |
-| VarFWord | centerY | y coordinate for the center of rotation. |
+| VarFixed | centerX | x coordinate for the center of rotation. |
+| VarFixed | centerY | y coordinate for the center of rotation. |
 
 *__Note:__ Rotation can also be represented using the PaintTransformed table. The important difference is in allowing angle to be specified directly in degrees, which is more amenable to smooth variation.*
 
@@ -1170,8 +1170,8 @@ struct PaintRotate
   uint8               format; // = 8
   Offset24<Paint>     src;
   VarFixed            angle
-  VarFWord            centerX
-  VarFWord            centerY
+  VarFixed            centerX
+  VarFixed            centerY
 };
 
 struct PaintSkew
