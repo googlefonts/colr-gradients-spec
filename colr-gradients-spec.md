@@ -644,6 +644,8 @@ benefits.*
 | Offset24 | paintOffset | Offset to a Paint subtable, from start of PaintRotateSkew table. |
 | VarFixed | xSkewAngle | Angle of skew in the direction of the x-axis, in counter-clockwise degrees. |
 | VarFixed | ySkewAngle | Angle of skew in the direction of the y-axis, in counter-clockwise degrees. |
+| VarFixed | centerX | x coordinate for the center of rotation. |
+| VarFixed | centerY | y coordinate for the center of rotation. |
 
 *__Note:__ Skews can also be represented using the PaintTransformed table. The important difference is in being able to specify skew as an angle rather than as changes to basis vectors.*
 
@@ -1180,6 +1182,8 @@ struct PaintSkew
   Offset24<Paint>     src;
   VarFixed            xSkewAngle
   VarFixed            ySkewAngle
+  VarFixed            centerX
+  VarFixed            centerY
 };
 
 struct PaintComposite
