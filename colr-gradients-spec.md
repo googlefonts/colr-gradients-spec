@@ -375,7 +375,6 @@ See section [Reusable Parts](#reusable-parts).
 
 We're proposing changes to the following sections of ISO/IEC 14496-22:2019 “OFF”:
 
-- 2 Normative references
 - 4.3 Data types
 - 5.7.11 COLR – Color Table
 - 7.2.3 Item variation stores
@@ -383,11 +382,7 @@ We're proposing changes to the following sections of ISO/IEC 14496-22:2019 “OF
 
 An overview of the design is provided, followed by the suggested specific changes.
 
-## OFF 2 Normative references
-
 _Add the following reference:_
-
-Compositing and Blending Level 1. W3C Candidate Recommendation, 13 January 2015. https://www.w3.org/TR/compositing-1/
 
 ## OFF 4.3 Data types
 
@@ -955,10 +950,11 @@ NOTE Delta values are each represented directly. They are not packed as in the t
 
 ## Bibliography
 
-_Add a new entry as follows:_
+_Add two new entries as follows:_
 
 - HTML Living Standard, 4.12.5, The canvas element. https://html.spec.whatwg.org/multipage/canvas.html#the-canvas-element
 
+- Compositing and Blending Level 1. W3C Candidate Recommendation, 13 January 2015. https://www.w3.org/TR/compositing-1/
 
 
 # Implementation
