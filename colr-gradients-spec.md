@@ -10,50 +10,51 @@ December 2019
 ## Table of Contents
 
 - [Introduction](#introduction)
-    - [High-level Design](#high-level-design)
-    - [Backwards Compatibility](#backwards-compatibility)
-    - [Graphical Primitives / Paints](#graphical-primitives--paints)
-        - [Filled Glyph](#filled-glyph)
-        - [Solid Color and Gradient Paints](#solid-color-and-gradient-paints)
-            - [Solid](#solid)
-            - [Color Line](#color-line)
-            - [Extend Mode](#extend-mode)
-                - [Extend Pad](#extend-pad)
-                - [Extend Repeat](#extend-repeat)
-                - [Extend Reflect](#extend-reflect)
-            - [Linear Gradient](#linear-gradient)
-            - [Radial Gradient](#radial-gradient)
-        - [Transformation](#transformation)
-        - [Composition](#composition)
-        - [COLR Glyph](#colr-glyph)
-        - [COLR Layers](#colr-layers)
+  - [High-level Design](#high-level-design)
+  - [Backwards Compatibility](#backwards-compatibility)
+- [Graphical Primitives / Paints](#graphical-primitives--paints)
+  - [Filled Glyph](#filled-glyph)
+  - [Solid Color and Gradient Paints](#solid-color-and-gradient-paints)
+    - [Solid](#solid)
+    - [Color Line](#color-line)
+      - [Extend Mode](#extend-mode)
+        - [Extend Pad](#extend-pad)
+        - [Extend Repeat](#extend-repeat)
+        - [Extend Reflect](#extend-reflect)
+    - [Linear Gradient](#linear-gradient)
+    - [Radial Gradient](#radial-gradient)
+  - [Transformation](#transformation)
+  - [Composition](#composition)
+  - [COLR Glyph](#colr-glyph)
+  - [COLR Layers](#colr-layers)
 - [OFF Changes](#off-changes)
-    - [Data types](#off-43-data-types)
-    - [COLR table](#off-5711-colr--color-table)
-        - [Data structures](#colr-v1-data-structures)
-            - [Header, glyphs, and layers](#header-glyphs-layers)
-            - [Variation structures](#variation-structures)
-            - [Color structures](#color-structures)
-            - [Paint structures](#paint-structures)
-            - [Composite modes](#composite-modes)
-            - [Transform](#transform)
-        - [Constraints](#constraints)
-            - [Acyclic Graphs Only](#acyclic-graphs-only)
-            - [Bounded Layers Only](#bounded-layers-only)
-            - [Bounding Box](#bounding-box)
-        - [Understanding COLR v1](#understanding-colr-v1)
-            - [Alpha](#alpha)
-            - [Reusable Parts](#reusable-parts)
-    - [Bibliography](#bibliography)
+  - [Data types](#off-43-data-types)
+  - [COLR table](#off-5711-colr--color-table)
+    - [Data structures](#colr-v1-data-structures)
+      - [Header, glyphs, and layers](#header-glyphs-layers)
+      - [Variation structures](#variation-structures)
+      - [Color structures](#color-structures)
+      - [Paint structures](#paint-structures)
+      - [Composite modes](#composite-modes)
+      - [Transform](#transform)
+      - [Constraints](#constraints)
+        - [Acyclic Graphs Only](#acyclic-graphs-only)
+        - [Bounded Layers Only](#bounded-layers-only)
+        - [Bounding Box](#bounding-box)
+      - [Understanding COLR v1](#understanding-colr-v1)
+        - [Alpha](#alpha)
+        - [Reusable Parts](#reusable-parts)
+  - [Bibliography](#bibliography)
 - [Implementation](#implementation)
-    - [Font Tooling](#font-tooling)
-    - [Rendering](#rendering)
-        - [Pseudocode](#pseudocode)
-        - [FreeType](#freetype)
-        - [Chromium](#chromium)
-    - [HarfBuzz](#harfbuzz)
+  - [Font Tooling](#font-tooling)
+  - [Rendering](#rendering)
+    - [Pseudocode](#pseudocode)
+    - [FreeType](#freetype)
+    - [Chromium](#chromium)
+  - [HarfBuzz](#harfbuzz)
 - [References](#references)
 - [Acknowledgements](#acknowledgements)
+- [Annex A: Proposed changes to ISO/IEC 14496-22](#annex-a-proposed-changes-to-isoiec-14496-22)
 
 # Introduction
 
@@ -373,14 +374,7 @@ See section [Reusable Parts](#reusable-parts).
 
 # OFF Changes
 
-We're proposing changes to the following sections of ISO/IEC 14496-22:2019 “OFF”:
-
-- 4.3 Data types
-- 5.7.11 COLR – Color Table
-- 7.2.3 Item variation stores
-- Bibliography
-
-An overview of the design is provided, followed by the suggested specific changes.
+> NOTE: Content within the doc is in process of being reorganized. For clarity a new section for the proposed OFF changes is created at the end of the doc: [Annex A: Proposed changes to ISO/IEC 14496-22](#annex-a-proposed-changes-to-isoiec-14496-22)
 
 ## OFF 4.3 Data types
 
@@ -1318,6 +1312,20 @@ Thanks to Benjamin Wagner ([@bungeman](https://github.com/bungeman)), Dave
 Crossland ([@davelab6](https://github.com/davelab6)), and Roderick Sheeter
 ([@rsheeter](https://github.com/rsheeter)) for review and detailed feedback on
 earlier proposal.
+
+# Annex A: Proposed changes to ISO/IEC 14496-22
+
+Changes to the following sections of ISO/IEC 14496-22:2019 Open Font Format (OFF) are proposed:
+
+- 4.3 Data types
+- 5.7.11 COLR – Color Table
+- 7.2.3 Item variation stores
+- Bibliography
+
+
+
+
+
 
 [1]: https://www.w3.org/TR/compositing-1/
 [2]: https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_clear
