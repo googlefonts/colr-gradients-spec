@@ -624,11 +624,36 @@ benefits.*
 | Offset24 | paintOffset | Offset to a Paint subtable, from start of PaintTransformed table. |
 | Affine2x3 | transform | An Affine2x3 record (inline). |
 
-##### PaintComposite table (format 8)
+#### PaintRotate table (format 8)
 
 | Type | Field name | Description |
 |-|-|-|
 | uint8 | format | Set to 8. |
+| Offset24 | paintOffset | Offset to a Paint subtable, from start of PaintRotate table. |
+| VarFixed | angle | Rotation angle, in counter-clockwise degrees. |
+| VarFixed | centerX | x coordinate for the center of rotation. |
+| VarFixed | centerY | y coordinate for the center of rotation. |
+
+*__Note:__ Rotation can also be represented using the PaintTransformed table. The important difference is in allowing an angle to be specified directly in degrees, which is more amenable to smooth variation.*
+
+#### PaintSkew table (format 9)
+
+| Type | Field name | Description |
+|-|-|-|
+| uint8 | format | Set to 9. |
+| Offset24 | paintOffset | Offset to a Paint subtable, from start of PaintSkew table. |
+| VarFixed | xSkewAngle | Angle of skew in the direction of the x-axis, in counter-clockwise degrees. |
+| VarFixed | ySkewAngle | Angle of skew in the direction of the y-axis, in counter-clockwise degrees. |
+| VarFixed | centerX | x coordinate for the center of skew. |
+| VarFixed | centerY | y coordinate for the center of skew. |
+
+*__Note:__ Skews can also be represented using the PaintTransformed table. The important difference is in being able to specify skew as an angle rather than as changes to basis vectors. Also, when varying angles, a representation directly in degrees is more amenable to smooth variation.*
+
+##### PaintComposite table (format 10)
+
+| Type | Field name | Description |
+|-|-|-|
+| uint8 | format | Set to 10. |
 | Offset24 | sourcePaintOffset | Offset to a source Paint table, from start of PaintComposite table. |
 | uint8 | compositeMode | A CompositeMode enumeration value. |
 | Offset24 | backdropPaintOffset | Offset to a backdrop Paint table, from start of PaintComposite table. |
@@ -1142,9 +1167,28 @@ struct PaintTransformed
   Affine2x3           transform;
 };
 
-struct PaintComposite
+struct PaintRotate
 {
   uint8               format; // = 8
+  Offset24<Paint>     src;
+  VarFixed            angle
+  VarFixed            centerX
+  VarFixed            centerY
+};
+
+struct PaintSkew
+{
+  uint8               format; // = 9
+  Offset24<Paint>     src;
+  VarFixed            xSkewAngle
+  VarFixed            ySkewAngle
+  VarFixed            centerX
+  VarFixed            centerY
+};
+
+struct PaintComposite
+{
+  uint8               format; // = 10
   Offset24<Paint>     src;
   CompositeMode       mode;   // If mode is unrecognized use COMPOSITE_CLEAR
   Offset24<Paint>     backdrop;
@@ -1219,7 +1263,17 @@ Allocate a bitmap for the glyph according to glyf table entry extents for gid
           apply transform
           call a) for paint
           restore
-    8) PaintComposite
+    8) PaintRotate
+          saveLayer()
+          apply transform
+          call a) for paint
+          restore
+    9) PaintSkew
+          saveLayer()
+          apply transform
+          call a) for paint
+          restore
+    10) PaintComposite
           paint Paint for backdrop, call a)
           saveLayer() with setting composite mode, on SkPaint
           paint Paint for src, call a)
