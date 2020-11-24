@@ -973,9 +973,12 @@ NOTE Delta values are each represented directly. They are not packed as in the t
 
 ## Bibliography
 
-Add references to:
+_Add two new entries as follows:_
 
-- https://www.w3.org/TR/compositing-1/.
+- HTML Living Standard, 4.12.5, The canvas element. https://html.spec.whatwg.org/multipage/canvas.html#the-canvas-element
+
+- Compositing and Blending Level 1. W3C Candidate Recommendation, 13 January 2015. https://www.w3.org/TR/compositing-1/
+
 
 # Implementation
 
