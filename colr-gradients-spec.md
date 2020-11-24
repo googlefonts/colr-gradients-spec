@@ -382,8 +382,6 @@ We're proposing changes to the following sections of ISO/IEC 14496-22:2019 “OF
 
 An overview of the design is provided, followed by the suggested specific changes.
 
-_Add the following reference:_
-
 ## OFF 4.3 Data types
 
 One new data type is proposed:
