@@ -43,7 +43,6 @@ December 2019
       - [Understanding COLR v1](#understanding-colr-v1)
         - [Alpha](#alpha)
         - [Reusable Parts](#reusable-parts)
-  - [Bibliography](#bibliography)
 - [Implementation](#implementation)
   - [Font Tooling](#font-tooling)
   - [Rendering](#rendering)
@@ -55,6 +54,7 @@ December 2019
 - [Acknowledgements](#acknowledgements)
 - [Annex A: Proposed changes to ISO/IEC 14496-22](#annex-a-proposed-changes-to-isoiec-14496-22)
   - [A.1 Changes to OFF 4.3 Data types](#a1-changes-to-off-43-data-types)
+  - [A.4 Changes to OFF Bibliography](#a4-changes-to-off-bibliography)
 
 # Introduction
 
@@ -956,14 +956,6 @@ Logically, each DeltaSet record has regionIndexCount number of elements. The ele
 
 NOTE Delta values are each represented directly. They are not packed as in the tuple variation store.
 
-## Bibliography
-
-_Add two new entries as follows:_
-
-- HTML Living Standard, 4.12.5, The canvas element. https://html.spec.whatwg.org/multipage/canvas.html#the-canvas-element
-
-- Compositing and Blending Level 1. W3C Candidate Recommendation, 13 January 2015. https://www.w3.org/TR/compositing-1/
-
 
 # Implementation
 
@@ -1337,6 +1329,14 @@ _Replace the table defining data types with the following:_
 | Offset32 | Long offset to a table, same as uint32, NULL offset = 0x00000000 |
 
 
+
+## Bibliography
+
+_Add two new entries as follows:_
+
+- HTML Living Standard, 4.12.5, The canvas element. https://html.spec.whatwg.org/multipage/canvas.html#the-canvas-element
+
+- Compositing and Blending Level 1. W3C Candidate Recommendation, 13 January 2015. https://www.w3.org/TR/compositing-1/
 
 
 
