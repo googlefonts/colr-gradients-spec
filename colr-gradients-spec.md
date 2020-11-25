@@ -426,7 +426,7 @@ Offsets are always relative to the start of the containing struct.
 | uint32 | numBaseGlyphV1Records |  |
 | BaseGlyphV1Record | baseGlyphV1Records[numBaseGlyphV1Records] | |
 
-Entries must be sorted in ascending order of the `glyphID` field of the `BaseGlyphV1Record`s.
+Entries shall be sorted in ascending order of the `glyphID` field of the `BaseGlyphV1Record`s.
 
 *__Note:__ The sorted order allows implementations to perform binary search to
 find a matching `BaseGlyphV1Record` for a specific `glyphID`.*
@@ -594,7 +594,7 @@ For linear gradient without skew, set x2,y2 to x1,y1.
 | Offset24 | paintOffset | Offset to a Paint table, from start of PaintGlyph table. |
 | uint16 | glyphID | Glyph ID for the source outline. |
 
-Glyph outline is used as clip mask for the content in the Paint subtable. Glyph ID must be less than the numGlyphs value in the &#39;maxp&#39; table.
+Glyph outline is used as clip mask for the content in the Paint subtable. Glyph ID shall be less than the numGlyphs value in the &#39;maxp&#39; table.
 
 ##### PaintColrGlyph table (format 6)
 
@@ -603,7 +603,7 @@ Glyph outline is used as clip mask for the content in the Paint subtable. Glyph 
 | uint8 | format | Set to 6. |
 | uint16 | glyphID | Virtual glyph ID for a BaseGlyphV1List base glyph. |
 
-Glyph ID must be in the BaseGlyphV1List; may be greater than maxp.numGlyphs.
+Glyph ID shall be in the BaseGlyphV1List; may be greater than maxp.numGlyphs.
 
 *__Note:__ The PaintColrGlyph and PaintColrLayers tables are similar in that
 they provide a way to reference a graph of paint tables as a sub-component
@@ -920,7 +920,7 @@ Must be less than 32,736.
 
 _After the table for the VariationRegionList structure, add the following paragraph:_
 
-The high-order bit of the regionCount field is reserved for future use, and must be cleared.
+The high-order bit of the regionCount field is reserved for future use, and shall be cleared.
 
 _In 7.2.3.4 (previously 7.2.3.2), "Item variation store and item variation data tables", in the paragraph that follows the table for the ItemVariationStore structure, delete the first sentence, "The item variation store includes an array of offsets to item variation data subtables. Before that paragraph, insert the following paragraph and note:_
 
@@ -943,7 +943,7 @@ The wordDeltaCount field contains a packed value that includes a flag and a “w
 
 The representation of delta values uses a mix of long types (“words”) and short types. If the LONG_WORDS flag is set, deltas are represented using a mix of int32 and int16 values. This representation is only used for deltas that are to be applied to data items of Fixed or 32-bit integer types. If the flag is not set, deltas are presented using a mix of int16 and int8 values. See the description of the DeltaSet record below for additional details.
 
-The count value indicated by WORD_DELTA_COUNT_MASK is a count of the number of deltas that use the long (“word”) representation, and must be less than or equal to regionIndexCount.
+The count value indicated by WORD_DELTA_COUNT_MASK is a count of the number of deltas that use the long (“word”) representation, and shall be less than or equal to regionIndexCount.
 
 The deltaSets array represents a logical two-dimensional table of delta values with itemCount rows and regionIndexCount columns. Rows in the table provide sets of deltas for particular target items, and columns correspond to regions of the variation space. Each DeltaSet record in the array represents one row of the delta-value table — one delta set.
 
@@ -1154,7 +1154,7 @@ struct PaintGlyph
   uint8               format; // = 5
   Offset24<Paint>     paint;
   uint16              gid;    // not a COLR-only gid
-                              // must be less than maxp.numGlyphs
+                              // shall be less than maxp.numGlyphs
 }
 
 struct PaintColrGlyph
@@ -1203,7 +1203,7 @@ struct BaseGlyphV1Record
   Offset32<Paint>       paint;  // Typically PaintColrLayers
 };
 
-// Entries must be sorted in ascending order of the `glyphID` field of the `BaseGlyphV1Record`s.
+// Entries shall be sorted in ascending order of the `glyphID` field of the `BaseGlyphV1Record`s.
 typedef ArrayOf<BaseGlyphV1Record, uint32> BaseGlyphV1List;
 
 // Only layers accessed via PaintColrLayers (format 1) need be encoded here.
