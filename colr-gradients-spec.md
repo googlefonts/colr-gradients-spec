@@ -54,6 +54,7 @@ December 2019
 - [Acknowledgements](#acknowledgements)
 - [Annex A: Proposed changes to ISO/IEC 14496-22](#annex-a-proposed-changes-to-isoiec-14496-22)
   - [A.1 Changes to OFF 4.3 Data types](#a1-changes-to-off-43-data-types)
+  - [A.2 Changes to OFF 5.7.11 - Color Table](#a2-changes-to-off-5711---color-table)
   - [A.3 Changes to OFF 7.2.3 Item variation stores](#a3-changes-to-off-723-item-variation-stores)
   - [A.4 Changes to OFF Bibliography](#a4-changes-to-off-bibliography)
 
@@ -1199,6 +1200,204 @@ _Replace the table defining data types with the following:_
 | Offset24 | 24-bit offset to a table, same as uint24, NULL offset = 0x000000 |
 | Offset32 | Long offset to a table, same as uint32, NULL offset = 0x00000000 |
 
+## A.2 Changes to OFF 5.7.11 - Color Table
+
+_Replace the content of clause 5.7.11 with the following:_
+
+The COLR table adds support for multi-colored glyphs in a manner that is compatible with existing text engines and relatively easy to support with current OpenType font files.
+
+The COLR table defines color presentations for glyphs. The color presentation of a glyph is specified as a graphic composition using other glyphs, such as a layered arrangment of glyphs, each with a different color. The term “color glyph” is used informally to refer to such a graphic composition defined in the COLR table; and the term “base glyph” is used to refer to a glyph for which a color glyph is provided.
+
+Processing of the COLR table is done on glyph sequences after text layout processing is completed and prior to final presentation of glyphs. Typically, a base glyph is a glyph that may occur in a sequence that results from the text layout process. In some cases, a base glyph may be a virtual glyph defined within this table as a re-usable color composition.
+
+Two versions of the COLR table are defined.
+
+Version 0 allows for a simple composition of colored elements: a linear sequence of glyphs that are stacked vertically (z-order) as layers. Each layer combines a glyph outline from the &#39;glyf&#39;, CFF or CFF2 table (referenced by glyph ID) with a solid color fill. These capabilities are sufficient to define color glyphs such as illustrated in figure <span style="color:red">5.x</span>.
+
+![Three emoji glyphs that use layered shapes with solid color fills.](images\colr_v0_emoji_sample.png)
+
+**Figure <span style="color:red">5.x</span> Examples of the graphic capabilities of COLR version 0**
+
+Version 1 supports much richer graphic capabilities. In addition to solid colors, gradient fills can be used, as well as more complex fills using other graphic operations, including affine transformations and diffrent blending modes. Version 1 capabilities allow for color glyphs such as those illustrated in figure <span style="color:red">5.x</span>:
+
+![Three emoji glyphs that use gradient fills and other effects.](images\colr_v1_emoji_sample.png)
+
+**Figure <span style="color:red">5.x</span> Examples of the graphic capabilities of COLR version 0**
+
+Version 1 also extends capabilities in variable fonts. A COLR version 0 table can be used in variable fonts with glyph outlines being variable, but no other aspect of the color composition being variable. In version 1, several additional items can be variable, such as the placement of color stops in a gradient or the alpha values applied to colors. The graphic capabilities supported in version 0 and in version 1 are described in more detail below.
+
+The COLR table is used in combination with the [CPAL](cpal.md) table: all color values are specified as entries in color palettes defined in the CPAL table. A font may define alternate palettes in its CPAL table; it is up to the application to determine which palette is used. If the COLR table is present in a font but no CPAL table exists, then the COLR table is ignored.
+
+**5.7.11.1 Graphic Compositions**
+
+The graphic compositions in a color glyph definition use a set of 2D graphic concepts and constructs:
+
+* Shapes (or *geometries*)
+* Fills (or *shadings*)
+* Layering—a *z-order*—of elements
+* Composition and blending modes—different ways that the content of a layer is combined with the content of layers above or below it
+* Affine transformations
+
+For both version 0 and version 1, shapes are obtained from glyph outlines in the &#39;glyf&#39;, &#39;CFF &#39; or CFF2 table, referenced by glyph ID. Colors used in fills are obtained from the CPAL table.
+
+The simplest color glyphs use just a few of the concepts above: shapes, solid color fills, and layering. This is the set of capabilities provided by version 0 of the COLR table. In version 0, a base glyph record specifies the color glyph for a given base glyph as a sequence of layers. Each layer is specified in a layer record and has a shape (a glyph ID) and a solid color fill (a CPAL palette entry). The filled shapes in the layer stack are composed using only alpha blending.
+
+Figure <span style="color:red">5.x</span> illustrates the version 0 capabilities: three shapes are in a layered stack: a blue square in the bottom layer, an opaque green circle in the next layer, and a red triangle with some transparency in the top layer.
+
+![Blue square, partially overlapped by an opaque green circle, both partially overlapped by a translucent red triangle.](images\colr_v0_layering.png)
+
+**Figure <span style="color:red">5.x</span> Basic graphic capabilities of COLR version 0**
+
+The basic concepts also apply to color glyphs defined using the version 1 formats: shapes are arranged in layers and have fills. But the additional formats of version 1 support much richer capabilities. In a version 1 color glyph, graphic constructs and capabilities are represented primarily in *Paint* tables, which are linked together in a *directed, acyclic graph*. Several different Paint formats are defined, each describing a particular type of graphic operation:
+
+* A PaintColrLayers table provides a layering structure used for creating a color glyph from layered elements. A PaintColrLayers table can be used at the root of the graph, providing a base layering structure for the entire color glyph definition. A PaintColrLayers table can also be nested within the graph, providing a set of layers to define some graphic sub-component within the color glyph.
+
+* The PaintSolid, PaintLinearGradient, and PaintRadialGradient tables provide basic fills, using color entries from the CPAL table.
+
+* The PaintGlyph table provides glyph outlines as the basic shapes.
+
+* The PaintTransformed table is used to apply an affine transformation matrix to a sub-graph of paint tables, and the graphic operations they represent. The PaintRotate and PaintSkew tables support specific transformations specified as angles.
+
+* The PaintComposite table supports alternate composition and blending modes for two sub-graphs.
+
+* The PaintColrGlyph table allows a color glyph definition, referenced by a base glyph ID, to be re-used as a sub-graph within multiple color glyphs.
+
+In a simple color glyph description, a PaintGlyph table might be linked to a PaintSolid table, for example, representing a glyph outline filled using a basic solid color fill. But the PaintGlyph table could instead be linked to a much more complex sub-graph of Paint tables, representing a shape that gets filled using the more-complex set of operations described by the sub-graph of Paint tables.
+
+The graphic capabilities are described in more detail in 5.7.11.2.1 – <span style="color:red">5.7.11.2.x</span>. The formats used for each are specified <span style="color:red">5.7.11.x</span>.
+
+**5.7.11.2 Gradients**
+
+COLR version 1 supports two types of gradients: [linear gradients](#linear-gradient), and [radial gradients](#radial-gradient). Both types of gradient are defined using a [color line](#color-line).
+
+**5.7.11.2.1 Color Lines**
+
+A color line is a function that maps real numbers to color values to define a one-dimensional gradation of colors, to be used in the definition of linear or radial gradients. A color line is defined as a set of *color stops*, each of which maps a particular real number to a specific color.
+
+A color line is not a *line* in a geometric sense: on its own, a color line has no positioning, orientation or size within a design grid. These geometric aspects are part of the definition of a linear or radial gradient. Specifically, the gradient definition will specify positions in the design grid that correspond to the real values 0 and 1 in the color line, with placement in the design grid for other numeric values of the color line interpolated from the placement of 0 and 1.
+
+A color stop is defined by a real number, the *stop offset*, and a color. A color line is defined by one or more color stops, with at least one color stop within the interval [0, 1]. Additional color stops can be specified within or outside the interval [0, 1]. (Stop offsets are represented using F2DOT14 values, therefore stops can only be specified within the range [-2, 2). See <span style="color:red">5.7.11.x</span> for format details.) If only one color stop is specified, that color is used for the entire color line; at least two color stops are needed to create color gradation.
+
+Suppose a color line has two or more color stops, and consider these to be ordered in increasing stop offset value. Color gradation is defined over the interval from the first color stop, through the successive color stops, to the last color stop. Between consecutive color stops, color values are interpolated between the colors of the two stops.
+
+<p style="background-color:yellow; color:red">TBD: Does interpolation of colors need further specification?</p>
+
+If there are multiple color stops defined for the same stop offset, the first one is used for computing color values on the color line below that stop offset, and the last one is used for computing color values at or above that stop offset. All other color stops for that stop offset are ignored.
+
+While the color gradation is specified over a defined interval, the color line continues indefinitely outside that interval in both directions. The color pattern outside the defined interval is repeated according to the color line’s *extend mode*. Three extend modes are supported:
+
+* Pad: outside the defined interval, the color of the closest color stop is used. Using a string as an analogy, given a sequence “ABC”, it is extended to “…*AA* ABC *CC*…”.
+
+* Repeat: The color line is repeated over repeated multiples of the defined interval. For example, if color stops are specified for defined interval of [0, 0.7], then the pattern is repeated above the defined interval for intervals [0.7, 1.4], [1.4, 2.1], etc.; and also repeated below the defined interval for intervalues [-0.7, 0], [-1.4, -0.7], etc. In each repeated invterval, the first color is that of the farthest defined color stop. By analogy, given a sequence “ABC”, it is extended to “…*ABC* ABC *ABC*…”.
+
+* Reflect: The color line is repeated over repeated intervals, as for the repeat mode. However, in each repeated interval, the ordering of color stops is the reverse of the adjacent interval. By analogy, given a sequence “ABC”, it is extended to “…*ABC CBA* ABC *CBA ABC*…”.
+
+Figures <span style="color:red">5.x</span> – <span style="color:red">5.x</span> illustrate the different color line extend modes. The figures show the color line extended over a limited interval, but the extension is unbounded in either direction.
+
+![Yellow-to-red color gradition, extended to the left with yellow and extended to the right with red.](images\colr_gradient_extend_pad.png)
+
+**Figure <span style="color:red">5.x</span> Color gradation extended using pad mode**
+
+![Yellow-to-red color gradition, extended by repeating the gradation patterns to the left and right.](images\colr_gradient_extend_repeat.png)
+
+**Figure <span style="color:red">5.x</span> Color gradation extended using repeat mode**
+
+![Yellow-to-red color gradition, extended by repeating alternating mirrors of the gradation pattern to the left and right.](images\colr_gradient_extend_reflect.png)
+
+**Figure <span style="color:red">5.x</span> Color gradation extended using reflect mode**
+
+NOTE: The extend modes are the same as the [spreadMethod][30] attribute used for linear and radial gradients in the [Scalable Vector Graphics (SVG) 1.1 (Second Edition)][31] specification.
+
+**5.7.11.2.3 Linear gradients**
+
+A linear gradient provide gradation of colors along a straight line. The gradient is defined by two points, p₀ and p₁, plus a color line, with stop offset 0 aligned to p₀ and stop offset 1.0 aligned to p₁. Colors between p₀ and p₁ are interpolated using the color line.
+
+Add additional point, p2, is also used to rotate the gradient orientation in the space on either side of the line defined by P₀ and P₁. The vector from P₀ to P₂ can be referred to as the *rotation vector*. If the rotation vector is colinear with the line P₀P₁, there is no rotation: colors in the space on either side of the line P₀P₁ extend in the perpendicular direction. But if the rotation vector is not colinear, the gradient will appear to be skewed.
+
+Figure <span style="color:red">5.x</span> illustrates linear gradients using the three different color line extend modes and with two different rotation vectors.
+
+![Linear gradients using pad, repeat, and reflect extend modes, and with different rotation vectors.](images\linear_gradients.png)
+
+**Figure <span style="color:red">5.x</span> Linear gradients using pad, repeat, and reflect extend modes, and with different rotation vectors.**
+
+If the dot-product (P₁ - P₀) · (P₂ - P₀) is zero (or near-zero for an implementation-defined definition) then the gradient is ill-formed and nothing shall be rendered.
+
+**5.7.11.2.4 Radial gradients**
+
+A basic radial gradient provides gradation of colors that radiates in all directions from an origin. The radial gradients supported in COLR version 1 provide a superset of this functionality: color gradation is defined along a cylinder defined by two circles. In the general case, the circles can have different radii to create a cone. A basic radial gradient is formed by one circle having a radius of zero with center located inside the other circle.
+
+NOTE: Some graphics libraries or other specifications support “radial” gradients with the same capabilities described here, whereas in other contexts, a “radial” gradient might provide more limited capabilities. In some contexts, the type of gradient defined here is referred to as a “two point conical” gradient.
+
+A radial gradient is defined by two circles, one with center c₀ and radius r₀, and another with center c₁ and radius r₁, plus a color line. The color line is related to the two circles by aligning stop offset 0 with a point on the perimeriter of the first circle (with center c₀) and aligning stop offset 1.0 with a corresponding point (the same angular direction from the center) on the perimeter of the second circle.
+
+The drawing algorithm for radial gradients follows the [HTML WHATWG Canvas specification for createRadialGradient()][32], but with with alternate color line extend modes, as described above. Radial gradients shall be rendered with results that match the results produced by the following steps.
+
+With circle center points c₀ and c₁ defined as c₀ = (x₀, y₀) and c₁ = (x₁, y₁):
+
+1. If c₀ = c₁ and r₀ = r₁ then paint nothing and return.
+2. For real values of ω:<br>
+Let x(ω) = (x₁-x₀)ω + x₀<br>
+Let y(ω) = (y₁-y₀)ω + y₀<br>
+Let r(ω) = (r₁-r₀)ω + r₀<br>
+Let the color at ω be the color at that position on the gradient color line.
+3. For all values of ω where r(ω) > 0, starting with the value of ω nearest to positive infinity and ending with the value of ω nearest to negative infinity, draw the circumference of the ellipse resulting from translating circle with radius r(ω) by affine transform at position (x(ω), y(ω)), with the color at ω, but only painting on the parts of the bitmap that have not yet been painted on by earlier circles in this step for this rendering of the gradient.
+
+Figure <span style="color:red">5.x</span> illustrates a radial gradient using the three different color line extend modes. The color line is defined with stops for the interval [0, 1]. Note that the circles that define the gradient are not stroked as part of the gradient itself. Stroked circles have been overlaid in the figure to illustrate the color line and the region that is painted in relation to the two circles.
+
+![Radial gradients using pad, repeat, and reflect extend modes.](images\radial_gradients.png)
+
+**Figure <span style="color:red">5.x</span> Radial gradients using pad, repeat, and reflect extend modes.**
+
+Because the rendering algorithm progresses ω in a particular direction, from positive infinity to negative infinity, and because pixels are not re-painted as ω progresses, the appearance will be affected by which circle is considered circle 0 and which is circle 1. 
+
+NOTE: This does not apply if either circle is entirely contained within the other circle.
+
+This is illustrated in figure <span style="color:red">5.x</span>, in which three radial gradients are shown. The first is the same as the first gradient shown in figure <span style="color:red">5.x</span>, using the pad extend mode. In this first gradient, circle 0 is the small circle, on the left. In the second gradient of figure <span style="color:red">5.x</span>, the start and end circles are reversed: circle 0 is the large circle, on the right. The color line is kept the same, and so the red end starts at circle 0, now on the right. In the third gradient, the order of stops in the color line is also reversed to put red on the left. The key difference to notice between the gradients in figure <span style="color:red">5.x</span> is the way colors are painted in the interior: when the two circles are not overlapping, the arc of color always bends towards circle 0.
+
+NOTE: This difference does not exist if one circle is entirely contained within the other: in that case, the individual colors are complete, concentric circles.
+
+![Radial gradients with start and end circles swapped.](images\radial_gradients_direction.png)
+
+**Figure <span style="color:red">5.x</span> Radial gradients with start and end circles swapped.**
+
+When one circle is contained within the other, the extension of the gradient beyond the larger circle will fill the entire surface. Colors in the areas inside the inner circle and outside the outer circle are determined by the extend mode. Figure <span style="color:red">5.x</span> illustrates this for the different extend modes.
+
+![Radial gradients with one circle contained within the other.](images\radial_gradients_circle_within_circle.png)
+
+**Figure <span style="color:red">5.x</span> Radial gradients with one circle contained within the other.**
+
+NOTE: A scale transformation can flatten shapes to resemble lines. If a radial gradient is nested in the child sub-graph of a transformation that flattens the circles so that they are nearly lines, the centers may still be separated by some distance. In that case, a radial gradient would appear as a strip or a cone filled with a linear gradient.
+
+**5.7.11.2.5 Filling shapes**
+
+All shapes used in a color glyph are obtained from glyph outlines, referenced using a glyph ID. In a color glyph description, a PaintGlyph table is used to represent a shape. The PaintGlyph table has a field for the glyph ID, plus an offset to a child paint table that is used as the fill for the shape. The glyph outline is not rendered; only the fill is rendered.
+
+Typically, the child paint table will be one of the basic fill formats: PaintSolid, PaintLinearGradient, or PaintRadialGradient. This is illustrated in the figure <span style="color:red">5.x</span>: a PaintGlyph table has a glyph ID for an outline in the shape of a triangle, and it links to a child PaintLinearGradient table. The combination is used to represent a triangle filled with the linear gradient.
+
+![PaintGlyph and PaintLinearGradient tables are used to fill a triangle shape with a linear gradient.](images\colr_shape_gradient.png)
+
+**Figure <span style="color:red">5.x</span> PaintGlyph and PaintLinearGradient tables used to fill a shape with a linear gradient.**
+
+
+Another way to describe the relationship between a PaintGlyph table and its child paint table is that the child provides a fill, and the glyph outline defines a bounds, or *clip region*, for the fill. The child for a PaintGlyph table is not limited to only the basic fill formats. In general, the child can be the root of a sub-graph that describes some graphic composition that comprises the fill for the shape. Or, in the alternate view, the glyph outline defines a clip region that is applied to the composition.
+
+To illustrate this, the example in figure <span style="color:red">5.x</span> is extended so that a PaintGlyph table links to a second PaintGlyph that links to a PaintLinearGradient: the parent PaintGlyph will clip the filled shape described by the child graph.
+
+![A PaintGlyph table defines a clip region for the composition defined by its child sub-graph.](images\colr_shape_shape_gradient.png)
+
+**Figure <span style="color:red">5.x</span> A PaintGlyph table defines a clip region for the composition defined by its child sub-graph.**
+
+**5.7.11.2.6 Transformations**
+
+**5.7.11.2.7 Composition and blending**
+
+**5.7.11.2.8 Re-usable components**
+
+**5.7.11.3 COLR formats**
+
+<p style="background-color:yellow; color:red">[under construction]</p>
+
+
 
 ## OFF 7.2.3 Item variation stores
 
@@ -1370,3 +1569,6 @@ _Add two new entries as follows:_
 [27]: https://www.w3.org/TR/compositing-1/#blendingcolor
 [28]: https://www.w3.org/TR/compositing-1/#blendingluminosity
 [29]: https://www.w3.org/TR/compositing-1/#blendingnormal
+[30]: https://www.w3.org/TR/2011/REC-SVG11-20110816/pservers.html#LinearGradientElementSpreadMethodAttribute
+[31]: https://www.w3.org/TR/SVG11/
+[32]: https://html.spec.whatwg.org/multipage/canvas.html#dom-context-2d-createradialgradient
