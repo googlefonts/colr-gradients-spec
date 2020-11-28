@@ -1549,7 +1549,7 @@ The deltaSets array represents a logical two-dimensional table of delta values w
 
 Logically, each DeltaSet record has regionIndexCount number of elements. The elements are represented using long and short types, as described above. These are either int16 and int8, or int32 and int16, according to whether the LONG_WORDS flag was set. The delta array has a sequence of deltas using the long type followed by sequence of deltas using the short type. The count of deltas using the long type is derived using WORD_DELTA_COUNT_MASK. The remaining elements use the short type. The length of the data for each row, in bytes, is regionIndexCount + (wordDeltaCount && WORD_DELTA_COUNT_MASK) if the LONG_WORDS flag is not set, or 2 x that amount if the flag is set.
 
-NOTE Delta values are each represented directly. They are not packed as in the tuple variation store.
+NOTE: Delta values are each represented directly. They are not packed as in the tuple variation store.
 
 ## Bibliography
 
