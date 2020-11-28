@@ -1280,7 +1280,7 @@ A color stop is defined by a real number, the *stop offset*, and a color. A colo
 
 Suppose a color line has two or more color stops, and consider these to be ordered in increasing stop offset value. Color gradation is defined over the interval from the first color stop, through the successive color stops, to the last color stop. Between consecutive color stops, color values are interpolated between the colors of the two stops.
 
-<p style="background-color:yellow; color:red">TBD: Does interpolation of colors need further specification?</p>
+> **_TBD: Does interpolation of colors need further specification?_**
 
 If there are multiple color stops defined for the same stop offset, the first one is used for computing color values on the color line below that stop offset, and the last one is used for computing color values at or above that stop offset. All other color stops for that stop offset are ignored.
 
@@ -1395,7 +1395,7 @@ To illustrate this, the example in figure <span style="color:red">5.x</span> is 
 
 **5.7.11.3 COLR formats**
 
-<p style="background-color:yellow; color:red">[under construction]</p>
+> _**[under construction]**_
 
 
 
