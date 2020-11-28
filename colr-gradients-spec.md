@@ -1405,9 +1405,9 @@ If another PaintTransform table occurs within the child sub-graph of the first P
 
 **Figure <span style="color:red">5.x</span> Combined effects of a transformation nested within the child sub-graph of another transformation.**
 
-The affine transformation is specified in a PaintTransform table as matrix elements. See <span style="color:red">5.7.3.x</span> for format details.
+The affine transformation is specified in a PaintTransform table as matrix elements. See <span style="color:red">5.7.11.3.x</span> for format details.
 
-Whereas the PaintTransformed table supports several types of transforms, the [PaintRotate](#paint-format-8-rotation-transform) and [PaintSkew](#paint-format-9-skew-transform) tables support specific transformations: rotation and skew. The significant difference is that rotations and skews can be specified as angles, in counter-clockwise degrees. In many cases, specifying the rotation or skew as an angle may be more convenient. It can also have a signficant benefit in variable fonts if an angle of skew or rotation needs to vary: it is much easier to implement variation of angles when specified directly than when specified using matrix elements.
+Whereas the PaintTransformed table supports several types of transforms, the PaintRotate and PaintSkew tables support specific transformations: rotation and skew. The significant difference is that rotations and skews can be specified as angles, in counter-clockwise degrees. In many cases, specifying the rotation or skew as an angle may be more convenient. It can also have a signficant benefit in variable fonts if an angle of skew or rotation needs to vary: it is much easier to implement variation of angles when specified directly than when specified using matrix elements.
 
 The PaintRotate and PaintSkew tables also provide another advantage for these specific types of transformation, compared to the PaintTransformed table. Rotations or skews implemented with a matrix are always relative to the origin. To get the desired result using only PaintTransformed tables, a rotation or skew matrix might need preceding and following translations to shift the origin when the rotation or skew is applied. In contrast, the PaintRotate and PaintSkew tables allow a center of rotation to be specified directly.
 
