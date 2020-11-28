@@ -1214,13 +1214,13 @@ Two versions of the COLR table are defined.
 
 Version 0 allows for a simple composition of colored elements: a linear sequence of glyphs that are stacked vertically (z-order) as layers. Each layer combines a glyph outline from the &#39;glyf&#39;, CFF or CFF2 table (referenced by glyph ID) with a solid color fill. These capabilities are sufficient to define color glyphs such as illustrated in figure <span style="color:red">5.x</span>.
 
-![Three emoji glyphs that use layered shapes with solid color fills.](images\colr_v0_emoji_sample.png)
+![Three emoji glyphs that use layered shapes with solid color fills.](images/colr_v0_emoji_sample.png)
 
 **Figure <span style="color:red">5.x</span> Examples of the graphic capabilities of COLR version 0**
 
 Version 1 supports much richer graphic capabilities. In addition to solid colors, gradient fills can be used, as well as more complex fills using other graphic operations, including affine transformations and diffrent blending modes. Version 1 capabilities allow for color glyphs such as those illustrated in figure <span style="color:red">5.x</span>:
 
-![Three emoji glyphs that use gradient fills and other effects.](images\colr_v1_emoji_sample.png)
+![Three emoji glyphs that use gradient fills and other effects.](images/colr_v1_emoji_sample.png)
 
 **Figure <span style="color:red">5.x</span> Examples of the graphic capabilities of COLR version 0**
 
@@ -1244,7 +1244,7 @@ The simplest color glyphs use just a few of the concepts above: shapes, solid co
 
 Figure <span style="color:red">5.x</span> illustrates the version 0 capabilities: three shapes are in a layered stack: a blue square in the bottom layer, an opaque green circle in the next layer, and a red triangle with some transparency in the top layer.
 
-![Blue square, partially overlapped by an opaque green circle, both partially overlapped by a translucent red triangle.](images\colr_v0_layering.png)
+![Blue square, partially overlapped by an opaque green circle, both partially overlapped by a translucent red triangle.](images/colr_v0_layering.png)
 
 **Figure <span style="color:red">5.x</span> Basic graphic capabilities of COLR version 0**
 
@@ -1294,15 +1294,15 @@ While the color gradation is specified over a defined interval, the color line c
 
 Figures <span style="color:red">5.x</span> – <span style="color:red">5.x</span> illustrate the different color line extend modes. The figures show the color line extended over a limited interval, but the extension is unbounded in either direction.
 
-![Yellow-to-red color gradition, extended to the left with yellow and extended to the right with red.](images\colr_gradient_extend_pad.png)
+![Yellow-to-red color gradition, extended to the left with yellow and extended to the right with red.](images/colr_gradient_extend_pad.png)
 
 **Figure <span style="color:red">5.x</span> Color gradation extended using pad mode**
 
-![Yellow-to-red color gradition, extended by repeating the gradation patterns to the left and right.](images\colr_gradient_extend_repeat.png)
+![Yellow-to-red color gradition, extended by repeating the gradation patterns to the left and right.](images/colr_gradient_extend_repeat.png)
 
 **Figure <span style="color:red">5.x</span> Color gradation extended using repeat mode**
 
-![Yellow-to-red color gradition, extended by repeating alternating mirrors of the gradation pattern to the left and right.](images\colr_gradient_extend_reflect.png)
+![Yellow-to-red color gradition, extended by repeating alternating mirrors of the gradation pattern to the left and right.](images/colr_gradient_extend_reflect.png)
 
 **Figure <span style="color:red">5.x</span> Color gradation extended using reflect mode**
 
@@ -1316,7 +1316,7 @@ Add additional point, p2, is also used to rotate the gradient orientation in the
 
 Figure <span style="color:red">5.x</span> illustrates linear gradients using the three different color line extend modes and with two different rotation vectors.
 
-![Linear gradients using pad, repeat, and reflect extend modes, and with different rotation vectors.](images\linear_gradients.png)
+![Linear gradients using pad, repeat, and reflect extend modes, and with different rotation vectors.](images/linear_gradients.png)
 
 **Figure <span style="color:red">5.x</span> Linear gradients using pad, repeat, and reflect extend modes, and with different rotation vectors.**
 
@@ -1344,7 +1344,7 @@ Let the color at ω be the color at that position on the gradient color line.
 
 Figure <span style="color:red">5.x</span> illustrates a radial gradient using the three different color line extend modes. The color line is defined with stops for the interval [0, 1]. Note that the circles that define the gradient are not stroked as part of the gradient itself. Stroked circles have been overlaid in the figure to illustrate the color line and the region that is painted in relation to the two circles.
 
-![Radial gradients using pad, repeat, and reflect extend modes.](images\radial_gradients.png)
+![Radial gradients using pad, repeat, and reflect extend modes.](images/radial_gradients.png)
 
 **Figure <span style="color:red">5.x</span> Radial gradients using pad, repeat, and reflect extend modes.**
 
@@ -1356,13 +1356,13 @@ This is illustrated in figure <span style="color:red">5.x</span>, in which three
 
 NOTE: This difference does not exist if one circle is entirely contained within the other: in that case, the individual colors are complete, concentric circles.
 
-![Radial gradients with start and end circles swapped.](images\radial_gradients_direction.png)
+![Radial gradients with start and end circles swapped.](images/radial_gradients_direction.png)
 
 **Figure <span style="color:red">5.x</span> Radial gradients with start and end circles swapped.**
 
 When one circle is contained within the other, the extension of the gradient beyond the larger circle will fill the entire surface. Colors in the areas inside the inner circle and outside the outer circle are determined by the extend mode. Figure <span style="color:red">5.x</span> illustrates this for the different extend modes.
 
-![Radial gradients with one circle contained within the other.](images\radial_gradients_circle_within_circle.png)
+![Radial gradients with one circle contained within the other.](images/radial_gradients_circle_within_circle.png)
 
 **Figure <span style="color:red">5.x</span> Radial gradients with one circle contained within the other.**
 
@@ -1374,7 +1374,7 @@ All shapes used in a color glyph are obtained from glyph outlines, referenced us
 
 Typically, the child paint table will be one of the basic fill formats: PaintSolid, PaintLinearGradient, or PaintRadialGradient. This is illustrated in the figure <span style="color:red">5.x</span>: a PaintGlyph table has a glyph ID for an outline in the shape of a triangle, and it links to a child PaintLinearGradient table. The combination is used to represent a triangle filled with the linear gradient.
 
-![PaintGlyph and PaintLinearGradient tables are used to fill a triangle shape with a linear gradient.](images\colr_shape_gradient.png)
+![PaintGlyph and PaintLinearGradient tables are used to fill a triangle shape with a linear gradient.](images/colr_shape_gradient.png)
 
 **Figure <span style="color:red">5.x</span> PaintGlyph and PaintLinearGradient tables used to fill a shape with a linear gradient.**
 
@@ -1383,7 +1383,7 @@ Another way to describe the relationship between a PaintGlyph table and its chil
 
 To illustrate this, the example in figure <span style="color:red">5.x</span> is extended so that a PaintGlyph table links to a second PaintGlyph that links to a PaintLinearGradient: the parent PaintGlyph will clip the filled shape described by the child graph.
 
-![A PaintGlyph table defines a clip region for the composition defined by its child sub-graph.](images\colr_shape_shape_gradient.png)
+![A PaintGlyph table defines a clip region for the composition defined by its child sub-graph.](images/colr_shape_shape_gradient.png)
 
 **Figure <span style="color:red">5.x</span> A PaintGlyph table defines a clip region for the composition defined by its child sub-graph.**
 
