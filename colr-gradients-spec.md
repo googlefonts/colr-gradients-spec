@@ -1413,7 +1413,54 @@ The PaintRotate and PaintSkew tables also provide another advantage for these sp
 
 **5.7.11.2.7 Composition and blending**
 
+> _**[under construction]**_
+
 **5.7.11.2.8 Re-usable components**
+
+Within a color font, many color glyphs might share components in common. For example, in emoji fonts, many different “smilies” or clock faces share a common background. This can be seen in figure <span style="color:red">5.x</span>, which shows color glyphs for three emoji clock faces.
+
+![Emoji clock faces for 12 o’clock, 1 o’clock and 2 o’clock.](images/colr_clocks-12-1-2.png)
+
+**Figure <span style="color:red">5.x</span> Emoji clock faces for 12 o’clock, 1 o’clock and 2 o’clock.**
+
+Several components are shared between these color glyphs: the entire face, with a gradient background and dots at the 3, 6, 9 and 12 positions; the minute hand pointing to the 12 position; and the circles in the center. Also, note that the four dots have the same shape and fill, and differ only in their position. In addition, the hour hands have the same shape and fill, and differ only in their orientation.
+
+There are several ways in which elements of a color glyph description can be re-used:
+
+* Reference to shared subtables
+* Use of a PaintColrLayers table
+* Use of a PaintColrGlyph table
+
+**5.7.11.2.8.1 Re-use by referencing shared subtables**
+
+Several of the paint table formats link to a child paint table using a forward offset within the file: PaintGlyph, PaintComposite, PaintTransformed, PaintRotate, and PaintSkew. A child subtable can be shared by several tables of these formats. For example, several PaintGlyph tables might link to the same PaintSolid table, or to the same node for a sub-graph describing a more complex fill. The only constraints on this type of re-use of elements are:
+
+* Child paint tables are referenced using a forward offset from the start of the referencing table, so a re-used paint table has to occur later in the file than any of the paint tables that use it.
+* The graph shall remain acyclic. If a table links to a child PaintColrGlyph or PaintColrLayers table, they shall not introduce a cycle in the graph.
+
+The clock faces shown in figure <span style="color:red">5.x</span> provide an example of how PaintRotate tables can be combined with re-use of a sub-graph. As noted above, the hour hands have the same shape and fill, but have a different orientation. The glyph outline could point to the 12 position, then in color glyph descriptions for other times, PaintRotate tables could link to the same glyph/fill sub-graph, re-using that component but rotated as needed.
+
+This is illustrated in the figures <span style="color:red">5.x</span> and <span style="color:red">5.x</span>. The first shows a sub-graph defining the hour hand, with upright orientation, using a PaintGlyph and a PaintSolid table. Example file offsets for the tables are indicated.
+
+![A PaintGlyph and PaintSolid table are used to define the clock hour hand pointing to 12.](images/colr_hour-hand-component.png)
+
+**Figure <span style="color:red">5.x</span> A PaintGlyph and PaintSolid table are used to define the clock hour hand pointing to 12.**
+
+Figure <span style="color:red">5.x</span> shows this sub-graph of paint tables being re-used, in some cases linked from PaintRotate tables that rotate the hour hand to point to different clock positions as needed. All of the paint tables that reference this sub-graph occur earlier in the file.
+
+![The tables for the hour hand are re-used with PaintRotate tables to point to different hours.](images/colr_reuse-hour-hand-rotated.png)
+
+**Figure <span style="color:red">5.x</span> The tables for the hour hand are re-used with PaintRotate tables to point to different hours.**
+
+The re-used tables in this example comprise a small amount of data, but in general, the re-used component could be much more complex.
+
+**5.7.11.2.8.2 Re-use using PaintColrLayers**
+
+> _**[under construction]**_
+
+**5.7.11.2.8.3 Re-use using PaintColrGlyph**
+
+> _**[under construction]**_
 
 **5.7.11.3 COLR formats**
 
