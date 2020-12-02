@@ -28,7 +28,6 @@ December 2019
   - [COLR Glyph](#colr-glyph)
   - [COLR Layers](#colr-layers)
 - [OFF Changes](#off-changes)
-  - [Data types](#off-43-data-types)
   - [COLR table](#off-5711-colr--color-table)
     - [Data structures](#colr-v1-data-structures)
       - [Header, glyphs, and layers](#header-glyphs-layers)
@@ -55,6 +54,7 @@ December 2019
 - [References](#references)
 - [Acknowledgements](#acknowledgements)
 - [Annex A: Proposed changes to ISO/IEC 14496-22](#annex-a-proposed-changes-to-isoiec-14496-22)
+  - [A.1 Changes to OFF 4.3 Data types](#a1-changes-to-off-43-data-types)
 
 # Introduction
 
@@ -375,15 +375,6 @@ See section [Reusable Parts](#reusable-parts).
 # OFF Changes
 
 > NOTE: Content within the doc is in process of being reorganized. For clarity a new section for the proposed OFF changes is created at the end of the doc: [Annex A: Proposed changes to ISO/IEC 14496-22](#annex-a-proposed-changes-to-isoiec-14496-22)
-
-## OFF 4.3 Data types
-
-One new data type is proposed:
-
-| Data Type | Description |
-|-|-|
-| Offset24 | 24-bit offset to a table, same as uint24. NULL offset= 0x0000 |
-
 
 ## OFF 5.7.11 COLR – Color Table
 
@@ -1321,6 +1312,29 @@ Changes to the following sections of ISO/IEC 14496-22:2019 Open Font Format (OFF
 - 5.7.11 COLR – Color Table
 - 7.2.3 Item variation stores
 - Bibliography
+
+## A.1 Changes to OFF 4.3 Data types
+
+_Replace the table defining data types with the following (added row for Offset24):_
+
+| Data Types | Description |
+|-|-|
+| uint8 | 8-bit unsigned integer. |
+| int8 | 8-bit signed integer. |
+| uint16 | 16-bit unsigned integer. |
+| int16 | 16-bit signed integer. |
+| uint24 | 24-bit unsigned integer. |
+| uint32 | 32-bit unsigned integer. |
+| int32 | 32-bit signed integer. |
+| Fixed | 32-bit signed fixed-point number (16.16) |
+| FWORD | int16 that describes a quantity in font design units. |
+| UFWORD | uint16 that describes a quantity in font design units. |
+| F2DOT14 | 16-bit signed fixed number with the low 14 bits of fraction (2.14). |
+| LONGDATETIME | Date and time represented in number of seconds since 12:00 midnight, January 1, 1904. The value is represented as a signed 64-bit integer. |
+| Tag | Array of four uint8s (length = 32 bits) used to identify a table, design-variation axis, script, language system, feature, or baseline |
+| Offset16 | Short offset to a table, same as uint16, NULL offset = 0x0000 |
+| Offset24 | 24-bit offset to a table, same as uint24, NULL offset = 0x000000 |
+| Offset32 | Long offset to a table, same as uint32, NULL offset = 0x00000000 |
 
 
 
