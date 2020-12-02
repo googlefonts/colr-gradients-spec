@@ -54,6 +54,7 @@ December 2019
 - [Acknowledgements](#acknowledgements)
 - [Annex A: Proposed changes to ISO/IEC 14496-22](#annex-a-proposed-changes-to-isoiec-14496-22)
   - [A.1 Changes to OFF 4.3 Data types](#a1-changes-to-off-43-data-types)
+  - [A.3 Changes to OFF 7.2.3 Item variation stores](#a3-changes-to-off-723-item-variation-stores)
   - [A.4 Changes to OFF Bibliography](#a4-changes-to-off-bibliography)
 
 # Introduction
@@ -826,136 +827,6 @@ The hour hand is reusable as a transformed glyph.
 Another example might be emoji faces: many have the same backdrop
 with different eyes, noses, tears, etc drawn on top.
 
-## OFF 7.2.3 Item variation stores
-
-_Delete the fourth paragraph, "Variation data is comprised..."._
-
-_Add a new sub-clause 7.2.3.1 after the third paragraph ("The item variation store formats..."), with text as follows:_
-
-**7.2.3.1 Associating target items to variation data**
-
-Variation data is comprised of delta adjustment values that apply to particular target items. Some mechanism is needed to associate delta values with target items. In the item variation store, a block of delta values has an implicit delta-set index, and separate data outside the item variation store is provided that indicates the delta-set index associated with a given target item. Depending on the parent table in which an item variation store is used, different means are used to provide these associations:
-
-* In the MVAR table, an array of records identifies target data items in various other tables, along with the delta-set index for each respective item.
-* In the HVAR and VVAR tables, the target data items are glyph metric arrays in the &#39;hmtx&#39; and &#39;vmtx&#39; tables. Subtables in the HVAR and VVAR tables provide the mapping between the target data items and delta-set indices.
-* For the BASE, GDEF, GPOS, and JSTF tables, a target data item is associated with a delta-set index using a related [VariationIndex table](chapter2.md#device-and-variationindex-tables) within the same subtable that contains the target item.
-* In the COLR table, target data items are specified in structures that combine a basic data type, such FWORD, with a delta-set index.
-
-The structures used in the COLR table currently are used only in that table but may be used in other tables in future versions, and so are defined here as common formats. Structures are defined to wrap the FWORD, UFWORD, F2DOT14 and Fixed basic types.
-
-Note: as described below, each delta-set index is represented as two index components, an *outer* index and an *inner* index, corresponding to a two-level organizational hierarchy. This is described in detail below.
-
-#### VarFWord
-
-The FWORD type is used to represent coordinates in the glyph design grid. The VarFWord record is used to represent a coordinate that can be variable.
-
-| Type | Name | Description |
-|-|-|-|
-| FWORD | coordinate | |
-| uint16 | varOuterIndex | |
-| uint16 | varInnerIndex | |
-
-#### VarUFWord
-
-The UFWord type is used to represent distances in the glyph design grid. The VarUFWord record is used to represent a distance that can be variable.
-
-| Type | Name | Description |
-|-|-|-|
-| UFWORD | distance | |
-| uint16 | varOuterIndex | |
-| uint16 | varInnerIndex | |
-
-#### VarF2Dot14
-
-The F2DOT14 type is typically used to represent values that are inherently limited to a range of [-1, 1], or a range of [0, 1]. The VarF2Dot14 record is used to represent such a value that can be variable.
-
-| Type | Name | Description |
-|-|-|-|
-| F2Dot14 | value | |
-| uint16 | varOuterIndex | |
-| uint16 | varInnerIndex | |
-
-In general, variation deltas are (logically) signed 16-bit integers, and in most cases, they are applied to signed 16-bit values (FWORDs) or unsigned 16-bit values (UFWORDs). When scaled deltas are applied to F2DOT14 values, the F2DOT14 value is treated like a 16-bit integer. (In this sense, the delta and the F2DOT14 value can be viewed as integer values in units of 1/16384ths.)
-
-If the context in which the VarF2Dot14 is used contrains the valid range for the default value, then any variations by applying deltas are clipped to that range.
-
-#### VarFixed
-
-The Fixed type is intended for floating values, such as variation-space coordinates. The VarFixed record is used to represent such a value that can be variable.
-
-| Type | Name | Description |
-|-|-|-|
-| Fixed | value | |
-| uint16 | varOuterIndex | |
-| uint16 | varInnerIndex | |
-
-While in most cases deltas are applied to 16-bit types, Fixed is a 32-bit (16.16) type and requires 32-bit deltas. The DeltaSet record used in the ItemVariationData subtable format can accommodate deltas that are, logically, either 16-bit or 32-bit. See the description of the [ItemVariationData subtable](#itemvariationdata-subtable), below, for details.
-
-When scaled deltas are applied to Fixed values, the Fixed value is treated like a 32-bit integer. (In this sense, the delta and the Fixed value can be viewed as integer values in units of 1/65536ths.)
-
-_Insert a sub-clause heading, "7.2.3.2 Variation data", after the newly-inserted text above, and before the paragraph beginning, "The ItemVariationStore table includes a variation region list..." Re-number subsequent sub-clauses accordingly._
-
-_In the fifth paragraph that follows the figure in (now) 7.2.3.2, delete the first sentence, "A complete delta set index... within that subtable." Before that pragraph, insert the following paragraph:_
-
-A complete delta-set index involves an outer-level index into the ItemVariationData subtable array, plus an inner-level index to a delta-set row within that subtable. A special meaning is assigned to a delta-set index 0xFFFF/0xFFFF (that is, outer-level and inner-level portions are both 0xFFFF): this is used to indicate that there is no variation data for a given item. Functionally, this would be equivalent to referencing delta-set data consisting of only deltas of 0 for all regions.
-
-_In 7.2.3.3 (previously, 7.2.3.1), "Variation regions", in the table for the VariationRegionList structure, add the following sentence to the end of the description for the regionCount field._
-
-Must be less than 32,736.
-
-_After the table for the VariationRegionList structure, add the following paragraph:_
-
-The high-order bit of the regionCount field is reserved for future use, and shall be cleared.
-
-_In 7.2.3.4 (previously 7.2.3.2), "Item variation store and item variation data tables", in the paragraph that follows the table for the ItemVariationStore structure, delete the first sentence, "The item variation store includes an array of offsets to item variation data subtables. Before that paragraph, insert the following paragraph and note:_
-
-The item variation store includes an offset to a variation region list and an array of offsets to item variation data subtables.
-
-NOTE: Indices into the itemVariationDataOffsets array are stored in parent tables as delta-set “outer” indices with each such index having a corresponding “inner” index. If the outer index points to a NULL offset, then any inner index will be invalid. The itemVariationDataOffsets array should not include any NULL offsets.
-
-_In 7.2.3.4, in the table for the ItemVariationData subtable structure, replace the field name "shortDeltaCount" with "wordDeltaCount", and replace the description of that field with the following:"_
-
-A packed field: the high bit is a flag—see details below.
-
-_Following the table for the ItemVariationData subtable structure, replace the remainder of 7.2.3.4 (including the table for the DeltaSet record structure) with the following:_
-
-The wordDeltaCount field contains a packed value that includes a flag and a “word” delta count. The format of this value is as follows:
-
-| Mask | Name | Description |
-|-|-|-|
-| 0x8000 | LONG_WORDS | Flag indicating that “word” deltas are long (int32) |
-| 0x7FFF | WORD_DELTA_COUNT_MASK | Count of “word” deltas |
-
-The representation of delta values uses a mix of long types (“words”) and short types. If the LONG_WORDS flag is set, deltas are represented using a mix of int32 and int16 values. This representation is only used for deltas that are to be applied to data items of Fixed or 32-bit integer types. If the flag is not set, deltas are presented using a mix of int16 and int8 values. See the description of the DeltaSet record below for additional details.
-
-The count value indicated by WORD_DELTA_COUNT_MASK is a count of the number of deltas that use the long (“word”) representation, and shall be less than or equal to regionIndexCount.
-
-The deltaSets array represents a logical two-dimensional table of delta values with itemCount rows and regionIndexCount columns. Rows in the table provide sets of deltas for particular target items, and columns correspond to regions of the variation space. Each DeltaSet record in the array represents one row of the delta-value table — one delta set.
-
-*DeltaSet record:*
-
-<table>
-<tbody>
-
-<tr>
-<th>Type</th>
-<th>Name</th>
-<th>Description</th>
-</tr>
-
-<tr>
-<td>int16 and int8<br><em>or</em><br>int32 and int16</td>
-<td>deltaData&#x200B;[regionIndexCount]</td>
-<td>Variation delta values.</td>
-</tr>
-
-</tbody>
-</table>
-
-Logically, each DeltaSet record has regionIndexCount number of elements. The elements are represented using long and short types, as described above. These are either int16 and int8, or int32 and int16, according to whether the LONG_WORDS flag was set. The delta array has a sequence of deltas using the long type followed by sequence of deltas using the short type. The count of deltas using the long type is derived using WORD_DELTA_COUNT_MASK. The remaining elements use the short type. The length of the data for each row, in bytes, is regionIndexCount + (wordDeltaCount && WORD_DELTA_COUNT_MASK) if the LONG_WORDS flag is not set, or 2 x that amount if the flag is set.
-
-NOTE Delta values are each represented directly. They are not packed as in the tuple variation store.
-
 
 # Implementation
 
@@ -1329,6 +1200,135 @@ _Replace the table defining data types with the following (added row for Offset2
 | Offset32 | Long offset to a table, same as uint32, NULL offset = 0x00000000 |
 
 
+## A.3 Changes to OFF 7.2.3 Item variation stores
+
+_Delete the fourth paragraph, "Variation data is comprised..."._
+
+_Add a new sub-clause 7.2.3.1 after the third paragraph ("The item variation store formats..."), with text as follows:_
+
+**7.2.3.1 Associating target items to variation data**
+
+Variation data is comprised of delta adjustment values that apply to particular target items. Some mechanism is needed to associate delta values with target items. In the item variation store, a block of delta values has an implicit delta-set index, and separate data outside the item variation store is provided that indicates the delta-set index associated with a given target item. Depending on the parent table in which an item variation store is used, different means are used to provide these associations:
+
+* In the MVAR table, an array of records identifies target data items in various other tables, along with the delta-set index for each respective item.
+* In the HVAR and VVAR tables, the target data items are glyph metric arrays in the &#39;hmtx&#39; and &#39;vmtx&#39; tables. Subtables in the HVAR and VVAR tables provide the mapping between the target data items and delta-set indices.
+* For the BASE, GDEF, GPOS, and JSTF tables, a target data item is associated with a delta-set index using a related [VariationIndex table](chapter2.md#device-and-variationindex-tables) within the same subtable that contains the target item.
+* In the COLR table, target data items are specified in structures that combine a basic data type, such FWORD, with a delta-set index.
+
+The structures used in the COLR table currently are used only in that table but may be used in other tables in future versions, and so are defined here as common formats. Structures are defined to wrap the FWORD, UFWORD, F2DOT14 and Fixed basic types.
+
+Note: as described below, each delta-set index is represented as two index components, an *outer* index and an *inner* index, corresponding to a two-level organizational hierarchy. This is described in detail below.
+
+#### VarFWord
+
+The FWORD type is used to represent coordinates in the glyph design grid. The VarFWord record is used to represent a coordinate that can be variable.
+
+| Type | Name | Description |
+|-|-|-|
+| FWORD | coordinate | |
+| uint16 | varOuterIndex | |
+| uint16 | varInnerIndex | |
+
+#### VarUFWord
+
+The UFWord type is used to represent distances in the glyph design grid. The VarUFWord record is used to represent a distance that can be variable.
+
+| Type | Name | Description |
+|-|-|-|
+| UFWORD | distance | |
+| uint16 | varOuterIndex | |
+| uint16 | varInnerIndex | |
+
+#### VarF2Dot14
+
+The F2DOT14 type is typically used to represent values that are inherently limited to a range of [-1, 1], or a range of [0, 1]. The VarF2Dot14 record is used to represent such a value that can be variable.
+
+| Type | Name | Description |
+|-|-|-|
+| F2Dot14 | value | |
+| uint16 | varOuterIndex | |
+| uint16 | varInnerIndex | |
+
+In general, variation deltas are (logically) signed 16-bit integers, and in most cases, they are applied to signed 16-bit values (FWORDs) or unsigned 16-bit values (UFWORDs). When scaled deltas are applied to F2DOT14 values, the F2DOT14 value is treated like a 16-bit integer. (In this sense, the delta and the F2DOT14 value can be viewed as integer values in units of 1/16384ths.)
+
+If the context in which the VarF2Dot14 is used contrains the valid range for the default value, then any variations by applying deltas are clipped to that range.
+
+#### VarFixed
+
+The Fixed type is intended for floating values, such as variation-space coordinates. The VarFixed record is used to represent such a value that can be variable.
+
+| Type | Name | Description |
+|-|-|-|
+| Fixed | value | |
+| uint16 | varOuterIndex | |
+| uint16 | varInnerIndex | |
+
+While in most cases deltas are applied to 16-bit types, Fixed is a 32-bit (16.16) type and requires 32-bit deltas. The DeltaSet record used in the ItemVariationData subtable format can accommodate deltas that are, logically, either 16-bit or 32-bit. See the description of the [ItemVariationData subtable](#itemvariationdata-subtable), below, for details.
+
+When scaled deltas are applied to Fixed values, the Fixed value is treated like a 32-bit integer. (In this sense, the delta and the Fixed value can be viewed as integer values in units of 1/65536ths.)
+
+_Insert a sub-clause heading, "7.2.3.2 Variation data", after the newly-inserted text above, and before the paragraph beginning, "The ItemVariationStore table includes a variation region list..." Re-number subsequent sub-clauses accordingly._
+
+_In the fifth paragraph that follows the figure in (now) 7.2.3.2, delete the first sentence, "A complete delta set index... within that subtable." Before that pragraph, insert the following paragraph:_
+
+A complete delta-set index involves an outer-level index into the ItemVariationData subtable array, plus an inner-level index to a delta-set row within that subtable. A special meaning is assigned to a delta-set index 0xFFFF/0xFFFF (that is, outer-level and inner-level portions are both 0xFFFF): this is used to indicate that there is no variation data for a given item. Functionally, this would be equivalent to referencing delta-set data consisting of only deltas of 0 for all regions.
+
+_In 7.2.3.3 (previously, 7.2.3.1), "Variation regions", in the table for the VariationRegionList structure, add the following sentence to the end of the description for the regionCount field._
+
+Must be less than 32,736.
+
+_After the table for the VariationRegionList structure, add the following paragraph:_
+
+The high-order bit of the regionCount field is reserved for future use, and shall be cleared.
+
+_In 7.2.3.4 (previously 7.2.3.2), "Item variation store and item variation data tables", in the paragraph that follows the table for the ItemVariationStore structure, delete the first sentence, "The item variation store includes an array of offsets to item variation data subtables. Before that paragraph, insert the following paragraph and note:_
+
+The item variation store includes an offset to a variation region list and an array of offsets to item variation data subtables.
+
+NOTE: Indices into the itemVariationDataOffsets array are stored in parent tables as delta-set “outer” indices with each such index having a corresponding “inner” index. If the outer index points to a NULL offset, then any inner index will be invalid. The itemVariationDataOffsets array should not include any NULL offsets.
+
+_In 7.2.3.4, in the table for the ItemVariationData subtable structure, replace the field name "shortDeltaCount" with "wordDeltaCount", and replace the description of that field with the following:"_
+
+A packed field: the high bit is a flag—see details below.
+
+_Following the table for the ItemVariationData subtable structure, replace the remainder of 7.2.3.4 (including the table for the DeltaSet record structure) with the following:_
+
+The wordDeltaCount field contains a packed value that includes a flag and a “word” delta count. The format of this value is as follows:
+
+| Mask | Name | Description |
+|-|-|-|
+| 0x8000 | LONG_WORDS | Flag indicating that “word” deltas are long (int32) |
+| 0x7FFF | WORD_DELTA_COUNT_MASK | Count of “word” deltas |
+
+The representation of delta values uses a mix of long types (“words”) and short types. If the LONG_WORDS flag is set, deltas are represented using a mix of int32 and int16 values. This representation is only used for deltas that are to be applied to data items of Fixed or 32-bit integer types. If the flag is not set, deltas are presented using a mix of int16 and int8 values. See the description of the DeltaSet record below for additional details.
+
+The count value indicated by WORD_DELTA_COUNT_MASK is a count of the number of deltas that use the long (“word”) representation, and shall be less than or equal to regionIndexCount.
+
+The deltaSets array represents a logical two-dimensional table of delta values with itemCount rows and regionIndexCount columns. Rows in the table provide sets of deltas for particular target items, and columns correspond to regions of the variation space. Each DeltaSet record in the array represents one row of the delta-value table — one delta set.
+
+*DeltaSet record:*
+
+<table>
+<tbody>
+
+<tr>
+<th>Type</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+
+<tr>
+<td>int16 and int8<br><em>or</em><br>int32 and int16</td>
+<td>deltaData&#x200B;[regionIndexCount]</td>
+<td>Variation delta values.</td>
+</tr>
+
+</tbody>
+</table>
+
+Logically, each DeltaSet record has regionIndexCount number of elements. The elements are represented using long and short types, as described above. These are either int16 and int8, or int32 and int16, according to whether the LONG_WORDS flag was set. The delta array has a sequence of deltas using the long type followed by sequence of deltas using the short type. The count of deltas using the long type is derived using WORD_DELTA_COUNT_MASK. The remaining elements use the short type. The length of the data for each row, in bytes, is regionIndexCount + (wordDeltaCount && WORD_DELTA_COUNT_MASK) if the LONG_WORDS flag is not set, or 2 x that amount if the flag is set.
+
+NOTE: Delta values are each represented directly. They are not packed as in the tuple variation store.
 
 ## A.4 Changes to OFF Bibliography
 
