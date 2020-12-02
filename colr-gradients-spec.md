@@ -1275,7 +1275,7 @@ A complete delta-set index involves an outer-level index into the ItemVariationD
 
 _In 7.2.3.3 (previously, 7.2.3.1), "Variation regions", in the table for the VariationRegionList structure, add the following sentence to the end of the description for the regionCount field._
 
-Must be less than 32,736.
+Shall be less than 32,736.
 
 _After the table for the VariationRegionList structure, add the following paragraph:_
 
