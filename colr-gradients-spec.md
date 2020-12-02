@@ -1315,7 +1315,7 @@ Changes to the following sections of ISO/IEC 14496-22:2019 Open Font Format (OFF
 
 ## A.1 Changes to OFF 4.3 Data types
 
-_Replace the table defining data types with the following:_
+_Replace the table defining data types with the following (added row for Offset24):_
 
 | Data Types | Description |
 |-|-|
