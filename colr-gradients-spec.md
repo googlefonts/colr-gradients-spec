@@ -1212,17 +1212,17 @@ For example, the Unicode character U+1F600 is the grinning face emoji. Suppose i
 
 Two versions of the COLR table are defined.
 
-Version 0 allows for a simple composition of colored elements: a linear sequence of glyphs that are stacked vertically as layers in bottom-up z-order. Each layer combines a glyph outline from the &#39;glyf&#39;, CFF or CFF2 table (referenced by glyph ID) with a solid color fill. These capabilities are sufficient to define color glyphs such as illustrated in figure <span style="color:red">5.x</span>.
+Version 0 allows for a simple composition of colored elements: a linear sequence of glyphs that are stacked vertically as layers in bottom-up z-order. Each layer combines a glyph outline from the &#39;glyf&#39;, CFF or CFF2 table (referenced by glyph ID) with a solid color fill. These capabilities are sufficient to define color glyphs such as illustrated in figure 5.6.
 
 ![Three emoji glyphs that use layered shapes with solid color fills.](images/colr_v0_emoji_sample.png)
 
-**Figure <span style="color:red">5.x</span> Examples of the graphic capabilities of COLR version 0**
+**Figure 5.6 Examples of the graphic capabilities of COLR version 0**
 
-Version 1 supports additional graphic capabilities. In addition to solid colors, gradient fills can be used, as well as more complex fills using other graphic operations, including affine transformations and various blending modes. Version 1 capabilities allow for color glyphs such as those illustrated in figure <span style="color:red">5.x</span>:
+Version 1 supports additional graphic capabilities. In addition to solid colors, gradient fills can be used, as well as more complex fills using other graphic operations, including affine transformations and various blending modes. Version 1 capabilities allow for color glyphs such as those illustrated in figure 5.7:
 
 ![Three emoji glyphs that use gradient fills and other effects.](images/colr_v1_emoji_sample.png)
 
-**Figure <span style="color:red">5.x</span> Examples of the graphic capabilities of COLR version 1**
+**Figure 5.7 Examples of the graphic capabilities of COLR version 1**
 
 Version 1 also extends capabilities in variable fonts. A COLR version 0 table can be used in variable fonts with glyph outlines being variable, but no other aspect of the color composition being variable. In version 1, all of the new constructs for which it could be relevant have been designed to be variable; for example, the placement of color stops in a gradient, or the alpha values applied to colors. The graphic capabilities supported in version 0 and in version 1 are described in more detail below.
 
