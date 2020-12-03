@@ -1212,7 +1212,7 @@ Variation data is comprised of delta adjustment values that apply to particular 
 
 * In the MVAR table, an array of records identifies target data items in various other tables, along with the delta-set index for each respective item.
 * In the HVAR and VVAR tables, the target data items are glyph metric arrays in the &#39;hmtx&#39; and &#39;vmtx&#39; tables. Subtables in the HVAR and VVAR tables provide the mapping between the target data items and delta-set indices.
-* For the BASE, GDEF, GPOS, and JSTF tables, a target data item is associated with a delta-set index using a related [VariationIndex table](chapter2.md#device-and-variationindex-tables) within the same subtable that contains the target item.
+* For the BASE, GDEF, GPOS, and JSTF tables, a target data item is associated with a delta-set index using a related VariationIndex table (see 6.2.8) within the same subtable that contains the target item.
 * In the COLR table, target data items are specified in structures that combine a basic data type, such FWORD, with a delta-set index.
 
 The structures used in the COLR table currently are used only in that table but may be used in other tables in future versions, and so are defined here as common formats. Structures are defined to wrap the FWORD, UFWORD, F2DOT14 and Fixed basic types.
