@@ -1204,7 +1204,7 @@ _Replace the table defining data types with the following (added row for Offset2
 
 _Replace the content of clause 5.7.11 with the following:_
 
-The COLR table adds support for multi-colored glyphs in a manner that integrates with existing text engines rasterizers and that is designed to be easy to support with current OpenType font files.
+The COLR table adds support for multi-colored glyphs in a manner that integrates with the rasterizers of existing text engines and that is designed to be easy to support with current OpenType font files.
 
 The COLR table defines color presentations for glyphs. The color presentation of a glyph is specified as a graphic composition using other glyphs, such as a layered arrangement of glyphs, each with a different color. The term “color glyph” is used informally to refer to such a graphic composition defined in the COLR table; and the term “base glyph” is used to refer to a glyph for which a color glyph is provided. Processing of the COLR table is done on glyph sequences after text layout processing is completed and prior to final presentation of glyphs. Typically, a base glyph is a glyph that may occur in a sequence that results from the text layout process. In some cases, a base glyph may be a virtual glyph defined within this table as a re-usable color composition.
 
@@ -1218,7 +1218,7 @@ Version 0 allows for a simple composition of colored elements: a linear sequence
 
 **Figure <span style="color:red">5.x</span> Examples of the graphic capabilities of COLR version 0**
 
-Version 1 supports additional graphic capabilities. In addition to solid colors, gradient fills can be used, as well as more complex fills using other graphic operations, including affine transformations and different blending modes. Version 1 capabilities allow for color glyphs such as those illustrated in figure <span style="color:red">5.x</span>:
+Version 1 supports additional graphic capabilities. In addition to solid colors, gradient fills can be used, as well as more complex fills using other graphic operations, including affine transformations and various blending modes. Version 1 capabilities allow for color glyphs such as those illustrated in figure <span style="color:red">5.x</span>:
 
 ![Three emoji glyphs that use gradient fills and other effects.](images/colr_v1_emoji_sample.png)
 
