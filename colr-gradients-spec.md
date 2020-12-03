@@ -1270,9 +1270,9 @@ The graphic capabilities are described in more detail in 5.7.11.1.1 – 5.7.11.1
 
 **5.7.11.1.2 Gradients**
 
-**5.7.11.1.3 Layers**
+**5.7.11.1.3 Filling shapes**
 
-**5.7.11.1.4 Filling shapes**
+**5.7.11.1.4 Layers**
 
 **5.7.11.1.5 Transformations**
 
