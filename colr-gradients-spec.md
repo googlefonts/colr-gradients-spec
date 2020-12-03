@@ -54,6 +54,7 @@ December 2019
 - [Acknowledgements](#acknowledgements)
 - [Annex A: Proposed changes to ISO/IEC 14496-22](#annex-a-proposed-changes-to-isoiec-14496-22)
   - [A.1 Changes to OFF 4.3 Data types](#a1-changes-to-off-43-data-types)
+  - [A.2 Changes to OFF 5.7.11 - Color Table](#a2-changes-to-off-5711---color-table)
   - [A.3 Changes to OFF 7.2.3 Item variation stores](#a3-changes-to-off-723-item-variation-stores)
   - [A.4 Changes to OFF Bibliography](#a4-changes-to-off-bibliography)
 
@@ -1198,6 +1199,37 @@ _Replace the table defining data types with the following (added row for Offset2
 | Offset16 | Short offset to a table, same as uint16, NULL offset = 0x0000 |
 | Offset24 | 24-bit offset to a table, same as uint24, NULL offset = 0x000000 |
 | Offset32 | Long offset to a table, same as uint32, NULL offset = 0x00000000 |
+
+## A.2 Changes to OFF 5.7.11 - Color Table
+
+_Replace the content of clause 5.7.11 with the following:_
+
+The COLR table adds support for multi-colored glyphs in a manner that integrates with the rasterizers of existing text engines and that is designed to be easy to support with current OpenType font files.
+
+The COLR table defines color presentations for glyphs. The color presentation of a glyph is specified as a graphic composition using other glyphs, such as a layered arrangement of glyphs, each with a different color. The term “color glyph” is used informally to refer to such a graphic composition defined in the COLR table; and the term “base glyph” is used to refer to a glyph for which a color glyph is provided. Processing of the COLR table is done on glyph sequences after text layout processing is completed and prior to final presentation of glyphs. Typically, a base glyph is a glyph that may occur in a sequence that results from the text layout process. In some cases, a base glyph may be a virtual glyph defined within this table as a re-usable color composition.
+
+For example, the Unicode character U+1F600 is the grinning face emoji. Suppose in an emoji font the 'cmap' table maps U+1F600 to glyph ID 718. Assuming no glyph substitutions, glyph ID 718 would be considered the base glyph. Suppose the COLR table has data describing a color presentation for this using a layered arrangement of other glyphs with different colors assigned: that description and its presentation result would be considered the corresponding color glyph.
+
+Two versions of the COLR table are defined.
+
+Version 0 allows for a simple composition of colored elements: a linear sequence of glyphs that are stacked vertically as layers in bottom-up z-order. Each layer combines a glyph outline from the &#39;glyf&#39;, CFF or CFF2 table (referenced by glyph ID) with a solid color fill. These capabilities are sufficient to define color glyphs such as illustrated in figure 5.6.
+
+![Three emoji glyphs that use layered shapes with solid color fills.](images/colr_v0_emoji_sample.png)
+
+**Figure 5.6 Examples of the graphic capabilities of COLR version 0**
+
+Version 1 supports additional graphic capabilities. In addition to solid colors, gradient fills can be used, as well as more complex fills using other graphic operations, including affine transformations and various blending modes. Version 1 capabilities allow for color glyphs such as those illustrated in figure 5.7:
+
+![Three emoji glyphs that use gradient fills and other effects.](images/colr_v1_emoji_sample.png)
+
+**Figure 5.7 Examples of the graphic capabilities of COLR version 1**
+
+Version 1 also extends capabilities in variable fonts. A COLR version 0 table can be used in variable fonts with glyph outlines being variable, but no other aspect of the color composition being variable. In version 1, all of the new constructs for which it could be relevant have been designed to be variable; for example, the placement of color stops in a gradient, or the alpha values applied to colors. The graphic capabilities supported in version 0 and in version 1 are described in more detail below.
+
+The COLR table is used in combination with the CPAL table (5.7.12): all color values are specified as entries in color palettes defined in the CPAL table. If the COLR table is present in a font but no CPAL table exists, then the COLR table is ignored.
+
+> **_[under construction—more to come]_**
+
 
 
 ## A.3 Changes to OFF 7.2.3 Item variation stores
