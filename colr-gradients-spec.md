@@ -16,7 +16,6 @@ December 2019
   - [Filled Glyph](#filled-glyph)
   - [Solid Color and Gradient Paints](#solid-color-and-gradient-paints)
     - [Solid](#solid)
-  - [Transformation](#transformation)
   - [COLR Glyph](#colr-glyph)
   - [COLR Layers](#colr-layers)
 - [OFF Changes](#off-changes)
@@ -139,15 +138,6 @@ Line](#color-line)s and color stops, explained in the sections further below.
 A solid paint fills the drawing region with a solid color specified by
 `ColorIndex`. `ColorIndex` references color `paletteIndex` from the `CPAL`
 palette, and applies alpha value `alpha` when drawing.
-
-## Transformation
-
-A transformation as defined by a `PaintTransformed` applies a matrix
-transformation `transform` to the current drawing region.  The transformation is
-to be applied for subsequent nested paints, as defined by the paint referenced
-in `src`. The transformation affects all nested drawing operations. It affects
-how nested solid paints and gradients are drawn, as well as how nested clip
-operations or nested COLR glyph reuse operations are performed.
 
 ## COLR Glyph
 
@@ -1264,6 +1254,13 @@ strip or a cone filled with a linear gradient.*
 **5.7.11.1.4 Layers**
 
 **5.7.11.1.5 Transformations**
+
+A transformation as defined by a `PaintTransformed` applies a matrix
+transformation `transform` to the current drawing region.  The transformation is
+to be applied for subsequent nested paints, as defined by the paint referenced
+in `src`. The transformation affects all nested drawing operations. It affects
+how nested solid paints and gradients are drawn, as well as how nested clip
+operations or nested COLR glyph reuse operations are performed.
 
 **5.7.11.1.6 Compositing and blending**
 
