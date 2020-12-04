@@ -1228,6 +1228,60 @@ Version 1 also extends capabilities in variable fonts. A COLR version 0 table ca
 
 The COLR table is used in combination with the CPAL table (5.7.12): all color values are specified as entries in color palettes defined in the CPAL table. If the COLR table is present in a font but no CPAL table exists, then the COLR table is ignored.
 
+**5.7.11.1 Graphic Compositions**
+
+The graphic compositions in a color glyph definition use a set of 2D graphic concepts and constructs:
+
+* Shapes (or *geometries*)
+* Fills (or *shadings*)
+* Layering—a *z-order*—of elements
+* Composition and blending modes—different ways that the content of a layer is combined with the content of layers above or below it
+* Affine transformations
+
+For both version 0 and version 1, shapes are obtained from glyph outlines in the &#39;glyf&#39;, &#39;CFF &#39; or CFF2 table, referenced by glyph ID. Colors used in fills are obtained from the CPAL table.
+
+The simplest color glyphs use just a few of the concepts above: shapes, solid color fills, and layering. This is the set of capabilities provided by version 0 of the COLR table. In version 0, a base glyph record specifies the color glyph for a given base glyph as a sequence of layers. Each layer is specified in a layer record and has a shape (a glyph ID) and a solid color fill (a CPAL palette entry). The filled shapes in the layer stack are composed using only alpha blending.
+
+Figure 5.8 illustrates the version 0 capabilities: three shapes are in a layered stack: a blue square in the bottom layer, an opaque green circle in the next layer, and a red triangle with some transparency in the top layer.
+
+![Blue square, partially overlapped by an opaque green circle, both partially overlapped by a translucent red triangle.](images/colr_v0_layering.png)
+
+**Figure 5.8</span> Basic graphic capabilities of COLR version 0**
+
+The basic concepts also apply to color glyphs defined using the version 1 formats: shapes are arranged in layers and have fills. But the additional formats of version 1 support much richer capabilities. In a version 1 color glyph, graphic constructs and capabilities are represented primarily in *Paint* tables, which are linked together in a *directed, acyclic graph*. Several different Paint formats are defined, each describing a particular type of graphic operation:
+
+* A PaintColrLayers table provides a layering structure used for creating a color glyph from layered elements. A PaintColrLayers table can be used at the root of the graph, providing a base layering structure for the entire color glyph definition. A PaintColrLayers table can also be nested within the graph, providing a set of layers to define some graphic sub-component within the color glyph.
+
+* The PaintSolid, PaintLinearGradient, and PaintRadialGradient tables provide basic fills, using color entries from the CPAL table.
+
+* The PaintGlyph table provides glyph outlines as the basic shapes.
+
+* The PaintTransformed table is used to apply an affine transformation matrix to a sub-graph of paint tables, and the graphic operations they represent. The PaintRotate and PaintSkew tables support specific transformations specified as angles.
+
+* The PaintComposite table supports alternate composition and blending modes for two sub-graphs.
+
+* The PaintColrGlyph table allows a color glyph definition, referenced by a base glyph ID, to be re-used as a sub-graph within multiple color glyphs.
+
+In a simple color glyph description, a PaintGlyph table might be linked to a PaintSolid table, for example, representing a glyph outline filled using a basic solid color fill. But the PaintGlyph table could instead be linked to a much more complex sub-graph of Paint tables, representing a shape that gets filled using the more-complex set of operations described by the sub-graph of Paint tables.
+
+The graphic capabilities are described in more detail in 5.7.11.1.1 – 5.7.11.1.7. The formats used for each are specified 5.7.11.2.
+
+**5.7.11.1.1 Colors and solid color fills**
+
+**5.7.11.1.2 Gradients**
+
+**5.7.11.1.3 Filling shapes**
+
+**5.7.11.1.4 Layers**
+
+**5.7.11.1.5 Transformations**
+
+**5.7.11.1.6 Composition and blending**
+
+**5.7.11.1.7 Re-usable components**
+
+**5.7.11.2 COLR table formats**
+
 > **_[under construction—more to come]_**
 
 
