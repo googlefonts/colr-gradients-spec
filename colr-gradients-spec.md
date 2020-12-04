@@ -22,7 +22,6 @@ December 2019
         - [Extend Repeat](#extend-repeat)
         - [Extend Reflect](#extend-reflect)
     - [Linear Gradient](#linear-gradient)
-    - [Radial Gradient](#radial-gradient)
   - [Transformation](#transformation)
   - [Composition](#composition)
   - [COLR Glyph](#colr-glyph)
@@ -246,93 +245,6 @@ extend modes pad, repeat and reflect (top to bottom) with color stops for blue
 at 0, yellow at 0.5 and red at 1. (Illustration generated from <a
 href="images/linear_gradients.html">images/radial_gradients.svg</a>, requires
 glMatrix.js to work)*
-
-### Radial Gradient
-
-Radial gradients in this proposal are defined based on circles. If subject to
-a transform (via `PaintTransformed`) those circles may become ellipses.
-
-A radial gradient in this proposal is a gradient between two—optionally
-transformed—circles, namely with center c₀ and radius r₀, and center c₁ and
-radius r₁ and a specified color line.  The circle c₀, r₀ will be drawn with the
-color at color line position 0. The circle c₁, r₁ will be drawn with the color
-at color line colorLine position 1.
-
-The drawing algorithm radial gradients follows the [HTML WHATWG Canvas spec for
-createRadialGradient()](https://html.spec.whatwg.org/multipage/canvas.html#dom-context-2d-createradialgradient).
-Quoting and adapting from there.  With circle center points c₀ and c₁ defined as
-c₀ = (x₀, y₀) and c₁ = (x₁, y₁):
-
-Radial gradients must be rendered by following these steps:
-
-1. If c₀ = c₁ and r₀ = r₁ then the radial gradient must paint nothing. Return.
-2. Let x(ω) = (x₁-x₀)ω + x₀<br>
-   Let y(ω) = (y₁-y₀)ω + y₀<br>
-   Let r(ω) = (r₁-r₀)ω + r₀<br>
-   Let the color at ω be the color at that position on the gradient color line
-   (with the colors coming from the interpolation and extrapolation described above).
-3. For all values of ω where r(ω) > 0, starting with the value of ω nearest to
-   positive infinity and ending with the value of ω nearest to negative
-   infinity, draw the circumference of the ellipse resulting from translating
-   circle with radius r(ω) by affine transform at position (x(ω), y(ω)), with
-   the color at ω, but only painting on the parts of the bitmap that have not
-   yet been painted on by earlier circles in this step for this rendering of the
-   gradient.
-
-![Example radial gradient rendering](images/radial_gradients.png)
-
-*__Figure 3:__ Example of a radial gradient rendering with extend modes pad,
-repeat and reflect (top to bottom) with color stops for blue at 0, yellow at 0.5
-and red at 1. (Illustration generated from <a
-href="images/radial_gradients.svg">images/radial_gradients.svg</a>.)*
-
-Because the rendering algorithm progresses ω in a particular direction, from
-positive infinity to negative infinity, and because pixels are not re-painted as
-ω progresses, the appearance will be affected by which circle is considered
-circle 0 and which is circle 1. 
-
-This is illustrated in the figure 4, in which three radial gradients are shown.
-The first is the same as the first gradient shown in figure 3, using the pad
-extend mode. In this gradient, circle 0 is the small circle, on the left. In
-the second gradient of figure 4, the start and end circles are reversed: circle
-0 is the large circle, on the right. The color line is kept the same, and so the
-red end starts at circle 0, now on the right. In the third gradient, the order
-of stops in the color line is also reversed to put red on the left.
-
-The key difference to notice between the gradients in figure 4 is the way colors
-are painted in the interior: when the two circles are not overlapping, the arc
-of color always bends towards circle 0. This difference does not exist if one
-circle is wholly contained within the other, however: in that case, the
-individual colors are complete, concentric circles.
-
-![Radial gradients with start and end circles swapped](images/radial_gradients_direction.png)
-
-*__Figure 4:__ Radial gradients with start and end circles swapped. (Illustration
-generated from <a href="images/radial_gradient_direction.svg">images/radial_gradient_direction.svg</a>*
-
-*__Note:__ It follows from the algorithm that: a) When both radii are 0, r₀ = r₁
-= 0, then r(ω) is always 0 and nothing is painted. b) If the centers of the
-circles are distinct, one has a zero radius and lies outside the radius of the
-other, the other has a non-zero radius, the resulting shape resembles a cone
-that is open to one side, see Figure 3 below. c) If the circles centers are
-identical, one has a zero radius, one has a non-zero radius, then the gradient
-is well-defined and is painted according to the algorithm.*
-
-If either circle is contained within the other, the gradient is well-defined and
-will be drawn by the algorithm. This applies regardless of whether the centers
-are identical or different, or whether the inner circle has a zero or non-zero
-radius,  Colors inside the inner circle and outside the outer circle will be
-determined by the extend mode. The extension of the gradient beyond the outer
-circle will fill the entire surface. This is illustrated in the following
-figure for the three extend modes.
-
-![Radial gradients with one circle contained within the other](images/radial_gradients_circle_within_circle.png)
-
-*__Figure 5:__ Radial gradients with one circle contained within the other. (Illustration generated from [images/radial_gradients_circle_within_circle.svg](images/radial_gradients_circle_within_circle.svg).)*
-
-*__Note:__ When a radial gradient is nested below a transformation which flattens
-the circles so that they resemble lines, a radial gradient may appear as a
-strip or a cone filled with a linear gradient.*
 
 ## Transformation
 
@@ -1269,6 +1181,97 @@ The graphic capabilities are described in more detail in 5.7.11.1.1 – 5.7.11.1
 **5.7.11.1.1 Colors and solid color fills**
 
 **5.7.11.1.2 Gradients**
+
+**5.7.11.1.2.1 Color Lines**
+
+**5.7.11.1.2.2 Linear gradients**
+
+**5.7.11.1.2.3 Radial gradients**
+
+Radial gradients in this proposal are defined based on circles. If subject to
+a transform (via `PaintTransformed`) those circles may become ellipses.
+
+A radial gradient in this proposal is a gradient between two—optionally
+transformed—circles, namely with center c₀ and radius r₀, and center c₁ and
+radius r₁ and a specified color line.  The circle c₀, r₀ will be drawn with the
+color at color line position 0. The circle c₁, r₁ will be drawn with the color
+at color line colorLine position 1.
+
+The drawing algorithm radial gradients follows the [HTML WHATWG Canvas spec for
+createRadialGradient()](https://html.spec.whatwg.org/multipage/canvas.html#dom-context-2d-createradialgradient).
+Quoting and adapting from there.  With circle center points c₀ and c₁ defined as
+c₀ = (x₀, y₀) and c₁ = (x₁, y₁):
+
+Radial gradients must be rendered by following these steps:
+
+1. If c₀ = c₁ and r₀ = r₁ then the radial gradient must paint nothing. Return.
+2. Let x(ω) = (x₁-x₀)ω + x₀<br>
+   Let y(ω) = (y₁-y₀)ω + y₀<br>
+   Let r(ω) = (r₁-r₀)ω + r₀<br>
+   Let the color at ω be the color at that position on the gradient color line
+   (with the colors coming from the interpolation and extrapolation described above).
+3. For all values of ω where r(ω) > 0, starting with the value of ω nearest to
+   positive infinity and ending with the value of ω nearest to negative
+   infinity, draw the circumference of the ellipse resulting from translating
+   circle with radius r(ω) by affine transform at position (x(ω), y(ω)), with
+   the color at ω, but only painting on the parts of the bitmap that have not
+   yet been painted on by earlier circles in this step for this rendering of the
+   gradient.
+
+![Example radial gradient rendering](images/radial_gradients.png)
+
+*__Figure 3:__ Example of a radial gradient rendering with extend modes pad,
+repeat and reflect (top to bottom) with color stops for blue at 0, yellow at 0.5
+and red at 1. (Illustration generated from <a
+href="images/radial_gradients.svg">images/radial_gradients.svg</a>.)*
+
+Because the rendering algorithm progresses ω in a particular direction, from
+positive infinity to negative infinity, and because pixels are not re-painted as
+ω progresses, the appearance will be affected by which circle is considered
+circle 0 and which is circle 1. 
+
+This is illustrated in the figure 4, in which three radial gradients are shown.
+The first is the same as the first gradient shown in figure 3, using the pad
+extend mode. In this gradient, circle 0 is the small circle, on the left. In
+the second gradient of figure 4, the start and end circles are reversed: circle
+0 is the large circle, on the right. The color line is kept the same, and so the
+red end starts at circle 0, now on the right. In the third gradient, the order
+of stops in the color line is also reversed to put red on the left.
+
+The key difference to notice between the gradients in figure 4 is the way colors
+are painted in the interior: when the two circles are not overlapping, the arc
+of color always bends towards circle 0. This difference does not exist if one
+circle is wholly contained within the other, however: in that case, the
+individual colors are complete, concentric circles.
+
+![Radial gradients with start and end circles swapped](images/radial_gradients_direction.png)
+
+*__Figure 4:__ Radial gradients with start and end circles swapped. (Illustration
+generated from <a href="images/radial_gradient_direction.svg">images/radial_gradient_direction.svg</a>*
+
+*__Note:__ It follows from the algorithm that: a) When both radii are 0, r₀ = r₁
+= 0, then r(ω) is always 0 and nothing is painted. b) If the centers of the
+circles are distinct, one has a zero radius and lies outside the radius of the
+other, the other has a non-zero radius, the resulting shape resembles a cone
+that is open to one side, see Figure 3 below. c) If the circles centers are
+identical, one has a zero radius, one has a non-zero radius, then the gradient
+is well-defined and is painted according to the algorithm.*
+
+If either circle is contained within the other, the gradient is well-defined and
+will be drawn by the algorithm. This applies regardless of whether the centers
+are identical or different, or whether the inner circle has a zero or non-zero
+radius,  Colors inside the inner circle and outside the outer circle will be
+determined by the extend mode. The extension of the gradient beyond the outer
+circle will fill the entire surface. This is illustrated in the following
+figure for the three extend modes.
+
+![Radial gradients with one circle contained within the other](images/radial_gradients_circle_within_circle.png)
+
+*__Figure 5:__ Radial gradients with one circle contained within the other. (Illustration generated from [images/radial_gradients_circle_within_circle.svg](images/radial_gradients_circle_within_circle.svg).)*
+
+*__Note:__ When a radial gradient is nested below a transformation which flattens
+the circles so that they resemble lines, a radial gradient may appear as a
+strip or a cone filled with a linear gradient.*
 
 **5.7.11.1.3 Filling shapes**
 
