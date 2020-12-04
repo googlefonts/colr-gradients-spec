@@ -16,7 +16,6 @@ December 2019
   - [Filled Glyph](#filled-glyph)
   - [Solid Color and Gradient Paints](#solid-color-and-gradient-paints)
     - [Solid](#solid)
-    - [Linear Gradient](#linear-gradient)
   - [Transformation](#transformation)
   - [COLR Glyph](#colr-glyph)
   - [COLR Layers](#colr-layers)
@@ -140,24 +139,6 @@ Line](#color-line)s and color stops, explained in the sections further below.
 A solid paint fills the drawing region with a solid color specified by
 `ColorIndex`. `ColorIndex` references color `paletteIndex` from the `CPAL`
 palette, and applies alpha value `alpha` when drawing.
-
-### Linear Gradient
-
-We propose definitions of linear gradients with two color line points P0 and P1
-between which a gradient is interpolated. A point P₂ is defined to rotate the
-gradient angle / orientation separately from the color line endpoints.
-
-If the dot-product (P₁ - P₀) . (P₂ - P₀) is zero (or near-zero for an
-implementation-defined definition) then gradient is ill-formed and nothing must
-be rendered.
-
-![Defining points for linear gradients](images/linear_gradients.png)
-
-*__Figure 2:__ Examples of linear gradients and their defining points with
-extend modes pad, repeat and reflect (top to bottom) with color stops for blue
-at 0, yellow at 0.5 and red at 1. (Illustration generated from <a
-href="images/linear_gradients.html">images/radial_gradients.svg</a>, requires
-glMatrix.js to work)*
 
 ## Transformation
 
@@ -1174,6 +1155,22 @@ interval would continue mirrored from the previous interval. This allows
 defining stripes in rotating colors.
 
 **5.7.11.1.2.2 Linear gradients**
+
+We propose definitions of linear gradients with two color line points P0 and P1
+between which a gradient is interpolated. A point P₂ is defined to rotate the
+gradient angle / orientation separately from the color line endpoints.
+
+If the dot-product (P₁ - P₀) . (P₂ - P₀) is zero (or near-zero for an
+implementation-defined definition) then gradient is ill-formed and nothing must
+be rendered.
+
+![Defining points for linear gradients](images/linear_gradients.png)
+
+*__Figure 2:__ Examples of linear gradients and their defining points with
+extend modes pad, repeat and reflect (top to bottom) with color stops for blue
+at 0, yellow at 0.5 and red at 1. (Illustration generated from <a
+href="images/linear_gradients.html">images/radial_gradients.svg</a>, requires
+glMatrix.js to work)*
 
 **5.7.11.1.2.3 Radial gradients**
 
