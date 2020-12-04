@@ -16,11 +16,6 @@ December 2019
   - [Filled Glyph](#filled-glyph)
   - [Solid Color and Gradient Paints](#solid-color-and-gradient-paints)
     - [Solid](#solid)
-    - [Color Line](#color-line)
-      - [Extend Mode](#extend-mode)
-        - [Extend Pad](#extend-pad)
-        - [Extend Repeat](#extend-repeat)
-        - [Extend Reflect](#extend-reflect)
     - [Linear Gradient](#linear-gradient)
   - [Transformation](#transformation)
   - [COLR Glyph](#colr-glyph)
@@ -145,87 +140,6 @@ Line](#color-line)s and color stops, explained in the sections further below.
 A solid paint fills the drawing region with a solid color specified by
 `ColorIndex`. `ColorIndex` references color `paletteIndex` from the `CPAL`
 palette, and applies alpha value `alpha` when drawing.
-
-### Color Line
-
-A color line is a function that maps real numbers to a color value to define a
-1-dimensional gradient, to be used and referenced from [Linear
-Gradients](#linear-gradient) and [Radial
-Gradients](#radial-gradient). Colors of the gradient are defined by *color
-stops*.
-
-Color stops are defined at color stop positions. Color stop position 0 maps to
-the start point of a linear gradient or the center of the first circle of a
-radial gradient. Color stop position 1 maps to the end point of a linear
-gradient or the center of the second circle of a radial gradient.  In the
-interval [0, 1] the color line must contain at least one color stop, but may
-contain multiple color stops that define the gradient.
-
-Outside the defined interval, the gradient pattern in between the outer defined
-positions is repeated according to the color line [extend
-mode](#extend-mode).
-
-If there are multiple color stops defined for the same coordinate, the first one
-is used for computing the color value for values below the coordinate, the last
-one is used for computing the color value for values above. All other color
-stops for this coordinate are ignored.
-
-Limiting the specified interval to a sub-range of [0, 1] allows for looping
-through colors repeatedly along the mapped distance, without having to encode
-them multiple times.  In that sense, our color line is similar to CSS
-[repeating-linear-gradient()](https://developer.mozilla.org/en-US/docs/Web/CSS/repeating-linear-gradient)
-and
-[repeating-radial-gradient()](https://developer.mozilla.org/en-US/docs/Web/CSS/repeating-radial-gradient)
-functions.
-
-In order to achieve:
-
-* one gradient along the gradient positions (linear, or radial) and padded
-  colors outside this range, color stops at 0 and 1 must be defined, and color
-  line extend mode *pad* must be used. This achieves similarly behavior as
-  defined in CSS
-  [linear-gradient()](https://developer.mozilla.org/en-US/docs/Web/CSS/linear-gradient)
-  and
-  [radial-gradient()](https://developer.mozilla.org/en-US/docs/Web/CSS/radial-gradient)
-  functions.
-
-* a repeated gradient along the gradient positions (linear or radial): divide 1
-  by the number of desired repetitions and use the result as your maximum color
-  stop, then use color line extend mode *repeat* to have it continue outside the
-  defined interval.
-
-* a mirrored / color-circle gradient: divide 1 by two times the number of
-  desired full color stripes, and define the color stops between the 0 and the
-  result of this division, then use color line extend mode *reflect* to have it
-  continue mirrored.
-
-![Repeating linear gradient](images/repeating_linear.png) ![Repeating radial gradient](images/repeating_radial.png)
-
-***Figure 1:** Repeating linear and radial gradients
-([source](https://cssnewbie.com/apply-cool-linear-and-radial-gradients-using-css/))*
-
-#### Extend Mode
-
-We propose three extend modes to control the behavior of the gradient outside
-its specified endpoints:
-
-##### Extend Pad
-
-For numbers outside the defined interval the color line continues to map to the
-outer color values, i.e. for values less than the leftmost defined color stop,
-it maps to the leftmost color stop value; for values greater than the rightmost
-defined color stop value, it maps to the rightmost defined color value.
-
-##### Extend Repeat
-
-For numbers outside the interval, the color line continues to map as if
-the defined interval was repeated.
-
-##### Extend Reflect
-
-For numbers outside the defined interval, the color continues to map as if the
-interval would continue mirrored from the previous interval. This allows
-defining stripes in rotating colors.
 
 ### Linear Gradient
 
@@ -1176,7 +1090,88 @@ In version 1, a solid color fill is specified using a PaintSolid table. See 5.7.
 
 **5.7.11.1.2 Gradients**
 
+COLR version 1 supports two types of gradients: linear gradients, and radial gradients. Both types of gradient are defined using a color line.
+
 **5.7.11.1.2.1 Color Lines**
+
+A color line is a function that maps real numbers to a color value to define a
+1-dimensional gradient, to be used and referenced from [Linear
+Gradients](#linear-gradient) and [Radial
+Gradients](#radial-gradient). Colors of the gradient are defined by *color
+stops*.
+
+Color stops are defined at color stop positions. Color stop position 0 maps to
+the start point of a linear gradient or the center of the first circle of a
+radial gradient. Color stop position 1 maps to the end point of a linear
+gradient or the center of the second circle of a radial gradient.  In the
+interval [0, 1] the color line must contain at least one color stop, but may
+contain multiple color stops that define the gradient.
+
+Outside the defined interval, the gradient pattern in between the outer defined
+positions is repeated according to the color line [extend
+mode](#extend-mode).
+
+If there are multiple color stops defined for the same coordinate, the first one
+is used for computing the color value for values below the coordinate, the last
+one is used for computing the color value for values above. All other color
+stops for this coordinate are ignored.
+
+Limiting the specified interval to a sub-range of [0, 1] allows for looping
+through colors repeatedly along the mapped distance, without having to encode
+them multiple times.  In that sense, our color line is similar to CSS
+[repeating-linear-gradient()](https://developer.mozilla.org/en-US/docs/Web/CSS/repeating-linear-gradient)
+and
+[repeating-radial-gradient()](https://developer.mozilla.org/en-US/docs/Web/CSS/repeating-radial-gradient)
+functions.
+
+In order to achieve:
+
+* one gradient along the gradient positions (linear, or radial) and padded
+  colors outside this range, color stops at 0 and 1 must be defined, and color
+  line extend mode *pad* must be used. This achieves similarly behavior as
+  defined in CSS
+  [linear-gradient()](https://developer.mozilla.org/en-US/docs/Web/CSS/linear-gradient)
+  and
+  [radial-gradient()](https://developer.mozilla.org/en-US/docs/Web/CSS/radial-gradient)
+  functions.
+
+* a repeated gradient along the gradient positions (linear or radial): divide 1
+  by the number of desired repetitions and use the result as your maximum color
+  stop, then use color line extend mode *repeat* to have it continue outside the
+  defined interval.
+
+* a mirrored / color-circle gradient: divide 1 by two times the number of
+  desired full color stripes, and define the color stops between the 0 and the
+  result of this division, then use color line extend mode *reflect* to have it
+  continue mirrored.
+
+![Repeating linear gradient](images/repeating_linear.png) ![Repeating radial gradient](images/repeating_radial.png)
+
+***Figure 1:** Repeating linear and radial gradients
+([source](https://cssnewbie.com/apply-cool-linear-and-radial-gradients-using-css/))*
+
+#### Extend Mode
+
+We propose three extend modes to control the behavior of the gradient outside
+its specified endpoints:
+
+##### Extend Pad
+
+For numbers outside the defined interval the color line continues to map to the
+outer color values, i.e. for values less than the leftmost defined color stop,
+it maps to the leftmost color stop value; for values greater than the rightmost
+defined color stop value, it maps to the rightmost defined color value.
+
+##### Extend Repeat
+
+For numbers outside the interval, the color line continues to map as if
+the defined interval was repeated.
+
+##### Extend Reflect
+
+For numbers outside the defined interval, the color continues to map as if the
+interval would continue mirrored from the previous interval. This allows
+defining stripes in rotating colors.
 
 **5.7.11.1.2.2 Linear gradients**
 
