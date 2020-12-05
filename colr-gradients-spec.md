@@ -1257,13 +1257,36 @@ operations or nested COLR glyph reuse operations are performed.
 
 **5.7.11.1.6 Compositing and blending**
 
-A composition is a graphical primitive that allows combining two paints given a
-blending rule for each pixel. A composition as defined by a `PaintComposite`
-references two nested paints, `backdrop` and `src`. First, the paint operations
-for `backdrop` are executed, then the drawing operations for `src` are executed
-and combined with `backdrop` given the blending rule specified in
-`mode`. Compositing modes are taken from Compositing modes are taken from the
-[W3C Compositing specification](https://www.w3.org/TR/compositing-1/).
+When a color glyph has overlapping content in two layers, the pixels in the two layers must be combined in some way. If the content in the top layer has full opacity, then normally the pixels from that layer are shown, occluding overlapping pixels from lower layers. If the top layer has some transparency (some portion has alpha less than 1.0), then blending of colors for overlapping pixels occurs by default. The default interaction between layers uses simple alpha compositing, as described in [Compositing and Blending Level 1][1].
+
+A PaintComposite table can be used to get other compositing or blending effects. The
+PaintComposite table combines content defined by two sub-graphs: a *source* sub-graph;
+and a destination, or *backdrop*, sub-graph. First, the paint operations
+for the backdrop sub-graph are executed, then the drawing operations for the source sub-graph are executed
+and combined with backdrop using a specified compositing or blending mode.
+Various composition and blending modes are supported. The available modes are given in the CompositionModes enumeration (see 5.7.11.2.x). The effect and processing rule of each mode are specified in [Compositing and Blending Level 1][1].
+
+The available modes fall into two general types: compositing modes, also referred to as “Porter-Duff” modes; and blending modes. In rough terms, the Porter-Duff modes determine how much effect pixels from the source and the backdrop each contribute in the result, while blending modes determine how color values for pixels from the source and backdrop are combined. These are illustrated with examples in figures 5.23 and 5.24: in each case, red and blue rectangles are the source and backdrop content.
+
+Figure 5.23 shows the effect of a Porter-Duff mode, “XOR”, which has the effect that only non-overlapping pixels contribute to the result.
+
+![Two content elements combined using the Porter-Duff XOR mode.](images/colr_porter-duff_xor.png)
+
+**Figure 5.23 Two content elements combined using the Porter-Duff XOR mode.**
+
+Figure 5.24 shows the effect of a “lighten” blending mode, which has the effect that the R, G, and B color components for each pixel in the result is the greater of the R, G, and B values from corresponding pixels in the source and backdrop.
+
+![Two content elements combined using the lighten blending mode.](images/colr_blend_lighten.png)
+
+**Figure 5.24 Two content elements combined using the lighten blending mode.**
+
+For complete details on each of the Porter-Duff and blending modes, see the [Compositing and Blending Level 1][1] specification.
+
+Figure 5.25 illustrates how the PaintComposite table is used in combination with content sub-graphs to implement an alternate compositing effect. The source subgraph defines a green capital A; the backdrop sub-graph defines a black circle. The compositing mode used is “source out”, which has the effect that the source content punches out a hole in the backdrop. (For this mode, the fill color of the source is irrelevant; a black or yellow "A" would have the same effect.) A red rectangle is included as a lower layer to show that the backdrop has been punched out by the source, making that portion of the lower layer visible.
+
+![A color glyph using a PaintComposite table to punch out a shape from the fill of a circle.](images/colr_PaintCompositeGraph.png)
+
+**Figure 5.25 A color glyph using a PaintComposite table to punch out a shape from the fill of a circle.**
 
 **5.7.11.1.7 Re-usable components**
 
