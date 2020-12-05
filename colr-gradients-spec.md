@@ -1168,6 +1168,12 @@ The graphic capabilities are described in more detail in 5.7.11.1.1 – 5.7.11.1
 
 **5.7.11.1.1 Colors and solid color fills**
 
+All colors are specified as a base zero index into CPAL (5.7.12) palette entries. A font can define alternate palettes in its CPAL table; it is up to the application to determine which palette is used. A palette entry index value of 0xFFFF is a special case indicating that the text foreground color (defined by the application) should be used, and shall not be treated as an actual index into the CPAL ColorRecord array.
+
+The CPAL color data includes alpha information, as well as RGB values. In the COLR version 0 formats, a color reference is made in LayerRecord as a palette entry index alone. In the formats added for COLR version 1, a color reference is made in a ColorIndex record, which includes a palette entry index and a separate alpha value. Separation of alpha from palette entries in version 1 allows use of transparency in a color glyph definition independent of the choice of palette. The alpha value in the ColorIndex record is multiplied into the alpha value given in the CPAL color entry.
+
+In version 1, a solid color fill is specified using a PaintSolid table. See 5.7.11.1.3 for details on how a PaintSolid fill is applied to a shape.
+
 **5.7.11.1.2 Gradients**
 
 **5.7.11.1.2.1 Color Lines**
