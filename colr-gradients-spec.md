@@ -24,7 +24,6 @@ December 2019
     - [Linear Gradient](#linear-gradient)
     - [Radial Gradient](#radial-gradient)
   - [Transformation](#transformation)
-  - [Composition](#composition)
   - [COLR Glyph](#colr-glyph)
   - [COLR Layers](#colr-layers)
 - [OFF Changes](#off-changes)
@@ -342,17 +341,6 @@ to be applied for subsequent nested paints, as defined by the paint referenced
 in `src`. The transformation affects all nested drawing operations. It affects
 how nested solid paints and gradients are drawn, as well as how nested clip
 operations or nested COLR glyph reuse operations are performed.
-
-
-## Composition
-
-A composition is a graphical primitive that allows combining two paints given a
-blending rule for each pixel. A composition as defined by a `PaintComposite`
-references two nested paints, `backdrop` and `src`. First, the paint operations
-for `backdrop` are executed, then the drawing operations for `src` are executed
-and combined with `backdrop` given the blending rule specified in
-`mode`. Compositing modes are taken from Compositing modes are taken from the
-[W3C Compositing specification](https://www.w3.org/TR/compositing-1/).
 
 ## COLR Glyph
 
@@ -1276,7 +1264,15 @@ The graphic capabilities are described in more detail in 5.7.11.1.1 – 5.7.11.1
 
 **5.7.11.1.5 Transformations**
 
-**5.7.11.1.6 Composition and blending**
+**5.7.11.1.6 Compositing and blending**
+
+A composition is a graphical primitive that allows combining two paints given a
+blending rule for each pixel. A composition as defined by a `PaintComposite`
+references two nested paints, `backdrop` and `src`. First, the paint operations
+for `backdrop` are executed, then the drawing operations for `src` are executed
+and combined with `backdrop` given the blending rule specified in
+`mode`. Compositing modes are taken from Compositing modes are taken from the
+[W3C Compositing specification](https://www.w3.org/TR/compositing-1/).
 
 **5.7.11.1.7 Re-usable components**
 
