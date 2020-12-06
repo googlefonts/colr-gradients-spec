@@ -1196,7 +1196,7 @@ When one circle is contained within the other, the extension of the gradient bey
 
 ![Radial gradients with one circle contained within the other.](images/colr_radial_gradients_circle_within_circle.png)
 
-**Figure <span style="color:red">5.15</span> Radial gradients with one circle contained within the other.**
+**Figure 5.15 Radial gradients with one circle contained within the other.**
 
 NOTE: A scale transformation (see 5.7.11.1.5) can flatten shapes to resemble lines. If a radial gradient is nested in the child sub-graph of a transformation that flattens the circles so that they are nearly lines, the centers may still be separated by some distance. In that case, a radial gradient would appear as a strip or a cone filled with a linear gradient.
 
