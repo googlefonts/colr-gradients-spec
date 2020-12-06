@@ -997,7 +997,7 @@ For example, the Unicode character U+1F600 is the grinning face emoji. Suppose i
 
 Two versions of the COLR table are defined.
 
-Version 0 allows for a simple composition of colored elements: a linear sequence of glyphs that are stacked vertically as layers in bottom-up z-order. Each layer combines a glyph outline from the &#39;glyf&#39;, CFF or CFF2 table (referenced by glyph ID) with a solid color fill. These capabilities are sufficient to define color glyphs such as illustrated in figure 5.6.
+Version 0 allows for a simple composition of colored elements: a linear sequence of glyphs that are stacked vertically as layers in bottom-up z-order. Each layer combines a glyph outline from the &#39;glyf&#39;, CFF or CFF2 table (referenced by glyph ID) with a solid color fill. These capabilities are sufficient to define color glyphs such as those illustrated in figure 5.6.
 
 ![Three emoji glyphs that use layered shapes with solid color fills.](images/colr_v0_emoji_sample.png)
 
