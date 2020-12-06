@@ -895,25 +895,25 @@ Layering of visual elements was introduced above, in the introduction to 5.7.11.
 
 For version 0, an array of LayerRecords is created. Each LayerRecord specifies a glyph ID and a CPAL entry (a shape and solid color fill). Each color glyph definition is a slice from that array (that is, a contiguous sub-sequence), specified in a BaseGlyphRecord for a particular base glyph. Within a given slice, the first record specifies the content of the bottom layer, and each subsequent record specifies content that overlays the preceding content(increasing z-order). A single array is used for defining all color glyphs. The LayerRecord slices for two base glyphs may overlap, though often will not overlap.
 
-Figure <span style="color:red">5.18</span> illustrates layers using version 0 formats.
+Figure 5.18 illustrates layers using version 0 formats.
 
 ![Version 0: Color glyphs are defined by slices of a layer records array.](images/colr_layers_v0.png)
 
-**Figure <span style="color:red">5.18</span> Version 0: Color glyphs are defined by slices of a layer records array.**
+**Figure 5.18 Version 0: Color glyphs are defined by slices of a layer records array.**
 
 The version 1 formats also define layer sets as slices in an array. In this case, however, the array is an array of offsets to paint tables, and is contained in a LayerV1List table. Each referenced paint table is the root of a graph of paint tables that specifies a graphic composition to be used as a layer. Within a given slice, the first offset provides the content for the bottom layer, and each subsequent offset provides content that overlays the preceding content. Definition of the slices (the sub-sequence of offsets for each slice) are give in PaintColorLayers tables.
 
-Figure <span style="color:red">5.19</span> illustrates the organizational relationship between PaintColorLayers tables, the LayerV1List, and referenced paint tables that are roots of sub-graphs.
+Figure 5.19 illustrates the organizational relationship between PaintColorLayers tables, the LayerV1List, and referenced paint tables that are roots of sub-graphs.
 
 ![Version 1: PaintColrLayers tables specify slices within the LayerV1List, providing a layering of content defined in sub-graphs.](images/colr_layers_v1.png)
 
-**Figure <span style="color:red">5.19</span> Version 1: PaintColrLayers tables specify slices within the LayerV1List, providing a layering of content defined in sub-graphs.**
+**Figure 5.19 Version 1: PaintColrLayers tables specify slices within the LayerV1List, providing a layering of content defined in sub-graphs.**
 
-A PaintColorLayers table is typically used as the root of a color glyph definition, providing a base layering structure for the color glyph. In this usage, the PaintColrLayers table is referenced by a BaseGlyphV1Record, which specifies the root of the graph of a color glyph definition for a given base glyph. This is illustrated in figure <span style="color:red">5.20</span>.
+A PaintColorLayers table is typically used as the root of a color glyph definition, providing a base layering structure for the color glyph. In this usage, the PaintColrLayers table is referenced by a BaseGlyphV1Record, which specifies the root of the graph of a color glyph definition for a given base glyph. This is illustrated in figure 5.20.
 
 ![PaintColrLayers table used as the root of a color glyph definition.](images/colr_PaintColrLayers_as_root.png)
 
-**Figure <span style="color:red">5.20</span> PaintColrLayers table used as the root of a color glyph definition.**
+**Figure 5.20 PaintColrLayers table used as the root of a color glyph definition.**
 
 A PaintColorLayers table can also be nested more deeply within the graph, providing a layer structure to define some component within a larger color glyph definition. The ability to nest a PaintColrLayers table within a graph creates the potential to introduce a cycle within the graph. This is not valid, however: graphs shall be acyclic.
 
