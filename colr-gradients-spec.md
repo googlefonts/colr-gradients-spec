@@ -1043,7 +1043,7 @@ The basic concepts also apply to color glyphs defined using the version 1 format
 
 * The PaintTransformed table is used to apply an affine transformation matrix to a sub-graph of paint tables, and the graphic operations they represent. The PaintRotate and PaintSkew tables support specific transformations specified as angles.
 
-* The PaintComposite table supports alternate composition and blending modes for two sub-graphs.
+* The PaintComposite table supports alternate compositing and blending modes for two sub-graphs.
 
 * The PaintColrGlyph table allows a color glyph definition, referenced by a base glyph ID, to be re-used as a sub-graph within multiple color glyphs.
 
