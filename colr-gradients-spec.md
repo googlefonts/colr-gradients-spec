@@ -1245,27 +1245,26 @@ and combined with `backdrop` given the blending rule specified in
 
 **5.7.11.1.7 Re-usable components**
 
-Use `PaintTransformed` to reuse parts in different positions or sizes.
+Within a color font, many color glyphs might share components in common. For example, in emoji fonts, many different “smilies” or clock faces share a common background. This can be seen in figure 5.26, which shows color glyphs for three emoji clock faces.
 
-Use `PaintColrGlyph` to reuse entire COLR glyphs.
+![Emoji clock faces for 12 o’clock, 1 o’clock and 2 o’clock.](images/colr_clocks-12-1-2.png)
 
-Use `PaintColrLayers` to reuse parts of COLR glyphs. For example, a common
-backdrop made up of several layers.
+**Figure 5.26 Emoji clock faces for 12 o’clock, 1 o’clock and 2 o’clock.**
 
-For example, consider the Noto clock emoji (hand colored for emphasis):
+Several components are shared between these color glyphs: the entire face, with a gradient background and dots at the 3, 6, 9 and 12 positions; the minute hand pointing to the 12 position; and the circles in the center. Also, note that the four dots have the same shape and fill, and differ only in their position. In addition, the hour hands have the same shape and fill, and differ only in their orientation.
 
-![Noto 1pm](images/clock-1.svg)
-![Noto 2pm](images/clock-2.svg)
+There are several ways in which elements of a color glyph description can be re-used:
 
-The entire backdrop (outline, gradient-circle, 4 dots, the minute
-hand) is reusable for all versions of the clock:
+* Reference to shared subtables
+* Use of a PaintColrLayers table
+* Use of a PaintColrGlyph table
 
-![Noto 2pm](images/clock-common.svg)
+**5.7.11.1.7.1 Re-use by referencing shared subtables**
 
-The hour hand is reusable as a transformed glyph.
+**5.7.11.1.7.2 Re-use using PaintColrLayers**
 
-Another example might be emoji faces: many have the same backdrop
-with different eyes, noses, tears, etc drawn on top.
+**5.7.11.1.7.3 Re-use using PaintColrGlyph**
+
 
 **5.7.11.2 COLR table formats**
 
