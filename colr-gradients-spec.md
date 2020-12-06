@@ -1040,11 +1040,11 @@ COLR version 1 supports two types of gradients: linear gradients, and radial gra
 
 **5.7.11.1.2.1 Color Lines**
 
-A color line is a function that maps real numbers to color values to define a one-dimensional gradation of colors, to be used in the definition of linear or radial gradients. A color line is defined as a set of color stops, each of which maps a particular real number to a specific color.
+A color line is a function that maps real numbers to color values to define a one-dimensional gradation of colors, to be used in the definition of linear or radial gradients. A color line is defined as a set of one or more color stops, each of which maps a particular real number to a specific color.
 
 A color line is not a line in a geometric sense: on its own, a color line has no positioning, orientation or size within a design grid. These geometric aspects are part of the definition of a linear or radial gradient. Specifically, the gradient definition will specify positions in the design grid that correspond to the real values 0 and 1 in the color line, with placement in the design grid for other numeric values of the color line interpolated from the placement of 0 and 1.
 
-A color stop is defined by a real number, the *stop offset*, and a color. A color line is defined by one or more color stops, with at least one color stop within the interval [0, 1]. Additional color stops can be specified within or outside the interval [0, 1]. (Stop offsets are represented using F2DOT14 values, therefore color stops can only be specified within the range [-2, 2). See <span style="color:red">5.7.11.2.x</span> for format details.) If only one color stop is specified, that color is used for the entire color line; at least two color stops are needed to create color gradation.
+A color stop is defined by a real number, the *stop offset*, and a color. A color line is defined with at least one color stop within the interval [0, 1]. Additional color stops can be specified within or outside the interval [0, 1]. (Stop offsets are represented using F2DOT14 values, therefore color stops can only be specified within the range [-2, 2). See <span style="color:red">5.7.11.2.x</span> for format details.) If only one color stop is specified, that color is used for the entire color line; at least two color stops are needed to create color gradation.
 
 Suppose a color line has two or more color stops, and consider these to be ordered in increasing stop offset value. Color gradation is defined over the interval from the first color stop, through the successive color stops, to the last color stop. Between consecutive color stops, color values are interpolated between the colors of the two stops.
 
