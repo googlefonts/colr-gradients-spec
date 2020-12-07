@@ -1224,7 +1224,7 @@ strip or a cone filled with a linear gradient.*
 
 All shapes used in a color glyph are obtained from glyph outlines, referenced using a glyph ID. In a color glyph description, a PaintGlyph table is used to represent a shape. The PaintGlyph table has a field for the glyph ID, plus an offset to a child paint table that is used as the fill for the shape. The glyph outline is not rendered; only the fill is rendered.
 
-Typically, the child paint table will be one of the basic fill formats: PaintSolid, PaintLinearGradient, or PaintRadialGradient. This is illustrated in the figure 5.16: a PaintGlyph table has a glyph ID for an outline in the shape of a triangle, and it links to a child PaintLinearGradient table. The combination is used to represent a triangle filled with the linear gradient.
+Typically, the child paint table will be one of the basic fill formats: PaintSolid, PaintLinearGradient, or PaintRadialGradient. This is illustrated in figure 5.16: a PaintGlyph table has a glyph ID for an outline in the shape of a triangle, and it links to a child PaintLinearGradient table. The combination is used to represent a triangle filled with the linear gradient.
 
 ![PaintGlyph and PaintLinearGradient tables are used to fill a triangle shape with a linear gradient.](images/colr_shape_gradient.png)
 
