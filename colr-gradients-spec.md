@@ -33,7 +33,6 @@ December 2019
         - [Bounding Box](#bounding-box)
       - [Understanding COLR v1](#understanding-colr-v1)
         - [Alpha](#alpha)
-        - [Reusable Parts](#reusable-parts)
 - [Implementation](#implementation)
   - [Font Tooling](#font-tooling)
   - [Rendering](#rendering)
@@ -588,30 +587,6 @@ The alpha channel for a layer can be populated using `PaintComposite`:
 - `PaintSolid` can be used to set a blanket alpha
 - `PaindLinearGradient` and `PaintRadialGradient` can be used to set gradient alpha
 - Mode [Source In](https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_srcin) can be used to mask
-
-##### Reusable Parts
-
-Use `PaintTransformed` to reuse parts in different positions or sizes.
-
-Use `PaintColrGlyph` to reuse entire COLR glyphs.
-
-Use `PaintColrLayers` to reuse parts of COLR glyphs. For example, a common
-backdrop made up of several layers.
-
-For example, consider the Noto clock emoji (hand colored for emphasis):
-
-![Noto 1pm](images/clock-1.svg)
-![Noto 2pm](images/clock-2.svg)
-
-The entire backdrop (outline, gradient-circle, 4 dots, the minute
-hand) is reusable for all versions of the clock:
-
-![Noto 2pm](images/clock-common.svg)
-
-The hour hand is reusable as a transformed glyph.
-
-Another example might be emoji faces: many have the same backdrop
-with different eyes, noses, tears, etc drawn on top.
 
 
 # Implementation
@@ -1273,6 +1248,28 @@ and combined with `backdrop` given the blending rule specified in
 [W3C Compositing specification](https://www.w3.org/TR/compositing-1/).
 
 **5.7.11.1.7 Re-usable components**
+
+Use `PaintTransformed` to reuse parts in different positions or sizes.
+
+Use `PaintColrGlyph` to reuse entire COLR glyphs.
+
+Use `PaintColrLayers` to reuse parts of COLR glyphs. For example, a common
+backdrop made up of several layers.
+
+For example, consider the Noto clock emoji (hand colored for emphasis):
+
+![Noto 1pm](images/clock-1.svg)
+![Noto 2pm](images/clock-2.svg)
+
+The entire backdrop (outline, gradient-circle, 4 dots, the minute
+hand) is reusable for all versions of the clock:
+
+![Noto 2pm](images/clock-common.svg)
+
+The hour hand is reusable as a transformed glyph.
+
+Another example might be emoji faces: many have the same backdrop
+with different eyes, noses, tears, etc drawn on top.
 
 **5.7.11.2 COLR table formats**
 
