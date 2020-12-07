@@ -1282,7 +1282,7 @@ Figure 5.24 shows the effect of a “lighten” blending mode, which has the eff
 
 For complete details on each of the Porter-Duff and blending modes, see the [Compositing and Blending Level 1][1] specification.
 
-Figure 5.25 illustrates how the PaintComposite table is used in combination with content sub-graphs to implement an alternate compositing effect. The source subgraph defines a green capital A; the backdrop sub-graph defines a black circle. The compositing mode used is “source out”, which has the effect that the source content punches out a hole in the backdrop. (For this mode, the fill color of the source is irrelevant; a black or yellow "A" would have the same effect.) A red rectangle is included as a lower layer to show that the backdrop has been punched out by the source, making that portion of the lower layer visible.
+Figure 5.25 illustrates how the PaintComposite table is used in combination with content sub-graphs to implement an alternate compositing effect. The source sub-graph defines a green capital A; the backdrop sub-graph defines a black circle. The compositing mode used is “source out”, which has the effect that the source content punches out a hole in the backdrop. (For this mode, the fill color of the source is irrelevant; a black or yellow "A" would have the same effect.) A red rectangle is included as a lower layer to show that the backdrop has been punched out by the source, making that portion of the lower layer visible.
 
 ![A color glyph using a PaintComposite table to punch out a shape from the fill of a circle.](images/colr_PaintCompositeGraph.png)
 
