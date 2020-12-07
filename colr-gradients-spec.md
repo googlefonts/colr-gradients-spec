@@ -1242,7 +1242,7 @@ To illustrate this, the example in figure 5.16 is extended in figure 5.17 so tha
 
 **Figure 5.17 A PaintGlyph table defines a clip region for the composition defined by its child sub-graph.**
 
-A PaintGlyph table on its own does not add content: if there is no child paint table, then the PaintGlyph table represents no presentation content and may be ignored.
+A PaintGlyph table on its own does not add content: if there is no child paint table, then the PaintGlyph table represents no presentation content and shall be ignored.
 
 **5.7.11.1.4 Layers**
 
