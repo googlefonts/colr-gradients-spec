@@ -1222,9 +1222,13 @@ strip or a cone filled with a linear gradient.*
 
 **5.7.11.1.3 Filling shapes**
 
-All shapes used in a color glyph are obtained from glyph outlines, referenced using a glyph ID. In a color glyph description, a PaintGlyph table is used to represent a shape. The PaintGlyph table has a field for the glyph ID, plus an offset to a child paint table that is used as the fill for the shape. The glyph outline is not rendered; only the fill is rendered.
+All basic shapes used in a color glyph are obtained from glyph outlines, referenced using a glyph ID. In a color glyph description, a PaintGlyph table is used to represent a basic shape. 
 
-Typically, the child paint table will be one of the basic fill formats: PaintSolid, PaintLinearGradient, or PaintRadialGradient. This is illustrated in figure 5.16: a PaintGlyph table has a glyph ID for an outline in the shape of a triangle, and it links to a child PaintLinearGradient table. The combination is used to represent a triangle filled with the linear gradient.
+NOTE: Shapes can also be derived using PaintGlyph tables in combination with other tables, such as PaintTransformed (see 5.7.11.1.5) or PaintComposite (see 5.7.11.1.6).
+
+The PaintGlyph table has a field for the glyph ID, plus an offset to a child paint table that is used as the fill for the shape. The glyph outline is not rendered; only the fill is rendered.
+
+Any of the basic fill formats, PaintSolid, PaintLinearGradient, or PaintRadialGradient, can be used as the child paint table. This is illustrated in figure 5.16: a PaintGlyph table has a glyph ID for an outline in the shape of a triangle, and it links to a child PaintLinearGradient table. The combination is used to represent a triangle filled with the linear gradient.
 
 ![PaintGlyph and PaintLinearGradient tables are used to fill a triangle shape with a linear gradient.](images/colr_shape_gradient.png)
 
@@ -1232,7 +1236,7 @@ Typically, the child paint table will be one of the basic fill formats: PaintSol
 
 Another way to describe the relationship between a PaintGlyph table and its child paint table is that the child provides a fill, and the glyph outline defines a bounds, or *clip region*, for the fill. The child for a PaintGlyph table is not limited to only the basic fill formats. In general, the child can be the root of a sub-graph that describes some graphic composition that comprises the fill for the shape. Or, in the alternate view, the glyph outline defines a clip region that is applied to the composition.
 
-To illustrate this, the example in figure 5.16 is extended in figure 5.17 so that a PaintGlyph table links to a second PaintGlyph that links to a PaintLinearGradient: the parent PaintGlyph will clip the filled shape described by the child graph.
+To illustrate this, the example in figure 5.16 is extended in figure 5.17 so that a PaintGlyph table links to a second PaintGlyph that links to a PaintLinearGradient: the parent PaintGlyph will clip the filled shape described by the child sub-graph.
 
 ![A PaintGlyph table defines a clip region for the composition defined by its child sub-graph.](images/colr_shape_shape_gradient.png)
 
