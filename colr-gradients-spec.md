@@ -1196,8 +1196,8 @@ the second gradient of figure 5.15, the start and end circles are reversed: circ
 red end starts at circle 0, now on the right. In the third gradient, the order
 of stops in the color line is also reversed to put red on the left.
 The key difference to notice between the gradients in figure 5.15 is the way colors
-are painted in the interior: when the two circles are not overlapping, the arc
-of color always bends towards circle 0.
+are painted in the interior: when the two circles are not overlapping, the arcs
+of constant color are centered on the center of circle 1.
 
 NOTE: This difference does not exist if one
 circle is entirely contained within the other: in that case, the
