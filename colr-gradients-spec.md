@@ -1121,21 +1121,17 @@ defining stripes in rotating colors.
 
 **5.7.11.1.2.2 Linear gradients**
 
-We propose definitions of linear gradients with two color line points P0 and P1
-between which a gradient is interpolated. A point P₂ is defined to rotate the
-gradient angle / orientation separately from the color line endpoints.
+A linear gradient provide gradation of colors along a straight line. The gradient is defined by two points, p₀ and p₁, plus a color line, with stop offset 0 aligned to p₀ and stop offset 1.0 aligned to p₁. Colors between p₀ and p₁ are interpolated using the color line.
 
-If the dot-product (P₁ - P₀) . (P₂ - P₀) is zero (or near-zero for an
-implementation-defined definition) then gradient is ill-formed and nothing must
-be rendered.
+An additional point, p₂, is also used to rotate the gradient orientation in the space on either side of the line defined by p₀ and p₁. The vector from p₀ to p₂ can be referred to as the *rotation vector*. If the rotation vector is colinear with the line p₀p₁, there is no rotation: colors in the space on either side of the line p₀p₁ extend in the perpendicular direction. But if the rotation vector is not colinear, the gradient is drawn skewed by the angle between p₀p₁ and p₀p₂.
 
-![Defining points for linear gradients](images/linear_gradients.png)
+If the dot-product (p₁ - p₀) · (p₂ - p₀) is zero (or near-zero for an implementation-defined definition) then the gradient is ill-formed and shall not be rendered.
 
-*__Figure 2:__ Examples of linear gradients and their defining points with
-extend modes pad, repeat and reflect (top to bottom) with color stops for blue
-at 0, yellow at 0.5 and red at 1. (Illustration generated from <a
-href="images/linear_gradients.html">images/radial_gradients.svg</a>, requires
-glMatrix.js to work)*
+Figure 5.12 illustrates linear gradients using the three different color line extend modes and with two different rotation vectors. In each case, three color stops are specified: red at 0.0, yellow at 0.5, and red at 1.0.
+
+![Linear gradients using pad, repeat, and reflect extend modes, and with different rotation vectors.](images/colr_linear_gradients.png)
+
+**Figure 5.12 Linear gradients using pad, repeat, and reflect extend modes, and with different rotation vectors.**
 
 **5.7.11.1.2.3 Radial gradients**
 
