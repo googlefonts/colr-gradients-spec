@@ -1203,9 +1203,9 @@ NOTE: This difference does not exist if one
 circle is entirely contained within the other: in that case, the
 individual colors are complete, concentric circles.
 
-![Radial gradients with start and end circles swapped.](images/colr_radial_gradients_direction.png)
+![Cone-shaped radial gradients with circle 0 and circle 1 swapped: the arcs of constant color are centered on circle 1.](images/colr_radial_gradients_direction.png)
 
-**Figure 5.15 Radial gradients with start and end circles swapped.**
+**Figure 5.15 For cone-shaped radial gradients, arcs of constant color are centered on circle 1.**
 
 When one circle is contained within the other, the extension of the gradient beyond the larger circle will fill the entire surface. Colors in the areas inside the inner circle and outside the outer circle are determined by the extend mode. Figure 5.16 illustrates this for the different extend modes.
 
