@@ -1201,7 +1201,7 @@ of constant color are centered on the center of circle 1.
 
 NOTE: This difference does not exist if one
 circle is entirely contained within the other: in that case, the
-individual colors are complete, concentric circles.
+arcs of constant color are complete circles.
 
 ![Cone-shaped radial gradients with circle 0 and circle 1 swapped: the arcs of constant color are centered on circle 1.](images/colr_radial_gradients_direction.png)
 
