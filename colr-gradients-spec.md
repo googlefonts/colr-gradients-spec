@@ -1006,7 +1006,7 @@ Figure 5.8 illustrates the version 0 capabilities: three shapes are in a layered
 
 ![Blue square, partially overlapped by an opaque green circle, both partially overlapped by a translucent red triangle.](images/colr_v0_layering.png)
 
-**Figure 5.8</span> Basic graphic capabilities of COLR version 0**
+**Figure 5.8 Basic graphic capabilities of COLR version 0**
 
 The basic concepts also apply to color glyphs defined using the version 1 formats: shapes are arranged in layers and have fills. But the additional formats of version 1 support much richer capabilities. In a version 1 color glyph, graphic constructs and capabilities are represented primarily in *Paint* tables, which are linked together in a *directed, acyclic graph*. Several different Paint formats are defined, each describing a particular type of graphic operation:
 
