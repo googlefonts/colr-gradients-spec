@@ -1248,12 +1248,28 @@ A PaintGlyph table on its own does not add content: if there is no child paint t
 
 **5.7.11.1.5 Transformations**
 
-A transformation as defined by a `PaintTransformed` applies a matrix
-transformation `transform` to the current drawing region.  The transformation is
-to be applied for subsequent nested paints, as defined by the paint referenced
-in `src`. The transformation affects all nested drawing operations. It affects
-how nested solid paints and gradients are drawn, as well as how nested clip
-operations or nested COLR glyph reuse operations are performed.
+A PaintTransform table can be used within a color glyph description to apply an
+affine transformation matrix. Transformations supported by a matrix can be a
+combination of scale, skew, mirror, rotate, or translate. The transformation is
+applied to all nested paints in the child sub-graph.
+
+The effect of a PaintTransform table is illustrated in figure 5.21: a PaintTransform is used to specify a rotation, and both the glyph outline and gradient in the sub-graph are rotated.
+
+![A rotation transformation rotates the fill content defined by the child sub-graph.](images/colr_transform_glyph_gradient.png)
+
+**Figure 5.21 A rotation transformation rotates the fill content defined by the child sub-graph.**
+
+If another PaintTransform table occurs within the child sub-graph of the first PaintTransform table, then the other PaintTransform also applies to its child sub-graph. For the sub-sub-graph, the two transformations are combined. To illustrate this, the example in figure 5.21 is extended in figure 5.22 by inserting a mirroring transformation between the PaintGlyph and PaintLinearGradient tables: the glyph outline is rotated as before, but the gradient is mirrored in its (pre-rotation) y-axis as well as being rotated. Notice that both visible elements—the shape and the gradient fill—are affected by the rotation, but only the gradient is affected by the mirroring.
+
+![Combined effects of a transformation nested within the child sub-graph of another transformation.](images/colr_transform_glyph_transform_gradient.png)
+
+**Figure 5.22 Combined effects of a transformation nested within the child sub-graph of another transformation.**
+
+The affine transformation is specified in a PaintTransform table as matrix elements. See <span style="color:red">5.7.11.2.x</span> for format details.
+
+Whereas the PaintTransformed table supports several types of transforms, the PaintRotate and PaintSkew tables support specific transformations: rotation and skew. The significant difference of these paint formats is that rotations and skews are specified as angles, in counter-clockwise degrees.
+
+NOTE: Specifying the rotation or skew as an angle can have a signficant benefit in variable fonts if an angle of skew or rotation needs to vary, since it is easier to implement variation of angles when specified directly rather than as matrix elements. This is because the matrix elements for a rotation or skew are the sine, cosine or tangent of the rotation angle, which do not change in linear proportion to the angle. To achieve a linear variation of rotation using matrix elements would require approximating the variation using multiple delta sets.
 
 **5.7.11.1.6 Compositing and blending**
 
