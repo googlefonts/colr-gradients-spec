@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink">
+
+  <def>
+    <linearGradient id="lingrad-repeat"
+      gradientUnits="userSpaceOnUse"
+      spreadMethod="repeat"
+      x1="40" y1="0" x2="120" y2="20">
+      <stop offset="0%" stop-color="#DA0025"/>
+      <stop offset="50%" stop-color="#FFC600"/>
+      <stop offset="100%" stop-color="#0052AB"/>
+    </linearGradient>
+
+    <linearGradient id="lingrad-repeat-mirror-x"
+      gradientUnits="userSpaceOnUse"
+      gradientTransform="scale(-1,1)"
+      spreadMethod="repeat"
+      x1="40" y1="0" x2="120" y2="20">
+      <stop offset="0%" stop-color="#DA0025"/>
+      <stop offset="50%" stop-color="#FFC600"/>
+      <stop offset="100%" stop-color="#0052AB"/>
+    </linearGradient>
+
+    <path id="triangle" d="M 20 100 L 80 20 L 140 100 z" stroke-width="1" />
+	
+    <rect id="filled-rect" x = "55" y="0" width="50" height="100" stroke-width="1" />
+  </def>
+
+  <clipPath id="abc-clip">
+    <text x="0" y="80" font-size="80" fill="#F00">abc</text>
+  </clipPath>
+
+<g clip-path="url(#abc-clip)">
+  <rect x="10" y="15" width="50" height="70" fill="#FF0000" />
+  <circle cx="60" cy="60" r="30" fill="#00F" />
+</g>
+
+  <g transform="translate(0,100)">
+    <use href="#filled-rect" fill="black" />
+  </g>
+
+  <g transform="translate(0,200)">
+    <use href="#triangle"  stroke="black" fill="black"/>
+  </g>
+  
+  <rect x="5" y="350" width="150" height="120" fill="url(#lingrad-repeat)" />
+  
+  <g transform="translate(0,500)">
+    <use href="#triangle" stroke="none" fill="url(#lingrad-repeat)"/>
+  </g>
+
+  <clipPath id="clip-rect">
+    <use href="#filled-rect" fill="black" />
+  </clipPath>
+
+  <g transform="translate(0,650)" clip-path="url(#clip-rect)">
+    <use href="#triangle" stroke="none" fill="url(#lingrad-repeat)"/>
+  </g>
+  
+  <g transform=" translate(200,540) rotate(-30)">
+  	<use href="#triangle" stroke="none" fill="url(#lingrad-repeat)"/>
+  </g>
+
+  <g transform="translate(200,690) rotate(-30)">
+  	<use href="#triangle" stroke="none" fill="url(#lingrad-repeat-mirror-x)"/>
+  </g>
+  
+</svg>
