@@ -1249,12 +1249,9 @@ A PaintGlyph table on its own does not add content: if there is no child paint t
 **5.7.11.1.5 Transformations**
 
 A PaintTransform table can be used within a color glyph description to apply an
-affine transformation matrix. Supported transformations using a matrix can be a 
-combination of: scale, skew, mirror, rotate, or translate. The transformation is
-applied to all nested paints in the child sub-graph, including a nested sub-graph
-referenced using a PaintColrGlyph table (see 5.7.11.1.7.3).
-
-NOTE: Affine transformations have the property that parallel lines remain parallel.
+affine transformation matrix. Transformations supported by a matrix can be a
+combination of scale, skew, mirror, rotate, or translate. The transformation is
+applied to all nested paints in the child sub-graph.
 
 The effect of a PaintTransform table is illustrated in figure 5.21: a PaintTransform is used to specify a rotation, and both the glyph outline and gradient in the sub-graph are rotated.
 
@@ -1262,7 +1259,7 @@ The effect of a PaintTransform table is illustrated in figure 5.21: a PaintTrans
 
 **Figure 5.21 A rotation transformation rotates the fill content defined by the child sub-graph.**
 
-If another PaintTransform table occurs within the child sub-graph of the first PaintTransform table, then the other PaintTransform also applies to its child sub-graph. For the sub-sub-graph, the two transformations are combined. To illustrate this, the example in figure 5.21 is extended in figure 5.22 by inserting a mirroring transformation between the PaintGlyph and PaintLinearGradient tables: the glyph outline is rotated as before, but the gradient is mirrored in its (pre-rotation) y-axis as well as being rotated.
+If another PaintTransform table occurs within the child sub-graph of the first PaintTransform table, then the other PaintTransform also applies to its child sub-graph. For the sub-sub-graph, the two transformations are combined. To illustrate this, the example in figure 5.21 is extended in figure 5.22 by inserting a mirroring transformation between the PaintGlyph and PaintLinearGradient tables: the glyph outline is rotated as before, but the gradient is mirrored in its (pre-rotation) y-axis as well as being rotated. Notice that both visible elements—the shape and the gradient fill—are affected by the rotation, but only the gradient is affected by the mirroring.
 
 ![Combined effects of a transformation nested within the child sub-graph of another transformation.](images/colr_transform_glyph_transform_gradient.png)
 
@@ -1270,9 +1267,9 @@ If another PaintTransform table occurs within the child sub-graph of the first P
 
 The affine transformation is specified in a PaintTransform table as matrix elements. See <span style="color:red">5.7.11.2.x</span> for format details.
 
-Whereas the PaintTransformed table supports several types of transforms, the PaintRotate and PaintSkew tables support specific transformations: rotation and skew. The significant difference of these paint formats is that rotations and skews are specified as angles, in counter-clockwise degrees. In many cases, specifying the rotation or skew as an angle can be more convenient. It can also have a signficant benefit in variable fonts if an angle of skew or rotation needs to vary: it is much easier to implement variation of angles when specified directly than when specified using matrix elements.
+Whereas the PaintTransformed table supports several types of transforms, the PaintRotate and PaintSkew tables support specific transformations: rotation and skew. The significant difference of these paint formats is that rotations and skews are specified as angles, in counter-clockwise degrees.
 
-The PaintRotate and PaintSkew tables also provide another advantage for these specific types of transformation, compared to the PaintTransformed table. Rotations or skews implemented with a matrix are always relative to the origin. To get the desired result using only PaintTransformed tables, a rotation or skew matrix might need preceding and following translations to shift the origin when the rotation or skew is applied. In contrast, the PaintRotate and PaintSkew tables allow a center of rotation to be specified directly.
+NOTE: Specifying the rotation or skew as an angle can have a signficant benefit in variable fonts if an angle of skew or rotation needs to vary, since it is easier to implement variation of angles when specified directly rather than as matrix elements. This is because the matrix elements for a rotation or skew are the sine, cosine or tangent of the rotation angle, which do not change in linear proportion to the angle. To achieve a linear variation of rotation using matrix elements would require approximating the variation using multiple delta sets.
 
 **5.7.11.1.6 Compositing and blending**
 
