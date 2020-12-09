@@ -1165,9 +1165,7 @@ The algorithm provides results in various cases as follows:
 * When both radii are 0 (r₀ = r₁ = 0), then r(ω) is always 0 and nothing is painted.
 * If the centers of the circles are distinct, the radii of the circles are different, and neither circle is entirely contained within the radius of the other circle, then the resulting shape resembles a cone that is open to one side. The surface outside the cone is not painted. (See figure 5.13.)
 * If the centers of the circles are distinct but the radii are the same, and neither circle is contained within the other, then the result will be a strip, similar to the flattened projection of a circular cylinder. The surface outside the strip is not painted. (See figure 5.14.)
-* If the radii of the circles are different but one circle is entirely contained within the radius of the other circle, the gradient will radiate outward in all directions from the inner circle, and the entire surface will be painted. (See figure 5.16.)
-
-NOTE: In the case of one circle being entirely contained within the other, if the radius of the inner circle is zero, then the gradient will radiate from the center point. No extension of the color line beyond that circle will be painted. Thus, the loop of the algorithm can be shortened to exclude values of ω corresponding to the inner circle (either 0 or 1) or beyond.
+* If the radii of the circles are different but one circle is entirely contained within the radius of the other circle, the gradient will radiate in all directions from the inner circle, and the entire surface will be painted. (See figure 5.16.)
 
 > **_TBD: What should the expected behaviour be in the case of both circles exactly overlapping with r > 0? (Only the extensions get painted, but how?)_**
 
@@ -1197,15 +1195,14 @@ red end starts at circle 0, now on the right. In the third gradient, the order
 of stops in the color line is also reversed to put red on the left.
 The key difference to notice between the gradients in figure 5.15 is the way colors
 are painted in the interior: when the two circles are not overlapping, the arcs
-of constant color are centered on circle 1.
+of constant color bend in the same direction as the near side of circle 1.
 
-NOTE: This difference does not exist if one
-circle is entirely contained within the other: in that case, the
-arcs of constant color are complete circles.
+NOTE: This difference does not exist if one circle is entirely contained within
+the other: in that case, the arcs of constant color are complete circles.
 
-![Cone-shaped radial gradients with circle 0 and circle 1 swapped: the arcs of constant color are centered on circle 1.](images/colr_radial_gradients_direction.png)
+![Cone-shaped radial gradients with circle 0 and circle 1 swapped: the arcs of constant color bend in the same direction as the near side of circle 1.](images/colr_radial_gradients_direction.png)
 
-**Figure 5.15 For cone-shaped radial gradients, arcs of constant color are centered on circle 1.**
+**Figure 5.15 For cone- or strip-shaped radial gradients, arcs of constant color bend like the near side of circle 1.**
 
 When one circle is contained within the other, the extension of the gradient beyond the larger circle will fill the entire surface. Colors in the areas inside the inner circle and outside the outer circle are determined by the extend mode. Figure 5.16 illustrates this for the different extend modes.
 
