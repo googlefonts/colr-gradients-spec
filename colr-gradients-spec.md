@@ -1040,27 +1040,63 @@ COLR version 1 supports two types of gradients: linear gradients, and radial gra
 
 **5.7.11.1.2.1 Color Lines**
 
-A color line is a function that maps real numbers to color values to define a one-dimensional gradation of colors, to be used in the definition of linear or radial gradients. A color line is defined as a set of one or more color stops, each of which maps a particular real number to a specific color.
+A color line is a function that maps real numbers to color values to define a
+one-dimensional gradation of colors, to be used in the definition of linear or
+radial gradients. A color line is defined as a set of one or more color stops,
+each of which maps a particular real number to a specific color.
 
-A color line is not a line in a geometric sense: on its own, a color line has no positioning, orientation or size within a design grid. These geometric aspects are part of the definition of a linear or radial gradient. Specifically, the gradient definition will specify positions in the design grid that correspond to the real values 0 and 1 in the color line, with placement in the design grid for other numeric values of the color line interpolated from the placement of 0 and 1.
+On its own, a color has no positioning, orientation or size within a design
+grid. The definition of a linear or radial gradient will reference a color line
+and map it onto the design grid by specifying positions in the design grid that
+correspond to the real values 0 and 1 in the color line. The specification for
+linear and radial gradients also include rules for where to draw interpolated
+colors of the color line, following from the placement of 0 and 1.
 
-A color stop is defined by a real number, the *stop offset*, and a color. A color line is defined with at least one color stop within the interval [0, 1]. Additional color stops can be specified within or outside the interval [0, 1]. (Stop offsets are represented using F2DOT14 values, therefore color stops can only be specified within the range [-2, 2). See <span style="color:red">5.7.11.2.x</span> for format details.) If only one color stop is specified, that color is used for the entire color line; at least two color stops are needed to create color gradation.
+A color stop is defined by a real number, the *stop offset*, and a color. A
+color line is defined with at least one color stop within the interval [0, 1].
+Additional color stops can be specified within or outside the interval [0, 1].
+(Stop offsets are represented using F2DOT14 values, therefore color stops can
+only be specified within the range [-2, 2). See <span
+style="color:red">5.7.11.2.x</span> for format details.) If only one color stop
+is specified, that color is used for the entire color line; at least two color
+stops are needed to create color gradation.
 
-Suppose a color line has two or more color stops, and consider these to be ordered in increasing stop offset value. Color gradation is defined over the interval from the first color stop, through the successive color stops, to the last color stop. Between consecutive color stops, color values are interpolated between the colors of the two stops.
+Color gradation is defined over the interval from the first color stop, through
+the successive color stops, to the last color stop. Between adjacent color
+stops, color values are linearly interpolated.
 
 > **_TBD: Does interpolation of colors need further specification?_**
 
-If there are multiple color stops defined for the same stop offset, the first one is used for computing color values on the color line below that stop offset, and the last one is used for computing color values at or above that stop offset. All other color stops for that stop offset are ignored.
+If there are multiple color stops defined for the same stop offset, the first
+one is used for computing color values on the color line below that stop offset,
+and the last one is used for computing color values at or above that stop
+offset. All other color stops for that stop offset are ignored.
 
-While the color gradation is specified over a defined interval, the color line continues indefinitely outside that interval in both directions. The color pattern outside the defined interval is repeated according to the color line’s *extend mode*. Three extend modes are supported:
+While the color gradation is specified over a defined interval, the color line
+continues indefinitely outside that interval in both directions. The color
+pattern outside the defined interval is repeated according to the color line’s
+*extend mode*. Three extend modes are supported:
 
-* Pad: outside the defined interval, the color of the closest color stop is used. Using a string as an analogy, given a sequence “ABC”, it is extended to “…*AA* ABC *CC*…”.
+* **Pad:** outside the defined interval, the color of the closest color stop is
+used. Using a sequence of letters as an analogy, given a sequence “ABC”, it is
+extended to “…*AA* ABC *CC*…”.
 
-* Repeat: The color line is repeated over repeated multiples of the defined interval. For example, if color stops are specified for defined interval of [0, 0.7], then the pattern is repeated above the defined interval for intervals [0.7, 1.4], [1.4, 2.1], etc.; and also repeated below the defined interval for intervalues [-0.7, 0], [-1.4, -0.7], etc. In each repeated invterval, the first color is that of the farthest defined color stop. By analogy, given a sequence “ABC”, it is extended to “…*ABC* ABC *ABC*…”.
+* **Repeat:** The color line is repeated over repeated multiples of the defined
+interval. For example, if color stops are specified for defined interval of [0,
+0.7], then the pattern is repeated above the defined interval for intervals
+[0.7, 1.4], [1.4, 2.1], etc.; and also repeated below the defined interval for
+intervals [-0.7, 0], [-1.4, -0.7], etc. In each repeated interval, the first
+color is that of the farthest defined color stop. By analogy, given a sequence
+“ABC”, it is extended to “…*ABC* ABC *ABC*…”.
 
-* Reflect: The color line is repeated over repeated intervals, as for the repeat mode. However, in each repeated interval, the ordering of color stops is the reverse of the adjacent interval. By analogy, given a sequence “ABC”, it is extended to “…*ABC CBA* ABC *CBA ABC*…”.
+* **Reflect:** The color line is repeated over repeated intervals, as for the repeat
+mode. However, in each repeated interval, the ordering of color stops is the
+reverse of the adjacent interval. By analogy, given a sequence “ABC”, it is
+extended to “…*ABC CBA* ABC *CBA ABC*…”.
 
-Figures 5.9 – 5.11 illustrate the different color line extend modes. The figures show the color line extended over a limited interval, but the extension is unbounded in either direction.
+Figures 5.9 – 5.11 illustrate the different color line extend modes. The figures
+show the color line extended over a limited interval, but the extension is
+unbounded in either direction.
 
 ![Yellow-to-red color gradition, extended to the left with yellow and extended to the right with red.](images/colr_gradient_extend_pad.png)
 
@@ -1074,7 +1110,24 @@ Figures 5.9 – 5.11 illustrate the different color line extend modes. The figur
 
 **Figure 5.11 Color gradation extended using reflect mode**
 
-NOTE: The extend modes are the same as the [spreadMethod][30] attribute used for linear and radial gradients in the [Scalable Vector Graphics (SVG) 1.1 (Second Edition)][31] specification.
+NOTE: The extend modes are the same as the [spreadMethod][30] attribute used for
+linear and radial gradients in the [Scalable Vector Graphics (SVG) 1.1 (Second
+Edition)][31] specification.
+
+When combining a color line with the geometry of a particular gradient
+definition, one might want to achieve a certain number of repetitions of the
+gradient pattern over a particular geometric range. Assuming that geometric
+range will correspond to placement of stop offsets 0 and 1, the following steps
+can be used:
+
+* In order to get a certain number of repetitions of the gradient pattern
+(without reflection), divide 1 by the number of desired repetitions, use the
+result as the maximum stop offset for specified color stops, and set the extend
+mode to *repeat*.
+* In order to get a certain number of repetitions of the
+reflected gradient pattern, divide 1 by two times the number of desired
+repetitions, use the result as the maximum stop offset for specified color
+stops, and set the extend mode to *reflect*.
 
 **5.7.11.1.2.2 Linear gradients**
 
