@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<canvas id="cvs" width="3100" height="520" style="border:1px solid #c3c3c33;" >
+
+<script>
+  var canvas = document.getElementById("cvs")
+  var ctx = canvas.getContext("2d");
+  
+  ctx.fillStyle = "#ff0000";
+  ctx.fillRect(20, 20, 200, 150);
+  ctx.globalCompositeOperation = 'lighten';
+  ctx.fillStyle = "#0000ff";
+  ctx.fillRect(100, 80, 200, 150);
+  
+  ctx.fillStyle = "#ff0000";
+  ctx.fillRect(20, 300, 200, 150);
+
+  ctx.globalCompositeOperation = 'xor';
+  ctx.fillStyle = "#0000ff";
+  ctx.fillRect(100, 360, 200, 150);
+  
+</script>
+
+</body>
+</html>
