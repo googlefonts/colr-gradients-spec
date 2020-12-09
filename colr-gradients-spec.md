@@ -1264,7 +1264,7 @@ PaintComposite table combines content defined by two sub-graphs: a *source* sub-
 and a destination, or *backdrop*, sub-graph. First, the paint operations
 for the backdrop sub-graph are executed, then the drawing operations for the source sub-graph are executed
 and combined with backdrop using a specified compositing or blending mode.
-Various composition and blending modes are supported. The available modes are given in the CompositionModes enumeration (see 5.7.11.2.x). The effect and processing rule of each mode are specified in [Compositing and Blending Level 1][1].
+The available modes are given in the CompositionModes enumeration (see 5.7.11.2.x). The effect and processing rule of each mode are specified in [Compositing and Blending Level 1][1].
 
 The available modes fall into two general types: compositing modes, also referred to as “Porter-Duff” modes; and blending modes. In rough terms, the Porter-Duff modes determine how much effect pixels from the source and the backdrop each contribute in the result, while blending modes determine how color values for pixels from the source and backdrop are combined. These are illustrated with examples in figures 5.23 and 5.24: in each case, red and blue rectangles are the source and backdrop content.
 
