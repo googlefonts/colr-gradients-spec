@@ -1033,23 +1033,52 @@ tables to point to different hours.**
 
 **5.7.11.1.7.2 Re-use using PaintColrLayers**
 
-As described above (see 5.7.11.1.4), a PaintColrLayers table defines a set of paint sub-graphs arranged in bottom-up z-order layers, and an example was given of a PaintColrLayers table used as the root of a color glyph definition. A PaintColrLayers table can also be nested more deeply within the graph of a color glyph. One purpose for doing this is to reference a re-usable component defined as a contiguous set of layers in the LayersV1List table.
+As described above (see 5.7.11.1.4), a PaintColrLayers table defines a set of
+paint sub-graphs arranged in bottom-up z-order layers, and an example was given
+of a PaintColrLayers table used as the root of a color glyph definition. A
+PaintColrLayers table can also be nested more deeply within the graph of a color
+glyph. One purpose for doing this is to reference a re-usable component defined
+as a contiguous set of layers in the LayersV1List table.
 
-This is readily explained using the clock faces as an example. As described above, each clock face shares several elements in common. Some of these form a contiguous set of layers. Suppose four sub-graphs for shared clock face elements are given in the LayerV1List as contiguous layers, as shown in figure 5.28. (For brevity, the visual result for each sub-graph is shown, but not the paint details.)
+This is readily explained using the clock faces as an example. As described
+above, each clock face shares several elements in common. Some of these form a
+contiguous set of layers. Suppose four sub-graphs for shared clock face elements
+are given in the LayerV1List as contiguous layers, as shown in figure 5.28. (For
+brevity, the visual result for each sub-graph is shown, but not the paint
+details.)
 
-![Common clock face elements given as a slice within the LayerV1List table.](images/colr_clock_common.png)
+![Common clock face elements given as a slice within the LayerV1List
+table.](images/colr_clock_common.png)
 
-**Figure 5.29 Common clock face elements given as a slice within the LayerV1List table.**
+**Figure 5.29 Common clock face elements given as a slice within the LayerV1List
+table.**
 
-A PaintColrLayers table can reference any contiguous slice of layers in the LayerV1List table. Thus, the set of layers shown in figure 5.29 can be referenced by PaintColrLayers tables anywhere in the graph of any color glyph. In this way, this set of layers can be re-used in multiple clock face color glyph definitions.
+A PaintColrLayers table can reference any contiguous slice of layers in the
+LayerV1List table. Thus, the set of layers shown in figure 5.29 can be
+referenced by PaintColrLayers tables anywhere in the graph of any color glyph.
+In this way, this set of layers can be re-used in multiple clock face color
+glyph definitions.
 
-This is illustrated in figure 5.30: The color glyph definition for the one o’clock emoji has a PaintColrLayers table as its root, referencing a slice of three layers in the LayerV1List table. The upper two layers are the hour hand, which is specific to this color glyph; and the cap over the pivot for the minute and hour hands, which is common to other clock emoji but in a layer that is not contiguous with other common layers. The bottom layer of these three layers is the composition for all the remaining common layers. It is represented using a nested PaintColrLayers table that references the slice within the LayerV1List for the common clock face elements shown in figure 5.29.
+This is illustrated in figure 5.30: The color glyph definition for the one
+o’clock emoji has a PaintColrLayers table as its root, referencing a slice of
+three layers in the LayerV1List table. The upper two layers are the hour hand,
+which is specific to this color glyph; and the cap over the pivot for the minute
+and hour hands, which is common to other clock emoji but in a layer that is not
+contiguous with other common layers. The bottom layer of these three layers is
+the composition for all the remaining common layers. It is represented using a
+nested PaintColrLayers table that references the slice within the LayerV1List
+for the common clock face elements shown in figure 5.29.
 
-![A PaintColrLayers table is used to reference a set of layers that define a shared clock face composition.](images/colr_reuse_clock-face_PaintColrLayers.png)
+![A PaintColrLayers table is used to reference a set of layers that define a
+shared clock face
+composition.](images/colr_reuse_clock-face_PaintColrLayers.png)
 
-**Figure 5.30 A PaintColrLayers table is used to reference a set of layers that define a shared clock face composition.**
+**Figure 5.30 A PaintColrLayers table is used to reference a set of layers that
+define a shared clock face composition.**
 
-The color glyphs for other clock face emoji could be structured in exactly the same way, using a nested PaintColrLayers table to re-use the layer composition of the common clock face elements.
+The color glyphs for other clock face emoji could be structured in exactly the
+same way, using a nested PaintColrLayers table to re-use the layer composition
+of the common clock face elements.
 
 **5.7.11.1.7.3 Re-use using PaintColrGlyph**
 
