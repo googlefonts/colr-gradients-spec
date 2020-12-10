@@ -913,14 +913,39 @@ array.](images/colr_layers_v0.png)
 **Figure 5.18 Version 0: Color glyphs are defined by slices of a layer records
 array.**
 
-When using version 1 formats, layers are supported but are optional. The version
-1 formats also define layer sets as slices in an array, but in this case the
-array is an array of offsets to paint tables, contained in a LayerV1List table.
-Each referenced paint table is the root of a sub-graph of paint tables that
-specifies a graphic composition to be used as a layer. Within a given slice, the
-first offset provides the content for the bottom layer, and each subsequent
-offset provides content that overlays the preceding content. Definition of a
-layer set—a slice within the layer list—is given in a PaintColorLayers table.
+When using version 1 formats, layers are supported but are optional. For
+example, a simple glyph description need not use any layering, as illustrated in
+figure 5.21:
+
+
+![Complete color glyph definition without use of
+layers.](images/colr_color_glyph_without_layers.png)
+
+**Figure 5.21 Complete color glyph definition without use of layers.**
+
+The version 1 formats include two ways to add layers:
+
+* The PaintComposite table allows two sub-graphs to be composed together using
+different compositing or blending modes.
+
+* The PaintColrLayers table supports defining a sequence of several layers.
+
+While the PaintComposite table only combines two sub-graphs, other
+PaintComposite tables can be nested to provide additional layers. The primary
+purpose is to support compositing or blending other than simple alpha blending.
+
+The PaintComposite table is covered in more detail in 5.7.11.1.6. The remainder
+of this clause will focus on the PaintColrLayers table.
+
+The PaintColrLayers table is used to define a bottom-up z-order sequence of
+layers. Similar to version 0, it defines a layer set as a slice in an array, but
+in this case the array is an array of offsets to paint tables, contained in a
+LayerV1List table. Each referenced paint table is the root of a sub-graph of
+paint tables that specifies a graphic composition to be used as a layer. Within
+a given slice, the first offset provides the content for the bottom layer, and
+each subsequent offset provides content that overlays the preceding content.
+Definition of a layer set—a slice within the layer list—is given in a
+PaintColorLayers table.
 
 Figure 5.19 illustrates the organizational relationship between PaintColorLayers
 tables, the LayerV1List, and referenced paint tables that are roots of
@@ -957,21 +982,6 @@ PaintColrLayers table within a graph creates the potential to introduce a cycle
 within the graph. This is not valid, however: graphs shall be acyclic.
 
 > **_TBD: Add reference to separate section discussing cycles (#156)._**
-
-Use of layers in a color glyph definition, and of the PaintColrLayers table
-specifically, is optional. While a PaintColrLayers can be used as the root of a
-color glyph, this is not required. For example, a complete color glyph
-definition might be comprised of a simple graph containing only glyph and basic
-fill tables, as illustrated in figure 5.21:
-
-![Complete color glyph definition without use of
-layers.](images/colr_color_glyph_without_layers.png)
-
-**Figure 5.21 Complete color glyph definition without use of layers.**
-
-NOTE: The PaintComposite table, in effect, also provides a limited layering
-structure with two layers, but with alternate compositing and blending modes,
-and without requiring use of the LayerV1List table. See 5.7.11.1.6 for details.
 
 **5.7.11.1.5 Transformations**
 
