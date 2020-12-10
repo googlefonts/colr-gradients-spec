@@ -1045,7 +1045,7 @@ one-dimensional gradation of colors, to be used in the definition of linear or
 radial gradients. A color line is defined as a set of one or more color stops,
 each of which maps a particular real number to a specific color.
 
-On its own, a color has no positioning, orientation or size within a design
+On its own, a color line has no positioning, orientation or size within a design
 grid. The definition of a linear or radial gradient will reference a color line
 and map it onto the design grid by specifying positions in the design grid that
 correspond to the real values 0 and 1 in the color line. The specification for
