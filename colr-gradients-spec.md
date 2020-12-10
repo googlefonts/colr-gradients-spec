@@ -1040,84 +1040,94 @@ COLR version 1 supports two types of gradients: linear gradients, and radial gra
 
 **5.7.11.1.2.1 Color Lines**
 
-A color line is a function that maps real numbers to a color value to define a
-1-dimensional gradient, to be used and referenced from [Linear
-Gradients](#linear-gradient) and [Radial
-Gradients](#radial-gradient). Colors of the gradient are defined by *color
-stops*.
+A color line is a function that maps real numbers to color values to define a
+one-dimensional gradation of colors, to be used in the definition of linear or
+radial gradients. A color line is defined as a set of one or more color stops,
+each of which maps a particular real number to a specific color.
 
-Color stops are defined at color stop positions. Color stop position 0 maps to
-the start point of a linear gradient or the center of the first circle of a
-radial gradient. Color stop position 1 maps to the end point of a linear
-gradient or the center of the second circle of a radial gradient.  In the
-interval [0, 1] the color line must contain at least one color stop, but may
-contain multiple color stops that define the gradient.
+On its own, a color line has no positioning, orientation or size within a design
+grid. The definition of a linear or radial gradient will reference a color line
+and map it onto the design grid by specifying positions in the design grid that
+correspond to the real values 0 and 1 in the color line. The specification for
+linear and radial gradients also include rules for where to draw interpolated
+colors of the color line, following from the placement of 0 and 1.
 
-Outside the defined interval, the gradient pattern in between the outer defined
-positions is repeated according to the color line [extend
-mode](#extend-mode).
+A color stop is defined by a real number, the *stop offset*, and a color. A
+color line is defined with at least one color stop within the interval [0, 1].
+Additional color stops can be specified within or outside the interval [0, 1].
+(Stop offsets are represented using F2DOT14 values, therefore color stops can
+only be specified within the range [-2, 2). See <span
+style="color:red">5.7.11.2.x</span> for format details.) If only one color stop
+is specified, that color is used for the entire color line; at least two color
+stops are needed to create color gradation.
 
-If there are multiple color stops defined for the same coordinate, the first one
-is used for computing the color value for values below the coordinate, the last
-one is used for computing the color value for values above. All other color
-stops for this coordinate are ignored.
+Color gradation is defined over the interval from the first color stop, through
+the successive color stops, to the last color stop. Between adjacent color
+stops, color values are linearly interpolated.
 
-Limiting the specified interval to a sub-range of [0, 1] allows for looping
-through colors repeatedly along the mapped distance, without having to encode
-them multiple times.  In that sense, our color line is similar to CSS
-[repeating-linear-gradient()](https://developer.mozilla.org/en-US/docs/Web/CSS/repeating-linear-gradient)
-and
-[repeating-radial-gradient()](https://developer.mozilla.org/en-US/docs/Web/CSS/repeating-radial-gradient)
-functions.
+> **_TBD: Does interpolation of colors need further specification?_**
 
-In order to achieve:
+If there are multiple color stops defined for the same stop offset, the first
+one is used for computing color values on the color line below that stop offset,
+and the last one is used for computing color values at or above that stop
+offset. All other color stops for that stop offset are ignored.
 
-* one gradient along the gradient positions (linear, or radial) and padded
-  colors outside this range, color stops at 0 and 1 must be defined, and color
-  line extend mode *pad* must be used. This achieves similarly behavior as
-  defined in CSS
-  [linear-gradient()](https://developer.mozilla.org/en-US/docs/Web/CSS/linear-gradient)
-  and
-  [radial-gradient()](https://developer.mozilla.org/en-US/docs/Web/CSS/radial-gradient)
-  functions.
+While the color gradation is specified over a defined interval, the color line
+continues indefinitely outside that interval in both directions. The color
+pattern outside the defined interval is repeated according to the color line’s
+*extend mode*. Three extend modes are supported:
 
-* a repeated gradient along the gradient positions (linear or radial): divide 1
-  by the number of desired repetitions and use the result as your maximum color
-  stop, then use color line extend mode *repeat* to have it continue outside the
-  defined interval.
+* **Pad:** outside the defined interval, the color of the closest color stop is
+used. Using a sequence of letters as an analogy, given a sequence “ABC”, it is
+extended to “…*AA* ABC *CC*…”.
 
-* a mirrored / color-circle gradient: divide 1 by two times the number of
-  desired full color stripes, and define the color stops between the 0 and the
-  result of this division, then use color line extend mode *reflect* to have it
-  continue mirrored.
+* **Repeat:** The color line is repeated over repeated multiples of the defined
+interval. For example, if color stops are specified for defined interval of [0,
+0.7], then the pattern is repeated above the defined interval for intervals
+[0.7, 1.4], [1.4, 2.1], etc.; and also repeated below the defined interval for
+intervals [-0.7, 0], [-1.4, -0.7], etc. In each repeated interval, the first
+color is that of the farthest defined color stop. By analogy, given a sequence
+“ABC”, it is extended to “…*ABC* ABC *ABC*…”.
 
-![Repeating linear gradient](images/repeating_linear.png) ![Repeating radial gradient](images/repeating_radial.png)
+* **Reflect:** The color line is repeated over repeated intervals, as for the repeat
+mode. However, in each repeated interval, the ordering of color stops is the
+reverse of the adjacent interval. By analogy, given a sequence “ABC”, it is
+extended to “…*ABC CBA* ABC *CBA ABC*…”.
 
-***Figure 1:** Repeating linear and radial gradients
-([source](https://cssnewbie.com/apply-cool-linear-and-radial-gradients-using-css/))*
+Figures 5.9 – 5.11 illustrate the different color line extend modes. The figures
+show the color line extended over a limited interval, but the extension is
+unbounded in either direction.
 
-#### Extend Mode
+![Yellow-to-red color gradition, extended to the left with yellow and extended to the right with red.](images/colr_gradient_extend_pad.png)
 
-We propose three extend modes to control the behavior of the gradient outside
-its specified endpoints:
+**Figure 5.9 Color gradation extended using pad mode**
 
-##### Extend Pad
+![Yellow-to-red color gradition, extended by repeating the gradation patterns to the left and right.](images/colr_gradient_extend_repeat.png)
 
-For numbers outside the defined interval the color line continues to map to the
-outer color values, i.e. for values less than the leftmost defined color stop,
-it maps to the leftmost color stop value; for values greater than the rightmost
-defined color stop value, it maps to the rightmost defined color value.
+**Figure 5.10 Color gradation extended using repeat mode**
 
-##### Extend Repeat
+![Yellow-to-red color gradition, extended by repeating alternating mirrors of the gradation pattern to the left and right.](images/colr_gradient_extend_reflect.png)
 
-For numbers outside the interval, the color line continues to map as if
-the defined interval was repeated.
+**Figure 5.11 Color gradation extended using reflect mode**
 
-##### Extend Reflect
+NOTE: The extend modes are the same as the [spreadMethod][30] attribute used for
+linear and radial gradients in the [Scalable Vector Graphics (SVG) 1.1 (Second
+Edition)][31] specification.
 
-For numbers outside the defined interval, the color continues to map as if the
-interval would continue mirrored from the previous interval. This allows
-defining stripes in rotating colors.
+When combining a color line with the geometry of a particular gradient
+definition, one might want to achieve a certain number of repetitions of the
+gradient pattern over a particular geometric range. Assuming that geometric
+range will correspond to placement of stop offsets 0 and 1, the following steps
+can be used:
+
+* In order to get a certain number of repetitions of the gradient pattern
+(without reflection), divide 1 by the number of desired repetitions, use the
+result as the maximum stop offset for specified color stops, and set the extend
+mode to *repeat*.
+* In order to get a certain number of repetitions of the
+reflected gradient pattern, divide 1 by two times the number of desired
+repetitions, use the result as the maximum stop offset for specified color
+stops, and set the extend mode to *reflect*.
 
 **5.7.11.1.2.2 Linear gradients**
 
@@ -1497,5 +1507,5 @@ _Add two new entries as follows:_
 [27]: https://www.w3.org/TR/compositing-1/#blendingcolor
 [28]: https://www.w3.org/TR/compositing-1/#blendingluminosity
 [29]: https://www.w3.org/TR/compositing-1/#blendingnormal
+[30]: https://www.w3.org/TR/2011/REC-SVG11-20110816/pservers.html#LinearGradientElementSpreadMethodAttribute
 [31]: https://www.w3.org/TR/SVG11/
-[32]: https://html.spec.whatwg.org/multipage/canvas.html#dom-context-2d-createradialgradient

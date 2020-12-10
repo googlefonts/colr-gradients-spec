@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <linearGradient id="lingrad-pad"
+      gradientUnits="userSpaceOnUse"
+      spreadMethod="pad"
+      x1="200" y1="0" x2="300" y2="0">
+      <stop offset="0%" stop-color="#DA0025"/>
+      <stop offset="50%" stop-color="#FFC600"/>
+      <stop offset="100%" stop-color="#0052AB"/>
+    </linearGradient>
+    
+    <linearGradient id="lingrad-repeat"
+      gradientUnits="userSpaceOnUse"
+      spreadMethod="repeat"
+      x1="200" y1="0" x2="300" y2="0">
+      <stop offset="0%" stop-color="#DA0025"/>
+      <stop offset="50%" stop-color="#FFC600"/>
+      <stop offset="100%" stop-color="#0052AB"/>
+    </linearGradient>
+    
+    <linearGradient id="lingrad-reflect"
+      gradientUnits="userSpaceOnUse"
+      spreadMethod="reflect"
+      x1="200" y1="0" x2="300" y2="0">
+      <stop offset="0%" stop-color="#DA0025"/>
+      <stop offset="50%" stop-color="#FFC600"/>
+      <stop offset="100%" stop-color="#0052AB"/>
+    </linearGradient>
+    
+    <rect id="filled-rect" x="0" y="0" width="500" height="200" />
+  </defs>
+  
+  <g transform="translate(10,10)">
+    <use href="#filled-rect" fill="url(#lingrad-pad)" />
+  </g>
+  
+  <g transform="translate(10, 230)">
+    <use href="#filled-rect" fill="url(#lingrad-repeat)" />
+  </g>
+
+  <g transform="translate(10, 450)">
+    <use href="#filled-rect" fill="url(#lingrad-reflect)" />
+  </g>
+
+</svg>
