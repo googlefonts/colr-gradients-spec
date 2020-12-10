@@ -165,30 +165,7 @@ See section [Reusable Parts](#reusable-parts).
 Constraints on the data structures making up a COLR version 1 should
 be noted.
 
-##### Acyclic Graphs Only
 
-`PaintColrGlyph` and `PaintColrLayers` allow recursive composition of
-COLR glyphs. This is desirable for reusable parts but introduces the
-possibility of a cyclic graph. Implementations should fail if a cycle
-is detected.
-
-*Note:* Cycle detection can be achieved by keeping a set of addresses of visited paints.
-Before processing a paint check if it's address is in the set, if it is we have a cycle
-and should fail. Once done processing a given paint, including children, take it's address
-out of the set. This allows the same paint to be reached repeatedly as long as no
-cycle is formed. Pseudocode:
-
-```
-# called initially with the base glyph paint and an empty set
-function paintIsAcyclic(paint, active_paints)
-  if paint in active_paints
-    fail: we have a cycle
-  add paint to active_paints
-
-  process paint, calling paintIsAcyclic() recursively for referenced paints
-
-  remove paint from active_paints
-```
 
 ##### Bounded Layers Only
 
@@ -1034,6 +1011,32 @@ tables to point to different hours.**
 **5.7.11.1.7.2 Re-use using PaintColrLayers**
 
 **5.7.11.1.7.3 Re-use using PaintColrGlyph**
+
+
+**5.7.11.1.8 Color glyphs defined as a graph**
+
+`PaintColrGlyph` and `PaintColrLayers` allow recursive composition of
+COLR glyphs. This is desirable for reusable parts but introduces the
+possibility of a cyclic graph. Implementations should fail if a cycle
+is detected.
+
+*Note:* Cycle detection can be achieved by keeping a set of addresses of visited paints.
+Before processing a paint check if it's address is in the set, if it is we have a cycle
+and should fail. Once done processing a given paint, including children, take it's address
+out of the set. This allows the same paint to be reached repeatedly as long as no
+cycle is formed. Pseudocode:
+
+```
+# called initially with the base glyph paint and an empty set
+function paintIsAcyclic(paint, active_paints)
+  if paint in active_paints
+    fail: we have a cycle
+  add paint to active_paints
+
+  process paint, calling paintIsAcyclic() recursively for referenced paints
+
+  remove paint from active_paints
+```
 
 
 **5.7.11.2 COLR table formats**
