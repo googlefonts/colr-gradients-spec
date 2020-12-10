@@ -1509,3 +1509,4 @@ _Add two new entries as follows:_
 [29]: https://www.w3.org/TR/compositing-1/#blendingnormal
 [30]: https://www.w3.org/TR/2011/REC-SVG11-20110816/pservers.html#LinearGradientElementSpreadMethodAttribute
 [31]: https://www.w3.org/TR/SVG11/
+[32]: https://html.spec.whatwg.org/multipage/canvas.html#dom-context-2d-createradialgradient
