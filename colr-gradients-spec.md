@@ -21,12 +21,6 @@ December 2019
 - [OFF Changes](#off-changes)
   - [COLR table](#off-5711-colr--color-table)
     - [Data structures](#colr-v1-data-structures)
-      - [Header, glyphs, and layers](#header-glyphs-layers)
-      - [Variation structures](#variation-structures)
-      - [Color structures](#color-structures)
-      - [Paint structures](#paint-structures)
-      - [Composite modes](#composite-modes)
-      - [Transform](#transform)
       - [Constraints](#constraints)
         - [Acyclic Graphs Only](#acyclic-graphs-only)
         - [Bounded Layers Only](#bounded-layers-only)
@@ -164,337 +158,7 @@ See section [Reusable Parts](#reusable-parts).
 
 ## OFF 5.7.11 COLR – Color Table
 
-The current header should be noted as *COLR version 0 header*.
-
-A new section for *COLR version 1 header* should be added, along with a
-set of related records and tables.
-
 ### COLR v1 data structures
-
-This section describes new and modified tables and records for COLR v1.
-
-Offsets are always relative to the start of the containing struct.
-
-#### Header, glyphs, layers
-
-##### V1 Header
-
-| Type | Field name | Description |
-|-|-|-|
-| uint16 | version | Table version number—set to 1. |
-| uint16 | numBaseGlyphRecords | May be 0 in a version 1 table. |
-| Offset32 | baseGlyphRecordsOffset | Offset to baseGlyphRecords array (may be NULL). |
-| Offset32 | layerRecordsOffset | Offset to layerRecords array (may be NULL). |
-| uint16 | numLayerRecords | May be 0 in a version 1 table. |
-| Offset32 | baseGlyphV1ListOffset | Offset to BaseGlyphV1List table. |
-| Offset32 | layersV1Offset | Offset to LayerV1List table. |
-| Offset32 | itemVariationStoreOffset | Offset to ItemVariationStore (may be NULL). |
-
-##### BaseGlyphV1List table
-
-| Type | Name | Description |
-|-|-|-|
-| uint32 | numBaseGlyphV1Records |  |
-| BaseGlyphV1Record | baseGlyphV1Records[numBaseGlyphV1Records] | |
-
-Entries shall be sorted in ascending order of the `glyphID` field of the `BaseGlyphV1Record`s.
-
-*__Note:__ The sorted order allows implementations to perform binary search to
-find a matching `BaseGlyphV1Record` for a specific `glyphID`.*
-
-##### BaseGlyphV1Record
-
-| Type | Name | Description |
-|-|-|-|
-| uint16 | glyphID | Glyph ID of the base glyph. |
-| Offset32 | paintOffset | Offset to Paint, typically a `PaintColrLayers` |
-
-*Note:* The glyph ID is not limited to the numGlyphs value in the &#39;maxp&#39; table.
-
-##### LayerV1List table
-
-| Type | Field name | Description |
-|-|-|-|
-| uint32 | numLayers |  |
-| Offset32 | paintOffsets[numLayers] | Offsets to Paint tables. |
-
-Only layers referenced by `PaintColrLayers` (format 1) records need to be
-encoded here.
-
-#### Variation structures
-
-The following records are defined to facilitate COLR v1 font variation
-support.
-
-To indicate no variation, set varOuterIndex and varInnerIndex to 0xFFFF.
-
-##### VarFWord record
-
-| Type | Name | Description |
-|-|-|-|
-| FWORD | coordinate | |
-| uint16 | varOuterIndex | |
-| uint16 | varInnerIndex | |
-
-##### VarUFWord record
-
-| Type | Name | Description |
-|-|-|-|
-| UFWORD | distance | |
-| uint16 | varOuterIndex | |
-| uint16 | varInnerIndex | |
-
-##### VarFixed record
-
-| Type | Name | Description |
-|-|-|-|
-| Fixed | value | |
-| uint16 | varOuterIndex | |
-| uint16 | varInnerIndex | |
-
-*Note:* In order to combine deltas with Fixed values, the ItemVariationStore format is
-extended to allow for int32 deltas. When combining a Fixed value with 32-bit deltas,
-the Fixed value is treated as though it were int32.
-
-##### VarF2Dot14 record
-
-| Type | Name | Description |
-|-|-|-|
-| F2Dot14 | value | |
-| uint16 | varOuterIndex | |
-| uint16 | varInnerIndex | |
-
-Values are inherently limited to [-2., 2). In some contexts, limited to the [-1., 1.] or  [0., 1.].
-
-*Note:* When combining an F2Dot14 with 16-bit deltas, the F2Dot14 is treated as though it were int16.
-
-#### Color structures
-
-##### Extend enumeration
-
-| Value | Name | Description |
-|-|-|-|
-| 0 | EXTEND_PAD     | Use nearest color stop. |
-| 1 | EXTEND_REPEAT  | Repeat from farthest color stop. |
-| 2 | EXTEND_REFLECT | Mirror color line from nearest end. |
-
-If a ColorLine.extend value is not recognized, use EXTEND_PAD.
-
-##### ColorIndex record
-
-| Type | Name | Description |
-|-|-|-|
-| uint16 | paletteIndex | Index for a CPAL palette entry. |
-| VarF2Dot14 | alpha | Variable alpha value. |
-
-Values for alpha outside [0.,1.] are reserved.
-
-The ColorIndex alpha is multiplied into the alpha of the CPAL entry (converted to float -- divide by 255) to produce a final alpha.
-
-##### ColorStop record
-
-| Type | Name | Description |
-|-|-|-|
-| VarF2Dot14 | stopOffset | Proportional distance on a color line; variable. |
-| ColorIndex | color | |
-
-##### ColorLine table
-
-| Type | Name | Description |
-|-|-|-|
-| uint8 | extend | An Extend enum value. |
-| uint16 | numStops | Number of ColorStop records. |
-| ColorStop | colorStops[numStops] | |
-
-#### Paint structures
-
-##### PaintColrLayers table (format 1)
-
-| Type | Field name | Description |
-|-|-|-|
-| uint8 | format | Set to 1. |
-| uint8 | numLayers | Number of offsets to Paint to read from layers. |
-| uint32 | firstLayerIndex | Index into the LayerV1List. |
-
-Each layer is composited on top of previous with mode COMPOSITE_SRC_OVER.
-
-*Note:* uint8 size saves bytes in most cases. Large layer counts can be
-achieved by way of PaintComposite or a tree of PaintColrLayers.
-
-
-##### PaintSolid table (format 2)
-
-| Type | Field name | Description |
-|-|-|-|
-| uint8 | format | Set to 2. |
-| ColorIndex | color | Solid color fill. |
-
-##### PaintLinearGradient table (format 3)
-
-| Type | Field name | Description |
-|-|-|-|
-| uint8 | format | Set to 3. |
-| Offset24 | colorLineOffset | Offset to ColorLine, from start of PaintLinearGradient table. |
-| VarFWord | x0 | Start point x coordinate. |
-| VarFWord | y0 | Start point y coordinate. |
-| VarFWord | x1 | End point x coordinate. |
-| VarFWord | y1 | End point y coordinate. |
-| VarFWord | x2 | Rotation vector end point x coordinate. |
-| VarFWord | y2 | Rotation vector end point y coordinate. |
-
-For linear gradient without skew, set x2,y2 to x1,y1.
-
-##### PaintRadialGradient table (format 4)
-
-|Type | Field name | Description |
-|-|-|-|
-| uint8 | format | set to 4. |
-| Offset24 | colorLineOffset | offset from start of PaintRadialGradient table |
-| VarFWord | x0 | start circle center x coordinate |
-| VarFWord | y0 | start circle center y coordinate |
-| VarUFWord | radius0 | start circle radius |
-| VarFWord | x1 | end circle center x coordinate |
-| VarFWord | y1 | end circle center y coordinate |
-| VarUFWord | radius1 | end circle radius |
-
-##### PaintGlyph table (format 5)
-
-| Type | Field name | Description |
-|-|-|-|
-| uint8 | format | Set to 5. |
-| Offset24 | paintOffset | Offset to a Paint table, from start of PaintGlyph table. |
-| uint16 | glyphID | Glyph ID for the source outline. |
-
-Glyph outline is used as clip mask for the content in the Paint subtable. Glyph ID shall be less than the numGlyphs value in the &#39;maxp&#39; table.
-
-##### PaintColrGlyph table (format 6)
-
-| Type | Field name | Description |
-|-|-|-|
-| uint8 | format | Set to 6. |
-| uint16 | glyphID | Virtual glyph ID for a BaseGlyphV1List base glyph. |
-
-Glyph ID shall be in the BaseGlyphV1List; may be greater than maxp.numGlyphs.
-
-*__Note:__ The PaintColrGlyph and PaintColrLayers tables are similar in that
-they provide a way to reference a graph of paint tables as a sub-component
-within a color glyph description. (The PaintColrGlyph does this indirectly via a
-base glyph ID.) They may be handled differently in implementations, however. In
-particular, an implementation can process and cache the result of the color
-glyph description for a given base glyph ID. In that case, subsequent references
-to that base glyph ID using a PaintColrGlyph table would not require the
-corresponding graph of paint tables to be re-processed. As a result, using a
-PaintColrGlyph for re-used graphic components could provide performance
-benefits.*
-
-##### PaintTransformed table (format 7)
-
-| Type | Field name | Description |
-|-|-|-|
-| uint8 | format | Set to 7. |
-| Offset24 | paintOffset | Offset to a Paint subtable, from start of PaintTransformed table. |
-| Affine2x3 | transform | An Affine2x3 record (inline). |
-
-#### PaintRotate table (format 8)
-
-| Type | Field name | Description |
-|-|-|-|
-| uint8 | format | Set to 8. |
-| Offset24 | paintOffset | Offset to a Paint subtable, from start of PaintRotate table. |
-| VarFixed | angle | Rotation angle, in counter-clockwise degrees. |
-| VarFixed | centerX | x coordinate for the center of rotation. |
-| VarFixed | centerY | y coordinate for the center of rotation. |
-
-*__Note:__ Rotation can also be represented using the PaintTransformed table. The important difference is in allowing an angle to be specified directly in degrees, which is more amenable to smooth variation.*
-
-#### PaintSkew table (format 9)
-
-| Type | Field name | Description |
-|-|-|-|
-| uint8 | format | Set to 9. |
-| Offset24 | paintOffset | Offset to a Paint subtable, from start of PaintSkew table. |
-| VarFixed | xSkewAngle | Angle of skew in the direction of the x-axis, in counter-clockwise degrees. |
-| VarFixed | ySkewAngle | Angle of skew in the direction of the y-axis, in counter-clockwise degrees. |
-| VarFixed | centerX | x coordinate for the center of skew. |
-| VarFixed | centerY | y coordinate for the center of skew. |
-
-*__Note:__ Skews can also be represented using the PaintTransformed table. The important difference is in being able to specify skew as an angle rather than as changes to basis vectors. Also, when varying angles, a representation directly in degrees is more amenable to smooth variation.*
-
-##### PaintComposite table (format 10)
-
-| Type | Field name | Description |
-|-|-|-|
-| uint8 | format | Set to 10. |
-| Offset24 | sourcePaintOffset | Offset to a source Paint table, from start of PaintComposite table. |
-| uint8 | compositeMode | A CompositeMode enumeration value. |
-| Offset24 | backdropPaintOffset | Offset to a backdrop Paint table, from start of PaintComposite table. |
-
-If compositeMode value is not recognized, COMPOSITE_CLEAR is used.
-
-#### Composite modes
-
-Supported composition modes are taken from the W3C [Compositing and Blending Level 1][1] specification.
-
-##### CompositeMode enumeration
-
-| Value | Name | Description |
-|-|-|-|
-| | *Porter-Duff modes* | |
-| 0 | COMPOSITE_CLEAR | See [Clear][2] |
-| 1 | COMPOSITE_SRC | See [Copy][3] |
-| 2 | COMPOSITE_DEST | See [Destination][4] |
-| 3 | COMPOSITE_SRC_OVER | See [Source Over][5] |
-| 4 | COMPOSITE_DEST_OVER | See [Destination Over][6] |
-| 5 | COMPOSITE_SRC_IN | See [Source In][7] |
-| 6 | COMPOSITE_DEST_IN | See [Destination In][8] |
-| 7 | COMPOSITE_SRC_OUT | See [Source Out][9] |
-| 8 | COMPOSITE_DEST_OUT | See [Destination Out][10] |
-| 9 | COMPOSITE_SRC_ATOP | See [Source Atop][11] |
-| 10 | COMPOSITE_DEST_ATOP | See [Destination Atop][12] |
-| 11 | COMPOSITE_XOR | See [XOR][13] |
-| | *Separable color blend modes:* | |
-| 12 | COMPOSITE_SCREEN | See [screen blend mode][14] |
-| 13 | COMPOSITE_OVERLAY | See [overlay blend mode][15] |
-| 14 | COMPOSITE_DARKEN | See [darken blend mode][16] |
-| 15 | COMPOSITE_LIGHTEN | See [lighten blend mode][17] |
-| 16 | COMPOSITE_COLOR_DODGE | See [color-dodge blend mode][18] |
-| 17 | COMPOSITE_COLOR_BURN | See [color-burn blend mode][19] |
-| 18 | COMPOSITE_HARD_LIGHT | See [hard-light blend mode][20] |
-| 19 | COMPOSITE_SOFT_LIGHT | See [soft-light blend mode][21] |
-| 20 | COMPOSITE_DIFFERENCE | See [difference blend mode][22] |
-| 21 | COMPOSITE_EXCLUSION | See [exclusion blend mode][23] |
-| 22 | COMPOSITE_MULTIPLY | See [multiply blend mode][24] |
-| | *Non-separable color blend modes:* | |
-| 23 | COMPOSITE_HSL_HUE | See [hue blend mode][25] |
-| 24 | COMPOSITE_HSL_SATURATION | See [saturation blend mode][26] |
-| 25 | COMPOSITE_HSL_COLOR | See [color blend mode][27] |
-| 26 | COMPOSITE_HSL_LUMINOSITY | See [luminosity blend mode][28] |
-
-#### Transform
-
-##### Affine2x3 record
-
-| Type | Name | Description |
-|-|-|-|
-| VarFixed | xx | x-component of transformed x-basis vector |
-| VarFixed | yx | y-component of transformed x-basis vector |
-| VarFixed | xy | x-component of transformed y-basis vector |
-| VarFixed | yy | y-component of transformed y-basis vector |
-| VarFixed | dx | Translation in x direction. |
-| VarFixed | dy | Translation in y direction. |
-
-The `Affine2x3` record is a 2x3 matrix for 2D affine transformations, so
-that for a transformation matrix _M_ and an extended starting vector _v = (x, y, 1)_
-the mapped vector _v′_ is calculated as _v′ = M * v_. That is:
-
-_v′<sub>x</sub>_ = _xx * x + xy * y + dx_  
-_v′<sub>y</sub>_ = _yx * x + yy * y + dy_
-
-_Note:_ It is helpful to understand linear transformations by their effect
-on *x-* and *y-basis* vectors _î = (1, 0)_ and _ĵ = (0, 1)_. The transform
-described by the Affine2x3 record maps the basis vectors to _î′ = (xx, yx)_ 
-and _ĵ′ = (xy, yy)_, and translates the origin to _(dx, dy)_.
-
 
 #### Constraints
 
@@ -1344,33 +1008,277 @@ given, unless otherwise indicated.
 
 **5.7.11.2.1 COLR header**
 
+V1 Header
+
+| Type | Field name | Description |
+|-|-|-|
+| uint16 | version | Table version number—set to 1. |
+| uint16 | numBaseGlyphRecords | May be 0 in a version 1 table. |
+| Offset32 | baseGlyphRecordsOffset | Offset to baseGlyphRecords array (may be NULL). |
+| Offset32 | layerRecordsOffset | Offset to layerRecords array (may be NULL). |
+| uint16 | numLayerRecords | May be 0 in a version 1 table. |
+| Offset32 | baseGlyphV1ListOffset | Offset to BaseGlyphV1List table. |
+| Offset32 | layersV1Offset | Offset to LayerV1List table. |
+| Offset32 | itemVariationStoreOffset | Offset to ItemVariationStore (may be NULL). |
+
 **5.7.11.2.2 BaseGlyph and Layer records**
 
 **5.7.11.2.3 BaseGlyphV1List and LayerV1List**
 
+BaseGlyphV1List table
+
+| Type | Name | Description |
+|-|-|-|
+| uint32 | numBaseGlyphV1Records |  |
+| BaseGlyphV1Record | baseGlyphV1Records[numBaseGlyphV1Records] | |
+
+Entries shall be sorted in ascending order of the `glyphID` field of the `BaseGlyphV1Record`s.
+
+*__Note:__ The sorted order allows implementations to perform binary search to
+find a matching `BaseGlyphV1Record` for a specific `glyphID`.*
+
+BaseGlyphV1Record
+
+| Type | Name | Description |
+|-|-|-|
+| uint16 | glyphID | Glyph ID of the base glyph. |
+| Offset32 | paintOffset | Offset to Paint, typically a `PaintColrLayers` |
+
+*Note:* The glyph ID is not limited to the numGlyphs value in the &#39;maxp&#39; table.
+
+LayerV1List table
+
+| Type | Field name | Description |
+|-|-|-|
+| uint32 | numLayers |  |
+| Offset32 | paintOffsets[numLayers] | Offsets to Paint tables. |
+
+Only layers referenced by `PaintColrLayers` (format 1) records need to be
+encoded here.
+
 **5.7.11.2.4 ColorIndex, ColorStop and ColorLine**
+
+##### Extend enumeration
+
+| Value | Name | Description |
+|-|-|-|
+| 0 | EXTEND_PAD     | Use nearest color stop. |
+| 1 | EXTEND_REPEAT  | Repeat from farthest color stop. |
+| 2 | EXTEND_REFLECT | Mirror color line from nearest end. |
+
+If a ColorLine.extend value is not recognized, use EXTEND_PAD.
+
+##### ColorIndex record
+
+| Type | Name | Description |
+|-|-|-|
+| uint16 | paletteIndex | Index for a CPAL palette entry. |
+| VarF2Dot14 | alpha | Variable alpha value. |
+
+Values for alpha outside [0.,1.] are reserved.
+
+The ColorIndex alpha is multiplied into the alpha of the CPAL entry (converted to float -- divide by 255) to produce a final alpha.
+
+##### ColorStop record
+
+| Type | Name | Description |
+|-|-|-|
+| VarF2Dot14 | stopOffset | Proportional distance on a color line; variable. |
+| ColorIndex | color | |
+
+##### ColorLine table
+
+| Type | Name | Description |
+|-|-|-|
+| uint8 | extend | An Extend enum value. |
+| uint16 | numStops | Number of ColorStop records. |
+| ColorStop | colorStops[numStops] | |
 
 **5.7.11.2.5 Paint tables**
 
 **5.7.11.2.5.1 Format 1: PaintColrLayers**
 
+| Type | Field name | Description |
+|-|-|-|
+| uint8 | format | Set to 1. |
+| uint8 | numLayers | Number of offsets to Paint to read from layers. |
+| uint32 | firstLayerIndex | Index into the LayerV1List. |
+
+Each layer is composited on top of previous with mode COMPOSITE_SRC_OVER.
+
+*Note:* uint8 size saves bytes in most cases. Large layer counts can be
+achieved by way of PaintComposite or a tree of PaintColrLayers.
+
 **5.7.11.2.5.2 Format 2: PaintSolid**
+
+| Type | Field name | Description |
+|-|-|-|
+| uint8 | format | Set to 2. |
+| ColorIndex | color | Solid color fill. |
 
 **5.7.11.2.5.3 Format 3: PaintLinearGradient**
 
+| Type | Field name | Description |
+|-|-|-|
+| uint8 | format | Set to 3. |
+| Offset24 | colorLineOffset | Offset to ColorLine, from start of PaintLinearGradient table. |
+| VarFWord | x0 | Start point x coordinate. |
+| VarFWord | y0 | Start point y coordinate. |
+| VarFWord | x1 | End point x coordinate. |
+| VarFWord | y1 | End point y coordinate. |
+| VarFWord | x2 | Rotation vector end point x coordinate. |
+| VarFWord | y2 | Rotation vector end point y coordinate. |
+
+For linear gradient without skew, set x2,y2 to x1,y1.
+
 **5.7.11.2.5.4 Format 4: PaintRadialGradient**
+
+|Type | Field name | Description |
+|-|-|-|
+| uint8 | format | set to 4. |
+| Offset24 | colorLineOffset | offset from start of PaintRadialGradient table |
+| VarFWord | x0 | start circle center x coordinate |
+| VarFWord | y0 | start circle center y coordinate |
+| VarUFWord | radius0 | start circle radius |
+| VarFWord | x1 | end circle center x coordinate |
+| VarFWord | y1 | end circle center y coordinate |
+| VarUFWord | radius1 | end circle radius |
 
 **5.7.11.2.5.5 Format 5: PaintGlyph**
 
+| Type | Field name | Description |
+|-|-|-|
+| uint8 | format | Set to 5. |
+| Offset24 | paintOffset | Offset to a Paint table, from start of PaintGlyph table. |
+| uint16 | glyphID | Glyph ID for the source outline. |
+
+Glyph outline is used as clip mask for the content in the Paint subtable. Glyph ID shall be less than the numGlyphs value in the &#39;maxp&#39; table.
+
 **5.7.11.2.5.6 Format 6: PaintColrGlyph**
+
+| Type | Field name | Description |
+|-|-|-|
+| uint8 | format | Set to 6. |
+| uint16 | glyphID | Virtual glyph ID for a BaseGlyphV1List base glyph. |
+
+Glyph ID shall be in the BaseGlyphV1List; may be greater than maxp.numGlyphs.
+
+*__Note:__ The PaintColrGlyph and PaintColrLayers tables are similar in that
+they provide a way to reference a graph of paint tables as a sub-component
+within a color glyph description. (The PaintColrGlyph does this indirectly via a
+base glyph ID.) They may be handled differently in implementations, however. In
+particular, an implementation can process and cache the result of the color
+glyph description for a given base glyph ID. In that case, subsequent references
+to that base glyph ID using a PaintColrGlyph table would not require the
+corresponding graph of paint tables to be re-processed. As a result, using a
+PaintColrGlyph for re-used graphic components could provide performance
+benefits.*
 
 **5.7.11.2.5.7 Format 7: PaintTransformed**
 
+| Type | Field name | Description |
+|-|-|-|
+| uint8 | format | Set to 7. |
+| Offset24 | paintOffset | Offset to a Paint subtable, from start of PaintTransformed table. |
+| Affine2x3 | transform | An Affine2x3 record (inline). |
+
+Affine2x3 record
+
+| Type | Name | Description |
+|-|-|-|
+| VarFixed | xx | x-component of transformed x-basis vector |
+| VarFixed | yx | y-component of transformed x-basis vector |
+| VarFixed | xy | x-component of transformed y-basis vector |
+| VarFixed | yy | y-component of transformed y-basis vector |
+| VarFixed | dx | Translation in x direction. |
+| VarFixed | dy | Translation in y direction. |
+
+The `Affine2x3` record is a 2x3 matrix for 2D affine transformations, so
+that for a transformation matrix _M_ and an extended starting vector _v = (x, y, 1)_
+the mapped vector _v′_ is calculated as _v′ = M * v_. That is:
+
+_v′<sub>x</sub>_ = _xx * x + xy * y + dx_  
+_v′<sub>y</sub>_ = _yx * x + yy * y + dy_
+
+_Note:_ It is helpful to understand linear transformations by their effect
+on *x-* and *y-basis* vectors _î = (1, 0)_ and _ĵ = (0, 1)_. The transform
+described by the Affine2x3 record maps the basis vectors to _î′ = (xx, yx)_ 
+and _ĵ′ = (xy, yy)_, and translates the origin to _(dx, dy)_.
+
 **5.7.11.2.5.8 Format 8: PaintRotate**
+
+| Type | Field name | Description |
+|-|-|-|
+| uint8 | format | Set to 8. |
+| Offset24 | paintOffset | Offset to a Paint subtable, from start of PaintRotate table. |
+| VarFixed | angle | Rotation angle, in counter-clockwise degrees. |
+| VarFixed | centerX | x coordinate for the center of rotation. |
+| VarFixed | centerY | y coordinate for the center of rotation. |
+
+*__Note:__ Rotation can also be represented using the PaintTransformed table. The important difference is in allowing an angle to be specified directly in degrees, which is more amenable to smooth variation.*
 
 **5.7.11.2.5.9 Format 9: PaintSkew**
 
+| Type | Field name | Description |
+|-|-|-|
+| uint8 | format | Set to 9. |
+| Offset24 | paintOffset | Offset to a Paint subtable, from start of PaintSkew table. |
+| VarFixed | xSkewAngle | Angle of skew in the direction of the x-axis, in counter-clockwise degrees. |
+| VarFixed | ySkewAngle | Angle of skew in the direction of the y-axis, in counter-clockwise degrees. |
+| VarFixed | centerX | x coordinate for the center of skew. |
+| VarFixed | centerY | y coordinate for the center of skew. |
+
+*__Note:__ Skews can also be represented using the PaintTransformed table. The important difference is in being able to specify skew as an angle rather than as changes to basis vectors. Also, when varying angles, a representation directly in degrees is more amenable to smooth variation.*
+
 **5.7.11.2.5.10 Format 10: PaintComposite**
+
+| Type | Field name | Description |
+|-|-|-|
+| uint8 | format | Set to 10. |
+| Offset24 | sourcePaintOffset | Offset to a source Paint table, from start of PaintComposite table. |
+| uint8 | compositeMode | A CompositeMode enumeration value. |
+| Offset24 | backdropPaintOffset | Offset to a backdrop Paint table, from start of PaintComposite table. |
+
+If compositeMode value is not recognized, COMPOSITE_CLEAR is used.
+
+Composite modes
+
+Supported composition modes are taken from the W3C [Compositing and Blending Level 1][1] specification.
+
+CompositeMode enumeration
+
+| Value | Name | Description |
+|-|-|-|
+| | *Porter-Duff modes* | |
+| 0 | COMPOSITE_CLEAR | See [Clear][2] |
+| 1 | COMPOSITE_SRC | See [Copy][3] |
+| 2 | COMPOSITE_DEST | See [Destination][4] |
+| 3 | COMPOSITE_SRC_OVER | See [Source Over][5] |
+| 4 | COMPOSITE_DEST_OVER | See [Destination Over][6] |
+| 5 | COMPOSITE_SRC_IN | See [Source In][7] |
+| 6 | COMPOSITE_DEST_IN | See [Destination In][8] |
+| 7 | COMPOSITE_SRC_OUT | See [Source Out][9] |
+| 8 | COMPOSITE_DEST_OUT | See [Destination Out][10] |
+| 9 | COMPOSITE_SRC_ATOP | See [Source Atop][11] |
+| 10 | COMPOSITE_DEST_ATOP | See [Destination Atop][12] |
+| 11 | COMPOSITE_XOR | See [XOR][13] |
+| | *Separable color blend modes:* | |
+| 12 | COMPOSITE_SCREEN | See [screen blend mode][14] |
+| 13 | COMPOSITE_OVERLAY | See [overlay blend mode][15] |
+| 14 | COMPOSITE_DARKEN | See [darken blend mode][16] |
+| 15 | COMPOSITE_LIGHTEN | See [lighten blend mode][17] |
+| 16 | COMPOSITE_COLOR_DODGE | See [color-dodge blend mode][18] |
+| 17 | COMPOSITE_COLOR_BURN | See [color-burn blend mode][19] |
+| 18 | COMPOSITE_HARD_LIGHT | See [hard-light blend mode][20] |
+| 19 | COMPOSITE_SOFT_LIGHT | See [soft-light blend mode][21] |
+| 20 | COMPOSITE_DIFFERENCE | See [difference blend mode][22] |
+| 21 | COMPOSITE_EXCLUSION | See [exclusion blend mode][23] |
+| 22 | COMPOSITE_MULTIPLY | See [multiply blend mode][24] |
+| | *Non-separable color blend modes:* | |
+| 23 | COMPOSITE_HSL_HUE | See [hue blend mode][25] |
+| 24 | COMPOSITE_HSL_SATURATION | See [saturation blend mode][26] |
+| 25 | COMPOSITE_HSL_COLOR | See [color blend mode][27] |
+| 26 | COMPOSITE_HSL_LUMINOSITY | See [luminosity blend mode][28] |
 
 > **_[under construction—more to come]_**
 
