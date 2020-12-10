@@ -1333,6 +1333,45 @@ There are several ways in which elements of a color glyph description can be re-
 
 **5.7.11.2 COLR table formats**
 
+Various table and record formats are defined for COLR version 0 and version 1.
+Several values contained within the version 1 formats are variable. These use
+various record formats that combine a basic data type with a variation delta-set
+index: VarFWord, VarUFWord, VarF2Dot14, and VarFixed. These are described in
+7.2.3.1.
+
+All table offsets are from the start of the parent table in which the offset is
+given, unless otherwise indicated.
+
+**5.7.11.2.1 COLR header**
+
+**5.7.11.2.2 BaseGlyph and Layer records**
+
+**5.7.11.2.3 BaseGlyphV1List and LayerV1List**
+
+**5.7.11.2.4 ColorIndex, ColorStop and ColorLine**
+
+**5.7.11.2.5 Paint tables**
+
+**5.7.11.2.5.1 Format 1: PaintColrLayers**
+
+**5.7.11.2.5.2 Format 2: PaintSolid**
+
+**5.7.11.2.5.3 Format 3: PaintLinearGradient**
+
+**5.7.11.2.5.4 Format 4: PaintRadialGradient**
+
+**5.7.11.2.5.5 Format 5: PaintGlyph**
+
+**5.7.11.2.5.6 Format 6: PaintColrGlyph**
+
+**5.7.11.2.5.7 Format 7: PaintTransformed**
+
+**5.7.11.2.5.8 Format 8: PaintRotate**
+
+**5.7.11.2.5.9 Format 9: PaintSkew**
+
+**5.7.11.2.5.10 Format 10: PaintComposite**
+
 > **_[under construction—more to come]_**
 
 
