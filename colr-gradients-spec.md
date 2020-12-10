@@ -901,13 +901,15 @@ Figure 5.18 illustrates layers using version 0 formats.
 
 **Figure 5.18 Version 0: Color glyphs are defined by slices of a layer records array.**
 
-The version 1 formats also define layer sets as slices in an array. In this case, however, the array is an array of offsets to paint tables, and is contained in a LayerV1List table. Each referenced paint table is the root of a graph of paint tables that specifies a graphic composition to be used as a layer. Within a given slice, the first offset provides the content for the bottom layer, and each subsequent offset provides content that overlays the preceding content. Definition of the slices (the sub-sequence of offsets for each slice) are given in PaintColorLayers tables.
+The version 1 formats also define layer sets as slices in an array. In this case, however, the array is an array of offsets to paint tables, and is contained in a LayerV1List table. Each referenced paint table is the root of a sub-graph of paint tables that specifies a graphic composition to be used as a layer. Within a given slice, the first offset provides the content for the bottom layer, and each subsequent offset provides content that overlays the preceding content. Definition of the slices (the sub-sequence of offsets for each slice) are given in PaintColorLayers tables.
 
 Figure 5.19 illustrates the organizational relationship between PaintColorLayers tables, the LayerV1List, and referenced paint tables that are roots of sub-graphs.
 
 ![Version 1: PaintColrLayers tables specify slices within the LayerV1List, providing a layering of content defined in sub-graphs.](images/colr_layers_v1.png)
 
 **Figure 5.19 Version 1: PaintColrLayers tables specify slices within the LayerV1List, providing a layering of content defined in sub-graphs.**
+
+NOTE: Paint table offsets in the LayerV1List table are only used in conjuction with PaintColrLayers tables. If a paint table does not need to be referenced via a PaintColrLayers table, its offset does not need to be included in the LayerV1List array.
 
 A PaintColorLayers table can be used as the root of a color glyph definition, providing a base layering structure for the color glyph. In this usage, the PaintColrLayers table is referenced by a BaseGlyphV1Record, which specifies the root of the graph of a color glyph definition for a given base glyph. This is illustrated in figure 5.20.
 
