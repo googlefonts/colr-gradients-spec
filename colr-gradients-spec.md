@@ -925,6 +925,8 @@ Use of layers in a color glyph definition, and of the PaintColrLayers table spec
 
 **Figure 5.21 Complete color glyph definition without use of layers.**
 
+NOTE: The PaintComposite, in effect, also provides a limited layering structure with two layers, but with alternate compositing and blending modes, and without requiring use of the LayerV1List table. See 5.7.11.1.6 for details.
+
 **5.7.11.1.5 Transformations**
 
 A PaintTransform table can be used within a color glyph description to apply an
