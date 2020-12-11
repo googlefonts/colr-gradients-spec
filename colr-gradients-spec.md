@@ -670,7 +670,7 @@ The basic concepts also apply to color glyphs defined using the version 1 format
 
 * The PaintGlyph table provides glyph outlines as the basic shapes.
 
-* The PaintTransformed table is used to apply an affine transformation matrix to a sub-graph of paint tables, and the graphic operations they represent. The PaintRotate and PaintSkew tables support specific transformations specified as angles.
+* The PaintTransformed table is used to apply an affine transformation matrix to a sub-graph of paint tables, and the graphic operations they represent. The PaintTranslate, PaintRotate and PaintSkew tables support specific transformations.
 
 * The PaintComposite table supports alternate compositing and blending modes for two sub-graphs.
 
@@ -925,7 +925,7 @@ If another PaintTransform table occurs within the child sub-graph of the first P
 
 The affine transformation is specified in a PaintTransform table as matrix elements. See <span style="color:red">5.7.11.2.x</span> for format details.
 
-Whereas the PaintTransformed table supports several types of transforms, the PaintTransLate, PaintRotate and PaintSkew tables support specific transformations: translation, rotation and skew. The PaintTranslate table provides a more compact representation for this common transform. The significant difference of the PaintRotate and PaintSkew formats is that rotations and skews are specified as angles, in counter-clockwise degrees.
+Whereas the PaintTransformed table supports several types of transforms, the PaintTranslate, PaintRotate and PaintSkew tables support specific transformations: translation, rotation and skew. The PaintTranslate table provides a more compact representation for this common transform. The significant difference of the PaintRotate and PaintSkew formats is that rotations and skews are specified as angles, in counter-clockwise degrees.
 
 NOTE: Specifying the rotation or skew as an angle can have a signficant benefit in variable fonts if an angle of skew or rotation needs to vary, since it is easier to implement variation of angles when specified directly rather than as matrix elements. This is because the matrix elements for a rotation or skew are the sine, cosine or tangent of the rotation angle, which do not change in linear proportion to the angle. To achieve a linear variation of rotation using matrix elements would require approximating the variation using multiple delta sets.
 
