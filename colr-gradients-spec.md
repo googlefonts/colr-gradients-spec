@@ -420,9 +420,17 @@ struct PaintTransformed
   Affine2x3           transform;
 };
 
-struct PaintRotate
+struct PaintTranslate
 {
   uint8               format; // = 8
+  Offset24<Paint>     src;
+  VarFixed            dx
+  VarFixed            dy
+};
+
+struct PaintRotate
+{
+  uint8               format; // = 9
   Offset24<Paint>     src;
   VarFixed            angle
   VarFixed            centerX
@@ -431,7 +439,7 @@ struct PaintRotate
 
 struct PaintSkew
 {
-  uint8               format; // = 9
+  uint8               format; // = 10
   Offset24<Paint>     src;
   VarFixed            xSkewAngle
   VarFixed            ySkewAngle
@@ -441,7 +449,7 @@ struct PaintSkew
 
 struct PaintComposite
 {
-  uint8               format; // = 10
+  uint8               format; // = 11
   Offset24<Paint>     src;
   CompositeMode       mode;   // If mode is unrecognized use COMPOSITE_CLEAR
   Offset24<Paint>     backdrop;
@@ -516,17 +524,22 @@ Allocate a bitmap for the glyph according to glyf table entry extents for gid
           apply transform
           call a) for paint
           restore
-    8) PaintRotate
+    8) PaintTranslate
           saveLayer()
           apply transform
           call a) for paint
           restore
-    9) PaintSkew
+    9) PaintRotate
           saveLayer()
           apply transform
           call a) for paint
           restore
-    10) PaintComposite
+    10) PaintSkew
+          saveLayer()
+          apply transform
+          call a) for paint
+          restore
+    11) PaintComposite
           paint Paint for backdrop, call a)
           saveLayer() with setting composite mode, on SkPaint
           paint Paint for src, call a)
@@ -657,7 +670,7 @@ The basic concepts also apply to color glyphs defined using the version 1 format
 
 * The PaintGlyph table provides glyph outlines as the basic shapes.
 
-* The PaintTransformed table is used to apply an affine transformation matrix to a sub-graph of paint tables, and the graphic operations they represent. The PaintRotate and PaintSkew tables support specific transformations specified as angles.
+* The PaintTransformed table is used to apply an affine transformation matrix to a sub-graph of paint tables, and the graphic operations they represent. The PaintTranslate, PaintRotate and PaintSkew tables support specific transformations.
 
 * The PaintComposite table supports alternate compositing and blending modes for two sub-graphs.
 
@@ -912,7 +925,7 @@ If another PaintTransform table occurs within the child sub-graph of the first P
 
 The affine transformation is specified in a PaintTransform table as matrix elements. See <span style="color:red">5.7.11.2.x</span> for format details.
 
-Whereas the PaintTransformed table supports several types of transforms, the PaintRotate and PaintSkew tables support specific transformations: rotation and skew. The significant difference of these paint formats is that rotations and skews are specified as angles, in counter-clockwise degrees.
+Whereas the PaintTransformed table supports several types of transforms, the PaintTranslate, PaintRotate and PaintSkew tables support specific transformations: translation, rotation and skew. The PaintTranslate table provides a more compact representation for this common transform. The significant difference of the PaintRotate and PaintSkew formats is that rotations and skews are specified as angles, in counter-clockwise degrees.
 
 NOTE: Specifying the rotation or skew as an angle can have a signficant benefit in variable fonts if an angle of skew or rotation needs to vary, since it is easier to implement variation of angles when specified directly rather than as matrix elements. This is because the matrix elements for a rotation or skew are the sine, cosine or tangent of the rotation angle, which do not change in linear proportion to the angle. To achieve a linear variation of rotation using matrix elements would require approximating the variation using multiple delta sets.
 
@@ -1336,11 +1349,21 @@ on *x-* and *y-basis* vectors _î = (1, 0)_ and _ĵ = (0, 1)_. The transform
 described by the Affine2x3 record maps the basis vectors to _î′ = (xx, yx)_ 
 and _ĵ′ = (xy, yy)_, and translates the origin to _(dx, dy)_.
 
-**5.7.11.2.5.8 Format 8: PaintRotate**
+**5.7.11.2.5.8 Format 8: PaintTranslate**
 
 | Type | Field name | Description |
 |-|-|-|
 | uint8 | format | Set to 8. |
+| Offset24 | paintOffset | Offset to a Paint subtable, from start of PaintRotate table. |
+| VarFixed | dx | Translation in x direction. |
+| VarFixed | dy | Translation in y direction. |
+
+
+**5.7.11.2.5.9 Format 9: PaintRotate**
+
+| Type | Field name | Description |
+|-|-|-|
+| uint8 | format | Set to 9. |
 | Offset24 | paintOffset | Offset to a Paint subtable, from start of PaintRotate table. |
 | VarFixed | angle | Rotation angle, in counter-clockwise degrees. |
 | VarFixed | centerX | x coordinate for the center of rotation. |
@@ -1348,11 +1371,11 @@ and _ĵ′ = (xy, yy)_, and translates the origin to _(dx, dy)_.
 
 *__Note:__ Rotation can also be represented using the PaintTransformed table. The important difference is in allowing an angle to be specified directly in degrees, which is more amenable to smooth variation.*
 
-**5.7.11.2.5.9 Format 9: PaintSkew**
+**5.7.11.2.5.10 Format 10: PaintSkew**
 
 | Type | Field name | Description |
 |-|-|-|
-| uint8 | format | Set to 9. |
+| uint8 | format | Set to 10. |
 | Offset24 | paintOffset | Offset to a Paint subtable, from start of PaintSkew table. |
 | VarFixed | xSkewAngle | Angle of skew in the direction of the x-axis, in counter-clockwise degrees. |
 | VarFixed | ySkewAngle | Angle of skew in the direction of the y-axis, in counter-clockwise degrees. |
@@ -1361,11 +1384,11 @@ and _ĵ′ = (xy, yy)_, and translates the origin to _(dx, dy)_.
 
 *__Note:__ Skews can also be represented using the PaintTransformed table. The important difference is in being able to specify skew as an angle rather than as changes to basis vectors. Also, when varying angles, a representation directly in degrees is more amenable to smooth variation.*
 
-**5.7.11.2.5.10 Format 10: PaintComposite**
+**5.7.11.2.5.11 Format 11: PaintComposite**
 
 | Type | Field name | Description |
 |-|-|-|
-| uint8 | format | Set to 10. |
+| uint8 | format | Set to 11. |
 | Offset24 | sourcePaintOffset | Offset to a source Paint table, from start of PaintComposite table. |
 | uint8 | compositeMode | A CompositeMode enumeration value. |
 | Offset24 | backdropPaintOffset | Offset to a backdrop Paint table, from start of PaintComposite table. |
