@@ -1228,29 +1228,59 @@ not require the corresponding graph of paint tables to be re-processed. As a
 result, using a PaintColrGlyph for re-used graphic components could provide
 performance benefits.
 
-**5.7.11.1.8 Color glyphs defined as a graph**
+**5.7.11.1.8 Color glyphs as a graph**
 
-`PaintColrGlyph` and `PaintColrLayers` allow recursive composition of
-COLR glyphs. This is desirable for reusable parts but introduces the
-possibility of a cyclic graph. Implementations should fail if a cycle
-is detected.
+When using version 1 formats, a color glyph is defined by a directed, acyclic
+graph of linked paint tables. For each BaseGlyphV1Record, the paint table
+referenced by that record is the root of a graph defining a color glyph
+composition.
 
-*Note:* Cycle detection can be achieved by keeping a set of addresses of visited paints.
-Before processing a paint check if it's address is in the set, if it is we have a cycle
-and should fail. Once done processing a given paint, including children, take it's address
-out of the set. This allows the same paint to be reached repeatedly as long as no
-cycle is formed. Pseudocode:
+A graph is comprised of the maximal set of paint tables linked by parent/child
+(subtable) linkages. The links can be direct, in the case of paint table formats
+that include offsets to paint subtables. But the links can also be indirect:
+
+* A PaintColrLayers table references a slice of offsets within the LayerV1List.
+The paint tables referenced by those offsets are considered to be linked within
+the graph as children of the PaintColrLayers table.
+
+* A PaintColrGlyph table references a base glyph ID, for which a corresponding
+BaseGlyphV1Record is expected. That record points to the root of a graph that is
+a complete color glyph definition on its own. But when referenced in this way by
+a PaintColrGlyph table, that entire graph is considered to be a child sub-graph
+of the PaintColrGlyph table, and a continuation of the graph of which the
+PaintColrGlyph table is a part.
+
+The graph for a color glyph is a combination of paint table using any of the
+paint table formats. The simplest color glyph definition would consist of a
+PaintGlyph table linked to a basic fill table (PaintSolid, PaintLinearGradient
+or PaintRadialGradient). But the graph can be arbitrarily complex, with an
+arbitrary depth of paint nodes (to the limits inherent in the formats). The
+graph can define a visual element in a single layer, or many elements in any
+number of layers.
+
+There is one constraint imposed on the complexity of the graph: the graph shall
+be acyclic—without cycles. That is, a paint table shall not have any child or
+descendent paint table that is also its parent or ancestor within the graph.
+
+In particular, because the PaintColrLayers and PaintColrGlyph tables use
+indirect child references rather than forward offsets, they present the
+possibility for introducing cycles. If a cycle is detected, the PaintColrLayers
+or PaintColrGlyph table that introduces the cycle shall be ignored.
+
+Applications can test for cycles by tracking paint tables used in a sequence
+within the graph and then, when processing a PaintColrLayers or PaintColrGlyph
+table, checking whether any child was already encountered within that sequence.
+The following pseudo-code algorithm can be used:
 
 ```
-# called initially with the base glyph paint and an empty set
-function paintIsAcyclic(paint, active_paints)
-  if paint in active_paints
-    fail: we have a cycle
-  add paint to active_paints
-
-  process paint, calling paintIsAcyclic() recursively for referenced paints
-
-  remove paint from active_paints
+    // called initially with the root paint and an empty set activePaints
+    function paintIsAcyclic(paint, activePaints)
+        if paint is in activePaints
+          return failure (paint shall be ignored)
+        add paint to activePaints
+        for each childPaint referenced by paint as a child subtable
+          call paintIsAcyclic(childPaint, activePaints)
+        remove paint from activePaints
 ```
 
 
