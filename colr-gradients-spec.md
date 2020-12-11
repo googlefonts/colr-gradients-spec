@@ -1089,7 +1089,7 @@ that references the color glyph definition for glyph ID 63163.
 via a glyph ID.](images/colr_reuse_clock-face_PaintColrGlyph.png)
 
 **Figure 5.31 A PaintColrGlyph table is used to reference the shared clock face
-composition via a glyph ID.
+composition via a glyph ID.**
 
 While the PaintColrGlyph and PaintColrLayers tables are similar in referencing a
 layer set as a re-usable component, they could be handled differently in
