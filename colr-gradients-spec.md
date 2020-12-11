@@ -931,6 +931,11 @@ different compositing or blending modes.
 
 * The PaintColrLayers table supports defining a sequence of several layers.
 
+NOTE: The PaintColrGlyph table provides a means of incorporating the graph of one
+color glyph as a sub-graph in the definition of another color glyph. In this
+way, PaintColrGlyph provides an indirect means of introducing additional layers
+into a color glyph definition. See 5.7.11.1.7.3 for more details.
+
 While the PaintComposite table only combines two sub-graphs, other
 PaintComposite tables can be nested to provide additional layers. The primary
 purpose is to support compositing or blending other than simple alpha blending.
