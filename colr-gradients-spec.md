@@ -1060,14 +1060,15 @@ of the common clock face elements.
 **5.7.11.1.7.3 Re-use using PaintColrGlyph**
 
 A third way to re-use components in color glyph definitions is to use a nested
-PaintColrGlyph table. The organizational structure involved is partially like
-that for re-use using nested PaintColrLayers tables: a layer set for the shared
-composition is defined using a PaintColrLayers table. However, this
-PaintColrLayers table is the root of a color glyph definition and is associated
-with a base glyph ID. Each time the shared composition is to be re-used, it is
-referenced in a color glyph definition by its base glyph ID using a
-PaintColrGlyph table. That reference graph for the shared composition is thereby
-incorporated into the graph of the color glyph defintion that uses is.
+PaintColrGlyph table. This format references a base glyph ID, which is used to
+access a corresponding BaseGlyphV1Record. That record will provide the offset of
+a paint table that is the root of a graph for a color glyph definition. That
+graph can potentially be used as an independent color glyph, but it can also
+define a shared composition that gets re-used in multiple color glyphs. Each
+time the shared composition is to be re-used, it is referenced by its base glyph
+ID using a PaintColrGlyph table. The graph of the referenced color glyph is
+thereby incorporated into the graph of the PaintColrGlyph table as its child
+sub-graph.
 
 The glyph ID used may be that for a glyph outline, if there is an appropriate
 glyph outline that corresponds to this composition. But the glyph ID may also be
