@@ -1,0 +1,32 @@
+<svg enable-background="new 0 0 128 128" viewBox="0 0 128 200"
+  xmlns="http://www.w3.org/2000/svg" width="256">
+
+  <def>
+    <path id="hour-hand"
+          d="m 63.8 63.98
+             h 0.4
+             c 2.1 0 3.8 -1.7 3.8 -3.8
+             v -21.6
+             c 0 -2.1 -1.7 -3.8 -3.8 -3.8
+             h -0.4
+             c -2.1 0 -3.8 1.7 -3.8 3.8
+             v 21.6
+             c 0 2.1 1.7 3.8 3.8 3.8
+             z"/>
+  </def>
+
+  <use href="#hour-hand" fill="green"/>
+  
+  <g transform="translate(60, 0)">
+    <use href="#hour-hand"/>
+  </g>
+  
+  <g transform="translate(35, 30) rotate(30) ">
+    <use href="#hour-hand" fill="green"/>
+  </g>
+  
+  <g transform="translate(80, 70) rotate(60) ">
+    <use href="#hour-hand" fill="green"/>
+  </g>
+  
+</svg>
