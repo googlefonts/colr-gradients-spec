@@ -889,10 +889,11 @@ To illustrate this, the example in figure 5.16 is extended in figure 5.17 so tha
 
 A PaintGlyph table on its own does not add content: if there is no child paint table, then the PaintGlyph table represents no presentation content and shall be ignored.
 
-**5.7.11.1.4 Layers**
+**5.7.11.1.4 Layering**
 
 Layering of visual elements was introduced above, in the introduction to
-5.7.11.1. Both version 0 and version 1 support layers, though in different ways. 
+5.7.11.1. Both version 0 and version 1 support use of multiple layers, though in
+different ways.
 
 For version 0, layers are fundamental: they are the sole way in which separate
 elements are composed into a color glyph. An array of LayerRecords is created,
@@ -913,9 +914,9 @@ array.](images/colr_layers_v0.png)
 **Figure 5.18 Version 0: Color glyphs are defined by slices of a layer records
 array.**
 
-When using version 1 formats, layers are supported but are optional. For
-example, a simple glyph description need not use any layering, as illustrated in
-figure 5.21:
+When using version 1 formats, use of multiple layers is supported but is
+optional. For example, a simple glyph description need not use any layering, as
+illustrated in figure 5.21:
 
 
 ![Complete color glyph definition without use of
@@ -923,7 +924,7 @@ layers.](images/colr_color_glyph_without_layers.png)
 
 **Figure 5.21 Complete color glyph definition without use of layers.**
 
-The version 1 formats include two ways to add layers:
+The version 1 formats include two ways to add multiple layers:
 
 * The PaintComposite table allows two sub-graphs to be composed together using
 different compositing or blending modes.
