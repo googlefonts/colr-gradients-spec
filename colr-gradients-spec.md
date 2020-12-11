@@ -1059,6 +1059,46 @@ of the common clock face elements.
 
 **5.7.11.1.7.3 Re-use using PaintColrGlyph**
 
+A third way to re-use components in color glyph definitions is to use a nested
+PaintColrGlyph table. This format references a base glyph ID, which is used to
+access a corresponding BaseGlyphV1Record. That record will provide the offset of
+a paint table that is the root of a graph for a color glyph definition. That
+graph can potentially be used as an independent color glyph, but it can also
+define a shared composition that gets re-used in multiple color glyphs. Each
+time the shared composition is to be re-used, it is referenced by its base glyph
+ID using a PaintColrGlyph table. The graph of the referenced color glyph is
+thereby incorporated into the graph of the PaintColrGlyph table as its child
+sub-graph.
+
+The glyph ID used may be that for a glyph outline, if there is an appropriate
+glyph outline that corresponds to this composition. But the glyph ID may also be
+greater than the last glyph ID used for outlines—that is, greater than or equal
+to the numGlyphs value in the &#39;maxp&#39; table (5.2.6). Such virtual base
+glyph IDs in the COLR table are only used within a PaintColrGlyph table, and are
+not related to glyph IDs used in any other tables.
+
+The example from 5.7.11.1.7.2 is modified to illustrate use of a PaintColrGlyph
+table. In the following figure, a PaintColrLayers table references a slice
+within the LayerV1List that defines the shared component. Now, however, this
+PaintColrLayers table is treated as the root of a color glyph definition for
+base glyph ID 63,163. The color glyph for the one o’clock emoji is defined with
+three layers, as before, but now the bottom layer uses a PaintColrGlyph table
+that references the color glyph definition for glyph ID 63163.
+
+![A PaintColrGlyph table is used to reference the shared clock face composition
+via a glyph ID.](images/colr_reuse_clock-face_PaintColrGlyph.png)
+
+**Figure 5.31 A PaintColrGlyph table is used to reference the shared clock face
+composition via a glyph ID.**
+
+While the PaintColrGlyph and PaintColrLayers tables are similar in referencing a
+layer set as a re-usable component, they could be handled differently in
+implementations. In particular, an implementation could process and cache the
+result of the color glyph description for a given base glyph ID. In that case,
+subsequent references to that base glyph ID using a PaintColrGlyph table would
+not require the corresponding graph of paint tables to be re-processed. As a
+result, using a PaintColrGlyph for re-used graphic components could provide
+performance benefits.
 
 **5.7.11.1.8 Color glyphs defined as a graph**
 
