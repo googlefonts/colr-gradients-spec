@@ -1081,7 +1081,7 @@ The example from 5.7.11.1.7.2 is modified to illustrate use of a PaintColrGlyph
 table. In the following figure, a PaintColrLayers table references a slice
 within the LayerV1List that defines the shared component. Now, however, this
 PaintColrLayers table is treated as the root of a color glyph definition for
-base glyph ID 63,163. The color glyph for the one o’clock emoji is defined with
+base glyph ID 63163. The color glyph for the one o’clock emoji is defined with
 three layers, as before, but now the bottom layer uses a PaintColrGlyph table
 that references the color glyph definition for glyph ID 63163.
 
