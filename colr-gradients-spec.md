@@ -924,24 +924,40 @@ layers.](images/colr_color_glyph_without_layers.png)
 
 **Figure 5.21 Complete color glyph definition without use of layers.**
 
-The version 1 formats include two ways to add multiple layers:
+The version 1 formats define a color glyph as a graph of paint tables, and the
+concept of layering corresponds roughly to the number of distinct leaf nodes in
+the graph. The basic fill formats— PaintSolid, PaintLinearGradient and
+PaintRadialGradient—do not have child paint tables and so can only be leaf nodes
+in the graph. Some paint tables, such as the PaintGlyph table, have only a
+single child, so can be used within a layer but do not provide any means of
+adding additional layers. Increasing the number of layers requires paint tables
+that have two or more children, creating a fork in the graph.
+
+NOTE: In more precise terms, the number of visual layers represented by a valid
+graph is the number of distinct root to leaf paths in the graph.
+
+The version 1 formats include two paint formats that have two or more children,
+and so can increase the number of layers in the graph:
 
 * The PaintComposite table allows two sub-graphs to be composed together using
 different compositing or blending modes.
 
 * The PaintColrLayers table supports defining a sequence of several layers.
 
-NOTE: The PaintColrGlyph table provides a means of incorporating the graph of one
-color glyph as a sub-graph in the definition of another color glyph. In this
+NOTE: The PaintColrGlyph table provides a means of incorporating the graph of
+one color glyph as a sub-graph in the definition of another color glyph. In this
 way, PaintColrGlyph provides an indirect means of introducing additional layers
-into a color glyph definition. See 5.7.11.1.7.3 for more details.
+into a color glyph definition: forks in the resulting graph do not come from the
+PaintColrGlyph table itself, but can come from PaintColrLayers or PaintComposite
+tables that are nested in the incorporated sub-graph. See 5.7.11.1.7.3 for a
+description of the PaintColrGlyph table.
 
 While the PaintComposite table only combines two sub-graphs, other
 PaintComposite tables can be nested to provide additional layers. The primary
-purpose is to support compositing or blending other than simple alpha blending.
-
-The PaintComposite table is covered in more detail in 5.7.11.1.6. The remainder
-of this clause will focus on the PaintColrLayers table.
+purpose of PaintComposite is to support compositing or blending modes other than
+simple alpha blending. The PaintComposite table is covered in more detail in
+5.7.11.1.6. The remainder of this clause will focus on the PaintColrLayers
+table.
 
 The PaintColrLayers table is used to define a bottom-up z-order sequence of
 layers. Similar to version 0, it defines a layer set as a slice in an array, but
