@@ -924,14 +924,15 @@ layers.](images/colr_color_glyph_without_layers.png)
 
 **Figure 5.21 Complete color glyph definition without use of layers.**
 
-The version 1 formats define a color glyph as a graph of paint tables, and the
-concept of layering corresponds roughly to the number of distinct leaf nodes in
-the graph. The basic fill formats— PaintSolid, PaintLinearGradient and
-PaintRadialGradient—do not have child paint tables and so can only be leaf nodes
-in the graph. Some paint tables, such as the PaintGlyph table, have only a
-single child, so can be used within a layer but do not provide any means of
-adding additional layers. Increasing the number of layers requires paint tables
-that have two or more children, creating a fork in the graph.
+The version 1 formats define a color glyph as a directed, acyclic graph of paint
+tables, and the concept of layering corresponds roughly to the number of
+distinct leaf nodes in the graph. The basic fill formats— PaintSolid,
+PaintLinearGradient and PaintRadialGradient—do not have child paint tables and
+so can only be leaf nodes in the graph. Some paint tables, such as the
+PaintGlyph table, have only a single child, so can be used within a layer but do
+not provide any means of adding additional layers. Increasing the number of
+layers requires paint tables that have two or more children, creating a fork in
+the graph.
 
 NOTE: In more precise terms, the number of visual layers represented by a valid
 graph is the number of distinct root to leaf paths in the graph.
