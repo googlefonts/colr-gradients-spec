@@ -902,7 +902,122 @@ To illustrate this, the example in figure 5.16 is extended in figure 5.17 so tha
 
 A PaintGlyph table on its own does not add content: if there is no child paint table, then the PaintGlyph table represents no presentation content and shall be ignored.
 
-**5.7.11.1.4 Layers**
+**5.7.11.1.4 Layering**
+
+Layering of visual elements was introduced above, in the introduction to
+5.7.11.1. Both version 0 and version 1 support use of multiple layers, though in
+different ways.
+
+For version 0, layers are fundamental: they are the sole way in which separate
+elements are composed into a color glyph. An array of LayerRecords is created,
+with each LayerRecord specifying a glyph ID and a CPAL entry (a shape and solid
+color fill). Each color glyph definition is a slice from that array (that is, a
+contiguous sub-sequence), specified in a BaseGlyphRecord for a particular base
+glyph. Within a given slice, the first record specifies the content of the
+bottom layer, and each subsequent record specifies content that overlays the
+preceding content(increasing z-order). A single array is used for defining all
+color glyphs. The LayerRecord slices for two base glyphs may overlap, though
+often will not overlap.
+
+Figure 5.18 illustrates layers using version 0 formats.
+
+![Version 0: Color glyphs are defined by slices of a layer records
+array.](images/colr_layers_v0.png)
+
+**Figure 5.18 Version 0: Color glyphs are defined by slices of a layer records
+array.**
+
+When using version 1 formats, use of multiple layers is supported but is
+optional. For example, a simple glyph description need not use any layering, as
+illustrated in figure 5.21:
+
+
+![Complete color glyph definition without use of
+layers.](images/colr_color_glyph_without_layers.png)
+
+**Figure 5.21 Complete color glyph definition without use of layers.**
+
+The version 1 formats define a color glyph as a directed, acyclic graph of paint
+tables, and the concept of layering corresponds roughly to the number of
+distinct leaf nodes in the graph. The basic fill formats— PaintSolid,
+PaintLinearGradient and PaintRadialGradient—do not have child paint tables and
+so can only be leaf nodes in the graph. Some paint tables, such as the
+PaintGlyph table, have only a single child, so can be used within a layer but do
+not provide any means of adding additional layers. Increasing the number of
+layers requires paint tables that have two or more children, creating a fork in
+the graph.
+
+NOTE: In more precise terms, the number of visual layers represented by a valid
+graph is the number of distinct root to leaf paths in the graph.
+
+The version 1 formats include two paint formats that have two or more children,
+and so can increase the number of layers in the graph:
+
+* The PaintComposite table allows two sub-graphs to be composed together using
+different compositing or blending modes.
+
+* The PaintColrLayers table supports defining a sequence of several layers.
+
+NOTE: The PaintColrGlyph table provides a means of incorporating the graph of
+one color glyph as a sub-graph in the definition of another color glyph. In this
+way, PaintColrGlyph provides an indirect means of introducing additional layers
+into a color glyph definition: forks in the resulting graph do not come from the
+PaintColrGlyph table itself, but can come from PaintColrLayers or PaintComposite
+tables that are nested in the incorporated sub-graph. See 5.7.11.1.7.3 for a
+description of the PaintColrGlyph table.
+
+While the PaintComposite table only combines two sub-graphs, other
+PaintComposite tables can be nested to provide additional layers. The primary
+purpose of PaintComposite is to support compositing or blending modes other than
+simple alpha blending. The PaintComposite table is covered in more detail in
+5.7.11.1.6. The remainder of this clause will focus on the PaintColrLayers
+table.
+
+The PaintColrLayers table is used to define a bottom-up z-order sequence of
+layers. Similar to version 0, it defines a layer set as a slice in an array, but
+in this case the array is an array of offsets to paint tables, contained in a
+LayerV1List table. Each referenced paint table is the root of a sub-graph of
+paint tables that specifies a graphic composition to be used as a layer. Within
+a given slice, the first offset provides the content for the bottom layer, and
+each subsequent offset provides content that overlays the preceding content.
+Definition of a layer set—a slice within the layer list—is given in a
+PaintColorLayers table.
+
+Figure 5.19 illustrates the organizational relationship between PaintColorLayers
+tables, the LayerV1List, and referenced paint tables that are roots of
+sub-graphs.
+
+![Version 1: PaintColrLayers tables specify slices within the LayerV1List,
+providing a layering of content defined in
+sub-graphs.](images/colr_layers_v1.png)
+
+**Figure 5.19 Version 1: PaintColrLayers tables specify slices within the
+LayerV1List, providing a layering of content defined in sub-graphs.**
+
+NOTE: Paint table offsets in the LayerV1List table are only used in conjuction
+with PaintColrLayers tables. If a paint table does not need to be referenced via
+a PaintColrLayers table, its offset does not need to be included in the
+LayerV1List array.
+
+A PaintColorLayers table can be used as the root of a color glyph definition,
+providing a base layering structure for the color glyph. In this usage, the
+PaintColrLayers table is referenced by a BaseGlyphV1Record, which specifies the
+root of the graph of a color glyph definition for a given base glyph. This is
+illustrated in figure 5.20.
+
+![PaintColrLayers table used as the root of a color glyph
+definition.](images/colr_PaintColrLayers_as_root.png)
+
+**Figure 5.20 PaintColrLayers table used as the root of a color glyph
+definition.**
+
+A PaintColorLayers table can also be nested more deeply within the graph,
+providing a layer structure to define some component within a larger color glyph
+definition. (See 5.7.11.1.7.2 for more information.) The ability to nest a
+PaintColrLayers table within a graph creates the potential to introduce a cycle
+within the graph. This is not valid, however: graphs shall be acyclic.
+
+> **_TBD: Add reference to separate section discussing cycles (#156)._**
 
 **5.7.11.1.5 Transformations**
 
