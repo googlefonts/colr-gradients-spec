@@ -1257,8 +1257,14 @@ z-order, is not precisely defined in relation to the complexity of the graph.
 Each separate visual element requires a leaf node, but leaf nodes can be re-used
 (see 5.7.11.1.7). Also, each separate visual element requires a fork in the
 graph, and a separate root-to-leaf path, but not all paths necessarily result in
-a distinct visual element. The number of distinct root-to-leaf paths will be
-greater than or equal to the number of layers.
+a distinct visual element. For example, a gradient mask effect can be created by
+filling a glyph with a gradient that has gradation of alpha values only, and
+then using that as the source of a PaintComposite using the *source in*
+compositing mode. In that case, the leaf has a visual affect but does not result
+in a distinct visual element. Thus, the generalization that can be made
+regarding the relationship between the number of layers and the nature of the
+graph is that the number of distinct root-to-leaf paths will be greater than or
+equal to the number of layers.
 
 There is one constraint imposed on the complexity of the graph: the graph shall
 be acyclic—without cycles. That is, a paint table shall not have any child or
