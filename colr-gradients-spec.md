@@ -22,7 +22,6 @@ December 2019
   - [COLR table](#off-5711-colr--color-table)
     - [Data structures](#colr-v1-data-structures)
       - [Constraints](#constraints)
-        - [Acyclic Graphs Only](#acyclic-graphs-only)
         - [Bounded Layers Only](#bounded-layers-only)
         - [Bounding Box](#bounding-box)
       - [Understanding COLR v1](#understanding-colr-v1)
@@ -939,16 +938,13 @@ layers.](images/colr_color_glyph_without_layers.png)
 
 The version 1 formats define a color glyph as a directed, acyclic graph of paint
 tables, and the concept of layering corresponds roughly to the number of
-distinct leaf nodes in the graph. The basic fill formats— PaintSolid,
-PaintLinearGradient and PaintRadialGradient—do not have child paint tables and
-so can only be leaf nodes in the graph. Some paint tables, such as the
-PaintGlyph table, have only a single child, so can be used within a layer but do
-not provide any means of adding additional layers. Increasing the number of
-layers requires paint tables that have two or more children, creating a fork in
-the graph.
-
-NOTE: In more precise terms, the number of visual layers represented by a valid
-graph is the number of distinct root to leaf paths in the graph.
+distinct leaf nodes in the graph. (See 5.7.11.1.8.) The basic fill
+formats—PaintSolid, PaintLinearGradient and PaintRadialGradient—do not have
+child paint tables and so can only be leaf nodes in the graph. Some paint
+tables, such as the PaintGlyph table, have only a single child, so can be used
+within a layer but do not provide any means of adding additional layers.
+Increasing the number of layers requires paint tables that have two or more
+children, creating a fork in the graph.
 
 The version 1 formats include two paint formats that have two or more children,
 and so can increase the number of layers in the graph:
@@ -1015,9 +1011,8 @@ A PaintColorLayers table can also be nested more deeply within the graph,
 providing a layer structure to define some component within a larger color glyph
 definition. (See 5.7.11.1.7.2 for more information.) The ability to nest a
 PaintColrLayers table within a graph creates the potential to introduce a cycle
-within the graph. This is not valid, however: graphs shall be acyclic.
-
-> **_TBD: Add reference to separate section discussing cycles (#156)._**
+within the graph, which would be invalid. See 5.7.11.1.8 regarding requirements
+that the graph be acyclic.
 
 **5.7.11.1.5 Transformations**
 
@@ -1093,6 +1088,10 @@ There are several ways in which elements of a color glyph description can be re-
 * Use of a PaintColrLayers table
 * Use of a PaintColrGlyph table
 
+The PaintColrLayers and PaintColrGlyph table formats create a potential for
+introducing cycles within the graph of a color glyph, which would be invalid.
+See 5.7.11.1.8 regarding requirements that the graph be acyclic.
+
 **5.7.11.1.7.1 Re-use by referencing shared subtables**
 
 Several of the paint table formats link to a child paint table using a forward
@@ -1100,13 +1099,9 @@ offset within the file: PaintGlyph, PaintComposite, PaintTransformed,
 PaintRotate, and PaintSkew. A child subtable can be shared by several tables of
 these formats. For example, several PaintGlyph tables might link to the same
 PaintSolid table, or to the same node for a sub-graph describing a more complex
-fill. The only constraints on this type of re-use of elements are:
-
-* Child paint tables are referenced using a forward offset from the start of the
-referencing table, so a re-used paint table has to occur later in the file than
-any of the paint tables that use it.
-* The graph shall remain acyclic. If a table links to a child PaintColrGlyph or
-PaintColrLayers table, they shall not introduce a cycle in the graph.
+fill. The only limitation is that child paint tables are referenced using a
+forward offset from the start of the referencing table, so a re-used paint table
+can only occur later in the file than any of the paint tables that use it.
 
 The clock faces shown in the figure above provide an example of how PaintRotate
 tables can be combined with re-use of a sub-graph. As noted above, the hour
@@ -1254,9 +1249,16 @@ The graph for a color glyph is a combination of paint table using any of the
 paint table formats. The simplest color glyph definition would consist of a
 PaintGlyph table linked to a basic fill table (PaintSolid, PaintLinearGradient
 or PaintRadialGradient). But the graph can be arbitrarily complex, with an
-arbitrary depth of paint nodes (to the limits inherent in the formats). The
-graph can define a visual element in a single layer, or many elements in any
-number of layers.
+arbitrary depth of paint nodes (to the limits inherent in the formats).
+
+The graph can define a visual element in a single layer, or many elements in
+many layers. The concept of layers, as distinct visual elements stacked in a
+z-order, is not precisely defined in relation to the complexity of the graph.
+Each separate visual element requires a leaf node, but leaf nodes can be re-used
+(see 5.7.11.1.7). Also, each separate visual element requires a fork in the
+graph, and a separate root-to-leaf path, but not all paths necessarily result in
+a distinct visual element. The number of distinct root-to-leaf paths will be
+greater than or equal to the number of layers.
 
 There is one constraint imposed on the complexity of the graph: the graph shall
 be acyclic—without cycles. That is, a paint table shall not have any child or
