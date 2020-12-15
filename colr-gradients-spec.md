@@ -1198,6 +1198,10 @@ to the numGlyphs value in the &#39;maxp&#39; table (5.2.6). Such virtual base
 glyph IDs in the COLR table are only used within a PaintColrGlyph table, and are
 not related to glyph IDs used in any other tables.
 
+When a PaintColrGlyph table is used, a BaseGlyphV1Record with the specified
+glyph ID is expected. If no BaseGlyphV1Record with that glyph ID is found, the
+PaintColrGlyph table shall be ignored.
+
 The example from 5.7.11.1.7.2 is modified to illustrate use of a PaintColrGlyph
 table. In the following figure, a PaintColrLayers table references a slice
 within the LayerV1List that defines the shared component. Now, however, this
@@ -1296,7 +1300,6 @@ The following pseudo-code algorithm can be used:
           call paintIsAcyclic(childPaint, activePaints)
         remove paint from activePaints
 ```
-
 
 **5.7.11.2 COLR table formats**
 
