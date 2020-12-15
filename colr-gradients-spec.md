@@ -1261,13 +1261,13 @@ a distinct visual element. For example, a gradient mask effect can be created
 with a gradient with gradation of alpha values, and then using that as the
 source of a PaintComposite with the *source in* compositing mode. In that case,
 the leaf has a visual affect but does not result in a distinct visual element.
-This is illustrated in figure 5.99: the PaintLinearGradient is a leaf node in
+This is illustrated in figure 5.34: the PaintLinearGradient is a leaf node in
 the graph and creates a masking effect but does not add a distinct visual
 element.
 
 ![A PaintLinearGradient used as a compositing mask is a leaf node in the graph but does not add a distinct visual element.](images/colr_gradient_mask.png)
 
-**Figure 5.31 Graph with a leaf node that isn't a distinct visual element.**
+**Figure 5.34 Graph with a leaf node that isn't a distinct visual element.**
 
 Thus, the generalization that can be made regarding the relationship between the
 number of layers and the nature of the graph is that the number of distinct
