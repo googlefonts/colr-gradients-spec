@@ -886,19 +886,19 @@ NOTE: Shapes can also be derived using PaintGlyph tables in combination with oth
 
 The PaintGlyph table has a field for the glyph ID, plus an offset to a child paint table that is used as the fill for the shape. The glyph outline is not rendered; only the fill is rendered.
 
-Any of the basic fill formats, PaintSolid, PaintLinearGradient, or PaintRadialGradient, can be used as the child paint table. This is illustrated in figure 5.16: a PaintGlyph table has a glyph ID for an outline in the shape of a triangle, and it links to a child PaintLinearGradient table. The combination is used to represent a triangle filled with the linear gradient.
+Any of the basic fill formats, PaintSolid, PaintLinearGradient, or PaintRadialGradient, can be used as the child paint table. This is illustrated in figure 5.17: a PaintGlyph table has a glyph ID for an outline in the shape of a triangle, and it links to a child PaintLinearGradient table. The combination is used to represent a triangle filled with the linear gradient.
 
 ![PaintGlyph and PaintLinearGradient tables are used to fill a triangle shape with a linear gradient.](images/colr_shape_gradient.png)
 
-**Figure 5.16 PaintGlyph and PaintLinearGradient tables used to fill a shape with a linear gradient.**
+**Figure 5.17 PaintGlyph and PaintLinearGradient tables used to fill a shape with a linear gradient.**
 
 Another way to describe the relationship between a PaintGlyph table and its child paint table is that the child provides a fill, and the glyph outline defines a bounds, or *clip region*, for the fill. The child for a PaintGlyph table is not limited to only the basic fill formats. In general, the child can be the root of a sub-graph that describes some graphic composition that comprises the fill for the shape. Or, in the alternate view, the glyph outline defines a clip region that is applied to the composition.
 
-To illustrate this, the example in figure 5.16 is extended in figure 5.17 so that a PaintGlyph table links to a second PaintGlyph that links to a PaintLinearGradient: the parent PaintGlyph will clip the filled shape described by the child sub-graph.
+To illustrate this, the example in figure 5.17 is extended in figure 5.18 so that a PaintGlyph table links to a second PaintGlyph that links to a PaintLinearGradient: the parent PaintGlyph will clip the filled shape described by the child sub-graph.
 
 ![A PaintGlyph table defines a clip region for the composition defined by its child sub-graph.](images/colr_shape_shape_gradient.png)
 
-**Figure 5.17 A PaintGlyph table defines a clip region for the composition defined by its child sub-graph.**
+**Figure 5.18 A PaintGlyph table defines a clip region for the composition defined by its child sub-graph.**
 
 A PaintGlyph table on its own does not add content: if there is no child paint table, then the PaintGlyph table represents no presentation content and shall be ignored.
 
@@ -919,23 +919,23 @@ preceding content(increasing z-order). A single array is used for defining all
 color glyphs. The LayerRecord slices for two base glyphs may overlap, though
 often will not overlap.
 
-Figure 5.18 illustrates layers using version 0 formats.
+Figure 5.19 illustrates layers using version 0 formats.
 
 ![Version 0: Color glyphs are defined by slices of a layer records
 array.](images/colr_layers_v0.png)
 
-**Figure 5.18 Version 0: Color glyphs are defined by slices of a layer records
+**Figure 5.19 Version 0: Color glyphs are defined by slices of a layer records
 array.**
 
 When using version 1 formats, use of multiple layers is supported but is
 optional. For example, a simple glyph description need not use any layering, as
-illustrated in figure 5.21:
+illustrated in figure 5.20:
 
 
 ![Complete color glyph definition without use of
 layers.](images/colr_color_glyph_without_layers.png)
 
-**Figure 5.21 Complete color glyph definition without use of layers.**
+**Figure 5.20 Complete color glyph definition without use of layers.**
 
 The version 1 formats define a color glyph as a directed, acyclic graph of paint
 tables, and the concept of layering corresponds roughly to the number of
@@ -983,7 +983,7 @@ each subsequent offset provides content that overlays the preceding content.
 Definition of a layer set—a slice within the layer list—is given in a
 PaintColorLayers table.
 
-Figure 5.19 illustrates the organizational relationship between PaintColorLayers
+Figure 5.21 illustrates the organizational relationship between PaintColorLayers
 tables, the LayerV1List, and referenced paint tables that are roots of
 sub-graphs.
 
@@ -991,7 +991,7 @@ sub-graphs.
 providing a layering of content defined in
 sub-graphs.](images/colr_layers_v1.png)
 
-**Figure 5.19 Version 1: PaintColrLayers tables specify slices within the
+**Figure 5.21 Version 1: PaintColrLayers tables specify slices within the
 LayerV1List, providing a layering of content defined in sub-graphs.**
 
 NOTE: Paint table offsets in the LayerV1List table are only used in conjuction
@@ -1003,12 +1003,12 @@ A PaintColorLayers table can be used as the root of a color glyph definition,
 providing a base layering structure for the color glyph. In this usage, the
 PaintColrLayers table is referenced by a BaseGlyphV1Record, which specifies the
 root of the graph of a color glyph definition for a given base glyph. This is
-illustrated in figure 5.20.
+illustrated in figure 5.22.
 
 ![PaintColrLayers table used as the root of a color glyph
 definition.](images/colr_PaintColrLayers_as_root.png)
 
-**Figure 5.20 PaintColrLayers table used as the root of a color glyph
+**Figure 5.22 PaintColrLayers table used as the root of a color glyph
 definition.**
 
 A PaintColorLayers table can also be nested more deeply within the graph,
@@ -1026,17 +1026,17 @@ affine transformation matrix. Transformations supported by a matrix can be a
 combination of scale, skew, mirror, rotate, or translate. The transformation is
 applied to all nested paints in the child sub-graph.
 
-The effect of a PaintTransform table is illustrated in figure 5.21: a PaintTransform is used to specify a rotation, and both the glyph outline and gradient in the sub-graph are rotated.
+The effect of a PaintTransform table is illustrated in figure 5.23: a PaintTransform is used to specify a rotation, and both the glyph outline and gradient in the sub-graph are rotated.
 
 ![A rotation transformation rotates the fill content defined by the child sub-graph.](images/colr_transform_glyph_gradient.png)
 
-**Figure 5.21 A rotation transformation rotates the fill content defined by the child sub-graph.**
+**Figure 5.23 A rotation transformation rotates the fill content defined by the child sub-graph.**
 
-If another PaintTransform table occurs within the child sub-graph of the first PaintTransform table, then the other PaintTransform also applies to its child sub-graph. For the sub-sub-graph, the two transformations are combined. To illustrate this, the example in figure 5.21 is extended in figure 5.22 by inserting a mirroring transformation between the PaintGlyph and PaintLinearGradient tables: the glyph outline is rotated as before, but the gradient is mirrored in its (pre-rotation) y-axis as well as being rotated. Notice that both visible elements—the shape and the gradient fill—are affected by the rotation, but only the gradient is affected by the mirroring.
+If another PaintTransform table occurs within the child sub-graph of the first PaintTransform table, then the other PaintTransform also applies to its child sub-graph. For the sub-sub-graph, the two transformations are combined. To illustrate this, the example in figure 5.23 is extended in figure 5.24 by inserting a mirroring transformation between the PaintGlyph and PaintLinearGradient tables: the glyph outline is rotated as before, but the gradient is mirrored in its (pre-rotation) y-axis as well as being rotated. Notice that both visible elements—the shape and the gradient fill—are affected by the rotation, but only the gradient is affected by the mirroring.
 
 ![Combined effects of a transformation nested within the child sub-graph of another transformation.](images/colr_transform_glyph_transform_gradient.png)
 
-**Figure 5.22 Combined effects of a transformation nested within the child sub-graph of another transformation.**
+**Figure 5.24 Combined effects of a transformation nested within the child sub-graph of another transformation.**
 
 The affine transformation is specified in a PaintTransform table as matrix elements. See <span style="color:red">5.7.11.2.x</span> for format details.
 
@@ -1055,35 +1055,35 @@ for the backdrop sub-graph are executed, then the drawing operations for the sou
 and combined with backdrop using a specified compositing or blending mode.
 The available modes are given in the CompositionModes enumeration (see 5.7.11.2.x). The effect and processing rule of each mode are specified in [Compositing and Blending Level 1][1].
 
-The available modes fall into two general types: compositing modes, also referred to as “Porter-Duff” modes; and blending modes. In rough terms, the Porter-Duff modes determine how much effect pixels from the source and the backdrop each contribute in the result, while blending modes determine how color values for pixels from the source and backdrop are combined. These are illustrated with examples in figures 5.23 and 5.24: in each case, red and blue rectangles are the source and backdrop content.
+The available modes fall into two general types: compositing modes, also referred to as “Porter-Duff” modes; and blending modes. In rough terms, the Porter-Duff modes determine how much effect pixels from the source and the backdrop each contribute in the result, while blending modes determine how color values for pixels from the source and backdrop are combined. These are illustrated with examples in figures 5.25 and 5.26: in each case, red and blue rectangles are the source and backdrop content.
 
-Figure 5.23 shows the effect of a Porter-Duff mode, “XOR”, which has the effect that only non-overlapping pixels contribute to the result.
+Figure 5.25 shows the effect of a Porter-Duff mode, “XOR”, which has the effect that only non-overlapping pixels contribute to the result.
 
 ![Two content elements combined using the Porter-Duff XOR mode.](images/colr_porter-duff_xor.png)
 
-**Figure 5.23 Two content elements combined using the Porter-Duff XOR mode.**
+**Figure 5.25 Two content elements combined using the Porter-Duff XOR mode.**
 
-Figure 5.24 shows the effect of a “lighten” blending mode, which has the effect that the R, G, and B color components for each pixel in the result is the greater of the R, G, and B values from corresponding pixels in the source and backdrop.
+Figure 5.26 shows the effect of a “lighten” blending mode, which has the effect that the R, G, and B color components for each pixel in the result is the greater of the R, G, and B values from corresponding pixels in the source and backdrop.
 
 ![Two content elements combined using the lighten blending mode.](images/colr_blend_lighten.png)
 
-**Figure 5.24 Two content elements combined using the lighten blending mode.**
+**Figure 5.26 Two content elements combined using the lighten blending mode.**
 
 For complete details on each of the Porter-Duff and blending modes, see the [Compositing and Blending Level 1][1] specification.
 
-Figure 5.25 illustrates how the PaintComposite table is used in combination with content sub-graphs to implement an alternate compositing effect. The source sub-graph defines a green capital A; the backdrop sub-graph defines a black circle. The compositing mode used is “source out”, which has the effect that the source content punches out a hole in the backdrop. (For this mode, the fill color of the source is irrelevant; a black or yellow "A" would have the same effect.) A red rectangle is included as a lower layer to show that the backdrop has been punched out by the source, making that portion of the lower layer visible.
+Figure 5.27 illustrates how the PaintComposite table is used in combination with content sub-graphs to implement an alternate compositing effect. The source sub-graph defines a green capital A; the backdrop sub-graph defines a black circle. The compositing mode used is “source out”, which has the effect that the source content punches out a hole in the backdrop. (For this mode, the fill color of the source is irrelevant; a black or yellow "A" would have the same effect.) A red rectangle is included as a lower layer to show that the backdrop has been punched out by the source, making that portion of the lower layer visible.
 
 ![A color glyph using a PaintComposite table to punch out a shape from the fill of a circle.](images/colr_PaintCompositeGraph.png)
 
-**Figure 5.25 A color glyph using a PaintComposite table to punch out a shape from the fill of a circle.**
+**Figure 5.27 A color glyph using a PaintComposite table to punch out a shape from the fill of a circle.**
 
 **5.7.11.1.7 Re-usable components**
 
-Within a color font, many color glyphs might share components in common. For example, in emoji fonts, many different “smilies” or clock faces share a common background. This can be seen in figure 5.26, which shows color glyphs for three emoji clock faces.
+Within a color font, many color glyphs might share components in common. For example, in emoji fonts, many different “smilies” or clock faces share a common background. This can be seen in figure 5.28, which shows color glyphs for three emoji clock faces.
 
 ![Emoji clock faces for 12 o’clock, 1 o’clock and 2 o’clock.](images/colr_clocks-12-1-2.png)
 
-**Figure 5.26 Emoji clock faces for 12 o’clock, 1 o’clock and 2 o’clock.**
+**Figure 5.28 Emoji clock faces for 12 o’clock, 1 o’clock and 2 o’clock.**
 
 Several components are shared between these color glyphs: the entire face, with a gradient background and dots at the 3, 6, 9 and 12 positions; the minute hand pointing to the 12 position; and the circles in the center. Also, note that the four dots have the same shape and fill, and differ only in their position. In addition, the hour hands have the same shape and fill, and differ only in their orientation.
 
@@ -1122,7 +1122,7 @@ PaintSolid table. Example file offsets for the tables are indicated.
 ![A PaintGlyph and PaintSolid table are used to define the clock hour hand
 pointing to 12.](images/colr_hour-hand-component.png)
 
-**Figure 5.27 A PaintGlyph and PaintSolid table are used to define the clock
+**Figure 5.29 A PaintGlyph and PaintSolid table are used to define the clock
 hour hand pointing to 12.**
 
 The next figure shows this sub-graph of paint tables being re-used, in some
@@ -1133,7 +1133,7 @@ sub-graph occur earlier in the file.
 ![The sub-graph for the hour hand is re-used with PaintRotate tables to point to
 different hours.](images/colr_reuse-hour-hand-rotated.png)
 
-**Figure 5.28 The sub-graphs for the hour hand are re-used with PaintRotate
+**Figure 5.30 The sub-graphs for the hour hand are re-used with PaintRotate
 tables to point to different hours.**
 
 **5.7.11.1.7.2 Re-use using PaintColrLayers**
@@ -1148,23 +1148,23 @@ as a contiguous set of layers in the LayersV1List table.
 This is readily explained using the clock faces as an example. As described
 above, each clock face shares several elements in common. Some of these form a
 contiguous set of layers. Suppose four sub-graphs for shared clock face elements
-are given in the LayerV1List as contiguous layers, as shown in figure 5.28. (For
+are given in the LayerV1List as contiguous layers, as shown in figure 5.31. (For
 brevity, the visual result for each sub-graph is shown, but not the paint
 details.)
 
 ![Common clock face elements given as a slice within the LayerV1List
 table.](images/colr_clock_common.png)
 
-**Figure 5.29 Common clock face elements given as a slice within the LayerV1List
+**Figure 5.31 Common clock face elements given as a slice within the LayerV1List
 table.**
 
 A PaintColrLayers table can reference any contiguous slice of layers in the
-LayerV1List table. Thus, the set of layers shown in figure 5.29 can be
+LayerV1List table. Thus, the set of layers shown in figure 5.31 can be
 referenced by PaintColrLayers tables anywhere in the graph of any color glyph.
 In this way, this set of layers can be re-used in multiple clock face color
 glyph definitions.
 
-This is illustrated in figure 5.30: The color glyph definition for the one
+This is illustrated in figure 5.32: The color glyph definition for the one
 o’clock emoji has a PaintColrLayers table as its root, referencing a slice of
 three layers in the LayerV1List table. The upper two layers are the hour hand,
 which is specific to this color glyph; and the cap over the pivot for the minute
@@ -1172,13 +1172,13 @@ and hour hands, which is common to other clock emoji but in a layer that is not
 contiguous with other common layers. The bottom layer of these three layers is
 the composition for all the remaining common layers. It is represented using a
 nested PaintColrLayers table that references the slice within the LayerV1List
-for the common clock face elements shown in figure 5.29.
+for the common clock face elements shown in figure 5.31.
 
 ![A PaintColrLayers table is used to reference a set of layers that define a
 shared clock face
 composition.](images/colr_reuse_clock-face_PaintColrLayers.png)
 
-**Figure 5.30 A PaintColrLayers table is used to reference a set of layers that
+**Figure 5.32 A PaintColrLayers table is used to reference a set of layers that
 define a shared clock face composition.**
 
 The color glyphs for other clock face emoji could be structured in exactly the
@@ -1216,7 +1216,7 @@ that references the color glyph definition for glyph ID 63163.
 ![A PaintColrGlyph table is used to reference the shared clock face composition
 via a glyph ID.](images/colr_reuse_clock-face_PaintColrGlyph.png)
 
-**Figure 5.31 A PaintColrGlyph table is used to reference the shared clock face
+**Figure 5.33 A PaintColrGlyph table is used to reference the shared clock face
 composition via a glyph ID.**
 
 While the PaintColrGlyph and PaintColrLayers tables are similar in referencing a
