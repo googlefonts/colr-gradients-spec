@@ -1,0 +1,38 @@
+<svg height="600" width="600">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:rgb(0,0,0);stop-opacity:1" />
+      <stop offset="100%" style="stop-color:rgb(0,0,0);stop-opacity:0" />
+    </linearGradient>
+    
+    <rect id="rect-no-fill" x="60" y="60" width="200" height="60"/>
+    <circle id="c-no-fill" cx="70" cy="70" r="70" />
+
+    <rect id="r-lgrad" width="160" height="160" fill="url(#grad1)" />
+
+    <circle id="c1" cx="70" cy="70" r="70" fill="blue" />
+    
+    <filter id="f1" filterUnits="userSpaceOnUse" primitiveUnits="objectBoundingBox" x="0" y="0" width="160" height="160">
+      <feImage xlink:href="#r-lgrad" result="L1" />
+      <feImage xlink:href="#c1" result="L2" />
+      <feComposite operator="in" in="L2" in2="L1" />    	
+    </filter>
+  </defs>
+
+  <g>
+    <use href="#rect-no-fill" fill="#0f0" />
+  </g>
+  <g filter="url(#f1)" transform="translate(100,40)"></g>
+
+  <g transform="translate(100, 210)">
+    <use href="#c-no-fill" fill="black" />
+  </g>
+  <rect x="300" y="210" width="140" height="140" fill="blue" />
+  
+  <rect x="100" y="380" width="120" height="120" fill="url(#grad1)"/>
+
+  <g transform="translate(0,480)">
+    <use href="#rect-no-fill" fill="black" />
+  </g>
+
+</svg>
