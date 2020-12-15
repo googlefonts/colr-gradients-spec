@@ -1011,8 +1011,7 @@ A PaintColorLayers table can also be nested more deeply within the graph,
 providing a layer structure to define some component within a larger color glyph
 definition. (See 5.7.11.1.7.2 for more information.) The ability to nest a
 PaintColrLayers table within a graph creates the potential to introduce a cycle
-within the graph, which would be invalid. See 5.7.11.1.8 regarding requirements
-that the graph be acyclic.
+within the graph, which would be invalid (see 5.7.11.1.8).
 
 **5.7.11.1.5 Transformations**
 
@@ -1089,8 +1088,7 @@ There are several ways in which elements of a color glyph description can be re-
 * Use of a PaintColrGlyph table
 
 The PaintColrLayers and PaintColrGlyph table formats create a potential for
-introducing cycles within the graph of a color glyph, which would be invalid.
-See 5.7.11.1.8 regarding requirements that the graph be acyclic.
+introducing cycles within the graph of a color glyph, which would be invalid (see 5.7.11.1.8).
 
 **5.7.11.1.7.1 Re-use by referencing shared subtables**
 
@@ -1223,16 +1221,17 @@ not require the corresponding graph of paint tables to be re-processed. As a
 result, using a PaintColrGlyph for re-used graphic components could provide
 performance benefits.
 
-**5.7.11.1.8 Color glyphs as a graph**
+**5.7.11.1.8 Color glyphs as a directed acyclic graph**
 
 When using version 1 formats, a color glyph is defined by a directed, acyclic
 graph of linked paint tables. For each BaseGlyphV1Record, the paint table
 referenced by that record is the root of a graph defining a color glyph
 composition.
 
-A graph is comprised of the maximal set of paint tables linked by parent/child
-(subtable) linkages. The links can be direct, in the case of paint table formats
-that include offsets to paint subtables. But the links can also be indirect:
+The graph for a given color glyph is made up of all paint tables reachable from
+the BaseGlyphV1Record. The BaseGlyphV1Record and several paint table formats use
+direct links; that is, they include a forward offset to a paint subtable. Two
+paint formats make indirect links:
 
 * A PaintColrLayers table references a slice of offsets within the LayerV1List.
 The paint tables referenced by those offsets are considered to be linked within
@@ -1254,16 +1253,16 @@ arbitrary depth of paint nodes (to the limits inherent in the formats).
 The graph can define a visual element in a single layer, or many elements in
 many layers. The concept of layers, as distinct visual elements stacked in a
 z-order, is not precisely defined in relation to the complexity of the graph.
-Each separate visual element requires a leaf node, but leaf nodes can be re-used
-(see 5.7.11.1.7). Also, each separate visual element requires a fork in the
-graph, and a separate root-to-leaf path, but not all paths necessarily result in
-a distinct visual element. For example, a gradient mask effect can be created
-with a gradient with gradation of alpha values, and then using that as the
-source of a PaintComposite with the *source in* compositing mode. In that case,
-the leaf has a visual affect but does not result in a distinct visual element.
-This is illustrated in figure 5.34: the PaintLinearGradient is a leaf node in
-the graph and creates a masking effect but does not add a distinct visual
-element.
+Each separate visual element requires a leaf node, but nodes in the graph,
+including leaf nodes, can be re-used (see 5.7.11.1.7). Also, each separate
+visual element requires a fork in the graph, and a separate root-to-leaf path,
+but not all paths necessarily result in a distinct visual element. For example,
+a gradient mask effect can be created with a gradient with gradation of alpha
+values, and then using that as the source of a PaintComposite with the *source
+in* compositing mode. In that case, the leaf has a visual affect but does not
+result in a distinct visual element. This is illustrated in figure 5.34: the
+PaintLinearGradient is a leaf node in the graph and creates a masking effect but
+does not add a distinct visual element.
 
 ![A PaintLinearGradient used as a compositing mask is a leaf node in the graph but does not add a distinct visual element.](images/colr_gradient_mask.png)
 
