@@ -1529,9 +1529,10 @@ information about its use for shared, re-usable components, see 5.7.11.1.7.2.
 LayerV1List. |
 | uint32 | firstLayerIndex | Index (base 0) into the LayerV1List. |
 
-NOTE: If more than 256 layers are needed, PaintColrLayers tables can be chained
-to form a tree by having referenced entries in the LayersV1List point to other
-PaintColrLayers tables.
+NOTE: An 8-bit value is used for numLayers to minimize size for common
+scenarios. If more than 256 layers are needed, then two or more PaintColrLayers
+tables can be combined in a tree using a PaintComposite table or another
+PaintColrLayers table to combine them.
 
 **5.7.11.2.5.2 Format 2: PaintSolid**
 
@@ -1544,7 +1545,9 @@ to a shape, see 5.7.11.1.3.
 | Type | Field name | Description |
 |-|-|-|
 | uint8 | format | Set to 2. |
-| ColorIndex | color | Index (base 0) for a CPAL palette entry. |
+| ColorIndex | color | ColorIndex record for the solid color fill. |
+
+The ColorIndex record format is specified in 5.7.11.2.4.
 
 **5.7.11.2.5.3 Format 3: PaintLinearGradient**
 
