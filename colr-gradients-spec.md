@@ -1421,10 +1421,21 @@ achieved by way of PaintComposite or a tree of PaintColrLayers.
 
 **5.7.11.2.5.3 Format 3: PaintLinearGradient**
 
+Format 3 is used to specify a linear gradient fill. For general information
+about linear gradients, see 5.7.11.1.2.2. 
+
+The PaintLinearGradient table has a ColorLine subtable. The ColorLine table
+format is specified in 5.7.11.2.4. For background information on the color line,
+see 5.7.11.1.2.1.
+
+For information about applying a fill to a shape, see 5.7.11.1.3.
+
+*PaintLinearGradient table (format 3):*
+
 | Type | Field name | Description |
 |-|-|-|
 | uint8 | format | Set to 3. |
-| Offset24 | colorLineOffset | Offset to ColorLine, from start of PaintLinearGradient table. |
+| Offset24 | colorLineOffset | Offset to ColorLine table. |
 | VarFWord | x0 | Start point x coordinate. |
 | VarFWord | y0 | Start point y coordinate. |
 | VarFWord | x1 | End point x coordinate. |
@@ -1432,20 +1443,29 @@ achieved by way of PaintComposite or a tree of PaintColrLayers.
 | VarFWord | x2 | Rotation vector end point x coordinate. |
 | VarFWord | y2 | Rotation vector end point y coordinate. |
 
-For linear gradient without skew, set x2,y2 to x1,y1.
-
 **5.7.11.2.5.4 Format 4: PaintRadialGradient**
 
-|Type | Field name | Description |
+Format 4 is used to specify a radial gradient fill. For general information
+about radial gradients supported in COLR version 1, see 5.7.11.1.2.3. 
+
+The PaintRadialGradient table has a ColorLine subtable. The ColorLine table
+format is specified in 5.7.11.2.4. For background information on the color line,
+see 5.7.11.1.2.1.
+
+For information about applying a fill to a shape, see 5.7.11.1.3.
+
+*PaintRadialGradient table (format 4):*
+
+| Type | Field name | Description |
 |-|-|-|
-| uint8 | format | set to 4. |
-| Offset24 | colorLineOffset | offset from start of PaintRadialGradient table |
-| VarFWord | x0 | start circle center x coordinate |
-| VarFWord | y0 | start circle center y coordinate |
-| VarUFWord | radius0 | start circle radius |
-| VarFWord | x1 | end circle center x coordinate |
-| VarFWord | y1 | end circle center y coordinate |
-| VarUFWord | radius1 | end circle radius |
+| uint8 | format | Set to 4. |
+| Offset24 | colorLineOffset | Offset to ColorLine table. |
+| VarFWord | x0 | Start circle center x coordinate. |
+| VarFWord | y0 | Start circle center y coordinate. |
+| VarUFWord | radius0 | Start circle radius. |
+| VarFWord | x1 | End circle center x coordinate. |
+| VarFWord | y1 | End circle center y coordinate. |
+| VarUFWord | radius1 | End circle radius. |
 
 **5.7.11.2.5.5 Format 5: PaintGlyph**
 
