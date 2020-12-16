@@ -1312,6 +1312,8 @@ given, unless otherwise indicated.
 
 The COLR table begins with a header. Two versions have been defined. Offsets in the header are from the start of the table.
 
+**5.7.11.2.1.1 COLR version 0**
+
 *COLR version 0:*
 
 | Type | Field name | Description |
@@ -1324,6 +1326,8 @@ The COLR table begins with a header. Two versions have been defined. Offsets in 
 
 NOTE: For fonts that use COLR version 0, some early Windows implementations of the COLR table require glyph ID 1 to be the .null glyph.
 
+**5.7.11.2.1.2 COLR version 1**
+
 *COLR version 1:*
 
 | Type | Field name | Description |
@@ -1334,27 +1338,43 @@ NOTE: For fonts that use COLR version 0, some early Windows implementations of t
 | Offset32 | layerRecordsOffset | Offset to layerRecords array (may be NULL). |
 | uint16 | numLayerRecords | May be 0 in a version 1 table. |
 | Offset32 | baseGlyphV1ListOffset | Offset to BaseGlyphV1List table. |
-| Offset32 | layersV1Offset | Offset to LayerV1List table. |
+| Offset32 | layersV1Offset | Offset to LayerV1List table (may be NULL). |
 | Offset32 | itemVariationStoreOffset | Offset to ItemVariationStore (may be NULL). |
 
-The BaseGlyphV1List and its subtables are only used in COLR version 1. The
-ItemVariationStore is only used in variable fonts and in conjunction with a
-BaseGlyphV1List and its subtables.
+The BaseGlyphV1List and its subtables are only used in COLR version 1.
 
-A font that includes a BaseGlyphV1List can also include BaseGlyph and Layer
-records for compatibility with applications that only support COLR version 0.
-For applications that support COLR version 1, if a given base glyph is supported
-in the BaseGlyphV1List as well as in a BaseGlyph record, the data in the
-BaseGlyphV1List should be used.
+The LayersV1List is only used in conjunction with the BaseGlyphV1List and,
+specifically, with PaintColrLayers tables (5.7.11.2.5.1); it is not required if
+no color glyphs use a PaintColrLayers table. If not used, set layersV1Offset to
+NULL.
+
+The ItemVariationStore is used in conjunction with a BaseGlyphV1List and its
+subtables, but only in variable fonts. If it is not used, set
+itemVariationStoreOffset to NULL.
+
+**5.7.11.2.1.3 Mixing version 0 and version 1 formats**
+
+A font that uses COLR version 1 and that includes a BaseGlyphV1List can also
+include BaseGlyph and Layer records for compatibility with applications that
+only support COLR version 0.
 
 Color glyphs that can be implemented in COLR version 0 using BaseGlyph and Layer
 records can also be implemented using the version 1 BaseGlyphV1List and
 subtables. Thus, a font that uses the version 1 formats does not need to use the
 version 0 BaseGlyph and Layer records. However, a font may use the version 1
 structures for some base glyphs and the version 0 structures for other base
-glyphs. Applications should search for a base glyph ID first in the
-BaseGlyphV1List, then if not found, search in the BaseGlyph records array, if
-present.
+glyphs. A font may also include a version 1 color glyph definition for a given
+base glyph ID that is equivalent to a version 0 definition, though this should
+never be needed. 
+
+A font may define a color glyph for a given base glyph ID using version 0
+formats, and also define a different color glyph for the same base glyph ID
+using version 1 formats. Applications that support COLR version 1 should give
+preference to the version 1 color glyph.
+
+For applications that support COLR version 1, the application should search for
+a base glyph ID first in the BaseGlyphV1List. Then, if not found, search in the
+BaseGlyphRecords array, if present.
 
 **5.7.11.2.2 BaseGlyph and Layer records**
 
