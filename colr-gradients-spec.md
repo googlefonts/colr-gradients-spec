@@ -1511,7 +1511,11 @@ A color line is defined by an array of ColorStop records plus an extend mode.
 | uint16 | numStops | Number of ColorStop records. |
 | ColorStop | colorStops[numStops] | |
 
-The colorStops array should be in increasing stopOffset order.
+Applications shall apply the colorStops in increasing stopOffset order. The
+stopOffset value uses a variable structure and, with a variable font, the
+relative orderings of ColorStop records along the color line can change as a
+result of variation. With a variable font, the colorStops shall be ordered after
+the instance values for the stop offsets have been derived.
 
 A color line defines stops for only certain positions along the line, but the
 color line extends infinitely in either direction. The extend field is used to
