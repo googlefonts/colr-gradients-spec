@@ -1457,10 +1457,12 @@ glyphID order. It is assumed that a binary search can be used to find a matching
 BaseGlyphV1Record for a specific glyphID.
 
 The paint table referenced by the BaseGlyphV1Record is the root of the graph for
-a color glyph definition. Often this will be a PaintColrLayers table, though
-this is not required. See 5.7.11.1.8 more information regarding the graph of a
-color glyph, and 5.7.11.1.4 for background information regarding the
-PaintColrLayers table. 
+a color glyph definition.
+
+NOTE: Often paint table that is the root of the graph for the color glyph
+definition will be a PaintColrLayers table, though this is not required. See
+5.7.11.1.8 more information regarding the graph of a color glyph, and 5.7.11.1.4
+for background information regarding the PaintColrLayers table.
 
 A LayerV1List table is used in conjuction with PaintColrLayers tables to
 represent layer structures. A single LayerV1List is defined and can be used by
