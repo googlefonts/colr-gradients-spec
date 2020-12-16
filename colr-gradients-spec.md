@@ -1318,11 +1318,11 @@ The COLR table begins with a header. Two versions have been defined. Offsets in 
 
 | Type | Field name | Description |
 |-|-|-|
-| uint16 | version | Table version number—set to 1. |
-| uint16 | numBaseGlyphRecords | May be 0 in a version 1 table. |
-| Offset32 | baseGlyphRecordsOffset | Offset to baseGlyphRecords array (may be NULL). |
-| Offset32 | layerRecordsOffset | Offset to layerRecords array (may be NULL). |
-| uint16 | numLayerRecords | May be 0 in a version 1 table. |
+| uint16 | version | Table version number—set to 0. |
+| uint16 | numBaseGlyphRecords | Number of BaseGlyph records. |
+| Offset32 | baseGlyphRecordsOffset | Offset to baseGlyphRecords array. |
+| Offset32 | layerRecordsOffset | Offset to layerRecords array. |
+| uint16 | numLayerRecords | Number of Layer records. |
 
 NOTE: For fonts that use COLR version 0, some early Windows implementations of the COLR table require glyph ID 1 to be the .null glyph.
 
@@ -1333,10 +1333,10 @@ NOTE: For fonts that use COLR version 0, some early Windows implementations of t
 | Type | Field name | Description |
 |-|-|-|
 | uint16 | version | Table version number—set to 1. |
-| uint16 | numBaseGlyphRecords | May be 0 in a version 1 table. |
+| uint16 | numBaseGlyphRecords | Number of BaseGlyph records; may be 0 in a version 1 table. |
 | Offset32 | baseGlyphRecordsOffset | Offset to baseGlyphRecords array (may be NULL). |
 | Offset32 | layerRecordsOffset | Offset to layerRecords array (may be NULL). |
-| uint16 | numLayerRecords | May be 0 in a version 1 table. |
+| uint16 | numLayerRecords | Number of Layer records; may be 0 in a version 1 table. |
 | Offset32 | baseGlyphV1ListOffset | Offset to BaseGlyphV1List table. |
 | Offset32 | layersV1Offset | Offset to LayerV1List table (may be NULL). |
 | Offset32 | itemVariationStoreOffset | Offset to ItemVariationStore (may be NULL). |
