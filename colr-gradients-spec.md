@@ -1378,6 +1378,9 @@ baseGlyphRecords array, if present.
 
 **5.7.11.2.2 BaseGlyph and Layer records**
 
+BaseGlyph and Layer records are required for COLR version 0, but optional for
+version 1. (See 5.7.11.2.1.3.)
+
 A BaseGlyph record is used to map a base glyph to a sequence of layer records
 that define the corresponding color glyph. The BaseGlyph record includes a base
 glyph index, an index into the layerRecords array, and the number of layers.
