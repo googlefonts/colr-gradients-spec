@@ -1297,7 +1297,6 @@ The following pseudo-code algorithm can be used:
         remove paint from activePaints
 ```
 
-
 **5.7.11.2 COLR table formats**
 
 Various table and record formats are defined for COLR version 0 and version 1.
@@ -1311,7 +1310,21 @@ given, unless otherwise indicated.
 
 **5.7.11.2.1 COLR header**
 
-V1 Header
+The COLR table begins with a header. Two versions have been defined. Offsets in the header are from the start of the table.
+
+*COLR version 0:*
+
+| Type | Field name | Description |
+|-|-|-|
+| uint16 | version | Table version number—set to 1. |
+| uint16 | numBaseGlyphRecords | May be 0 in a version 1 table. |
+| Offset32 | baseGlyphRecordsOffset | Offset to baseGlyphRecords array (may be NULL). |
+| Offset32 | layerRecordsOffset | Offset to layerRecords array (may be NULL). |
+| uint16 | numLayerRecords | May be 0 in a version 1 table. |
+
+NOTE: For fonts that use COLR version 0, some early Windows implementations of the COLR table require glyph ID 1 to be the .null glyph.
+
+*COLR version 1:*
 
 | Type | Field name | Description |
 |-|-|-|
@@ -1323,6 +1336,25 @@ V1 Header
 | Offset32 | baseGlyphV1ListOffset | Offset to BaseGlyphV1List table. |
 | Offset32 | layersV1Offset | Offset to LayerV1List table. |
 | Offset32 | itemVariationStoreOffset | Offset to ItemVariationStore (may be NULL). |
+
+The BaseGlyphV1List and its subtables are only used in COLR version 1. The
+ItemVariationStore is only used in variable fonts and in conjunction with a
+BaseGlyphV1List and its subtables.
+
+A font that includes a BaseGlyphV1List can also include BaseGlyph and Layer
+records for compatibility with applications that only support COLR version 0.
+For applications that support COLR version 1, if a given base glyph is supported
+in the BaseGlyphV1List as well as in a BaseGlyph record, the data in the
+BaseGlyphV1List should be used.
+
+Color glyphs that can be implemented in COLR version 0 using BaseGlyph and Layer
+records can also be implemented using the version 1 BaseGlyphV1List and
+subtables. Thus, a font that uses the version 1 formats does not need to use the
+version 0 BaseGlyph and Layer records. However, a font may use the version 1
+structures for some base glyphs and the version 0 structures for other base
+glyphs. Applications should search for a base glyph ID first in the
+BaseGlyphV1List, then if not found, search in the BaseGlyph records array, if
+present.
 
 **5.7.11.2.2 BaseGlyph and Layer records**
 
