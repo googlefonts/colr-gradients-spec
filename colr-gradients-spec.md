@@ -1378,6 +1378,53 @@ baseGlyphRecords array, if present.
 
 **5.7.11.2.2 BaseGlyph and Layer records**
 
+A BaseGlyph record is used to map a base glyph to a sequence of layer records
+that define the corresponding color glyph. The BaseGlyph record includes a base
+glyph index, an index into the layerRecords array, and the number of layers.
+
+*BaseGlyph record:*
+
+| Type | Field name | Description |
+|-|-|-|
+| uint16 | glyphID | Glyph ID of the base glyph. |
+| uint16 | firstLayerIndex | Index (base 0) into the layerRecords array. |
+| uint16 | numLayers | Number of color layers associated with this glyph. |
+
+The glyph ID shall be less than the numGlyphs value in the &#39;maxp&#39; table
+(5.2.6).
+
+The BaseGlyph records shall be sorted in increasing glyphID order. It is assumed that a binary search can be used to find a matching BaseGlyph record for a specific glyphID.
+
+The color glyph for a given base glyph is defined by the consecutive records in
+the layerRecords array for the specified number of layers, starting with the
+record indicated by firstLayerIndex. The first record in this sequence is the
+bottom layer in the z-order, and each subsequent layer is stacked on top of the
+previous layer.
+
+The layer record sequences for two different base glyphs may overlap, with some
+layer records used in multiple color glyph definitions.
+
+The Layer record specifies the glyph used as the graphic element for a layer and
+the solid color fill.
+
+*Layer record:*
+
+| Type | Field name | Description |
+|-|-|-|
+| uint16 | glyphID | Glyph ID of the glyph used for a given layer. |
+| uint16 | paletteIndex | Index (base 0) for a palette entry in the CPAL table. |
+
+The glyphID in a Layer record shall be less than the numGlyphs value in the
+&#39;maxp&#39; table. That is, it shall be a valid glyph with outline data in
+the &#39;glyf&#39; (5.3.4), &#39;CFF &#39; (5.4.2) or CFF2 (5.4.3) table. The
+advance width of the referenced glyph shall be the same as that of the base
+glyph.
+
+The paletteIndex value shall be less than the numPaletteEntries value in the
+CPAL table (5.7.12). A paletteIndex value of 0xFFFF is a special case,
+indicating that the text foreground color (as determined by the application) is
+to be used.
+
 **5.7.11.2.3 BaseGlyphV1List and LayerV1List**
 
 BaseGlyphV1List table
