@@ -1430,36 +1430,58 @@ to be used.
 
 **5.7.11.2.3 BaseGlyphV1List and LayerV1List**
 
-BaseGlyphV1List table
+The BaseGlyphV1List table is, conceptually, similar to the baseGlyphRecords
+array in COLR version 0, providing records that map a base glyph to a color
+glyph definition. The color glyph definition is significantly different,
+however—see 5.7.11.1.
+
+*BaseGlyphV1List table:*
 
 | Type | Name | Description |
 |-|-|-|
 | uint32 | numBaseGlyphV1Records |  |
 | BaseGlyphV1Record | baseGlyphV1Records[numBaseGlyphV1Records] | |
 
-Entries shall be sorted in ascending order of the `glyphID` field of the `BaseGlyphV1Record`s.
-
-*__Note:__ The sorted order allows implementations to perform binary search to
-find a matching `BaseGlyphV1Record` for a specific `glyphID`.*
-
-BaseGlyphV1Record
+*BaseGlyphV1Record:*
 
 | Type | Name | Description |
 |-|-|-|
 | uint16 | glyphID | Glyph ID of the base glyph. |
-| Offset32 | paintOffset | Offset to Paint, typically a `PaintColrLayers` |
+| Offset32 | paintOffset | Offset to a Paint table. |
 
-*Note:* The glyph ID is not limited to the numGlyphs value in the &#39;maxp&#39; table.
+The glyph ID is not limited to the numGlyphs value in the &#39;maxp&#39; table
+(5.2.6). See 5.7.11.1.7.3 for more information.
 
-LayerV1List table
+The records in the baseGlyphV1Records array shall be sorted in increasing
+glyphID order. It is assumed that a binary search can be used to find a matching
+BaseGlyphV1Record for a specific glyphID.
+
+The paint table referenced by the BaseGlyphV1Record is the root of the graph for
+a color glyph definition. Often this will be a PaintColrLayers table, though
+this is not required. See 5.7.11.1.8 more information regarding the graph of a
+color glyph, and 5.7.11.1.4 for background information regarding the
+PaintColrLayers table. 
+
+A LayerV1List table is used in conjuction with PaintColrLayers tables to
+represent layer structures. A single LayerV1List is defined and can be used by
+multiple PaintColrLayer tables, each of which references a slice of the layer
+list.
+
+*LayerV1List table:*
 
 | Type | Field name | Description |
 |-|-|-|
 | uint32 | numLayers |  |
 | Offset32 | paintOffsets[numLayers] | Offsets to Paint tables. |
 
-Only layers referenced by `PaintColrLayers` (format 1) records need to be
-encoded here.
+The sequence of offsets to paint tables corresponds to a bottom-up z-order
+layering of the graphic compositions defined by each referenced paint table and
+its sub-graph. For a given slice of the list, the first paint table defines the
+element at the bottom of the z-order, and each subsequent paint table defines an
+element that is layered on top of the previous element.
+
+Offsets for paint tables not referenced by any PaintColrLayers table do not need
+to be included in the paintOffsets array.
 
 **5.7.11.2.4 ColorIndex, ColorStop and ColorLine**
 
