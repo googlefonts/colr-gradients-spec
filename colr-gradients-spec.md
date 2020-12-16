@@ -1374,7 +1374,7 @@ preference to the version 1 color glyph.
 
 For applications that support COLR version 1, the application should search for
 a base glyph ID first in the BaseGlyphV1List. Then, if not found, search in the
-BaseGlyphRecords array, if present.
+baseGlyphRecords array, if present.
 
 **5.7.11.2.2 BaseGlyph and Layer records**
 
