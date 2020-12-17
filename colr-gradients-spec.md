@@ -1706,20 +1706,22 @@ and _ĵ′ = (xy, yy)_, and translates the origin to _(dx, dy)_.
 
 **5.7.11.2.5.11 Format 11: PaintComposite**
 
+Format 11 is used to combine two layered compositions, referred to as *source* and *backdrop*, using different compositing or blending modes. The available compositing and blending modes are defined in an enumeration. See 5.7.11.1.6 for general information and examples.
+
+> *Note:* The backdrop is also referred to as the “destination”.
+
+*PaintComposite table (format 11):*
+
 | Type | Field name | Description |
 |-|-|-|
 | uint8 | format | Set to 11. |
-| Offset24 | sourcePaintOffset | Offset to a source Paint table, from start of PaintComposite table. |
+| Offset24 | sourcePaintOffset | Offset to a source Paint table. |
 | uint8 | compositeMode | A CompositeMode enumeration value. |
 | Offset24 | backdropPaintOffset | Offset to a backdrop Paint table, from start of PaintComposite table. |
 
-If compositeMode value is not recognized, COMPOSITE_CLEAR is used.
+The compositionMode value must be one of the values defined in the CompositeMode enumeration. If an unrecognized value is encountered, COMPOSITE_CLEAR shall be used.
 
-Composite modes
-
-Supported composition modes are taken from the W3C [Compositing and Blending Level 1][1] specification.
-
-CompositeMode enumeration
+*CompositeMode enumeration:*
 
 | Value | Name | Description |
 |-|-|-|
@@ -1754,9 +1756,14 @@ CompositeMode enumeration
 | 25 | COMPOSITE_HSL_COLOR | See [color blend mode][27] |
 | 26 | COMPOSITE_HSL_LUMINOSITY | See [luminosity blend mode][28] |
 
-> **_[under construction—more to come]_**
+The supported modes are taken from the W3C [Compositing and Blending Level 1][1] specification. For details on each mode, including specifications of the required behaviors, see the W3C specification.
 
+The graphic compositions defined by the source and backdrop paint tables (and their respective sub-graphs) are rendered into bitmaps, and the source is blended into the backdrop using the specified composition mode.
 
+&nbsp;  
+> **_[under construction—more to come]_**  
+
+&nbsp;
 
 ## A.3 Changes to OFF 7.2.3 Item variation stores
 
