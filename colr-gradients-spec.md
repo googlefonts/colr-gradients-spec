@@ -1731,11 +1731,7 @@ the transform definition to be variable in a variable font.
 | VarFixed | dx | Translation in x direction. |
 | VarFixed | dy | Translation in y direction. |
 
-Matrix operations are of the form *v&#x2032; = Mv*, where *v* and *v&#x2032;*
-are vectors for positions in the design grid. The starting position vector *v*
-is an extended 3×1 column matrix with the value 1 as a third matrix element:
-*(x,y,1)*. The result vector *v&#x2032;* is a 2×1 column matrix
-*(x&#x2032;,y&#x2032;)*, calculated as follows:
+For a pre-transformation position *(x, y)*,  The post-transformation position *(x&#x2032;, y&#x2032;)* is calculated as follows:
 
 *x&#x2032;* = *xx \* x + xy \* y + dx*  
 *y&#x2032;* = *yx \* x + yy \* y + dy*
