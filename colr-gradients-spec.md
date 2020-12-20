@@ -1501,25 +1501,53 @@ The ColorIndex alpha is multiplied into the alpha of the CPAL entry (converted t
 
 **5.7.11.2.5 Paint tables**
 
+Paint tables are used for COLR version 1 color glyph definitions. Eleven Paint
+table formats are defined (formats 1 to 11), each providing a different graphic
+capability for defining the composition for a color glyph. The graphic
+capability of each format and the manner in which they are combined to represent
+a color glyph has been described above—see 5.7.11.1.
+
+Each paint table format has a format field as the first field. When parsing font
+data, the format field can be read first to determine the format of the table.
+
 **5.7.11.2.5.1 Format 1: PaintColrLayers**
+
+Format 1 is used to define a vector of layers. The layers are a slice of layers
+from the LayerV1List table. The first layer is the bottom of the z-order, and
+subsequent layers are composited on top using the COMPOSITE_SRC_OVER composition
+mode (see 5.7.11.2.5.10).
+
+For general information on the PaintColrLayers table, see 5.7.11.1.4. For
+information about its use for shared, re-usable components, see 5.7.11.1.7.2.
+
+*PaintColrLayers table (format 1):*
 
 | Type | Field name | Description |
 |-|-|-|
 | uint8 | format | Set to 1. |
-| uint8 | numLayers | Number of offsets to Paint to read from layers. |
-| uint32 | firstLayerIndex | Index into the LayerV1List. |
+| uint8 | numLayers | Number of offsets to paint tables to read from
+LayerV1List. |
+| uint32 | firstLayerIndex | Index (base 0) into the LayerV1List. |
 
-Each layer is composited on top of previous with mode COMPOSITE_SRC_OVER.
-
-*Note:* uint8 size saves bytes in most cases. Large layer counts can be
-achieved by way of PaintComposite or a tree of PaintColrLayers.
+NOTE: An 8-bit value is used for numLayers to minimize size for common
+scenarios. If more than 256 layers are needed, then two or more PaintColrLayers
+tables can be combined in a tree using a PaintComposite table or another
+PaintColrLayers table to combine them.
 
 **5.7.11.2.5.2 Format 2: PaintSolid**
+
+Format 2 is used to specify a solid color fill. For general information about
+specifying color values, see 5.7.11.1.1. For information about applying a fill
+to a shape, see 5.7.11.1.3.
+
+*PaintSolid table (format 2):*
 
 | Type | Field name | Description |
 |-|-|-|
 | uint8 | format | Set to 2. |
-| ColorIndex | color | Solid color fill. |
+| ColorIndex | color | ColorIndex record for the solid color fill. |
+
+The ColorIndex record format is specified in 5.7.11.2.4.
 
 **5.7.11.2.5.3 Format 3: PaintLinearGradient**
 
