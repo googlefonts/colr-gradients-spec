@@ -1463,7 +1463,66 @@ encoded here.
 
 **5.7.11.2.4 ColorIndex, ColorStop and ColorLine**
 
-##### Extend enumeration
+Colors are used in solid color fills for graphic elements, or as *stops* in a
+color line used to define a gradient. Colors are defined by reference to palette
+entries in the CPAL table (5.7.12). While CPAL entries include an alpha
+component, a ColorIndex record is defined here that includes a separate alpha
+specification that supports variation in a variable font.
+
+*ColorIndex record:*
+
+| Type | Name | Description |
+|-|-|-|
+| uint16 | paletteIndex | Index for a CPAL palette entry. |
+| VarF2Dot14 | alpha | Variable alpha value. |
+
+A paletteIndex value of 0xFFFF is a special case, indicating that the text
+foreground color (as determined by the application) is to be used.
+
+The alpha.value is always set explicitly. Values for alpha outside the range
+[0., 1.] (inclusive) are reserved; values outside this range shall be clipped. A
+value of zero means no opacity (fully transparent); 1.0 means fully opaque (no
+transparency). The alpha indicated in this record is multiplied with the alpha
+component of the CPAL entry (converted to float—divide by 255). Note that the
+resulting alpha value can be combined with and does not supersede alpha or
+opacity attributes set in higher-level, application-defined contexts.
+
+See 5.7.11.1.1 for more information regarding color references and solid color
+fills.
+
+Gradients are defined using a color line. A color line is a mapping of real
+numbers to color values, defined using color stops. See 5.7.11.1.2.1 for an
+overview and additional details.
+
+*ColorStop record:*
+
+| Type | Name | Description |
+|-|-|-|
+| VarF2Dot14 | stopOffset | Position on a color line; variable. |
+| ColorIndex | color | |
+
+A color line is defined by an array of ColorStop records plus an extend mode.
+
+*ColorLine table:*
+
+| Type | Name | Description |
+|-|-|-|
+| uint8 | extend | An Extend enum value. |
+| uint16 | numStops | Number of ColorStop records. |
+| ColorStop | colorStops[numStops] | |
+
+Applications shall apply the colorStops in increasing stopOffset order. The
+stopOffset value uses a variable structure and, with a variable font, the
+relative orderings of ColorStop records along the color line can change as a
+result of variation. With a variable font, the colorStops shall be ordered after
+the instance values for the stop offsets have been derived.
+
+A color line defines stops for only certain positions along the line, but the
+color line extends infinitely in either direction. The extend field is used to
+indicate how the color line is extended. The same behavior is used for extension
+in both directions. The extend field uses the following enumeration:
+
+*Extend enumeration:*
 
 | Value | Name | Description |
 |-|-|-|
@@ -1471,33 +1530,9 @@ encoded here.
 | 1 | EXTEND_REPEAT  | Repeat from farthest color stop. |
 | 2 | EXTEND_REFLECT | Mirror color line from nearest end. |
 
-If a ColorLine.extend value is not recognized, use EXTEND_PAD.
-
-##### ColorIndex record
-
-| Type | Name | Description |
-|-|-|-|
-| uint16 | paletteIndex | Index for a CPAL palette entry. |
-| VarF2Dot14 | alpha | Variable alpha value. |
-
-Values for alpha outside [0.,1.] are reserved.
-
-The ColorIndex alpha is multiplied into the alpha of the CPAL entry (converted to float -- divide by 255) to produce a final alpha.
-
-##### ColorStop record
-
-| Type | Name | Description |
-|-|-|-|
-| VarF2Dot14 | stopOffset | Proportional distance on a color line; variable. |
-| ColorIndex | color | |
-
-##### ColorLine table
-
-| Type | Name | Description |
-|-|-|-|
-| uint8 | extend | An Extend enum value. |
-| uint16 | numStops | Number of ColorStop records. |
-| ColorStop | colorStops[numStops] | |
+The extend mode behaviors are described in detail in 5.7.11.1.2.1. If a
+ColorLine in a font has an unrecognized extend value, applications should use
+EXTEND_PAD by default.
 
 **5.7.11.2.5 Paint tables**
 
