@@ -1749,15 +1749,14 @@ glyph definition.
 | VarFixed | dx | Translation in x direction. |
 | VarFixed | dy | Translation in y direction. |
 
-NOTE: Translation can also be represented using the PaintTransformed table. The
-PaintTranslate table provides a more compact representation when only
-translation is required.
+NOTE: Pure translation can also be represented using the PaintTransformed table
+by setting _xx_ = 1, _yy_ = 1, _xy_ and _yx_ = 0, and setting _dx_ and _dy_ to
+the translation values. The PaintTranslate table provides a more compact
+representation when only translation is required.
 
-When the translated composition from the referenced paint table (and its
-sub-graph) is composed into the destination, the source design grid origin is
-aligned to the destination design grid origin. The translation will result in
-the pre-transform position (0,0) being moved elsewhere. The *post-transform*
-origin of the source, (0,0), is aligned to the destination origin.
+The translation will result in the pre-transform position (0,0) being moved
+elsewhere. See 5.7.11.2.5.7 regarding alignment of the transformed content with
+the destination.
 
 **5.7.11.2.5.9 Format 9: PaintRotate**
 
@@ -1779,15 +1778,25 @@ glyph definition.
 | VarFixed | centerX | x coordinate for the center of rotation. |
 | VarFixed | centerY | y coordinate for the center of rotation. |
 
-NOTE: Rotation can also be represented using the PaintTransformed table. The
-important difference is in allowing an angle to be specified directly in
-degrees, rather than as changes to basis vectors.
+NOTE: Pure rotation can also be represented using the PaintTransformed table.
+For rotation about the origin, this could be done by setting matrix values as
+follows for angle &theta;: 
 
-When the rotated composition from the referenced paint table (and its sub-graph)
-is composed into the destination, the source design grid origin is aligned to
-the destination design grid origin. The rotation can result in the pre-transform
-position (0, 0) being moved elsewhere. The *post-transform* origin, (0,0), is
-aligned to the destination origin.
+* _xx_ = cos(&theta;)
+* _yx_ = sin(&theta;)
+* _xy_ = -sin(&theta;)
+* _yy_ = cos(&theta;)
+* _dx_ = _dy_ = 0
+
+The important difference of the PaintRotate table is in allowing an angle to be
+specified directly in degrees, rather than as changes to basis vectors. In
+variable fonts, if a rotation angle needs to vary, it is easier to get smooth
+variation if an angle is specified directly than when using trigonometric
+functions to derive matrix elements.
+
+A rotation can result in the pre-transform position (0, 0) being moved
+elsewhere. See 5.7.11.2.5.7 regarding alignment of the transformed content with
+the destination.
 
 **5.7.11.2.5.10 Format 10: PaintSkew**
 
@@ -1810,15 +1819,24 @@ glyph definition.
 | VarFixed | centerX | x coordinate for the center of rotation. |
 | VarFixed | centerY | y coordinate for the center of rotation. |
 
-NOTE: Skews can also be represented using the PaintTransformed table. The
-important difference is in being able to specify skew as an angle, rather than
-as changes to basis vectors.
+NOTE: Pure skews can also be represented using the PaintTransformed table. For
+skews about the origin, this could be done by setting matrix values as follows
+for _x_ skew angle &phi; and _y_ skew angle &psi;:
 
-When the skewed composition from the referenced paint table (and its sub-graph)
-is composed into the destination, the source design grid origin is aligned to
-the destination design grid origin. The skew can result in the pre-transform
-position (0, 0) being moved elsewhere. The *post-transform* origin, (0,0), is
-aligned to the destination origin.
+* _xx_ = _yy_ = 1
+* _yx_ = tan(&psi;)
+* _xy_ = -tan(&phi;)
+* _dx_ = _dy_ = 0
+
+The important difference of the PaintSkew table is in being able to specify skew
+as an angle, rather than as changes to basis vectors. In variable fonts, if a
+skew angle needs to vary, it is easier to get smooth variation if an angle is
+specified directly than when using trigonometric functions to derive matrix
+elements.
+
+A skew can result in the pre-transform position (0, 0) being moved elsewhere.
+See 5.7.11.2.5.7 regarding alignment of the transformed content with the
+destination.
 
 **5.7.11.2.5.11 Format 11: PaintComposite**
 
