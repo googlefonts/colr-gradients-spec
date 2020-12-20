@@ -1212,14 +1212,14 @@ via a glyph ID.](images/colr_reuse_clock-face_PaintColrGlyph.png)
 **Figure 5.33 A PaintColrGlyph table is used to reference the shared clock face
 composition via a glyph ID.**
 
-While the PaintColrGlyph and PaintColrLayers tables are similar in referencing a
-layer set as a re-usable component, they could be handled differently in
-implementations. In particular, an implementation could process and cache the
-result of the color glyph description for a given base glyph ID. In that case,
-subsequent references to that base glyph ID using a PaintColrGlyph table would
-not require the corresponding graph of paint tables to be re-processed. As a
-result, using a PaintColrGlyph for re-used graphic components could provide
-performance benefits.
+While the PaintColrGlyph and PaintColrLayers tables are similar in being able to
+reference a layer set as a re-usable component, they could be handled
+differently in implementations. In particular, an implementation could process
+and cache the result of the color glyph description for a given base glyph ID.
+In that case, subsequent references to that base glyph ID using a PaintColrGlyph
+table would not require the corresponding graph of paint tables to be
+re-processed. As a result, using a PaintColrGlyph for re-used graphic components
+could provide performance benefits.
 
 **5.7.11.1.8 Color glyphs as a directed acyclic graph**
 
@@ -1599,33 +1599,44 @@ For information about applying a fill to a shape, see 5.7.11.1.3.
 
 **5.7.11.2.5.5 Format 5: PaintGlyph**
 
+Format 5 is used to specify a glyph outline to use as a shape to be filled or,
+equivalently, a clip region. The outline sets a clip region that constrains the
+content of a separate paint subtable and the sub-graph linked from that
+subtable.
+
+For information about applying a fill to a shape, see 5.7.11.1.3.
+
+*PaintGlyph table (format 5):*
+
 | Type | Field name | Description |
 |-|-|-|
 | uint8 | format | Set to 5. |
-| Offset24 | paintOffset | Offset to a Paint table, from start of PaintGlyph table. |
+| Offset24 | paintOffset | Offset to a Paint table. |
 | uint16 | glyphID | Glyph ID for the source outline. |
 
-Glyph outline is used as clip mask for the content in the Paint subtable. Glyph ID shall be less than the numGlyphs value in the &#39;maxp&#39; table.
+The glyphID value shall be less than the numGlyphs value in the &#39;maxp&#39;
+table (5.2.6). That is, it shall be a valid glyph with outline data in the
+&#39;glyf&#39; (5.3.4), &#39;CFF &#39; (5.4.2) or CFF2 (5.4.3) table.
 
 **5.7.11.2.5.6 Format 6: PaintColrGlyph**
+
+Format 6 is used to allow a color glyph definition from the BaseGlyphV1List to
+be a re-usable component that can be incorporated into multiple color glyph
+definitions. See 5.7.11.1.7.3 for more information.
+
+*PaintColrGlyph table (format 6):*
 
 | Type | Field name | Description |
 |-|-|-|
 | uint8 | format | Set to 6. |
 | uint16 | glyphID | Virtual glyph ID for a BaseGlyphV1List base glyph. |
 
-Glyph ID shall be in the BaseGlyphV1List; may be greater than maxp.numGlyphs.
-
-*__Note:__ The PaintColrGlyph and PaintColrLayers tables are similar in that
-they provide a way to reference a graph of paint tables as a sub-component
-within a color glyph description. (The PaintColrGlyph does this indirectly via a
-base glyph ID.) They may be handled differently in implementations, however. In
-particular, an implementation can process and cache the result of the color
-glyph description for a given base glyph ID. In that case, subsequent references
-to that base glyph ID using a PaintColrGlyph table would not require the
-corresponding graph of paint tables to be re-processed. As a result, using a
-PaintColrGlyph for re-used graphic components could provide performance
-benefits.*
+The glyphID value shall be a glyphID found in a BaseGlyphV1Record within the
+BaseGlyphV1List. It may be a *virtual* glyph ID, greater than or equal to the
+numGlyph value in the &#39;maxp&#39; table (5.2.6). The BaseGlyphV1Record
+provides an offset to a paint table; that paint table and the graph linked from
+it are incorporated as a child sub-graph of the PaintColrGlyph table within the
+current color glyph definition.
 
 **5.7.11.2.5.7 Format 7: PaintTransformed**
 
