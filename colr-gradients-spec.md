@@ -1758,7 +1758,7 @@ The compositionMode value must be one of the values defined in the CompositeMode
 
 The supported modes are taken from the W3C [Compositing and Blending Level 1][1] specification. For details on each mode, including specifications of the required behaviors, see the W3C specification.
 
-The graphic compositions defined by the source and backdrop paint tables (and their respective sub-graphs) are rendered into bitmaps, and the source is blended into the backdrop using the specified composition mode.
+The graphic compositions defined by the source and backdrop paint tables (and their respective sub-graphs) are rendered into bitmaps, and the source is blended into the backdrop using the specified composite mode.
 
 &nbsp;  
 > **_[under construction—more to come]_**  
