@@ -1453,13 +1453,13 @@ The glyph ID is not limited to the numGlyphs value in the &#39;maxp&#39; table
 (5.2.6). See 5.7.11.1.7.3 for more information.
 
 The records in the baseGlyphV1Records array shall be sorted in increasing
-glyphID order. It is assumed that a binary search can be used to find a matching
-BaseGlyphV1Record for a specific glyphID.
+glyphID order. It is intended that a binary search can be used to find a
+matching BaseGlyphV1Record for a specific glyphID.
 
 The paint table referenced by the BaseGlyphV1Record is the root of the graph for
 a color glyph definition.
 
-NOTE: Often paint table that is the root of the graph for the color glyph
+NOTE: Often the paint table that is the root of the graph for the color glyph
 definition will be a PaintColrLayers table, though this is not required. See
 5.7.11.1.8 more information regarding the graph of a color glyph, and 5.7.11.1.4
 for background information regarding the PaintColrLayers table.
@@ -1477,13 +1477,17 @@ list.
 | Offset32 | paintOffsets[numLayers] | Offsets to Paint tables. |
 
 The sequence of offsets to paint tables corresponds to a bottom-up z-order
-layering of the graphic compositions defined by each referenced paint table and
-its sub-graph. For a given slice of the list, the first paint table defines the
-element at the bottom of the z-order, and each subsequent paint table defines an
-element that is layered on top of the previous element.
+layering of the graphic compositions defined by the sub-graph of each referenced
+paint table graph. For a given slice of the list, the sub-graph of the first
+paint table defines the element at the bottom of the z-order, and the sub-graph
+of each subsequent paint table defines an element that is layered on top of the
+previous element. As each element is a composition defined in a sub-graph, one
+of these elements may itself be multi-layered. In that case, the layers of this
+element are stack above all previous layers, and layers of following elements
+are stacked above the top layer of this element.
 
-Offsets for paint tables not referenced by any PaintColrLayers table do not need
-to be included in the paintOffsets array.
+Offsets for paint tables not referenced by any PaintColrLayers table should not
+be included in the paintOffsets array.
 
 **5.7.11.2.4 ColorIndex, ColorStop and ColorLine**
 
