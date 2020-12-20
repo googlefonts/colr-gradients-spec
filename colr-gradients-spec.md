@@ -1480,7 +1480,7 @@ A paletteIndex value of 0xFFFF is a special case, indicating that the text
 foreground color (as determined by the application) is to be used.
 
 The alpha.value is always set explicitly. Values for alpha outside the range
-[0., 1.] (inclusive) are reserved; values outside this range must be clipped. A
+[0., 1.] (inclusive) are reserved; values outside this range shall be clipped. A
 value of zero means no opacity (fully transparent); 1.0 means fully opaque (no
 transparency). The alpha indicated in this record is multiplied with the alpha
 component of the CPAL entry (converted to float—divide by 255). Note that the
