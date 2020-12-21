@@ -956,7 +956,10 @@ by the child sub-graph.
 
 **Figure 5.18 A PaintGlyph table defines a clip region for the composition defined by its child sub-graph.**
 
-A PaintGlyph table on its own does not add content: if there is no child paint table, then the PaintGlyph table represents no presentation content and shall be ignored.
+A PaintGlyph table on its own does not add content: if there is no child paint
+table, then the PaintGlyph table represents no presentation content and shall be
+ignored. This could result in the entire color glyph definition being invalid.
+See 5.7.11.1.9 for additional information.
 
 **5.7.11.1.4 Layering**
 
@@ -1309,6 +1312,10 @@ to the numGlyphs value in the &#39;maxp&#39; table (5.2.6). Such virtual base
 glyph IDs in the COLR table are only used within a PaintColrGlyph table, and are
 not related to glyph IDs used in any other tables.
 
+When a PaintColrGlyph table is used, a BaseGlyphV1Record with the specified
+glyph ID is expected. If no BaseGlyphV1Record with that glyph ID is found, the
+color glyph should be ignored. See 5.7.11.1.9 for additional information.
+
 The example from 5.7.11.1.7.2 is modified to illustrate use of a PaintColrGlyph
 table. In the following figure, a PaintColrLayers table references a slice
 within the LayerV1List that defines the shared component. Now, however, this
@@ -1425,30 +1432,55 @@ Thus, the generalization that can be made regarding the relationship between the
 number of layers and the nature of the graph is that the number of distinct
 root-to-leaf paths will be greater than or equal to the number of layers.
 
-There is one constraint imposed on the complexity of the graph: the graph shall
-be acyclic—without cycles. That is, a paint table shall not have any child or
-descendent paint table that is also its parent or ancestor within the graph.
+The following are required for the graph to be well-formed:
 
-In particular, because the PaintColrLayers and PaintColrGlyph tables use
-indirect child references rather than forward offsets, they present the
-possibility for introducing cycles. If a cycle is detected, the PaintColrLayers
-or PaintColrGlyph table that introduces the cycle shall be ignored.
+* All subtable links shall be valid:
+  * Forward offsets are within the COLR table bounds.
+  * If a PaintColrLayers table is present, a LayersV1List is present, and the
+referenced slice is within the length of the LayersV1List.
+  * If a PaintColrGlyph table is present, there is a BaseGlyphV1Record for the
+referenced base glyph ID.
+* The graph shall be finite and acyclic (without cycles).
+* All leaf nodes shall be one of PaintSolid, PaintLinearGradient or
+PaintRadialGradient.
 
-Applications can test for cycles by tracking paint tables used in a sequence
-within the graph and then, when processing a PaintColrLayers or PaintColrGlyph
-table, checking whether any child was already encountered within that sequence.
-The following pseudo-code algorithm can be used:
+For the graph to be acyclic, no paint table shall have any child or descendent
+paint table that is also its parent or ancestor within the graph. In particular,
+because the PaintColrLayers and PaintColrGlyph tables use indirect child
+references rather than forward offsets, they provide a possibility for
+introducing cycles. Applications can test for cycles by tracking paint tables
+used in a sequence within the graph and then, when processing a PaintColrLayers
+or PaintColrGlyph table, checking whether any child was already encountered
+within that sequence. The following pseudo-code algorithm can be used:
 
 ```
     // called initially with the root paint and an empty set activePaints
     function paintIsAcyclic(paint, activePaints)
         if paint is in activePaints
-          return failure (paint shall be ignored)
+          return false // cycle detected
         add paint to activePaints
         for each childPaint referenced by paint as a child subtable
           call paintIsAcyclic(childPaint, activePaints)
         remove paint from activePaints
 ```
+
+For the graph to be valid, it shall be visually bounded, as described in
+5.7.11.1.8.2.
+
+If the graph is not well formed, the entire color glyph definition should be
+considered invalid. In particular, applications should not simply ignore a
+sub-graph when an error in a paint table is detected since that could result in
+a visually unbounded color glyph definition. For instance, if a PaintColrGlyph
+table is found to introduce a cycle or there isn't a corresponding
+BaseGlyphV1Record, the remainder of the graph if that PaintColrGlyph table and
+its sub-graph are ignored could be unbounded. For this reason, if the graph is
+not well formed, the entire color glyph definition should be ignored. If the
+base glyph ID has an outline, that may be rendered instead.
+
+Similarly, if an application encounters a paint table with an unrecognized
+format (which could be introduced in a later minor version update of the COLR
+table), the remainder of the graph could be visually unbounded, therefore the
+color glyph should be ignored.
 
 **5.7.11.2 COLR table formats**
 
