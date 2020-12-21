@@ -1191,16 +1191,17 @@ A valid color glyph definition shall define a bounded region—that is, it shall
 paint within a region for which a finite bounding box could be defined. The
 different paint formats have different boundedness characteristics:
 
-* PaintGlyph is always inherently bounded.
-* PaintSolid, PaintLinearGradient and PaintRadialGradient are always unbounded.
+* PaintGlyph is inherently bounded.
+* PaintSolid, PaintLinearGradient and PaintRadialGradient are inherently unbounded.
 * PaintColrLayers is bounded *if and only if* all referenced sub-graphs are
 bounded.
 * PaintColrGlyph is bounded *if and only if* the color glyph definition for the
 referenced base glyph ID is bounded.
 * PaintTransformed, PaintTranslate, PaintRotate and PaintSkew are bounded *if
 and only if* the referenced sub-graph is bounded.
-* PaintComposite is either bounded or unbounded, according to the compositing or
-blending mode used. See 5.7.11.2.5.11 for details.
+* PaintComposite is either bounded or unbounded, according to the composite mode
+used and the boundedness of the referenced sub-graphs. See 5.7.11.2.5.11 for
+details.
 
 Applications shall confirm that a color glyph definition is bounded, and shall
 not render a color glyph if the defining graph is not bounded.
