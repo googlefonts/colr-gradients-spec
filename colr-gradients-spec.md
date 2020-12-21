@@ -1751,38 +1751,109 @@ aligned to the destination origin.
 
 **5.7.11.2.5.8 Format 8: PaintTranslate**
 
+Format 8 is used to apply a translation to a sub-graph. The paint table that is
+the root of the sub-graph is linked as a child.
+
+See 5.7.11.1.5 for general information regarding transformations in a color
+glyph definition.
+
+*PaintTranslate table (format 8):*
+
 | Type | Field name | Description |
 |-|-|-|
 | uint8 | format | Set to 8. |
-| Offset24 | paintOffset | Offset to a Paint subtable, from start of PaintRotate table. |
+| Offset24 | paintOffset | Offset to a Paint subtable. |
 | VarFixed | dx | Translation in x direction. |
 | VarFixed | dy | Translation in y direction. |
 
+NOTE: Pure translation can also be represented using the PaintTransformed table
+by setting _xx_ = 1, _yy_ = 1, _xy_ and _yx_ = 0, and setting _dx_ and _dy_ to
+the translation values. The PaintTranslate table provides a more compact
+representation when only translation is required.
+
+The translation will result in the pre-transform position (0,0) being moved
+elsewhere. See 5.7.11.2.5.7 regarding alignment of the transformed content with
+the destination.
 
 **5.7.11.2.5.9 Format 9: PaintRotate**
+
+Format 9 is used to apply a rotation to a sub-graph. The paint table that is the
+root of the sub-graph is linked as a child. The amount of rotation is expressed
+directly as an angle, and X and Y coordinates can be provided for the center of
+rotation.
+
+See 5.7.11.1.5 for general information regarding transformations in a color
+glyph definition.
+
+*PaintRotate table (format 9):*
 
 | Type | Field name | Description |
 |-|-|-|
 | uint8 | format | Set to 9. |
-| Offset24 | paintOffset | Offset to a Paint subtable, from start of PaintRotate table. |
+| Offset24 | paintOffset | Offset to a Paint subtable. |
 | VarFixed | angle | Rotation angle, in counter-clockwise degrees. |
 | VarFixed | centerX | x coordinate for the center of rotation. |
 | VarFixed | centerY | y coordinate for the center of rotation. |
 
-*__Note:__ Rotation can also be represented using the PaintTransformed table. The important difference is in allowing an angle to be specified directly in degrees, which is more amenable to smooth variation.*
+NOTE: Pure rotation can also be represented using the PaintTransformed table.
+For rotation about the origin, this could be done by setting matrix values as
+follows for angle &theta;: 
+
+* _xx_ = cos(&theta;)
+* _yx_ = sin(&theta;)
+* _xy_ = -sin(&theta;)
+* _yy_ = cos(&theta;)
+* _dx_ = _dy_ = 0
+
+The important difference of the PaintRotate table is in allowing an angle to be
+specified directly in degrees, rather than as changes to basis vectors. In
+variable fonts, if a rotation angle needs to vary, it is easier to get smooth
+variation if an angle is specified directly than when using trigonometric
+functions to derive matrix elements.
+
+A rotation can result in the pre-transform position (0, 0) being moved
+elsewhere. See 5.7.11.2.5.7 regarding alignment of the transformed content with
+the destination.
 
 **5.7.11.2.5.10 Format 10: PaintSkew**
+
+Format 10 is used to apply a skew to a sub-graph. The paint table that is the
+root of the sub-graph is linked as a child. The amount of skew in the X or Y
+direction is expressed directly as angles, and X and Y coordinates can be
+provided for the center of rotation.
+
+See 5.7.11.1.5 for general information regarding transformations in a color
+glyph definition.
+
+*PaintSkew table (format 10):*
 
 | Type | Field name | Description |
 |-|-|-|
 | uint8 | format | Set to 10. |
-| Offset24 | paintOffset | Offset to a Paint subtable, from start of PaintSkew table. |
+| Offset24 | paintOffset | Offset to a Paint subtable. |
 | VarFixed | xSkewAngle | Angle of skew in the direction of the x-axis, in counter-clockwise degrees. |
 | VarFixed | ySkewAngle | Angle of skew in the direction of the y-axis, in counter-clockwise degrees. |
-| VarFixed | centerX | x coordinate for the center of skew. |
-| VarFixed | centerY | y coordinate for the center of skew. |
+| VarFixed | centerX | x coordinate for the center of rotation. |
+| VarFixed | centerY | y coordinate for the center of rotation. |
 
-*__Note:__ Skews can also be represented using the PaintTransformed table. The important difference is in being able to specify skew as an angle rather than as changes to basis vectors. Also, when varying angles, a representation directly in degrees is more amenable to smooth variation.*
+NOTE: Pure skews can also be represented using the PaintTransformed table. For
+skews about the origin, this could be done by setting matrix values as follows
+for _x_ skew angle &phi; and _y_ skew angle &psi;:
+
+* _xx_ = _yy_ = 1
+* _yx_ = tan(&psi;)
+* _xy_ = -tan(&phi;)
+* _dx_ = _dy_ = 0
+
+The important difference of the PaintSkew table is in being able to specify skew
+as an angle, rather than as changes to basis vectors. In variable fonts, if a
+skew angle needs to vary, it is easier to get smooth variation if an angle is
+specified directly than when using trigonometric functions to derive matrix
+elements.
+
+A skew can result in the pre-transform position (0, 0) being moved elsewhere.
+See 5.7.11.2.5.7 regarding alignment of the transformed content with the
+destination.
 
 **5.7.11.2.5.11 Format 11: PaintComposite**
 
