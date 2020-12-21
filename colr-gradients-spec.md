@@ -524,7 +524,8 @@ earlier proposal.
 
 # Annex A: Proposed changes to ISO/IEC 14496-22
 
-Changes to the following sections of ISO/IEC 14496-22:2019 Open Font Format (OFF) are proposed:
+Changes to the following sections of ISO/IEC 14496-22:2019 Open Font Format
+(OFF) are proposed:
 
 - 4.3 Data types
 - 5.7.11 COLR – Color Table
@@ -558,79 +559,160 @@ _Replace the table defining data types with the following (added row for Offset2
 
 _Replace the content of clause 5.7.11 with the following:_
 
-The COLR table adds support for multi-colored glyphs in a manner that integrates with the rasterizers of existing text engines and that is designed to be easy to support with current OpenType font files.
+The COLR table adds support for multi-colored glyphs in a manner that integrates
+with the rasterizers of existing text engines and that is designed to be easy to
+support with current OpenType font files.
 
-The COLR table defines color presentations for glyphs. The color presentation of a glyph is specified as a graphic composition using other glyphs, such as a layered arrangement of glyphs, each with a different color. The term “color glyph” is used informally to refer to such a graphic composition defined in the COLR table; and the term “base glyph” is used to refer to a glyph for which a color glyph is provided. Processing of the COLR table is done on glyph sequences after text layout processing is completed and prior to final presentation of glyphs. Typically, a base glyph is a glyph that may occur in a sequence that results from the text layout process. In some cases, a base glyph may be a virtual glyph defined within this table as a re-usable color composition.
+The COLR table defines color presentations for glyphs. The color presentation of
+a glyph is specified as a graphic composition using other glyphs, such as a
+layered arrangement of glyphs, each with a different color. The term “color
+glyph” is used informally to refer to such a graphic composition defined in the
+COLR table; and the term “base glyph” is used to refer to a glyph for which a
+color glyph is provided. Processing of the COLR table is done on glyph sequences
+after text layout processing is completed and prior to final presentation of
+glyphs. Typically, a base glyph is a glyph that may occur in a sequence that
+results from the text layout process. In some cases, a base glyph may be a
+virtual glyph defined within this table as a re-usable color composition.
 
-For example, the Unicode character U+1F600 is the grinning face emoji. Suppose in an emoji font the 'cmap' table maps U+1F600 to glyph ID 718. Assuming no glyph substitutions, glyph ID 718 would be considered the base glyph. Suppose the COLR table has data describing a color presentation for this using a layered arrangement of other glyphs with different colors assigned: that description and its presentation result would be considered the corresponding color glyph.
+For example, the Unicode character U+1F600 is the grinning face emoji. Suppose
+in an emoji font the 'cmap' table maps U+1F600 to glyph ID 718. Assuming no
+glyph substitutions, glyph ID 718 would be considered the base glyph. Suppose
+the COLR table has data describing a color presentation for this using a layered
+arrangement of other glyphs with different colors assigned: that description and
+its presentation result would be considered the corresponding color glyph.
 
 Two versions of the COLR table are defined.
 
-Version 0 allows for a simple composition of colored elements: a linear sequence of glyphs that are stacked vertically as layers in bottom-up z-order. Each layer combines a glyph outline from the &#39;glyf&#39;, CFF or CFF2 table (referenced by glyph ID) with a solid color fill. These capabilities are sufficient to define color glyphs such as those illustrated in figure 5.6.
+Version 0 allows for a simple composition of colored elements: a linear sequence
+of glyphs that are stacked vertically as layers in bottom-up z-order. Each layer
+combines a glyph outline from the &#39;glyf&#39;, CFF or CFF2 table (referenced
+by glyph ID) with a solid color fill. These capabilities are sufficient to
+define color glyphs such as those illustrated in figure 5.6.
 
 ![Three emoji glyphs that use layered shapes with solid color fills.](images/colr_v0_emoji_sample.png)
 
 **Figure 5.6 Examples of the graphic capabilities of COLR version 0**
 
-Version 1 supports additional graphic capabilities. In addition to solid colors, gradient fills can be used, as well as more complex fills using other graphic operations, including affine transformations and various blending modes. Version 1 capabilities allow for color glyphs such as those illustrated in figure 5.7:
+Version 1 supports additional graphic capabilities. In addition to solid colors,
+gradient fills can be used, as well as more complex fills using other graphic
+operations, including affine transformations and various blending modes. Version
+1 capabilities allow for color glyphs such as those illustrated in figure 5.7:
 
 ![Three emoji glyphs that use gradient fills and other effects.](images/colr_v1_emoji_sample.png)
 
 **Figure 5.7 Examples of the graphic capabilities of COLR version 1**
 
-Version 1 also extends capabilities in variable fonts. A COLR version 0 table can be used in variable fonts with glyph outlines being variable, but no other aspect of the color composition being variable. In version 1, all of the new constructs for which it could be relevant have been designed to be variable; for example, the placement of color stops in a gradient, or the alpha values applied to colors. The graphic capabilities supported in version 0 and in version 1 are described in more detail below.
+Version 1 also extends capabilities in variable fonts. A COLR version 0 table
+can be used in variable fonts with glyph outlines being variable, but no other
+aspect of the color composition being variable. In version 1, all of the new
+constructs for which it could be relevant have been designed to be variable; for
+example, the placement of color stops in a gradient, or the alpha values applied
+to colors. The graphic capabilities supported in version 0 and in version 1 are
+described in more detail below.
 
-The COLR table is used in combination with the CPAL table (5.7.12): all color values are specified as entries in color palettes defined in the CPAL table. If the COLR table is present in a font but no CPAL table exists, then the COLR table is ignored.
+The COLR table is used in combination with the CPAL table (5.7.12): all color
+values are specified as entries in color palettes defined in the CPAL table. If
+the COLR table is present in a font but no CPAL table exists, then the COLR
+table is ignored.
 
 **5.7.11.1 Graphic Compositions**
 
-The graphic compositions in a color glyph definition use a set of 2D graphic concepts and constructs:
+The graphic compositions in a color glyph definition use a set of 2D graphic
+concepts and constructs:
 
 * Shapes (or *geometries*)
 * Fills (or *shadings*)
 * Layering—a *z-order*—of elements
-* Composition and blending modes—different ways that the content of a layer is combined with the content of layers above or below it
+* Composition and blending modes—different ways that the content of a layer is
+combined with the content of layers above or below it
 * Affine transformations
 
-For both version 0 and version 1, shapes are obtained from glyph outlines in the &#39;glyf&#39;, &#39;CFF &#39; or CFF2 table, referenced by glyph ID. Colors used in fills are obtained from the CPAL table.
+For both version 0 and version 1, shapes are obtained from glyph outlines in the
+&#39;glyf&#39;, &#39;CFF &#39; or CFF2 table, referenced by glyph ID. Colors
+used in fills are obtained from the CPAL table.
 
-The simplest color glyphs use just a few of the concepts above: shapes, solid color fills, and layering. This is the set of capabilities provided by version 0 of the COLR table. In version 0, a base glyph record specifies the color glyph for a given base glyph as a sequence of layers. Each layer is specified in a layer record and has a shape (a glyph ID) and a solid color fill (a CPAL palette entry). The filled shapes in the layer stack are composed using only alpha blending.
+The simplest color glyphs use just a few of the concepts above: shapes, solid
+color fills, and layering. This is the set of capabilities provided by version 0
+of the COLR table. In version 0, a base glyph record specifies the color glyph
+for a given base glyph as a sequence of layers. Each layer is specified in a
+layer record and has a shape (a glyph ID) and a solid color fill (a CPAL palette
+entry). The filled shapes in the layer stack are composed using only alpha
+blending.
 
-Figure 5.8 illustrates the version 0 capabilities: three shapes are in a layered stack: a blue square in the bottom layer, an opaque green circle in the next layer, and a red triangle with some transparency in the top layer.
+Figure 5.8 illustrates the version 0 capabilities: three shapes are in a layered
+stack: a blue square in the bottom layer, an opaque green circle in the next
+layer, and a red triangle with some transparency in the top layer.
 
 ![Blue square, partially overlapped by an opaque green circle, both partially overlapped by a translucent red triangle.](images/colr_v0_layering.png)
 
 **Figure 5.8 Basic graphic capabilities of COLR version 0**
 
-The basic concepts also apply to color glyphs defined using the version 1 formats: shapes are arranged in layers and have fills. But the additional formats of version 1 support much richer capabilities. In a version 1 color glyph, graphic constructs and capabilities are represented primarily in *Paint* tables, which are linked together in a *directed, acyclic graph*. Several different Paint formats are defined, each describing a particular type of graphic operation:
+The basic concepts also apply to color glyphs defined using the version 1
+formats: shapes are arranged in layers and have fills. But the additional
+formats of version 1 support much richer capabilities. In a version 1 color
+glyph, graphic constructs and capabilities are represented primarily in *Paint*
+tables, which are linked together in a *directed, acyclic graph*. Several
+different Paint formats are defined, each describing a particular type of
+graphic operation:
 
-* A PaintColrLayers table provides a layering structure used for creating a color glyph from layered elements. A PaintColrLayers table can be used at the root of the graph, providing a base layering structure for the entire color glyph definition. A PaintColrLayers table can also be nested within the graph, providing a set of layers to define some graphic sub-component within the color glyph.
+* A PaintColrLayers table provides a layering structure used for creating a
+color glyph from layered elements. A PaintColrLayers table can be used at the
+root of the graph, providing a base layering structure for the entire color
+glyph definition. A PaintColrLayers table can also be nested within the graph,
+providing a set of layers to define some graphic sub-component within the color
+glyph.
 
-* The PaintSolid, PaintLinearGradient, and PaintRadialGradient tables provide basic fills, using color entries from the CPAL table.
+* The PaintSolid, PaintLinearGradient, and PaintRadialGradient tables provide
+basic fills, using color entries from the CPAL table.
 
 * The PaintGlyph table provides glyph outlines as the basic shapes.
 
-* The PaintTransformed table is used to apply an affine transformation matrix to a sub-graph of paint tables, and the graphic operations they represent. The PaintTranslate, PaintRotate and PaintSkew tables support specific transformations.
+* The PaintTransformed table is used to apply an affine transformation matrix to
+a sub-graph of paint tables, and the graphic operations they represent. The
+PaintTranslate, PaintRotate and PaintSkew tables support specific
+transformations.
 
-* The PaintComposite table supports alternate compositing and blending modes for two sub-graphs.
+* The PaintComposite table supports alternate compositing and blending modes for
+two sub-graphs.
 
-* The PaintColrGlyph table allows a color glyph definition, referenced by a base glyph ID, to be re-used as a sub-graph within multiple color glyphs.
+* The PaintColrGlyph table allows a color glyph definition, referenced by a base
+glyph ID, to be re-used as a sub-graph within multiple color glyphs.
 
-In a simple color glyph description, a PaintGlyph table might be linked to a PaintSolid table, for example, representing a glyph outline filled using a basic solid color fill. But the PaintGlyph table could instead be linked to a much more complex sub-graph of Paint tables, representing a shape that gets filled using the more-complex set of operations described by the sub-graph of Paint tables.
+In a simple color glyph description, a PaintGlyph table might be linked to a
+PaintSolid table, for example, representing a glyph outline filled using a basic
+solid color fill. But the PaintGlyph table could instead be linked to a much
+more complex sub-graph of Paint tables, representing a shape that gets filled
+using the more-complex set of operations described by the sub-graph of Paint
+tables.
 
-The graphic capabilities are described in more detail in 5.7.11.1.1 – 5.7.11.1.7. The formats used for each are specified 5.7.11.2.
+The graphic capabilities are described in more detail in 5.7.11.1.1 –
+5.7.11.1.9. The formats used for each are specified 5.7.11.2.
 
 **5.7.11.1.1 Colors and solid color fills**
 
-All colors are specified as a base zero index into CPAL (5.7.12) palette entries. A font can define alternate palettes in its CPAL table; it is up to the application to determine which palette is used. A palette entry index value of 0xFFFF is a special case indicating that the text foreground color (defined by the application) should be used, and shall not be treated as an actual index into the CPAL ColorRecord array.
+All colors are specified as a base zero index into CPAL (5.7.12) palette
+entries. A font can define alternate palettes in its CPAL table; it is up to the
+application to determine which palette is used. A palette entry index value of
+0xFFFF is a special case indicating that the text foreground color (defined by
+the application) should be used, and shall not be treated as an actual index
+into the CPAL ColorRecord array.
 
-The CPAL color data includes alpha information, as well as RGB values. In the COLR version 0 formats, a color reference is made in LayerRecord as a palette entry index alone. In the formats added for COLR version 1, a color reference is made in a ColorIndex record, which includes a palette entry index and a separate alpha value. Separation of alpha from palette entries in version 1 allows use of transparency in a color glyph definition independent of the choice of palette. The alpha value in the ColorIndex record is multiplied into the alpha value given in the CPAL color entry.
+The CPAL color data includes alpha information, as well as RGB values. In the
+COLR version 0 formats, a color reference is made in LayerRecord as a palette
+entry index alone. In the formats added for COLR version 1, a color reference is
+made in a ColorIndex record, which includes a palette entry index and a separate
+alpha value. Separation of alpha from palette entries in version 1 allows use of
+transparency in a color glyph definition independent of the choice of palette.
+The alpha value in the ColorIndex record is multiplied into the alpha value
+given in the CPAL color entry.
 
-In version 1, a solid color fill is specified using a PaintSolid table. See 5.7.11.1.3 for details on how a PaintSolid fill is applied to a shape.
+In version 1, a solid color fill is specified using a PaintSolid table. See
+5.7.11.1.3 for details on how a PaintSolid fill is applied to a shape.
 
 **5.7.11.1.2 Gradients**
 
-COLR version 1 supports two types of gradients: linear gradients, and radial gradients. Both types of gradient are defined using a color line.
+COLR version 1 supports two types of gradients: linear gradients, and radial
+gradients. Both types of gradient are defined using a color line.
 
 **5.7.11.1.2.1 Color Lines**
 
@@ -650,10 +732,9 @@ A color stop is defined by a real number, the *stop offset*, and a color. A
 color line is defined with at least one color stop within the interval [0, 1].
 Additional color stops can be specified within or outside the interval [0, 1].
 (Stop offsets are represented using F2DOT14 values, therefore color stops can
-only be specified within the range [-2, 2). See <span
-style="color:red">5.7.11.2.x</span> for format details.) If only one color stop
-is specified, that color is used for the entire color line; at least two color
-stops are needed to create color gradation.
+only be specified within the range [-2, 2). See 5.7.11.2.4 for format details.)
+If only one color stop is specified, that color is used for the entire color
+line; at least two color stops are needed to create color gradation.
 
 Color gradation is defined over the interval from the first color stop, through
 the successive color stops, to the last color stop. Between adjacent color
@@ -725,13 +806,26 @@ stops, and set the extend mode to *reflect*.
 
 **5.7.11.1.2.2 Linear gradients**
 
-A linear gradient provide gradation of colors along a straight line. The gradient is defined by two points, p₀ and p₁, plus a color line, with stop offset 0 aligned to p₀ and stop offset 1.0 aligned to p₁. Colors between p₀ and p₁ are interpolated using the color line.
+A linear gradient provide gradation of colors along a straight line. The
+gradient is defined by two points, p₀ and p₁, plus a color line, with stop
+offset 0 aligned to p₀ and stop offset 1.0 aligned to p₁. Colors between p₀ and
+p₁ are interpolated using the color line.
 
-An additional point, p₂, is also used to rotate the gradient orientation in the space on either side of the line defined by p₀ and p₁. The vector from p₀ to p₂ can be referred to as the *rotation vector*. If the rotation vector is colinear with the line p₀p₁, there is no rotation: colors in the space on either side of the line p₀p₁ extend in the perpendicular direction. But if the rotation vector is not colinear, the gradient is drawn skewed by the angle between p₀p₁ and p₀p₂.
+An additional point, p₂, is also used to rotate the gradient orientation in the
+space on either side of the line defined by p₀ and p₁. The vector from p₀ to p₂
+can be referred to as the *rotation vector*. If the rotation vector is colinear
+with the line p₀p₁, there is no rotation: colors in the space on either side of
+the line p₀p₁ extend in the perpendicular direction. But if the rotation vector
+is not colinear, the gradient is drawn skewed by the angle between p₀p₁ and
+p₀p₂.
 
-If the dot-product (p₁ - p₀) · (p₂ - p₀) is zero (or near-zero for an implementation-defined definition) then the gradient is ill-formed and shall not be rendered.
+If the dot-product (p₁ - p₀) · (p₂ - p₀) is zero (or near-zero for an
+implementation-defined definition) then the gradient is ill-formed and shall not
+be rendered.
 
-Figure 5.12 illustrates linear gradients using the three different color line extend modes and with two different rotation vectors. In each case, three color stops are specified: red at 0.0, yellow at 0.5, and red at 1.0.
+Figure 5.12 illustrates linear gradients using the three different color line
+extend modes and with two different rotation vectors. In each case, three color
+stops are specified: red at 0.0, yellow at 0.5, and red at 1.0.
 
 ![Linear gradients using pad, repeat, and reflect extend modes, and with different rotation vectors.](images/colr_linear_gradients.png)
 
@@ -739,14 +833,20 @@ Figure 5.12 illustrates linear gradients using the three different color line ex
 
 **5.7.11.1.2.3 Radial gradients**
 
-A radial gradient provides gradation of colors along a cylinder defined by two circles. The gradient is defined by circles with center c₀ and radius r₀, and with center c₁ and radius r₁, plus a color line. The color line aligns with the two circles by associating stop offset 0 with the first circle (with center c₀) and aligning stop offset 1.0 with the second circle (with center c₁). 
+A radial gradient provides gradation of colors along a cylinder defined by two
+circles. The gradient is defined by circles with center c₀ and radius r₀, and
+with center c₁ and radius r₁, plus a color line. The color line aligns with the
+two circles by associating stop offset 0 with the first circle (with center c₀)
+and aligning stop offset 1.0 with the second circle (with center c₁). 
 
-NOTE: The term “radial gradient” is used in some contexts for more limited capabilities. In some contexts, the type of gradient defined here is referred to as a “two point conical” gradient.
+NOTE: The term “radial gradient” is used in some contexts for more limited
+capabilities. In some contexts, the type of gradient defined here is referred to
+as a “two point conical” gradient.
 
-The drawing algorithm for radial gradients follows the [HTML WHATWG Canvas specification for
-createRadialGradient()][32], but adapted with with alternate color line extend modes, as
-described in 5.7.11.1.2.1. Radial gradients shall be rendered with results that match the
-results produced by the following steps.
+The drawing algorithm for radial gradients follows the [HTML WHATWG Canvas
+specification for createRadialGradient()][32], but adapted with with alternate
+color line extend modes, as described in 5.7.11.1.2.1. Radial gradients shall be
+rendered with results that match the results produced by the following steps.
 
 With circle center points c₀ and c₁ defined as c₀ = (x₀, y₀) and c₁ = (x₁, y₁):
 
@@ -766,20 +866,37 @@ With circle center points c₀ and c₁ defined as c₀ = (x₀, y₀) and c₁ 
 
 The algorithm provides results in various cases as follows:
 
-* When both radii are 0 (r₀ = r₁ = 0), then r(ω) is always 0 and nothing is painted.
-* If the centers of the circles are distinct, the radii of the circles are different, and neither circle is entirely contained within the radius of the other circle, then the resulting shape resembles a cone that is open to one side. The surface outside the cone is not painted. (See figure 5.13.)
-* If the centers of the circles are distinct but the radii are the same, and neither circle is contained within the other, then the result will be a strip, similar to the flattened projection of a circular cylinder. The surface outside the strip is not painted. (See figure 5.14.)
-* If the radii of the circles are different but one circle is entirely contained within the radius of the other circle, the gradient will radiate in all directions from the inner circle, and the entire surface will be painted. (See figure 5.16.)
+* When both radii are 0 (r₀ = r₁ = 0), then r(ω) is always 0 and nothing is
+painted.
+* If the centers of the circles are distinct, the radii of the circles are
+different, and neither circle is entirely contained within the radius of the
+other circle, then the resulting shape resembles a cone that is open to one
+side. The surface outside the cone is not painted. (See figure 5.13.)
+* If the centers of the circles are distinct but the radii are the same, and
+neither circle is contained within the other, then the result will be a strip,
+similar to the flattened projection of a circular cylinder. The surface outside
+the strip is not painted. (See figure 5.14.)
+* If the radii of the circles are different but one circle is entirely contained
+within the radius of the other circle, the gradient will radiate in all
+directions from the inner circle, and the entire surface will be painted. (See
+figure 5.16.)
 
 > **_TBD: What should the expected behaviour be in the case of both circles exactly overlapping with r > 0? (Only the extensions get painted, but how?)_**
 
-Figure 5.13 illustrates a radial gradient using the three different color line extend modes. The color line is defined with stops for the interval [0, 1]: red at 0.0, yellow at 0.5, and blue at 1.0. Note that the circles that define the gradient are not stroked as part of the gradient itself. Stroked circles have been overlaid in the figure to illustrate the color line and the region that is painted in relation to the two circles.
+Figure 5.13 illustrates a radial gradient using the three different color line
+extend modes. The color line is defined with stops for the interval [0, 1]: red
+at 0.0, yellow at 0.5, and blue at 1.0. Note that the circles that define the
+gradient are not stroked as part of the gradient itself. Stroked circles have
+been overlaid in the figure to illustrate the color line and the region that is
+painted in relation to the two circles.
 
 ![Radial gradients using pad, repeat, and reflect extend modes.](images/colr_radial_gradients.png)
 
 **Figure 5.13 Radial gradients using pad, repeat, and reflect extend modes.**
 
-Figure 5.14 illustrates the case in which the circles have distinct centers but the same radii, and neither circle is contained within the other, giving the appearance of a strip. The color stops and extend modes are as in figure 5.13.
+Figure 5.14 illustrates the case in which the circles have distinct centers but
+the same radii, and neither circle is contained within the other, giving the
+appearance of a strip. The color stops and extend modes are as in figure 5.13.
 
 ![Radial gradients with same-sized circles appearing as a strip.](images/colr_radial_gradients_strip.png)
 
@@ -808,33 +925,59 @@ the other: in that case, the arcs of constant color are complete circles.
 
 **Figure 5.15 For cone- or strip-shaped radial gradients, arcs of constant color bend like the near side of circle 1.**
 
-When one circle is contained within the other, the extension of the gradient beyond the larger circle will fill the entire surface. Colors in the areas inside the inner circle and outside the outer circle are determined by the extend mode. Figure 5.16 illustrates this for the different extend modes.
+When one circle is contained within the other, the extension of the gradient
+beyond the larger circle will fill the entire surface. Colors in the areas
+inside the inner circle and outside the outer circle are determined by the
+extend mode. Figure 5.16 illustrates this for the different extend modes.
 
 ![Radial gradients with one circle contained within the other.](images/colr_radial_gradients_circle_within_circle.png)
 
 **Figure 5.16 Radial gradients with one circle contained within the other.**
 
-NOTE: A scale transformation (see 5.7.11.1.5) can flatten shapes to resemble lines. If a radial gradient is nested in the child sub-graph of a transformation that flattens the circles so that they are nearly lines, the centers may still be separated by some distance. In that case, a radial gradient would appear as a strip or a cone filled with a linear gradient.
+NOTE: A scale transformation (see 5.7.11.1.5) can flatten shapes to resemble
+lines. If a radial gradient is nested in the child sub-graph of a transformation
+that flattens the circles so that they are nearly lines, the centers may still
+be separated by some distance. In that case, a radial gradient would appear as a
+strip or a cone filled with a linear gradient.
 
 > **_TBD: We still need to specify required behaviour for the case in which the transform really flattens the two circles, and the centers, to a line._**
 
 **5.7.11.1.3 Filling shapes**
 
-All basic shapes used in a color glyph are obtained from glyph outlines, referenced using a glyph ID. In a color glyph description, a PaintGlyph table is used to represent a basic shape. 
+All basic shapes used in a color glyph are obtained from glyph outlines,
+referenced using a glyph ID. In a color glyph description, a PaintGlyph table is
+used to represent a basic shape. 
 
-NOTE: Shapes can also be derived using PaintGlyph tables in combination with other tables, such as PaintTransformed (see 5.7.11.1.5) or PaintComposite (see 5.7.11.1.6).
+NOTE: Shapes can also be derived using PaintGlyph tables in combination with
+other tables, such as PaintTransformed (see 5.7.11.1.5) or PaintComposite (see
+5.7.11.1.6).
 
-The PaintGlyph table has a field for the glyph ID, plus an offset to a child paint table that is used as the fill for the shape. The glyph outline is not rendered; only the fill is rendered.
+The PaintGlyph table has a field for the glyph ID, plus an offset to a child
+paint table that is used as the fill for the shape. The glyph outline is not
+rendered; only the fill is rendered.
 
-Any of the basic fill formats, PaintSolid, PaintLinearGradient, or PaintRadialGradient, can be used as the child paint table. This is illustrated in figure 5.17: a PaintGlyph table has a glyph ID for an outline in the shape of a triangle, and it links to a child PaintLinearGradient table. The combination is used to represent a triangle filled with the linear gradient.
+Any of the basic fill formats, PaintSolid, PaintLinearGradient, or
+PaintRadialGradient, can be used as the child paint table. This is illustrated
+in figure 5.17: a PaintGlyph table has a glyph ID for an outline in the shape of
+a triangle, and it links to a child PaintLinearGradient table. The combination
+is used to represent a triangle filled with the linear gradient.
 
 ![PaintGlyph and PaintLinearGradient tables are used to fill a triangle shape with a linear gradient.](images/colr_shape_gradient.png)
 
 **Figure 5.17 PaintGlyph and PaintLinearGradient tables used to fill a shape with a linear gradient.**
 
-Another way to describe the relationship between a PaintGlyph table and its child paint table is that the child provides a fill, and the glyph outline defines a bounds, or *clip region*, for the fill. The child for a PaintGlyph table is not limited to only the basic fill formats. In general, the child can be the root of a sub-graph that describes some graphic composition that comprises the fill for the shape. Or, in the alternate view, the glyph outline defines a clip region that is applied to the composition.
+Another way to describe the relationship between a PaintGlyph table and its
+child paint table is that the child provides a fill, and the glyph outline
+defines a bounds, or *clip region*, for the fill. The child for a PaintGlyph
+table is not limited to only the basic fill formats. In general, the child can
+be the root of a sub-graph that describes some graphic composition that
+comprises the fill for the shape. Or, in the alternate view, the glyph outline
+defines a clip region that is applied to the composition.
 
-To illustrate this, the example in figure 5.17 is extended in figure 5.18 so that a PaintGlyph table links to a second PaintGlyph that links to a PaintLinearGradient: the parent PaintGlyph will clip the filled shape described by the child sub-graph.
+To illustrate this, the example in figure 5.17 is extended in figure 5.18 so
+that a PaintGlyph table links to a second PaintGlyph that links to a
+PaintLinearGradient: the parent PaintGlyph will clip the filled shape described
+by the child sub-graph.
 
 ![A PaintGlyph table defines a clip region for the composition defined by its child sub-graph.](images/colr_shape_shape_gradient.png)
 
@@ -861,19 +1004,15 @@ often will not overlap.
 
 Figure 5.19 illustrates layers using version 0 formats.
 
-![Version 0: Color glyphs are defined by slices of a layer records
-array.](images/colr_layers_v0.png)
+![Version 0: Color glyphs are defined by slices of a layer records array.](images/colr_layers_v0.png)
 
-**Figure 5.19 Version 0: Color glyphs are defined by slices of a layer records
-array.**
+**Figure 5.19 Version 0: Color glyphs are defined by slices of a layer records array.**
 
 When using version 1 formats, use of multiple layers is supported but is
 optional. For example, a simple glyph description need not use any layering, as
 illustrated in figure 5.20:
 
-
-![Complete color glyph definition without use of
-layers.](images/colr_color_glyph_without_layers.png)
+![Complete color glyph definition without use of layers.](images/colr_color_glyph_without_layers.png)
 
 **Figure 5.20 Complete color glyph definition without use of layers.**
 
@@ -924,12 +1063,9 @@ Figure 5.21 illustrates the organizational relationship between PaintColorLayers
 tables, the LayerV1List, and referenced paint tables that are roots of
 sub-graphs.
 
-![Version 1: PaintColrLayers tables specify slices within the LayerV1List,
-providing a layering of content defined in
-sub-graphs.](images/colr_layers_v1.png)
+![Version 1: PaintColrLayers tables specify slices within the LayerV1List, providing a layering of content defined in sub-graphs.](images/colr_layers_v1.png)
 
-**Figure 5.21 Version 1: PaintColrLayers tables specify slices within the
-LayerV1List, providing a layering of content defined in sub-graphs.**
+**Figure 5.21 Version 1: PaintColrLayers tables specify slices within the LayerV1List, providing a layering of content defined in sub-graphs.**
 
 NOTE: Paint table offsets in the LayerV1List table are only used in conjuction
 with PaintColrLayers tables. If a paint table does not need to be referenced via
@@ -942,11 +1078,9 @@ PaintColrLayers table is referenced by a BaseGlyphV1Record, which specifies the
 root of the graph of a color glyph definition for a given base glyph. This is
 illustrated in figure 5.22.
 
-![PaintColrLayers table used as the root of a color glyph
-definition.](images/colr_PaintColrLayers_as_root.png)
+![PaintColrLayers table used as the root of a color glyph definition.](images/colr_PaintColrLayers_as_root.png)
 
-**Figure 5.22 PaintColrLayers table used as the root of a color glyph
-definition.**
+**Figure 5.22 PaintColrLayers table used as the root of a color glyph definition.**
 
 A PaintColorLayers table can also be nested more deeply within the graph,
 providing a layer structure to define some component within a larger color glyph
@@ -961,52 +1095,101 @@ affine transformation matrix. Transformations supported by a matrix can be a
 combination of scale, skew, mirror, rotate, or translate. The transformation is
 applied to all nested paints in the child sub-graph.
 
-The effect of a PaintTransform table is illustrated in figure 5.23: a PaintTransform is used to specify a rotation, and both the glyph outline and gradient in the sub-graph are rotated.
+The effect of a PaintTransform table is illustrated in figure 5.23: a
+PaintTransform is used to specify a rotation, and both the glyph outline and
+gradient in the sub-graph are rotated.
 
 ![A rotation transformation rotates the fill content defined by the child sub-graph.](images/colr_transform_glyph_gradient.png)
 
 **Figure 5.23 A rotation transformation rotates the fill content defined by the child sub-graph.**
 
-If another PaintTransform table occurs within the child sub-graph of the first PaintTransform table, then the other PaintTransform also applies to its child sub-graph. For the sub-sub-graph, the two transformations are combined. To illustrate this, the example in figure 5.23 is extended in figure 5.24 by inserting a mirroring transformation between the PaintGlyph and PaintLinearGradient tables: the glyph outline is rotated as before, but the gradient is mirrored in its (pre-rotation) y-axis as well as being rotated. Notice that both visible elements—the shape and the gradient fill—are affected by the rotation, but only the gradient is affected by the mirroring.
+If another PaintTransform table occurs within the child sub-graph of the first
+PaintTransform table, then the other PaintTransform also applies to its child
+sub-graph. For the sub-sub-graph, the two transformations are combined. To
+illustrate this, the example in figure 5.23 is extended in figure 5.24 by
+inserting a mirroring transformation between the PaintGlyph and
+PaintLinearGradient tables: the glyph outline is rotated as before, but the
+gradient is mirrored in its (pre-rotation) y-axis as well as being rotated.
+Notice that both visible elements—the shape and the gradient fill—are affected
+by the rotation, but only the gradient is affected by the mirroring.
 
 ![Combined effects of a transformation nested within the child sub-graph of another transformation.](images/colr_transform_glyph_transform_gradient.png)
 
 **Figure 5.24 Combined effects of a transformation nested within the child sub-graph of another transformation.**
 
-The affine transformation is specified in a PaintTransform table as matrix elements. See <span style="color:red">5.7.11.2.x</span> for format details.
+The affine transformation is specified in a PaintTransform table as matrix
+elements. See 5.7.11.2.5.7 for format details.
 
-Whereas the PaintTransformed table supports several types of transforms, the PaintTranslate, PaintRotate and PaintSkew tables support specific transformations: translation, rotation and skew. The PaintTranslate table provides a more compact representation for this common transform. The significant difference of the PaintRotate and PaintSkew formats is that rotations and skews are specified as angles, in counter-clockwise degrees.
+Whereas the PaintTransformed table supports several types of transforms, the
+PaintTranslate, PaintRotate and PaintSkew tables support specific
+transformations: translation, rotation and skew. The PaintTranslate table
+provides a more compact representation for this common transform. The
+significant difference of the PaintRotate and PaintSkew formats is that
+rotations and skews are specified as angles, in counter-clockwise degrees.
 
-NOTE: Specifying the rotation or skew as an angle can have a signficant benefit in variable fonts if an angle of skew or rotation needs to vary, since it is easier to implement variation of angles when specified directly rather than as matrix elements. This is because the matrix elements for a rotation or skew are the sine, cosine or tangent of the rotation angle, which do not change in linear proportion to the angle. To achieve a linear variation of rotation using matrix elements would require approximating the variation using multiple delta sets.
+NOTE: Specifying the rotation or skew as an angle can have a signficant benefit
+in variable fonts if an angle of skew or rotation needs to vary, since it is
+easier to implement variation of angles when specified directly rather than as
+matrix elements. This is because the matrix elements for a rotation or skew are
+the sine, cosine or tangent of the rotation angle, which do not change in linear
+proportion to the angle. To achieve a linear variation of rotation using matrix
+elements would require approximating the variation using multiple delta sets.
 
 **5.7.11.1.6 Compositing and blending**
 
-When a color glyph has overlapping content in two layers, the pixels in the two layers must be combined in some way. If the content in the top layer has full opacity, then normally the pixels from that layer are shown, occluding overlapping pixels from lower layers. If the top layer has some transparency (some portion has alpha less than 1.0), then blending of colors for overlapping pixels occurs by default. The default interaction between layers uses simple alpha compositing, as described in [Compositing and Blending Level 1][1].
+When a color glyph has overlapping content in two layers, the pixels in the two
+layers must be combined in some way. If the content in the top layer has full
+opacity, then normally the pixels from that layer are shown, occluding
+overlapping pixels from lower layers. If the top layer has some transparency
+(some portion has alpha less than 1.0), then blending of colors for overlapping
+pixels occurs by default. The default interaction between layers uses simple
+alpha compositing, as described in [Compositing and Blending Level 1][1].
 
-A PaintComposite table can be used to get other compositing or blending effects. The
-PaintComposite table combines content defined by two sub-graphs: a *source* sub-graph;
-and a destination, or *backdrop*, sub-graph. First, the paint operations
-for the backdrop sub-graph are executed, then the drawing operations for the source sub-graph are executed
-and combined with backdrop using a specified compositing or blending mode.
-The available modes are given in the CompositionModes enumeration (see 5.7.11.2.x). The effect and processing rule of each mode are specified in [Compositing and Blending Level 1][1].
+A PaintComposite table can be used to get other compositing or blending effects.
+The PaintComposite table combines content defined by two sub-graphs: a *source*
+sub-graph; and a destination, or *backdrop*, sub-graph. First, the paint
+operations for the backdrop sub-graph are executed, then the drawing operations
+for the source sub-graph are executed and combined with backdrop using a
+specified compositing or blending mode. The available modes are given in the
+CompositionModes enumeration (see 5.7.11.2.5.11). The effect and processing rule
+of each mode are specified in [Compositing and Blending Level 1][1].
 
-The available modes fall into two general types: compositing modes, also referred to as “Porter-Duff” modes; and blending modes. In rough terms, the Porter-Duff modes determine how much effect pixels from the source and the backdrop each contribute in the result, while blending modes determine how color values for pixels from the source and backdrop are combined. These are illustrated with examples in figures 5.25 and 5.26: in each case, red and blue rectangles are the source and backdrop content.
+The available modes fall into two general types: compositing modes, also
+referred to as “Porter-Duff” modes; and blending modes. In rough terms, the
+Porter-Duff modes determine how much effect pixels from the source and the
+backdrop each contribute in the result, while blending modes determine how color
+values for pixels from the source and backdrop are combined. These are
+illustrated with examples in figures 5.25 and 5.26: in each case, red and blue
+rectangles are the source and backdrop content.
 
-Figure 5.25 shows the effect of a Porter-Duff mode, “XOR”, which has the effect that only non-overlapping pixels contribute to the result.
+Figure 5.25 shows the effect of a Porter-Duff mode, “XOR”, which has the effect
+that only non-overlapping pixels contribute to the result.
 
 ![Two content elements combined using the Porter-Duff XOR mode.](images/colr_porter-duff_xor.png)
 
 **Figure 5.25 Two content elements combined using the Porter-Duff XOR mode.**
 
-Figure 5.26 shows the effect of a “lighten” blending mode, which has the effect that the R, G, and B color components for each pixel in the result is the greater of the R, G, and B values from corresponding pixels in the source and backdrop.
+Figure 5.26 shows the effect of a “lighten” blending mode, which has the effect
+that the R, G, and B color components for each pixel in the result is the
+greater of the R, G, and B values from corresponding pixels in the source and
+backdrop.
 
 ![Two content elements combined using the lighten blending mode.](images/colr_blend_lighten.png)
 
 **Figure 5.26 Two content elements combined using the lighten blending mode.**
 
-For complete details on each of the Porter-Duff and blending modes, see the [Compositing and Blending Level 1][1] specification.
+For complete details on each of the Porter-Duff and blending modes, see the
+[Compositing and Blending Level 1][1] specification.
 
-Figure 5.27 illustrates how the PaintComposite table is used in combination with content sub-graphs to implement an alternate compositing effect. The source sub-graph defines a green capital A; the backdrop sub-graph defines a black circle. The compositing mode used is “source out”, which has the effect that the source content punches out a hole in the backdrop. (For this mode, the fill color of the source is irrelevant; a black or yellow "A" would have the same effect.) A red rectangle is included as a lower layer to show that the backdrop has been punched out by the source, making that portion of the lower layer visible.
+Figure 5.27 illustrates how the PaintComposite table is used in combination with
+content sub-graphs to implement an alternate compositing effect. The source
+sub-graph defines a green capital A; the backdrop sub-graph defines a black
+circle. The compositing mode used is “source out”, which has the effect that the
+source content punches out a hole in the backdrop. (For this mode, the fill
+color of the source is irrelevant; a black or yellow "A" would have the same
+effect.) A red rectangle is included as a lower layer to show that the backdrop
+has been punched out by the source, making that portion of the lower layer
+visible.
 
 ![A color glyph using a PaintComposite table to punch out a shape from the fill of a circle.](images/colr_PaintCompositeGraph.png)
 
@@ -1020,16 +1203,23 @@ Within a color font, many color glyphs might share components in common. For exa
 
 **Figure 5.28 Emoji clock faces for 12 o’clock, 1 o’clock and 2 o’clock.**
 
-Several components are shared between these color glyphs: the entire face, with a gradient background and dots at the 3, 6, 9 and 12 positions; the minute hand pointing to the 12 position; and the circles in the center. Also, note that the four dots have the same shape and fill, and differ only in their position. In addition, the hour hands have the same shape and fill, and differ only in their orientation.
+Several components are shared between these color glyphs: the entire face, with
+a gradient background and dots at the 3, 6, 9 and 12 positions; the minute hand
+pointing to the 12 position; and the circles in the center. Also, note that the
+four dots have the same shape and fill, and differ only in their position. In
+addition, the hour hands have the same shape and fill, and differ only in their
+orientation.
 
-There are several ways in which elements of a color glyph description can be re-used:
+There are several ways in which elements of a color glyph description can be
+re-used:
 
 * Reference to shared subtables
 * Use of a PaintColrLayers table
 * Use of a PaintColrGlyph table
 
 The PaintColrLayers and PaintColrGlyph table formats create a potential for
-introducing cycles within the graph of a color glyph, which would be invalid (see 5.7.11.1.9).
+introducing cycles within the graph of a color glyph, which would be invalid
+(see 5.7.11.1.9).
 
 **5.7.11.1.7.1 Re-use by referencing shared subtables**
 
@@ -1053,22 +1243,18 @@ This is illustrated in the following figures. The first shows a sub-graph
 defining the hour hand, with upright orientation, using a PaintGlyph and a
 PaintSolid table. Example file offsets for the tables are indicated.
 
-![A PaintGlyph and PaintSolid table are used to define the clock hour hand
-pointing to 12.](images/colr_hour-hand-component.png)
+![A PaintGlyph and PaintSolid table are used to define the clock hour hand pointing to 12.](images/colr_hour-hand-component.png)
 
-**Figure 5.29 A PaintGlyph and PaintSolid table are used to define the clock
-hour hand pointing to 12.**
+**Figure 5.29 A PaintGlyph and PaintSolid table are used to define the clock hour hand pointing to 12.**
 
 The next figure shows this sub-graph of paint tables being re-used, in some
 cases linked from PaintRotate tables that rotate the hour hand to point to
 different clock positions as needed. All of the paint tables that reference this
 sub-graph occur earlier in the file.
 
-![The sub-graph for the hour hand is re-used with PaintRotate tables to point to
-different hours.](images/colr_reuse-hour-hand-rotated.png)
+![The sub-graph for the hour hand is re-used with PaintRotate tables to point to different hours.](images/colr_reuse-hour-hand-rotated.png)
 
-**Figure 5.30 The sub-graphs for the hour hand are re-used with PaintRotate
-tables to point to different hours.**
+**Figure 5.30 The sub-graphs for the hour hand are re-used with PaintRotate tables to point to different hours.**
 
 **5.7.11.1.7.2 Re-use using PaintColrLayers**
 
@@ -1086,11 +1272,9 @@ are given in the LayerV1List as contiguous layers, as shown in figure 5.31. (For
 brevity, the visual result for each sub-graph is shown, but not the paint
 details.)
 
-![Common clock face elements given as a slice within the LayerV1List
-table.](images/colr_clock_common.png)
+![Common clock face elements given as a slice within the LayerV1List table.](images/colr_clock_common.png)
 
-**Figure 5.31 Common clock face elements given as a slice within the LayerV1List
-table.**
+**Figure 5.31 Common clock face elements given as a slice within the LayerV1List table.**
 
 A PaintColrLayers table can reference any contiguous slice of layers in the
 LayerV1List table. Thus, the set of layers shown in figure 5.31 can be
@@ -1108,12 +1292,9 @@ the composition for all the remaining common layers. It is represented using a
 nested PaintColrLayers table that references the slice within the LayerV1List
 for the common clock face elements shown in figure 5.31.
 
-![A PaintColrLayers table is used to reference a set of layers that define a
-shared clock face
-composition.](images/colr_reuse_clock-face_PaintColrLayers.png)
+![A PaintColrLayers table is used to reference a set of layers that define a shared clock face composition.](images/colr_reuse_clock-face_PaintColrLayers.png)
 
-**Figure 5.32 A PaintColrLayers table is used to reference a set of layers that
-define a shared clock face composition.**
+**Figure 5.32 A PaintColrLayers table is used to reference a set of layers that define a shared clock face composition.**
 
 The color glyphs for other clock face emoji could be structured in exactly the
 same way, using a nested PaintColrLayers table to re-use the layer composition
@@ -1147,11 +1328,9 @@ base glyph ID 63163. The color glyph for the one o’clock emoji is defined with
 three layers, as before, but now the bottom layer uses a PaintColrGlyph table
 that references the color glyph definition for glyph ID 63163.
 
-![A PaintColrGlyph table is used to reference the shared clock face composition
-via a glyph ID.](images/colr_reuse_clock-face_PaintColrGlyph.png)
+![A PaintColrGlyph table is used to reference the shared clock face composition via a glyph ID.](images/colr_reuse_clock-face_PaintColrGlyph.png)
 
-**Figure 5.33 A PaintColrGlyph table is used to reference the shared clock face
-composition via a glyph ID.**
+**Figure 5.33 A PaintColrGlyph table is used to reference the shared clock face composition via a glyph ID.**
 
 While the PaintColrGlyph and PaintColrLayers tables are similar in being able to
 reference a layer set as a re-usable component, they could be handled
@@ -1295,7 +1474,8 @@ given, unless otherwise indicated.
 
 **5.7.11.2.1 COLR header**
 
-The COLR table begins with a header. Two versions have been defined. Offsets in the header are from the start of the table.
+The COLR table begins with a header. Two versions have been defined. Offsets in
+the header are from the start of the table.
 
 **5.7.11.2.1.1 COLR version 0**
 
@@ -1309,7 +1489,8 @@ The COLR table begins with a header. Two versions have been defined. Offsets in 
 | Offset32 | layerRecordsOffset | Offset to layerRecords array. |
 | uint16 | numLayerRecords | Number of Layer records. |
 
-NOTE: For fonts that use COLR version 0, some early Windows implementations of the COLR table require glyph ID 1 to be the .null glyph.
+NOTE: For fonts that use COLR version 0, some early Windows implementations of
+the COLR table require glyph ID 1 to be the .null glyph.
 
 **5.7.11.2.1.2 COLR version 1**
 
@@ -1381,7 +1562,9 @@ glyph index, an index into the layerRecords array, and the number of layers.
 The glyph ID shall be less than the numGlyphs value in the &#39;maxp&#39; table
 (5.2.6).
 
-The BaseGlyph records shall be sorted in increasing glyphID order. It is assumed that a binary search can be used to find a matching BaseGlyph record for a specific glyphID.
+The BaseGlyph records shall be sorted in increasing glyphID order. It is assumed
+that a binary search can be used to find a matching BaseGlyph record for a
+specific glyphID.
 
 The color glyph for a given base glyph is defined by the consecutive records in
 the layerRecords array for the specified number of layers, starting with the
@@ -1841,9 +2024,12 @@ destination.
 
 **5.7.11.2.5.11 Format 11: PaintComposite**
 
-Format 11 is used to combine two layered compositions, referred to as *source* and *backdrop*, using different compositing or blending modes. The available compositing and blending modes are defined in an enumeration. See 5.7.11.1.6 for general information and examples.
+Format 11 is used to combine two layered compositions, referred to as *source*
+and *backdrop*, using different compositing or blending modes. The available
+compositing and blending modes are defined in an enumeration. See 5.7.11.1.6 for
+general information and examples.
 
-> *Note:* The backdrop is also referred to as the “destination”.
+NOTE: The backdrop is also referred to as the “destination”.
 
 *PaintComposite table (format 11):*
 
@@ -1929,24 +2115,43 @@ source and backdrop as follows:
 
 _Delete the fourth paragraph, "Variation data is comprised..."._
 
-_Add a new sub-clause 7.2.3.1 after the third paragraph ("The item variation store formats..."), with text as follows:_
+_Add a new sub-clause 7.2.3.1 after the third paragraph ("The item variation
+store formats..."), with text as follows:_
 
 **7.2.3.1 Associating target items to variation data**
 
-Variation data is comprised of delta adjustment values that apply to particular target items. Some mechanism is needed to associate delta values with target items. In the item variation store, a block of delta values has an implicit delta-set index, and separate data outside the item variation store is provided that indicates the delta-set index associated with a given target item. Depending on the parent table in which an item variation store is used, different means are used to provide these associations:
+Variation data is comprised of delta adjustment values that apply to particular
+target items. Some mechanism is needed to associate delta values with target
+items. In the item variation store, a block of delta values has an implicit
+delta-set index, and separate data outside the item variation store is provided
+that indicates the delta-set index associated with a given target item.
+Depending on the parent table in which an item variation store is used,
+different means are used to provide these associations:
 
-* In the MVAR table, an array of records identifies target data items in various other tables, along with the delta-set index for each respective item.
-* In the HVAR and VVAR tables, the target data items are glyph metric arrays in the &#39;hmtx&#39; and &#39;vmtx&#39; tables. Subtables in the HVAR and VVAR tables provide the mapping between the target data items and delta-set indices.
-* For the BASE, GDEF, GPOS, and JSTF tables, a target data item is associated with a delta-set index using a related VariationIndex table (see 6.2.8) within the same subtable that contains the target item.
-* In the COLR table, target data items are specified in structures that combine a basic data type, such FWORD, with a delta-set index.
+* In the MVAR table, an array of records identifies target data items in various
+other tables, along with the delta-set index for each respective item.
+* In the HVAR and VVAR tables, the target data items are glyph metric arrays in
+the &#39;hmtx&#39; and &#39;vmtx&#39; tables. Subtables in the HVAR and VVAR
+tables provide the mapping between the target data items and delta-set indices.
+* For the BASE, GDEF, GPOS, and JSTF tables, a target data item is associated
+with a delta-set index using a related VariationIndex table (see 6.2.8) within
+the same subtable that contains the target item.
+* In the COLR table, target data items are specified in structures that combine
+a basic data type, such FWORD, with a delta-set index.
 
-The structures used in the COLR table currently are used only in that table but may be used in other tables in future versions, and so are defined here as common formats. Structures are defined to wrap the FWORD, UFWORD, F2DOT14 and Fixed basic types.
+The structures used in the COLR table currently are used only in that table but
+may be used in other tables in future versions, and so are defined here as
+common formats. Structures are defined to wrap the FWORD, UFWORD, F2DOT14 and
+Fixed basic types.
 
-Note: as described below, each delta-set index is represented as two index components, an *outer* index and an *inner* index, corresponding to a two-level organizational hierarchy. This is described in detail below.
+Note: as described below, each delta-set index is represented as two index
+components, an *outer* index and an *inner* index, corresponding to a two-level
+organizational hierarchy. This is described in detail below.
 
 #### VarFWord
 
-The FWORD type is used to represent coordinates in the glyph design grid. The VarFWord record is used to represent a coordinate that can be variable.
+The FWORD type is used to represent coordinates in the glyph design grid. The
+VarFWord record is used to represent a coordinate that can be variable.
 
 | Type | Name | Description |
 |-|-|-|
@@ -1956,7 +2161,8 @@ The FWORD type is used to represent coordinates in the glyph design grid. The Va
 
 #### VarUFWord
 
-The UFWord type is used to represent distances in the glyph design grid. The VarUFWord record is used to represent a distance that can be variable.
+The UFWord type is used to represent distances in the glyph design grid. The
+VarUFWord record is used to represent a distance that can be variable.
 
 | Type | Name | Description |
 |-|-|-|
@@ -1966,7 +2172,9 @@ The UFWord type is used to represent distances in the glyph design grid. The Var
 
 #### VarF2Dot14
 
-The F2DOT14 type is typically used to represent values that are inherently limited to a range of [-1, 1], or a range of [0, 1]. The VarF2Dot14 record is used to represent such a value that can be variable.
+The F2DOT14 type is typically used to represent values that are inherently
+limited to a range of [-1, 1], or a range of [0, 1]. The VarF2Dot14 record is
+used to represent such a value that can be variable.
 
 | Type | Name | Description |
 |-|-|-|
@@ -1974,13 +2182,20 @@ The F2DOT14 type is typically used to represent values that are inherently limit
 | uint16 | varOuterIndex | |
 | uint16 | varInnerIndex | |
 
-In general, variation deltas are (logically) signed 16-bit integers, and in most cases, they are applied to signed 16-bit values (FWORDs) or unsigned 16-bit values (UFWORDs). When scaled deltas are applied to F2DOT14 values, the F2DOT14 value is treated like a 16-bit integer. (In this sense, the delta and the F2DOT14 value can be viewed as integer values in units of 1/16384ths.)
+In general, variation deltas are (logically) signed 16-bit integers, and in most
+cases, they are applied to signed 16-bit values (FWORDs) or unsigned 16-bit
+values (UFWORDs). When scaled deltas are applied to F2DOT14 values, the F2DOT14
+value is treated like a 16-bit integer. (In this sense, the delta and the
+F2DOT14 value can be viewed as integer values in units of 1/16384ths.)
 
-If the context in which the VarF2Dot14 is used contrains the valid range for the default value, then any variations by applying deltas are clipped to that range.
+If the context in which the VarF2Dot14 is used contrains the valid range for the
+default value, then any variations by applying deltas are clipped to that range.
 
 #### VarFixed
 
-The Fixed type is intended for floating values, such as variation-space coordinates. The VarFixed record is used to represent such a value that can be variable.
+The Fixed type is intended for floating values, such as variation-space
+coordinates. The VarFixed record is used to represent such a value that can be
+variable.
 
 | Type | Name | Description |
 |-|-|-|
@@ -1988,72 +2203,113 @@ The Fixed type is intended for floating values, such as variation-space coordina
 | uint16 | varOuterIndex | |
 | uint16 | varInnerIndex | |
 
-While in most cases deltas are applied to 16-bit types, Fixed is a 32-bit (16.16) type and requires 32-bit deltas. The DeltaSet record used in the ItemVariationData subtable format can accommodate deltas that are, logically, either 16-bit or 32-bit. See the description of the [ItemVariationData subtable](#itemvariationdata-subtable), below, for details.
+While in most cases deltas are applied to 16-bit types, Fixed is a 32-bit
+(16.16) type and requires 32-bit deltas. The DeltaSet record used in the
+ItemVariationData subtable format can accommodate deltas that are, logically,
+either 16-bit or 32-bit. See the description of the [ItemVariationData
+subtable](#itemvariationdata-subtable), below, for details.
 
-When scaled deltas are applied to Fixed values, the Fixed value is treated like a 32-bit integer. (In this sense, the delta and the Fixed value can be viewed as integer values in units of 1/65536ths.)
+When scaled deltas are applied to Fixed values, the Fixed value is treated like
+a 32-bit integer. (In this sense, the delta and the Fixed value can be viewed as
+integer values in units of 1/65536ths.)
 
-_Insert a sub-clause heading, "7.2.3.2 Variation data", after the newly-inserted text above, and before the paragraph beginning, "The ItemVariationStore table includes a variation region list..." Re-number subsequent sub-clauses accordingly._
+_Insert a sub-clause heading, "7.2.3.2 Variation data", after the newly-inserted
+text above, and before the paragraph beginning, "The ItemVariationStore table
+includes a variation region list..." Re-number subsequent sub-clauses
+accordingly._
 
-_In the fifth paragraph that follows the figure in (now) 7.2.3.2, delete the first sentence, "A complete delta set index... within that subtable." Before that pragraph, insert the following paragraph:_
+_In the fifth paragraph that follows the figure in (now) 7.2.3.2, delete the
+first sentence, "A complete delta set index... within that subtable." Before
+that pragraph, insert the following paragraph:_
 
-A complete delta-set index involves an outer-level index into the ItemVariationData subtable array, plus an inner-level index to a delta-set row within that subtable. A special meaning is assigned to a delta-set index 0xFFFF/0xFFFF (that is, outer-level and inner-level portions are both 0xFFFF): this is used to indicate that there is no variation data for a given item. Functionally, this would be equivalent to referencing delta-set data consisting of only deltas of 0 for all regions.
+A complete delta-set index involves an outer-level index into the
+ItemVariationData subtable array, plus an inner-level index to a delta-set row
+within that subtable. A special meaning is assigned to a delta-set index
+0xFFFF/0xFFFF (that is, outer-level and inner-level portions are both 0xFFFF):
+this is used to indicate that there is no variation data for a given item.
+Functionally, this would be equivalent to referencing delta-set data consisting
+of only deltas of 0 for all regions.
 
-_In 7.2.3.3 (previously, 7.2.3.1), "Variation regions", in the table for the VariationRegionList structure, add the following sentence to the end of the description for the regionCount field._
+_In 7.2.3.3 (previously, 7.2.3.1), "Variation regions", in the table for the
+VariationRegionList structure, add the following sentence to the end of the
+description for the regionCount field._
 
 Shall be less than 32,736.
 
-_After the table for the VariationRegionList structure, add the following paragraph:_
+_After the table for the VariationRegionList structure, add the following
+paragraph:_
 
-The high-order bit of the regionCount field is reserved for future use, and shall be cleared.
+The high-order bit of the regionCount field is reserved for future use, and
+shall be cleared.
 
-_In 7.2.3.4 (previously 7.2.3.2), "Item variation store and item variation data tables", in the paragraph that follows the table for the ItemVariationStore structure, delete the first sentence, "The item variation store includes an array of offsets to item variation data subtables. Before that paragraph, insert the following paragraph and note:_
+_In 7.2.3.4 (previously 7.2.3.2), "Item variation store and item variation data
+tables", in the paragraph that follows the table for the ItemVariationStore
+structure, delete the first sentence, "The item variation store includes an
+array of offsets to item variation data subtables. Before that paragraph, insert
+the following paragraph and note:_
 
-The item variation store includes an offset to a variation region list and an array of offsets to item variation data subtables.
+The item variation store includes an offset to a variation region list and an
+array of offsets to item variation data subtables.
 
-NOTE: Indices into the itemVariationDataOffsets array are stored in parent tables as delta-set “outer” indices with each such index having a corresponding “inner” index. If the outer index points to a NULL offset, then any inner index will be invalid. The itemVariationDataOffsets array should not include any NULL offsets.
+NOTE: Indices into the itemVariationDataOffsets array are stored in parent
+tables as delta-set “outer” indices with each such index having a corresponding
+“inner” index. If the outer index points to a NULL offset, then any inner index
+will be invalid. The itemVariationDataOffsets array should not include any NULL
+offsets.
 
-_In 7.2.3.4, in the table for the ItemVariationData subtable structure, replace the field name "shortDeltaCount" with "wordDeltaCount", and replace the description of that field with the following:"_
+_In 7.2.3.4, in the table for the ItemVariationData subtable structure, replace
+the field name "shortDeltaCount" with "wordDeltaCount", and replace the
+description of that field with the following:"_
 
 A packed field: the high bit is a flag—see details below.
 
-_Following the table for the ItemVariationData subtable structure, replace the remainder of 7.2.3.4 (including the table for the DeltaSet record structure) with the following:_
+_Following the table for the ItemVariationData subtable structure, replace the
+remainder of 7.2.3.4 (including the table for the DeltaSet record structure)
+with the following:_
 
-The wordDeltaCount field contains a packed value that includes a flag and a “word” delta count. The format of this value is as follows:
+The wordDeltaCount field contains a packed value that includes a flag and a
+“word” delta count. The format of this value is as follows:
 
 | Mask | Name | Description |
 |-|-|-|
 | 0x8000 | LONG_WORDS | Flag indicating that “word” deltas are long (int32) |
 | 0x7FFF | WORD_DELTA_COUNT_MASK | Count of “word” deltas |
 
-The representation of delta values uses a mix of long types (“words”) and short types. If the LONG_WORDS flag is set, deltas are represented using a mix of int32 and int16 values. This representation is only used for deltas that are to be applied to data items of Fixed or 32-bit integer types. If the flag is not set, deltas are presented using a mix of int16 and int8 values. See the description of the DeltaSet record below for additional details.
+The representation of delta values uses a mix of long types (“words”) and short
+types. If the LONG_WORDS flag is set, deltas are represented using a mix of
+int32 and int16 values. This representation is only used for deltas that are to
+be applied to data items of Fixed or 32-bit integer types. If the flag is not
+set, deltas are presented using a mix of int16 and int8 values. See the
+description of the DeltaSet record below for additional details.
 
-The count value indicated by WORD_DELTA_COUNT_MASK is a count of the number of deltas that use the long (“word”) representation, and shall be less than or equal to regionIndexCount.
+The count value indicated by WORD_DELTA_COUNT_MASK is a count of the number of
+deltas that use the long (“word”) representation, and shall be less than or
+equal to regionIndexCount.
 
-The deltaSets array represents a logical two-dimensional table of delta values with itemCount rows and regionIndexCount columns. Rows in the table provide sets of deltas for particular target items, and columns correspond to regions of the variation space. Each DeltaSet record in the array represents one row of the delta-value table — one delta set.
+The deltaSets array represents a logical two-dimensional table of delta values
+with itemCount rows and regionIndexCount columns. Rows in the table provide sets
+of deltas for particular target items, and columns correspond to regions of the
+variation space. Each DeltaSet record in the array represents one row of the
+delta-value table — one delta set.
 
 *DeltaSet record:*
 
-<table>
-<tbody>
+| Type | Name | Description |
+|-|-|-|
+| int16 and int8<br>*or*<br>int32 and int16 | deltaData&#x200B;[regionIndexCount] | Variation delta values. |
 
-<tr>
-<th>Type</th>
-<th>Name</th>
-<th>Description</th>
-</tr>
+Logically, each DeltaSet record has regionIndexCount number of elements. The
+elements are represented using long and short types, as described above. These
+are either int16 and int8, or int32 and int16, according to whether the
+LONG_WORDS flag was set. The delta array has a sequence of deltas using the long
+type followed by sequence of deltas using the short type. The count of deltas
+using the long type is derived using WORD_DELTA_COUNT_MASK. The remaining
+elements use the short type. The length of the data for each row, in bytes, is
+regionIndexCount + (wordDeltaCount && WORD_DELTA_COUNT_MASK) if the LONG_WORDS
+flag is not set, or 2 x that amount if the flag is set.
 
-<tr>
-<td>int16 and int8<br><em>or</em><br>int32 and int16</td>
-<td>deltaData&#x200B;[regionIndexCount]</td>
-<td>Variation delta values.</td>
-</tr>
-
-</tbody>
-</table>
-
-Logically, each DeltaSet record has regionIndexCount number of elements. The elements are represented using long and short types, as described above. These are either int16 and int8, or int32 and int16, according to whether the LONG_WORDS flag was set. The delta array has a sequence of deltas using the long type followed by sequence of deltas using the short type. The count of deltas using the long type is derived using WORD_DELTA_COUNT_MASK. The remaining elements use the short type. The length of the data for each row, in bytes, is regionIndexCount + (wordDeltaCount && WORD_DELTA_COUNT_MASK) if the LONG_WORDS flag is not set, or 2 x that amount if the flag is set.
-
-NOTE: Delta values are each represented directly. They are not packed as in the tuple variation store.
+NOTE: Delta values are each represented directly. They are not packed as in the
+tuple variation store.
 
 ## A.4 Changes to OFF Bibliography
 
