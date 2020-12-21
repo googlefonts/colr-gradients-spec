@@ -1703,13 +1703,24 @@ current color glyph definition.
 
 **5.7.11.2.5.7 Format 7: PaintTransformed**
 
+Format 7 is used to apply an affine transformation to a sub-graph. The paint
+table that is the root of the sub-graph is linked as a child. See 5.7.11.1.5 for
+general information regarding transformations in a color glyph definition.
+
+*PaintTransformed table (format 7):*
+
 | Type | Field name | Description |
 |-|-|-|
 | uint8 | format | Set to 7. |
-| Offset24 | paintOffset | Offset to a Paint subtable, from start of PaintTransformed table. |
+| Offset24 | paintOffset | Offset to a Paint subtable. |
 | Affine2x3 | transform | An Affine2x3 record (inline). |
 
-Affine2x3 record
+The affine transformation is defined by a 2×3 matrix, specified in an Affine2x3
+record. The 2×3 matrix supports scale, skew, reflection, rotation, and
+translation transformations. The matrix elements use VarFixed records, allowing
+the transform definition to be variable in a variable font.
+
+*Affine2x3 record:*
 
 | Type | Name | Description |
 |-|-|-|
@@ -1720,17 +1731,23 @@ Affine2x3 record
 | VarFixed | dx | Translation in x direction. |
 | VarFixed | dy | Translation in y direction. |
 
-The `Affine2x3` record is a 2x3 matrix for 2D affine transformations, so
-that for a transformation matrix _M_ and an extended starting vector _v = (x, y, 1)_
-the mapped vector _v′_ is calculated as _v′ = M * v_. That is:
+For a pre-transformation position *(x, y)*,  The post-transformation position *(x&#x2032;, y&#x2032;)* is calculated as follows:
 
-_v′<sub>x</sub>_ = _xx * x + xy * y + dx_  
-_v′<sub>y</sub>_ = _yx * x + yy * y + dy_
+*x&#x2032;* = *xx \* x + xy \* y + dx*  
+*y&#x2032;* = *yx \* x + yy \* y + dy*
 
-_Note:_ It is helpful to understand linear transformations by their effect
+NOTE: It is helpful to understand linear transformations by their effect
 on *x-* and *y-basis* vectors _î = (1, 0)_ and _ĵ = (0, 1)_. The transform
-described by the Affine2x3 record maps the basis vectors to _î′ = (xx, yx)_ 
-and _ĵ′ = (xy, yy)_, and translates the origin to _(dx, dy)_.
+described by the Affine2x3 record maps the basis vectors to _î&#x2032; = (xx,
+yx)_ 
+and _ĵ&#x2032; = (xy, yy)_, and translates the origin to _(dx, dy)_.
+
+When the transformed composition from the referenced paint table (and its
+sub-graph) is composed into the destination (represented by the parent of this
+table), the source design grid origin is aligned to the destination design grid
+origin. The transform can translate the source such that a pre-transform
+position (0,0) is moved elsewhere. The *post-transform* origin, (0,0), is
+aligned to the destination origin.
 
 **5.7.11.2.5.8 Format 8: PaintTranslate**
 
