@@ -21,9 +21,6 @@ December 2019
 - [OFF Changes](#off-changes)
   - [COLR table](#off-5711-colr--color-table)
     - [Data structures](#colr-v1-data-structures)
-      - [Constraints](#constraints)
-        - [Bounded Layers Only](#bounded-layers-only)
-        - [Bounding Box](#bounding-box)
       - [Understanding COLR v1](#understanding-colr-v1)
         - [Alpha](#alpha)
 - [Implementation](#implementation)
@@ -158,62 +155,6 @@ See section [Reusable Parts](#reusable-parts).
 ## OFF 5.7.11 COLR – Color Table
 
 ### COLR v1 data structures
-
-#### Constraints
-
-Constraints on the data structures making up a COLR version 1 should
-be noted.
-
-
-
-##### Bounded Layers Only
-
-The `BaseGlyphV1Record` paint must define a bounded region. That is,
-is must paint within an area for which a finite bounding box could be
-defined. Implementations must confirm this invariant.
-A `BaseGlyphV1Record` with an unbounded paint must not render.
-
-The following paints are always bounded:
-
-- `PaintGlyph`
-- `PaintColrGlyph`
-
-The following paints are always unbounded:
-
-- `PaintSolid`
-- `PaintLinearGradient`
-- `PaintRadialGradient`
-
-The following paints *may* be bounded:
-
-- `PaintTransformed` is bounded IFF the source is bounded
-- `PaintComposite` boundedness varies by mode:
-   - Always bounded
-      - `COMPOSITE_CLEAR`
-   - Bounded IFF src is bounded
-      - `COMPOSITE_SRC`
-      - `COMPOSITE_SRC_OUT`
-   - Bounded IFF backdrop is bounded
-      - `COMPOSITE_DEST`
-      - `COMPOSITE_DEST_OUT`
-   - Bounded IFF src OR backdrop is bounded
-      - `COMPOSITE_SRC_IN`
-      - `COMPOSITE_DEST_IN`
-   - Bounded IFF src AND backdrop are bounded
-      - *all other modes*
-- `PaintColrLayers` is bounded IFF all referenced layers are bounded
-
-##### Bounding Box
-
-The bounding box of the base (non-COLR) glyph referenced from the
-`BaseGlyphV1Record` (by `BaseGlyphV1Record::gid`) should be taken
-to describe the bounding box for the COLR v1 glyph.
-
-Note: A `glyf` entry with two points at the diagonal extrema would suffice.
-
-Note: This can be used to allocate a drawing surface without traversing
-the COLR v1 glyph structure.
-
 
 #### Understanding COLR v1
 
@@ -1235,35 +1176,34 @@ advance height and vertical Y origin as the base glyph.
 For color glyphs using version 1 formats, the advance width of the base glyph
 shall be used as the advance width for the color glyph. If the font has vertical
 metrics, the advance height and vertical Y origin of the base glyph shall be
-used for the color glyph. The advance width or height of glyphs referenced by
+used for the color glyph. The advance width and height of glyphs referenced by
 PaintGlyph tables are not required to be the same as that of the base glyph and
 are ignored.
 
 The bounding box of the base glyph is used as the bounding box of the color
-glyph. A &#39;glyf&#39; entry with two points at diagonal extrema are sufficient
+glyph. A &#39;glyf&#39; entry with two points at diagonal extrema is sufficient
 to define the bounding box.
 
 NOTE: The bounding box of the base glyph can be used to allocate a drawing
 surface without needing to traverse the graph of the color glyph definition.
 
 A valid color glyph definition shall define a bounded region—that is, it shall
-paint within a region for which a finite bounding box could be defined.
-Applications shall confirm that a color glyph defines graphic operations that
-are bounded, and shall not render a color glyph if specified operations are not
-bounded.
-
-The different paint formats have different boundedness characteristics:
+paint within a region for which a finite bounding box could be defined. The
+different paint formats have different boundedness characteristics:
 
 * PaintGlyph is always inherently bounded.
 * PaintSolid, PaintLinearGradient and PaintRadialGradient are always unbounded.
 * PaintColrLayers is bounded *if and only if* all referenced sub-graphs are
 bounded.
+* PaintColrGlyph is bounded *if and only if* the color glyph definition for the
+referenced base glyph ID is bounded.
 * PaintTransformed, PaintTranslate, PaintRotate and PaintSkew are bounded *if
 and only if* the referenced sub-graph is bounded.
-* PaintColrGlyph is bounded *if and only if* the color glyph for the referenced
-glyph ID is bounded.
 * PaintComposite is either bounded or unbounded, according to the compositing or
 blending mode used. See 5.7.11.2.5.11 for details.
+
+Applications shall confirm that a color glyph definition is bounded, and shall
+not render a color glyph if the defining graph is not bounded.
 
 **5.7.11.1.9 Color glyphs as a directed acyclic graph**
 
@@ -1950,9 +1890,34 @@ The compositionMode value must be one of the values defined in the CompositeMode
 | 25 | COMPOSITE_HSL_COLOR | See [color blend mode][27] |
 | 26 | COMPOSITE_HSL_LUMINOSITY | See [luminosity blend mode][28] |
 
-The supported modes are taken from the W3C [Compositing and Blending Level 1][1] specification. For details on each mode, including specifications of the required behaviors, see the W3C specification.
+The supported modes are taken from the W3C [Compositing and Blending Level 1][1]
+specification. For details on each mode, including specifications of the
+required behaviors, see the W3C specification.
 
-The graphic compositions defined by the source and backdrop paint tables (and their respective sub-graphs) are rendered into bitmaps, and the source is blended into the backdrop using the specified composite mode.
+The graphic compositions defined by the source and backdrop paint tables (and
+their respective sub-graphs) are rendered into bitmaps, and the source is
+blended into the backdrop using the specified composite mode.
+
+As mentioned in 5.7.11.1.8.2, a color glyph definition shall be bounded. A
+sub-graph that has PaintComposite as its root is either bounded or unbounded,
+depending on the mode used and the boundedness of the source and backdrop
+sub-graphs. For each mode, boundedness is determined by the boundedness of the
+source and backdrop as follows:
+
+* Always bounded:
+  * COMPOSITE_CLEAR
+* Bounded *if and only if* the source is bounded:
+  * COMPOSITE_SRC
+  * COMPOSITE_SRC_OUT
+* Bounded *if and only if* the backdrop is bounded:
+  * COMPOSITE_DEST
+  * COMPOSITE_DEST_OUT
+* Bounded *if and only if* either the source *or* backdrop is bounded:
+  * COMPOSITE_SRC_IN
+  * COMPOSITE_DEST_IN
+* Bounded *if and only if* both the source *and* backdrop are bounded:
+  * All other modes
+
 
 &nbsp;  
 > **_[under construction—more to come]_**  
