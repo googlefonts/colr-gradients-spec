@@ -957,9 +957,8 @@ by the child sub-graph.
 **Figure 5.18 A PaintGlyph table defines a clip region for the composition defined by its child sub-graph.**
 
 A PaintGlyph table on its own does not add content: if there is no child paint
-table, then the PaintGlyph table represents no presentation content and shall be
-ignored. This could result in the entire color glyph definition being invalid.
-See 5.7.11.1.9 for additional information.
+table, then the graph is not well formed. See 5.7.11.1.9 for details regarding
+well-formedness and validity of the graph.
 
 **5.7.11.1.4 Layering**
 
@@ -1314,7 +1313,8 @@ not related to glyph IDs used in any other tables.
 
 When a PaintColrGlyph table is used, a BaseGlyphV1Record with the specified
 glyph ID is expected. If no BaseGlyphV1Record with that glyph ID is found, the
-color glyph should be ignored. See 5.7.11.1.9 for additional information.
+color glyph is not well formed. See 5.7.11.1.9 for details regarding
+well-formedness and validity of the graph.
 
 The example from 5.7.11.1.7.2 is modified to illustrate use of a PaintColrGlyph
 table. In the following figure, a PaintColrLayers table references a slice
@@ -1440,9 +1440,10 @@ The following are required for the graph to be well-formed:
 referenced slice is within the length of the LayersV1List.
   * If a PaintColrGlyph table is present, there is a BaseGlyphV1Record for the
 referenced base glyph ID.
-* The graph shall be finite and acyclic (without cycles).
-* All leaf nodes shall be one of PaintSolid, PaintLinearGradient or
-PaintRadialGradient.
+* The graph shall be acyclic.
+
+NOTE: These constraints imply that all leaf nodes will be one of PaintSolid,
+PaintLinearGradient or PaintRadialGradient.
 
 For the graph to be acyclic, no paint table shall have any child or descendent
 paint table that is also its parent or ancestor within the graph. In particular,
@@ -1463,6 +1464,9 @@ within that sequence. The following pseudo-code algorithm can be used:
           call paintIsAcyclic(childPaint, activePaints)
         remove paint from activePaints
 ```
+
+NOTE: Implementations can combine testing for cycles and other well-formedness
+requirements together with other processing for rendering the color glyph.
 
 For the graph to be valid, it shall be visually bounded, as described in
 5.7.11.1.8.2.
