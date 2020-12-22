@@ -2094,7 +2094,63 @@ source and backdrop as follows:
 * Bounded *if and only if* both the source *and* backdrop are bounded:
   * All other modes
 
-**5.7.11.3 Rendering algorithm**
+**5.7.11.3 COLR version 1 rendering algorithm**
+
+The various graphic concepts represented by COLR version 1 formats were individually described in 5.7.11.1, and the various formats were described in 5.7.11.2. Together, these provide most of the necessary details regarding how a color glyph is rendered. The following provides a comprehensive description of the rendering process, considering the graph as a whole. 
+
+The following algorithm can be used to render color glyphs defined using version 1 formats. Applications are not required to implement rendering using this algorithm, but shall produce equivalent results.
+
+NOTE: Checks for well-formedness and validity, as described in 5.7.11.1.9, are not repeated here. Actual implementations can integrate such checks with rendering processing.
+
+1. Start with an initial drawing surface. As mentioned in 5.7.11.1.8.2, the bounding box of the base glyph can be used to determine the size.
+1. Traverse the graph of a color glyph definition starting with the root paint table referenced by a BaseGlyphV1Record. For each paint table, the following pseudo-code function is called recursively.
+ 
+```
+// render a paint table and its sub-graph
+function renderPaint(paint)
+
+    if format 1: // PaintColrLayers
+        for each referenced child paint table, in bottom-up z-order (see 5.7.11.1.4, 5.7.11.2.5.1):
+            call renderPaint() passing the child paint table
+            compose the returned graphic onto the surface using simple alpha blending
+
+    if format 2: // PaintSolid
+        paint the specified color onto the surface
+
+    if format 3: // PaintLinearGradient
+    or if format 4: // PaintRadialGradient
+        paint the gradient onto the surface following the gradient algorithm
+
+    if format 5: // PaintGlyph
+        use the referenced glyph outline to set a clip region
+        call renderPaint() passing the child paint table
+        restore the previous clip region
+
+    if format 6: // PaintColrGlyph
+        call renderPaint() passing the paint table referenced by the base glyph ID
+
+    if format 7: // PaintTransformed
+    or if format 8: // PaintTranslate
+    or if format 9: // PaintRotate
+    or if format 10: // PaintSkew
+        apply the specified transform
+        call renderPaint() passing the child paint table
+        restore the previous transform state
+
+    if format 11: // PaintComposite
+
+        // render backdrop sub-graph
+        call renderPaint() passing the backdrop child paint table and save the result
+
+        // render source sub-graph
+        call renderPaint() passing the source child paint table and save the result
+
+        // compose source and backdrop
+        compose the source and backdrop using the specified composite mode
+
+        // compose final result
+        compose the result of the above composition onto the surface using simple alpha blending
+```
 
 **5.7.11.4 COLR table and OpenType Font Variations**
 
