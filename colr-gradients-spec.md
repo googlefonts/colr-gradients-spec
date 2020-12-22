@@ -1464,18 +1464,28 @@ path. The following pseudo-code algorithm can be used:
         remove paint from activePaints
 ```
 
-NOTE: Implementations can combine testing for cycles and other well-formedness
-requirements together with other processing for rendering the color glyph.
-
 For the graph to be valid, it shall also be visually bounded, as described in
 5.7.11.1.8.2.
 
-If a sub-graph is ignored, the remainder of the graph could be visually
-unbounded and, therefore, invalid. This should be considered when devising a
-fallback strategy if an errors are detected while parsing the graph, or an
-unrecognized paint format is encountered. Applications may ignore the color
-glyph entirely in such cases. If the base glyph ID has an outline, that may be
-rendered as a non-color glyph instead.
+NOTE: Implementations can combine testing for cycles and other well-formedness
+or validity requirements together with other processing for rendering the color
+glyph.
+
+If the graph contains a cycle or is otherwise not well formed or valid, the
+paint table at which the error occurs should be ignored, that sub-graph should
+not be rendered, and that node in the graph should be considered to be visually
+bounded. The application should attempt to render the remainder of the graph, if
+well formed and valid.
+
+Future minor version updates of the COLR table could introduce new paint
+formats. If a paint table with an unrecognized format is encountered, it and its
+sub-graph should similarly be ignored, the node should be considered to be
+visually bounded, and the application should attempt to render the remainder of
+the graph.
+
+If an application is not able to recover from errors while traversing the graph,
+it may ignore the color glyph entirely. If the base glyph ID has an outline,
+that may be rendered as a non-color glyph instead.
 
 **5.7.11.2 COLR table formats**
 
