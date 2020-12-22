@@ -2094,6 +2094,10 @@ source and backdrop as follows:
 * Bounded *if and only if* both the source *and* backdrop are bounded:
   * All other modes
 
+**5.7.11.3 Rendering algorithm**
+
+**5.7.11.4 COLR table and OpenType Font Variations**
+
 
 &nbsp;  
 > **_[under construction—more to come]_**  
