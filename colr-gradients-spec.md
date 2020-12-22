@@ -2107,52 +2107,49 @@ NOTE: Checks for well-formedness and validity, as described in 5.7.11.1.9, are n
  
 ```
 // render a paint table and its sub-graph
-function renderPaint(paint, surface)
+function renderPaint(paint)
 
     if format 1: // PaintColrLayers
         for each referenced child paint table, in bottom-up z-order (see 5.7.11.1.4, 5.7.11.2.5.1):
-            create a new surface
-            call renderPaint() passing the child paint table and the new surface
-            compose the new surface with the existig surface using simple alpha blending
+            call renderPaint() passing the child paint table
+            compose the returned graphic onto the surface using simple alpha blending
 
     if format 2: // PaintSolid
         paint the specified color onto the surface
 
     if format 3: // PaintLinearGradient
     or if format 4: // PaintRadialGradient
-        paint gradient onto the surface following the gradient algorithm
+        paint the gradient onto the surface following the gradient algorithm
 
     if format 5: // PaintGlyph
         use the referenced glyph outline to set a clip region
-        call renderPaint() passing the child paint table and the existing surface
+        call renderPaint() passing the child paint table
         restore the previous clip region
 
     if format 6: // PaintColrGlyph
-        call renderPaint() passing the paint table referenced by the base glyph ID and the existing surface
+        call renderPaint() passing the paint table referenced by the base glyph ID
 
     if format 7: // PaintTransformed
     or if format 8: // PaintTranslate
     or if format 9: // PaintRotate
     or if format 10: // PaintSkew
         apply the specified transform
-        call renderPaint() passing the child paint table and the existing surface
+        call renderPaint() passing the child paint table
         restore the previous transform state
 
     if format 11: // PaintComposite
 
         // render backdrop sub-graph
-        create a new surface for the backdrop
-        call renderPaint() passing the backdrop child paint table and the backdrop surface
+        call renderPaint() passing the backdrop child paint table and save the result
 
         // render source sub-graph
-        create a new surface for the source
-        call renderPaint() passing the source child paint table and the source surface
+        call renderPaint() passing the source child paint table and save the result
 
         // compose source and backdrop
-        composing the source and backdrop surfaces using the specified composite mode
+        compose the source and backdrop using the specified composite mode
 
         // compose final result
-        compose the result of the above composition onto the existing surface that was passed in using simple alpha blending
+        compose the result of the above composition onto the surface using simple alpha blending
 ```
 
 **5.7.11.4 COLR table and OpenType Font Variations**
