@@ -2152,13 +2152,52 @@ function renderPaint(paint)
         compose the result of the above composition onto the surface using simple alpha blending
 ```
 
-**5.7.11.4 COLR table and OpenType Font Variations**
+**5.7.11.4 COLR table and OFF Font Variations**
 
+The COLR table can be used in variable fonts. For color glyphs defined using
+version 0 formats, the glyph outlines can be variable, but no other aspect of
+the color glyph is variable. For color glyphs defined using version 1 formats,
+items that can be variable include the glyph outlines plus other aspects of the
+color glyph definition:
 
-&nbsp;  
-> **_[under construction—more to come]_**  
+* Alpha values
+* Color stop offsets in gradient color lines
+* Placement of gradients onto the design grid
+* The arguments of transformations (matrix elements, angles, etc.)
 
-&nbsp;
+Variation data is provided in an Item Variation Store table (7.2.3) contained
+within the COLR table.
+
+Each value within the COLR version 1 formats that can be variable is represented
+using a record that combines a field for the default value together with fields
+for a delta-set index. The delta set index is used to reference the variation
+data within the Item Variation Store. The record formats used include:
+
+* VarFWord
+* VarUFWord 
+* VarF2Dot14
+* VarFixed
+
+These are described in 7.2.3.1. They all follow a simple pattern: For a field
+type *SomeType* (hypothetical), the record format is as follows:
+
+| Type | Name | Description |
+|-|-|-|
+| *SomeType* | value | |
+| uint16 | varOuterIndex | |
+| uint16 | varInnerIndex | |
+
+The value field of this record provides the default value for the stop offset.
+The remaining fields provide index values for a particular ItemVariationData
+subtable and DeltaSet record—the two-level organizational hierarchy used within
+the Item Variation Store.
+
+The index fields of the VarFWord, VarUFWord, VarF2Dot14 and VarFixed records
+shall always be set with specific values. The indices are base 0, therefore
+0x0000 cannot be used as an ignorable default. To indicate that an item has no
+variation data, the index fields shall be set to 0xFFFF/0xFFFF. (See 7.2.3.2.)
+
+For general information on OFF font variations, see 7.1.
 
 ## A.3 Changes to OFF 7.2.3 Item variation stores
 
