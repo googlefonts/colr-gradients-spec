@@ -2103,7 +2103,7 @@ The following algorithm can be used to render color glyphs defined using version
 NOTE: Checks for well-formedness and validity, as described in 5.7.11.1.9, are not repeated here. Actual implementations can integrate such checks with rendering processing.
 
 1. Start with an initial drawing surface. As mentioned in 5.7.11.1.8.2, the bounding box of the base glyph can be used to determine the size.
-1. Traverse the graph of a color glyph definition starting with the root paint table referenced by a BaseGlyphV1Record. For each paint table, the following pseudo-code function is called recursively.
+1. Traverse the graph of a color glyph definition, starting with the root paint table referenced by a BaseGlyphV1Record, using the following pseudo-code function.
  
 ```
 // render a paint table and its sub-graph
