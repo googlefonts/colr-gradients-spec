@@ -2094,7 +2094,86 @@ source and backdrop as follows:
 * Bounded *if and only if* both the source *and* backdrop are bounded:
   * All other modes
 
-**5.7.11.3 Rendering algorithm**
+**5.7.11.3 COLR version 1 rendering algorithm**
+
+The following algorithm is used to render to render color glyphs defined using version 1 formats. The following assumes that the graph for the color glyph definition has been confirmed to be well formed and valid (see 5.7.11.1.9).
+
+1. Allocate a bitmap according to the bounding box of the base glyph outline.
+1. Set the initial clip region to the entire bitmap, and set the initial transform state to the identity matrix.
+1. Retrieve the root paint table (referenced by the BaseGlyphV1Record) and call the renderPaint() function, defined in pseudocode below, passing the root paint, bitmap and initial state:
+
+```cs
+    // render a paint table and its sub-graph
+    function renderPaint(paint, bitmap, currentClip, currentTransform)
+
+      select paint.format:
+        format 1: // PaintColrLayers
+          for each referenced layer, in order:
+            save bitmap, currentClip, currentTransform
+            allocate newBitmap with same size as bitmap
+            set childPaint to paint table for layer referenced in LayerV1List
+            call renderPaint(childPaint, newBitmap, currentClip, currentTransform)
+            restore currentClip, currentTransform
+            compose newBitmap onto bitmap using simple alpha blending
+            return
+
+        format 2: // PaintSolid
+          paint specified color into bitmap using currentClip
+          return
+
+        format 3: // PaintLinearGradient
+        format 4: // PaintRadialGradient
+          paint gradient, per gradient algorithm, into bitmap using currentClip
+          return
+
+        format 5: // PaintGlyph
+          save currentClip, currentTransform
+          compute newClip applying the glyph outline as a clip path to currentClip
+          set childPaint to paint subtable
+          call renderPaint(childPaint, bitmap, newClip, currentTransform)
+          restore currentClip, currentTransform
+          return
+
+        format 6: // PaintColrGlyph
+          save currentClip, currentTransform
+          set rootPaint to root of graph for specified base glyph ID
+          call renderPaint(rootPaint, bitmap, currentClip, currentTransform)
+          restore currentClip, currentTransform
+          return
+
+        format 7: // PaintTransformed
+        format 8: // PaintTranslate
+        format 9: // PaintRotate
+        format 10: // PaintSkew
+          save currentClip, currentTransform
+          compute newTransform by applying specified transform to currentTransform
+          call renderPaint(paint, bitmap, currentClip, newTransform)
+          restore currentClip, currentTransform
+          return
+
+        format 11: // PaintComposite
+          save bitmap, currentClip, currentTransform
+
+          // render backdrop sub-graph into new bitmap
+          set backdropPaint to backdrop child paint table
+          allocate backdropBitmap with same size as bitmap
+          call renderPaint(backdropPaint, backdropBitmap, currentClip, currentTransform)
+          restore currentClip, currentTransform
+
+          // render source sub-graph into new bitmap
+          set sourcePaint to source child paint table
+          allocate sourceBitmap with same size as bitmap
+          call renderPaint(sourcePaint, sourceBitmap, currentClip, currentTransform)
+          restore currentClip, currentTransform
+
+          // compose source and backdrop
+          compute resultBitmap by composing sourceBitmap and backdropBitmap using specified composite mode
+
+          // compose final result
+          compose resultBitmap onto bitmap using simple alpha blending
+          return
+      }
+```
 
 **5.7.11.4 COLR table and OpenType Font Variations**
 
