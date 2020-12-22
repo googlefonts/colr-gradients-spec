@@ -2125,6 +2125,7 @@ function renderPaint(paint, surface)
     if format 5: // PaintGlyph
         use the referenced glyph outline to set a clip region
         call renderPaint() passing the child paint table and the existing surface
+        restore the previous clip region
 
     if format 6: // PaintColrGlyph
         call renderPaint() passing the paint table referenced by the base glyph ID and the existing surface
@@ -2135,6 +2136,7 @@ function renderPaint(paint, surface)
     or if format 10: // PaintSkew
         apply the specified transform
         call renderPaint() passing the child paint table and the existing surface
+        restore the previous transform state
 
     if format 11: // PaintComposite
 
