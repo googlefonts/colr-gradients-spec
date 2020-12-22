@@ -1432,12 +1432,12 @@ Thus, the generalization that can be made regarding the relationship between the
 number of layers and the nature of the graph is that the number of distinct
 root-to-leaf paths will be greater than or equal to the number of layers.
 
-The following are required for the graph to be well-formed:
+The following are necessary for the graph to be well-formed and valid:
 
-* All subtable links shall be valid:
+* All subtable links shall satisfy the following criteria:
   * Forward offsets are within the COLR table bounds.
-  * If a PaintColrLayers table is present, a LayersV1List is present, and the
-referenced slice is within the length of the LayersV1List.
+  * If a PaintColrLayers table is present, then a LayersV1List is also present,
+and the referenced slice is within the length of the LayersV1List.
   * If a PaintColrGlyph table is present, there is a BaseGlyphV1Record for the
 referenced base glyph ID.
 * The graph shall be acyclic.
@@ -1468,7 +1468,7 @@ within that sequence. The following pseudo-code algorithm can be used:
 NOTE: Implementations can combine testing for cycles and other well-formedness
 requirements together with other processing for rendering the color glyph.
 
-For the graph to be valid, it shall be visually bounded, as described in
+For the graph to be valid, it shall also be visually bounded, as described in
 5.7.11.1.8.2.
 
 If the graph is not well formed, the entire color glyph definition should be
