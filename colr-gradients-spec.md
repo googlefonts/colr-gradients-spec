@@ -2096,83 +2096,61 @@ source and backdrop as follows:
 
 **5.7.11.3 COLR version 1 rendering algorithm**
 
-The following algorithm is used to render to render color glyphs defined using version 1 formats. The following assumes that the graph for the color glyph definition has been confirmed to be well formed and valid (see 5.7.11.1.9).
+The various graphic concepts represented by COLR version 1 formats were individually described in 5.7.11.1, and the various formats were described in 5.7.11.2. Together, these provide most of the necessary details regarding how a color glyph is rendered. The following provides a comprehensive description of the rendering process, considering the graph as a whole. 
 
-1. Allocate a bitmap according to the bounding box of the base glyph outline.
-1. Set the initial clip region to the entire bitmap, and set the initial transform state to the identity matrix.
-1. Retrieve the root paint table (referenced by the BaseGlyphV1Record) and call the renderPaint() function, defined in pseudocode below, passing the root paint, bitmap and initial state:
+The following algorithm can be used to render color glyphs defined using version 1 formats. Applications are not required to implement rendering using this algorithm, but shall produce equivalent results.
 
-```cs
-    // render a paint table and its sub-graph
-    function renderPaint(paint, bitmap, currentClip, currentTransform)
+NOTE: Checks for well-formedness and validity, as described in 5.7.11.1.9, are not repeated here. Actual implementations can integrate such checks with rendering processing.
 
-      select paint.format:
-        format 1: // PaintColrLayers
-          for each referenced layer, in order:
-            save bitmap, currentClip, currentTransform
-            allocate newBitmap with same size as bitmap
-            set childPaint to paint table for layer referenced in LayerV1List
-            call renderPaint(childPaint, newBitmap, currentClip, currentTransform)
-            restore currentClip, currentTransform
-            compose newBitmap onto bitmap using simple alpha blending
-            return
+1. Start with an initial drawing surface. As mentioned in 5.7.11.1.8.2, the bounding box of the base glyph can be used to determine the size.
+1. Traverse the graph of a color glyph definition starting with the root paint table referenced by a BaseGlyphV1Record. For each paint table, the following pseudo-code function is called recursively.
+ 
+```
+// render a paint table and its sub-graph
+function renderPaint(paint, surface)
 
-        format 2: // PaintSolid
-          paint specified color into bitmap using currentClip
-          return
+    if format 1: // PaintColrLayers
+        for each referenced child paint table, in bottom-up z-order (see 5.7.11.1.4, 5.7.11.2.5.1):
+            create a new surface
+            call renderPaint() passing the child paint table and the new surface
+            compose the new surface with the existig surface using simple alpha blending
 
-        format 3: // PaintLinearGradient
-        format 4: // PaintRadialGradient
-          paint gradient, per gradient algorithm, into bitmap using currentClip
-          return
+    if format 2: // PaintSolid
+        paint the specified color onto the surface
 
-        format 5: // PaintGlyph
-          save currentClip, currentTransform
-          compute newClip applying the glyph outline as a clip path to currentClip
-          set childPaint to paint subtable
-          call renderPaint(childPaint, bitmap, newClip, currentTransform)
-          restore currentClip, currentTransform
-          return
+    if format 3: // PaintLinearGradient
+    or if format 4: // PaintRadialGradient
+        paint gradient onto the surface following the gradient algorithm
 
-        format 6: // PaintColrGlyph
-          save currentClip, currentTransform
-          set rootPaint to root of graph for specified base glyph ID
-          call renderPaint(rootPaint, bitmap, currentClip, currentTransform)
-          restore currentClip, currentTransform
-          return
+    if format 5: // PaintGlyph
+        use the referenced glyph outline to set a clip region
+        call renderPaint() passing the child paint table and the existing surface
 
-        format 7: // PaintTransformed
-        format 8: // PaintTranslate
-        format 9: // PaintRotate
-        format 10: // PaintSkew
-          save currentClip, currentTransform
-          compute newTransform by applying specified transform to currentTransform
-          call renderPaint(paint, bitmap, currentClip, newTransform)
-          restore currentClip, currentTransform
-          return
+    if format 6: // PaintColrGlyph
+        call renderPaint() passing the paint table referenced by the base glyph ID and the existing surface
 
-        format 11: // PaintComposite
-          save bitmap, currentClip, currentTransform
+    if format 7: // PaintTransformed
+    or if format 8: // PaintTranslate
+    or if format 9: // PaintRotate
+    or if format 10: // PaintSkew
+        apply the specified transform
+        call renderPaint() passing the child paint table and the existing surface
 
-          // render backdrop sub-graph into new bitmap
-          set backdropPaint to backdrop child paint table
-          allocate backdropBitmap with same size as bitmap
-          call renderPaint(backdropPaint, backdropBitmap, currentClip, currentTransform)
-          restore currentClip, currentTransform
+    if format 11: // PaintComposite
 
-          // render source sub-graph into new bitmap
-          set sourcePaint to source child paint table
-          allocate sourceBitmap with same size as bitmap
-          call renderPaint(sourcePaint, sourceBitmap, currentClip, currentTransform)
-          restore currentClip, currentTransform
+        // render backdrop sub-graph
+        create a new surface for the backdrop
+        call renderPaint() passing the backdrop child paint table and the backdrop surface
 
-          // compose source and backdrop
-          compute resultBitmap by composing sourceBitmap and backdropBitmap using specified composite mode
+        // render source sub-graph
+        create a new surface for the source
+        call renderPaint() passing the source child paint table and the source surface
 
-          // compose final result
-          compose resultBitmap onto bitmap using simple alpha blending
-          return
-      }
+        // compose source and backdrop
+        composing the source and backdrop surfaces using the specified composite mode
+
+        // compose final result
+        compose the result of the above composition onto the existing surface that was passed in using simple alpha blending
 ```
 
 **5.7.11.4 COLR table and OpenType Font Variations**
