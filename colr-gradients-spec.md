@@ -1449,10 +1449,9 @@ For the graph to be acyclic, no paint table shall have any child or descendent
 paint table that is also its parent or ancestor within the graph. In particular,
 because the PaintColrLayers and PaintColrGlyph tables use indirect child
 references rather than forward offsets, they provide a possibility for
-introducing cycles. Applications can test for cycles by tracking paint tables
-used in a sequence within the graph and then, when processing a PaintColrLayers
-or PaintColrGlyph table, checking whether any child was already encountered
-within that sequence. The following pseudo-code algorithm can be used:
+introducing cycles. Applications should track paint tables within a path in the
+graph, checking whether any paint table was already encountered within that
+path. The following pseudo-code algorithm can be used:
 
 ```
     // called initially with the root paint and an empty set activePaints
@@ -1472,19 +1471,13 @@ For the graph to be valid, it shall also be visually bounded, as described in
 5.7.11.1.8.2.
 
 If the graph is not well formed, the entire color glyph definition should be
-considered invalid. In particular, applications should not simply ignore a
-sub-graph when an error in a paint table is detected since that could result in
-a visually unbounded color glyph definition. For instance, if a PaintColrGlyph
-table is found to introduce a cycle or there isn't a corresponding
-BaseGlyphV1Record, the remainder of the graph if that PaintColrGlyph table and
-its sub-graph are ignored could be unbounded. For this reason, if the graph is
-not well formed, the entire color glyph definition should be ignored. If the
-base glyph ID has an outline, that may be rendered instead.
+considered invalid.  Similarly, if an application encounters a paint table with
+an unrecognized format (which could be introduced in a later minor version
+update of the COLR table), the color glyph should be ignored. If the base glyph
+ID has an outline, that may be rendered as a non-color glyph instead.
 
-Similarly, if an application encounters a paint table with an unrecognized
-format (which could be introduced in a later minor version update of the COLR
-table), the remainder of the graph could be visually unbounded, therefore the
-color glyph should be ignored.
+NOTE: If a sub-graph is ignored, the remainder of the graph could be visually
+unbounded and, therefore, invalid.
 
 **5.7.11.2 COLR table formats**
 
