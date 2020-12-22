@@ -1168,7 +1168,17 @@ visible.
 
 **Figure 5.27 A color glyph using a PaintComposite table to punch out a shape from the fill of a circle.**
 
-NOTE: [Scalable Vector Graphics (SVG)][31] supports alpha channel masking using the &lt;mask&gt; element. The same effects can be implemented in COLR version 1 using a PaintComposite table by setting a pattern of alpha values in the source sub-graph and selecting the source in mode. This is illustrated in figure 5.28.
+NOTE: In figure 5.27, the “A” is filled with green to illustrate that the color
+of the fill has no affect for the source out composite mode. Because that is the
+case, the black or red PaintSolid could have been re-used instead of adding a
+separate PaintSolid table. See 5.7.11.1.7.1 for more information on re-use of
+paint tables for such situations.
+
+[Scalable Vector Graphics (SVG)][31] supports alpha channel masking using the
+&lt;mask&gt; element. The same effects can be implemented in COLR version 1
+using a PaintComposite table by setting a pattern of alpha values in the source
+sub-graph and selecting the source in composite mode. This is illustrated in
+figure 5.28.
 
 ![A PaintComposite table using the source in mode to implement an alpha mask.](images/colr_gradient_mask.png)
 
