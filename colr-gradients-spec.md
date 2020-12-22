@@ -1470,14 +1470,12 @@ requirements together with other processing for rendering the color glyph.
 For the graph to be valid, it shall also be visually bounded, as described in
 5.7.11.1.8.2.
 
-If the graph is not well formed, the entire color glyph definition should be
-considered invalid.  Similarly, if an application encounters a paint table with
-an unrecognized format (which could be introduced in a later minor version
-update of the COLR table), the color glyph should be ignored. If the base glyph
-ID has an outline, that may be rendered as a non-color glyph instead.
-
-NOTE: If a sub-graph is ignored, the remainder of the graph could be visually
-unbounded and, therefore, invalid.
+If a sub-graph is ignored, the remainder of the graph could be visually
+unbounded and, therefore, invalid. This should be considered when devising a
+fallback strategy if an errors are detected while parsing the graph, or an
+unrecognized paint format is encountered. Applications may ignore the color
+glyph entirely in such cases. If the base glyph ID has an outline, that may be
+rendered as a non-color glyph instead.
 
 **5.7.11.2 COLR table formats**
 
