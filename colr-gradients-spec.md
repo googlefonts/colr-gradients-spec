@@ -2099,9 +2099,10 @@ source and backdrop as follows:
 **5.7.11.4 COLR table and OFF Font Variations**
 
 The COLR table can be used in variable fonts. For color glyphs defined using
-version 0 formats, the glyph outlines can be variable. For color glyphs defined
-using version 1 formats, items that can be variable include the glyph outlines
-plus other aspects of the color glyph definition:
+version 0 formats, the glyph outlines can be variable, but no other aspect of
+the color glyph is variable. For color glyphs defined using version 1 formats,
+items that can be variable include the glyph outlines plus other aspects of the
+color glyph definition:
 
 * Alpha values
 * Color stop offsets in gradient color lines
@@ -2121,12 +2122,12 @@ data within the Item Variation Store. The record formats used include:
 * VarF2Dot14
 * VarFixed
 
-These are described in 7.2.3.1. For example, in the ColorStop record, the stop
-offset is represented using a VarF2Dot14 record, which has the following format:
+These are described in 7.2.3.1. They all follow a simple pattern: For a field
+type *SomeType* (hypothetical), the record format is as follows:
 
 | Type | Name | Description |
 |-|-|-|
-| F2Dot14 | value | |
+| *SomeType* | value | |
 | uint16 | varOuterIndex | |
 | uint16 | varInnerIndex | |
 
