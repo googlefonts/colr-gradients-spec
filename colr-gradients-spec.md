@@ -1454,14 +1454,14 @@ graph, checking whether any paint table was already encountered within that
 path. The following pseudo-code algorithm can be used:
 
 ```
-    // called initially with the root paint and an empty set activePaints
-    function paintIsAcyclic(paint, activePaints)
-        if paint is in activePaints
+    // called initially with the root paint and an empty set pathPaints
+    function paintIsAcyclic(paint, pathPaints)
+        if paint is in pathPaints
           return false // cycle detected
-        add paint to activePaints
+        add paint to pathPaints
         for each childPaint referenced by paint as a child subtable
-          call paintIsAcyclic(childPaint, activePaints)
-        remove paint from activePaints
+          call paintIsAcyclic(childPaint, pathPaints)
+        remove paint from pathPaints
 ```
 
 For the graph to be valid, it shall also be visually bounded, as described in
