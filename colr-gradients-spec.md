@@ -18,11 +18,6 @@ December 2019
     - [Solid](#solid)
   - [COLR Glyph](#colr-glyph)
   - [COLR Layers](#colr-layers)
-- [OFF Changes](#off-changes)
-  - [COLR table](#off-5711-colr--color-table)
-    - [Data structures](#colr-v1-data-structures)
-      - [Understanding COLR v1](#understanding-colr-v1)
-        - [Alpha](#alpha)
 - [Implementation](#implementation)
   - [Font Tooling](#font-tooling)
   - [Rendering](#rendering)
@@ -147,28 +142,6 @@ can define a PaintColrLayers record that points to the same layers as A for the
 common parts.
 
 See section [Reusable Parts](#reusable-parts).
-
-# OFF Changes
-
-> NOTE: Content within the doc is in process of being reorganized. For clarity a new section for the proposed OFF changes is created at the end of the doc: [Annex A: Proposed changes to ISO/IEC 14496-22](#annex-a-proposed-changes-to-isoiec-14496-22)
-
-## OFF 5.7.11 COLR – Color Table
-
-### COLR v1 data structures
-
-#### Understanding COLR v1
-
-Addition of explanatory content explaining how COLR version 1 functions
-should be added.
-
-##### Alpha
-
-The alpha channel for a layer can be populated using `PaintComposite`:
-
-- `PaintSolid` can be used to set a blanket alpha
-- `PaindLinearGradient` and `PaintRadialGradient` can be used to set gradient alpha
-- Mode [Source In](https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_srcin) can be used to mask
-
 
 # Implementation
 
@@ -1195,13 +1168,29 @@ visible.
 
 **Figure 5.27 A color glyph using a PaintComposite table to punch out a shape from the fill of a circle.**
 
+NOTE: In figure 5.27, the “A” is filled with green to illustrate that the color
+of the fill has no affect for the source out composite mode. Because that is the
+case, the black or red PaintSolid could have been re-used instead of adding a
+separate PaintSolid table. See 5.7.11.1.7.1 for more information on re-use of
+paint tables for such situations.
+
+[Scalable Vector Graphics (SVG)][31] supports alpha channel masking using the
+&lt;mask&gt; element. The same effects can be implemented in COLR version 1
+using a PaintComposite table by setting a pattern of alpha values in the source
+sub-graph and selecting the source in composite mode. This is illustrated in
+figure 5.28.
+
+![A PaintComposite table using the source in mode to implement an alpha mask.](images/colr_gradient_mask.png)
+
+**Figure 5.28 An alpha mask implemented using a PaintComposite table and the source in mode.**
+
 **5.7.11.1.7 Re-usable components**
 
-Within a color font, many color glyphs might share components in common. For example, in emoji fonts, many different “smilies” or clock faces share a common background. This can be seen in figure 5.28, which shows color glyphs for three emoji clock faces.
+Within a color font, many color glyphs might share components in common. For example, in emoji fonts, many different “smilies” or clock faces share a common background. This can be seen in figure 5.29, which shows color glyphs for three emoji clock faces.
 
 ![Emoji clock faces for 12 o’clock, 1 o’clock and 2 o’clock.](images/colr_clocks-12-1-2.png)
 
-**Figure 5.28 Emoji clock faces for 12 o’clock, 1 o’clock and 2 o’clock.**
+**Figure 5.29 Emoji clock faces for 12 o’clock, 1 o’clock and 2 o’clock.**
 
 Several components are shared between these color glyphs: the entire face, with
 a gradient background and dots at the 3, 6, 9 and 12 positions; the minute hand
@@ -1232,7 +1221,7 @@ fill. The only limitation is that child paint tables are referenced using a
 forward offset from the start of the referencing table, so a re-used paint table
 can only occur later in the file than any of the paint tables that use it.
 
-The clock faces shown in the figure above provide an example of how PaintRotate
+The clock faces shown in figure 5.29 provide an example of how PaintRotate
 tables can be combined with re-use of a sub-graph. As noted above, the hour
 hands have the same shape and fill, but have a different orientation. The glyph
 outline could point to the 12 position, then in color glyph descriptions for
@@ -1245,7 +1234,7 @@ PaintSolid table. Example file offsets for the tables are indicated.
 
 ![A PaintGlyph and PaintSolid table are used to define the clock hour hand pointing to 12.](images/colr_hour-hand-component.png)
 
-**Figure 5.29 A PaintGlyph and PaintSolid table are used to define the clock hour hand pointing to 12.**
+**Figure 5.30 A PaintGlyph and PaintSolid table are used to define the clock hour hand pointing to 12.**
 
 The next figure shows this sub-graph of paint tables being re-used, in some
 cases linked from PaintRotate tables that rotate the hour hand to point to
@@ -1254,7 +1243,7 @@ sub-graph occur earlier in the file.
 
 ![The sub-graph for the hour hand is re-used with PaintRotate tables to point to different hours.](images/colr_reuse-hour-hand-rotated.png)
 
-**Figure 5.30 The sub-graphs for the hour hand are re-used with PaintRotate tables to point to different hours.**
+**Figure 5.31 The sub-graphs for the hour hand are re-used with PaintRotate tables to point to different hours.**
 
 **5.7.11.1.7.2 Re-use using PaintColrLayers**
 
@@ -1268,21 +1257,21 @@ as a contiguous set of layers in the LayersV1List table.
 This is readily explained using the clock faces as an example. As described
 above, each clock face shares several elements in common. Some of these form a
 contiguous set of layers. Suppose four sub-graphs for shared clock face elements
-are given in the LayerV1List as contiguous layers, as shown in figure 5.31. (For
+are given in the LayerV1List as contiguous layers, as shown in figure 5.32. (For
 brevity, the visual result for each sub-graph is shown, but not the paint
 details.)
 
 ![Common clock face elements given as a slice within the LayerV1List table.](images/colr_clock_common.png)
 
-**Figure 5.31 Common clock face elements given as a slice within the LayerV1List table.**
+**Figure 5.32 Common clock face elements given as a slice within the LayerV1List table.**
 
 A PaintColrLayers table can reference any contiguous slice of layers in the
-LayerV1List table. Thus, the set of layers shown in figure 5.31 can be
+LayerV1List table. Thus, the set of layers shown in figure 5.32 can be
 referenced by PaintColrLayers tables anywhere in the graph of any color glyph.
 In this way, this set of layers can be re-used in multiple clock face color
 glyph definitions.
 
-This is illustrated in figure 5.32: The color glyph definition for the one
+This is illustrated in figure 5.33: The color glyph definition for the one
 o’clock emoji has a PaintColrLayers table as its root, referencing a slice of
 three layers in the LayerV1List table. The upper two layers are the hour hand,
 which is specific to this color glyph; and the cap over the pivot for the minute
@@ -1290,11 +1279,11 @@ and hour hands, which is common to other clock emoji but in a layer that is not
 contiguous with other common layers. The bottom layer of these three layers is
 the composition for all the remaining common layers. It is represented using a
 nested PaintColrLayers table that references the slice within the LayerV1List
-for the common clock face elements shown in figure 5.31.
+for the common clock face elements shown in figure 5.32.
 
 ![A PaintColrLayers table is used to reference a set of layers that define a shared clock face composition.](images/colr_reuse_clock-face_PaintColrLayers.png)
 
-**Figure 5.32 A PaintColrLayers table is used to reference a set of layers that define a shared clock face composition.**
+**Figure 5.33 A PaintColrLayers table is used to reference a set of layers that define a shared clock face composition.**
 
 The color glyphs for other clock face emoji could be structured in exactly the
 same way, using a nested PaintColrLayers table to re-use the layer composition
@@ -1330,7 +1319,7 @@ that references the color glyph definition for glyph ID 63163.
 
 ![A PaintColrGlyph table is used to reference the shared clock face composition via a glyph ID.](images/colr_reuse_clock-face_PaintColrGlyph.png)
 
-**Figure 5.33 A PaintColrGlyph table is used to reference the shared clock face composition via a glyph ID.**
+**Figure 5.34 A PaintColrGlyph table is used to reference the shared clock face composition via a glyph ID.**
 
 While the PaintColrGlyph and PaintColrLayers tables are similar in being able to
 reference a layer set as a re-usable component, they could be handled
@@ -1424,13 +1413,13 @@ but not all paths necessarily result in a distinct visual element. For example,
 a gradient mask effect can be created with a gradient with gradation of alpha
 values, and then using that as the source of a PaintComposite with the *source
 in* compositing mode. In that case, the leaf has a visual affect but does not
-result in a distinct visual element. This is illustrated in figure 5.34: the
-PaintLinearGradient is a leaf node in the graph and creates a masking effect but
-does not add a distinct visual element.
+result in a distinct visual element. This was illustrated in figure 5.28,
+repeated here as figure 5.35: the PaintLinearGradient is a leaf node in the
+graph and creates a masking effect but does not add a distinct visual element.
 
 ![A PaintLinearGradient used as a compositing mask is a leaf node in the graph but does not add a distinct visual element.](images/colr_gradient_mask.png)
 
-**Figure 5.34 Graph with a leaf node that isn't a distinct visual element.**
+**Figure 5.35 Graph with a leaf node that isn't a distinct visual element.**
 
 Thus, the generalization that can be made regarding the relationship between the
 number of layers and the nature of the graph is that the number of distinct
