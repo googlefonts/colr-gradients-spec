@@ -2186,7 +2186,8 @@ NOTE: Checks for well-formedness and validity, as described in 5.7.11.1.9, are n
 function renderPaint(paint)
 
     if format 1: // PaintColrLayers
-        for each referenced child paint table, in bottom-up z-order (see 5.7.11.1.4, 5.7.11.2.5.1):
+        for each referenced child paint table, in bottom-up z-order:
+            // for ordering, see 5.7.11.1.4, 5.7.11.2.5.1
             call renderPaint() passing the child paint table
             compose the returned graphic onto the surface using simple alpha blending
 
@@ -2198,7 +2199,8 @@ function renderPaint(paint)
         paint the gradient onto the surface following the gradient algorithm
 
     if format 5: // PaintGlyph
-        use the referenced glyph outline to set a clip region
+        apply the outline of the referenced glyph to the clip region
+            // take the intersection of clip regions—see 5.7.11.1.3
         call renderPaint() passing the child paint table
         restore the previous clip region
 
