@@ -2212,6 +2212,7 @@ function renderPaint(paint)
     or if format 9: // PaintRotate
     or if format 10: // PaintSkew
         apply the specified transform
+            // compose the transform with the current transform state—see 5.7.11.1.5
         call renderPaint() passing the child paint table
         restore the previous transform state
 
