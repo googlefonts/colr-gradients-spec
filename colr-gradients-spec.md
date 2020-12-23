@@ -796,13 +796,22 @@ If the dot-product (p₁ - p₀) · (p₂ - p₀) is zero (or near-zero for an
 implementation-defined definition) then the gradient is ill-formed and shall not
 be rendered.
 
-Figure 5.12 illustrates linear gradients using the three different color line
-extend modes and with two different rotation vectors. In each case, three color
-stops are specified: red at 0.0, yellow at 0.5, and red at 1.0.
+Figures 5.12 – 5.14 illustrate linear gradients using the three different color
+line extend modes. Each figure illustrates linear gradients with two different
+rotation vectors. In each case, three color stops are specified: red at 0.0,
+yellow at 0.5, and red at 1.0.
 
-![Linear gradients using pad, repeat, and reflect extend modes, and with different rotation vectors.](images/colr_linear_gradients.png)
+![Linear gradients with different rotation vectors using the pad extend mode.](images/colr_linear_gradients_pad.png)
 
-**Figure 5.12 Linear gradients using pad, repeat, and reflect extend modes, and with different rotation vectors.**
+**Figure 5.12 Linear gradients with different rotation vectors using the pad extend mode.**
+
+![Linear gradients with different rotation vectors using the repeat extend mode.](images/colr_linear_gradients_repeat.png)
+
+**Figure 5.13 Linear gradients with different rotation vectors using the repeat extend mode.**
+
+![Linear gradients with different rotation vectors using the reflect extend mode.](images/colr_linear_gradients_reflect.png)
+
+**Figure 5.14 Linear gradients with different rotation vectors using the reflect extend mode.**
 
 **5.7.11.1.2.3 Radial gradients**
 
