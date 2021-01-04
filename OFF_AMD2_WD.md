@@ -1858,7 +1858,7 @@ values (UFWORDs). When scaled deltas are applied to F2DOT14 values, the F2DOT14
 value is treated like a 16-bit integer. (In this sense, the delta and the
 F2DOT14 value can be viewed as integer values in units of 1/16384ths.)
 
-If the context in which the VarF2Dot14 is used contrains the valid range for the
+If the context in which the VarF2Dot14 is used constrains the valid range for the
 default value, then any variations by applying deltas are clipped to that range.
 
 #### VarFixed
