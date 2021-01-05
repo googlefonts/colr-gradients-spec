@@ -1965,14 +1965,13 @@ the transform definition to be variable in a variable font.
 
 For a pre-transformation position *(x, y)*,  The post-transformation position *(x&#x2032;, y&#x2032;)* is calculated as follows:
 
-*x&#x2032;* = *xx \* x + xy \* y + dx*  
-*y&#x2032;* = *yx \* x + yy \* y + dy*
+*x&#x2032;* = *xx* \* *x* + *xy* \* *y* + *dx*  
+*y&#x2032;* = *yx* \* *x* + *yy* \* *y* + *dy*
 
-NOTE: It is helpful to understand linear transformations by their effect
-on *x-* and *y-basis* vectors _î = (1, 0)_ and _ĵ = (0, 1)_. The transform
-described by the Affine2x3 record maps the basis vectors to _î&#x2032; = (xx,
-yx)_ 
-and _ĵ&#x2032; = (xy, yy)_, and translates the origin to _(dx, dy)_.
+NOTE: It is helpful to understand linear transformations by their effect on *x-*
+and *y-basis* vectors *î* = (1, 0) and *ĵ* = (0, 1). The transform described by
+the Affine2x3 record maps the basis vectors to *î&#x2032;* = (*xx*, *yx*) and
+*ĵ&#x2032;* = (*xy*, *yy*), and translates the origin to (*dx*, *dy*).
 
 When the transformed composition from the referenced paint table (and its
 sub-graph) is composed into the destination (represented by the parent of this
@@ -2031,10 +2030,10 @@ NOTE: Pure rotation can also be represented using the PaintTransformed table.
 For rotation about the origin, this could be done by setting matrix values as
 follows for angle &theta;: 
 
-* _xx_ = cos(&theta;)
-* _yx_ = sin(&theta;)
-* _xy_ = -sin(&theta;)
-* _yy_ = cos(&theta;)
+* _xx_ = cos(_&theta;_)
+* _yx_ = sin(_&theta;_)
+* _xy_ = -sin(_&theta;_)
+* _yy_ = cos(_&theta;_)
 * _dx_ = _dy_ = 0
 
 The important difference of the PaintRotate table is in allowing an angle to be
@@ -2073,8 +2072,8 @@ skews about the origin, this could be done by setting matrix values as follows
 for _x_ skew angle &phi; and _y_ skew angle &psi;:
 
 * _xx_ = _yy_ = 1
-* _yx_ = tan(&psi;)
-* _xy_ = -tan(&phi;)
+* _yx_ = tan(_&psi;_)
+* _xy_ = -tan(_&phi;_)
 * _dx_ = _dy_ = 0
 
 The important difference of the PaintSkew table is in being able to specify skew
