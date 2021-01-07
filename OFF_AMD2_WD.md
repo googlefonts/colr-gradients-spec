@@ -1769,15 +1769,22 @@ type *SomeType* (hypothetical), the record format is as follows:
 | uint16 | varOuterIndex | |
 | uint16 | varInnerIndex | |
 
-The value field of this record provides the default value for the stop offset.
+The value field of these records provides the default value for a given item.
 The remaining fields provide index values for a particular ItemVariationData
 subtable and DeltaSet record—the two-level organizational hierarchy used within
 the Item Variation Store.
 
-The index fields of the VarFWord, VarUFWord, VarF2Dot14 and VarFixed records
-shall always be set with specific values. The indices are base 0, therefore
-0x0000 cannot be used as an ignorable default. To indicate that an item has no
-variation data, the index fields shall be set to 0xFFFF/0xFFFF. (See 7.2.3.2.)
+If the COLR table does not contain an Item Variation Store subtable, the index
+fields of these records shall be ignored by applications, and should be set to
+zero. The value field is read directly without any variation calculation.
+
+If the COLR table contains an Item Variation Store subtable, the index fields
+shall be used to obtain a delta value that is combined with the value of the
+value field. In this case, the index fields of the VarFWord, VarUFWord,
+VarF2Dot14 and VarFixed records shall always be set with specific values. The
+indices are base 0, therefore 0x0000 cannot be used as an ignorable default. To
+indicate that an item has no variation data, the index fields shall be set to
+0xFFFF/0xFFFF. (See 7.2.3.2.)
 
 For general information on OFF font variations, see 7.1.
 
