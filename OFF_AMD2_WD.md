@@ -679,21 +679,21 @@ values for pixels from the source and backdrop are combined. These are
 illustrated with examples in figures 5.35 and 5.36: in each case, red and blue
 rectangles are the source and backdrop content.
 
-Figure 5.35 shows the effect of a Porter-Duff mode, “XOR”, which has the effect
+Figure 5.35 shows the effect of a Porter-Duff mode, *XOR*, which has the effect
 that only non-overlapping pixels contribute to the result.
 
 ![Two content elements combined using the Porter-Duff XOR mode.](images/colr_porter-duff_xor.png)
 
-**Figure 5.35 Two content elements combined using the Porter-Duff XOR mode.**
+**Figure 5.35 Two content elements combined using the Porter-Duff *XOR* mode.**
 
-Figure 5.36 shows the effect of a “lighten” blending mode, which has the effect
+Figure 5.36 shows the effect of a *lighten* blending mode, which has the effect
 that the R, G, and B color components for each pixel in the result is the
 greater of the R, G, and B values from corresponding pixels in the source and
 backdrop.
 
-![Two content elements combined using the lighten blending mode.](images/colr_blend_lighten.png)
+![Two content elements combined using the *lighten* blending mode.](images/colr_blend_lighten.png)
 
-**Figure 5.36 Two content elements combined using the lighten blending mode.**
+**Figure 5.36 Two content elements combined using the *lighten* blending mode.**
 
 For complete details on each of the Porter-Duff and blending modes, see the
 [Compositing and Blending Level 1][1] specification.
@@ -701,9 +701,9 @@ For complete details on each of the Porter-Duff and blending modes, see the
 Figure 5.37 illustrates how the PaintComposite table is used in combination with
 content sub-graphs to implement an alternate compositing effect. The source
 sub-graph defines a green capital A; the backdrop sub-graph defines a black
-circle. The compositing mode used is “source out”, which has the effect that the
+circle. The compositing mode used is *Source Out*, which has the effect that the
 source content punches out a hole in the backdrop. (For this mode, the fill
-color of the source is irrelevant; a black or yellow "A" would have the same
+color of the source is irrelevant; a black or yellow “A” would have the same
 effect.) A red rectangle is included as a lower layer to show that the backdrop
 has been punched out by the source, making that portion of the lower layer
 visible.
@@ -713,7 +713,7 @@ visible.
 **Figure 5.37 A color glyph using a PaintComposite table to punch out a shape from the fill of a circle.**
 
 NOTE: In figure 5.37, the “A” is filled with green to illustrate that the color
-of the fill has no affect for the source out composite mode. Because that is the
+of the fill has no affect for the *Source Out* composite mode. Because that is the
 case, the black or red PaintSolid could have been re-used instead of adding a
 separate PaintSolid table. See 5.7.11.1.7.1 for more information on re-use of
 paint tables for such situations.
@@ -721,12 +721,12 @@ paint tables for such situations.
 [Scalable Vector Graphics (SVG)][31] supports alpha channel masking using the
 &lt;mask&gt; element. The same effects can be implemented in COLR version 1
 using a PaintComposite table by setting a pattern of alpha values in the source
-sub-graph and selecting the source in composite mode. This is illustrated in
+sub-graph and selecting the *Source In* composite mode. This is illustrated in
 figure 5.38.
 
-![A PaintComposite table using the source in mode to implement an alpha mask.](images/colr_gradient_mask.png)
+![A PaintComposite table using the *Source In* mode to implement an alpha mask.](images/colr_gradient_mask.png)
 
-**Figure 5.38 An alpha mask implemented using a PaintComposite table and the source in mode.**
+**Figure 5.38 An alpha mask implemented using a PaintComposite table and the *Source In* mode.**
 
 **5.7.11.1.7 Re-usable components**
 
@@ -960,8 +960,8 @@ including leaf nodes, can be re-used (see 5.7.11.1.7). Also, each separate
 visual element requires a fork in the graph, and a separate root-to-leaf path,
 but not all paths necessarily result in a distinct visual element. For example,
 a gradient mask effect can be created with a gradient with gradation of alpha
-values, and then using that as the source of a PaintComposite with the *source
-in* compositing mode. In that case, the leaf has a visual affect but does not
+values, and then using that as the source of a PaintComposite with the *Source
+In* compositing mode. In that case, the leaf has a visual affect but does not
 result in a distinct visual element. This was illustrated in figure 5.38,
 repeated here as figure 5.45: the PaintLinearGradient is a leaf node in the
 graph and creates a masking effect but does not add a distinct visual element.
