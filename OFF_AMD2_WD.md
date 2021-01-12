@@ -334,8 +334,9 @@ yellow at 0.5, and red at 1.0.
 A radial gradient provides gradation of colors along a cylinder defined by two
 circles. The gradient is defined by circles with center c₀ and radius r₀, and
 with center c₁ and radius r₁, plus a color line. The color line aligns with the
-two circles by associating stop offset 0 with the first circle (with center c₀)
-and aligning stop offset 1.0 with the second circle (with center c₁). 
+two circles by associating stop offset 0 with the circumference of the first
+circle (with center c₀) and aligning stop offset 1.0 with the circumference of
+the second circle (with center c₁).
 
 NOTE: The term “radial gradient” is used in some contexts for more limited
 capabilities. In some contexts, the type of gradient defined here is referred to
@@ -469,6 +470,12 @@ be separated by some distance. In that case, a radial gradient would appear as a
 strip or a cone filled with a linear gradient.
 
 > **_TBD: We still need to specify required behaviour for the case in which the transform really flattens the two circles, and the centers, to a line._**
+
+NOTE: As seen in the figures above, the gradient fills the space when one circle
+is contained within the other, but not when neither circle is contained within
+the other. In a variable font, if the placement or radii of the circles vary,
+then a sharp transition can occur if the variation results in one circle being
+contained with the other for some instances but not for other instances.
 
 **5.7.11.1.3 Filling shapes**
 
