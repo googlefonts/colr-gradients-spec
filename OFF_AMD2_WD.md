@@ -289,11 +289,12 @@ p₁ are interpolated using the color line.
 
 An additional point, p₂, is also used to rotate the gradient orientation in the
 space on either side of the line defined by p₀ and p₁. The vector from p₀ to p₂
-can be referred to as the *rotation vector*. If the rotation vector is colinear
-with the line p₀p₁, there is no rotation: colors in the space on either side of
-the line p₀p₁ extend in the perpendicular direction. But if the rotation vector
-is not colinear, the gradient is drawn skewed by the angle between p₀p₁ and
-p₀p₂.
+can be referred to as the *rotation vector*, although the magnitude and
+direction are not significant. If the the line p₀p₂ is colinear with the line
+p₀p₁, there is no rotation: colors in the space on either side of the line p₀p₁
+extend in the perpendicular direction. But if the line p₀p₂ is not colinear with
+the line p₀p₁, the gradient is drawn skewed by the acute angle (less than 90°)
+between the lines defined by p₀p₁ and by p₀p₂.
 
 If the dot-product (p₁ - p₀) · (p₂ - p₀) is zero (or near-zero for an
 implementation-defined definition) then the gradient is ill-formed and shall not
