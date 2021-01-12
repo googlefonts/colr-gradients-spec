@@ -284,17 +284,29 @@ stops, and set the extend mode to *reflect*.
 
 A linear gradient provide gradation of colors along a straight line. The
 gradient is defined by two points, p₀ and p₁, plus a color line, with stop
-offset 0 aligned to p₀ and stop offset 1.0 aligned to p₁. Colors between p₀ and
-p₁ are interpolated using the color line.
+offset 0 aligned to p₀ and stop offset 1.0 aligned to p₁. Colors along the line
+passing through p₀ and p₁ are interpolated using the color line. For each
+position along the line, the color at that position is projected on other side
+of the line.
 
 An additional point, p₂, is also used to rotate the gradient orientation in the
-space on either side of the line defined by p₀ and p₁. The vector from p₀ to p₂
-can be referred to as the *rotation vector*, although the magnitude and
-direction are not significant. If the the line p₀p₂ is colinear with the line
+space on either side of the line defined by p₀ and p₁. The line passing through points p₀ and p₂
+determine the direction in which the gradient progresses. If the the line p₀p₂ is colinear with the line
 p₀p₁, there is no rotation: colors in the space on either side of the line p₀p₁
 extend in the perpendicular direction. But if the line p₀p₂ is not colinear with
 the line p₀p₁, the gradient is drawn skewed by the acute angle (less than 90°)
-between the lines defined by p₀p₁ and by p₀p₂.
+between the lines defined by p₀p₁ and by p₀p₂. For each position along line
+p₀p₁, the color at that position projects on either side in a direction
+orthogonal to line p₀p₂.
+
+NOTE: An implementation can derive a single vector, p₀p₃, by computing the
+orthogonal projection of vector p₀p₁ onto line p₀p₂ to obtain point p₃. The
+linear gradient defined using p₀, p₁ and p₂ as described above is functionally
+equivalent to a linear gradient defined by aligning stop offset 0 to p₀ and
+aligning stop offset 1.0 to p₃, with each color projecting on either side of
+that line in an orthogonal direction. This specification uses three points, p₀,
+p₁ and p₂, as that provides greater flexibility in controlling the placement and
+orientation of the gradient, as well as variations thereof.
 
 If the dot-product (p₁ - p₀) · (p₂ - p₀) is zero (or near-zero for an
 implementation-defined definition) then the gradient is ill-formed and shall not
