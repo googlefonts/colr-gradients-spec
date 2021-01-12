@@ -284,20 +284,20 @@ stops, and set the extend mode to *reflect*.
 
 A linear gradient provide gradation of colors along a straight line. The
 gradient is defined by two points, p₀ and p₁, plus a color line, with stop
-offset 0 aligned to p₀ and stop offset 1.0 aligned to p₁. Colors along the line
-passing through p₀ and p₁ are interpolated using the color line. For each
-position along the line, the color at that position is projected on other side
-of the line.
+offset 0 aligned to p₀ and stop offset 1.0 aligned to p₁. (The line passing
+through p₀ and p₁ will be referred to as line p₀p₁.) Colors at each position on
+line p₀p₁ are interpolated using the color line. For each position along line
+p₀p₁, the color at that position is projected on other side of the line.
 
 An additional point, p₂, is also used to rotate the gradient orientation in the
-space on either side of the line defined by p₀ and p₁. The line passing through points p₀ and p₂
-determine the direction in which the gradient progresses. If the the line p₀p₂ is colinear with the line
-p₀p₁, there is no rotation: colors in the space on either side of the line p₀p₁
-extend in the perpendicular direction. But if the line p₀p₂ is not colinear with
-the line p₀p₁, the gradient is drawn skewed by the acute angle (less than 90°)
-between the lines defined by p₀p₁ and by p₀p₂. For each position along line
-p₀p₁, the color at that position projects on either side in a direction
-orthogonal to line p₀p₂.
+space on either side of the line p₀p₁. The line passing through points p₀ and p₂
+(line p₀p₂) determine the direction in which the gradient progresses. If p₂ is
+is on line p₀p₁, there is no rotation: colors in the space on either side of
+line p₀p₁ extend in the perpendicular direction. But if p₂ is not on line p₀p₁
+(i.e., p₀p₂ is not colinear with p₀p₁), then the gradient is drawn skewed by the
+acute angle (less than 90°) between the lines p₀p₁ and p₀p₂. For each position
+along line p₀p₁, the color at that position projects on either side in a
+direction orthogonal to line p₀p₂.
 
 NOTE: An implementation can derive a single vector, p₀p₃, by computing the
 orthogonal projection of vector p₀p₁ onto line p₀p₂ to obtain point p₃. The
