@@ -1323,8 +1323,7 @@ information about its use for shared, re-usable components, see 5.7.11.1.7.2.
 | Type | Field name | Description |
 |-|-|-|
 | uint8 | format | Set to 1. |
-| uint8 | numLayers | Number of offsets to paint tables to read from
-LayerV1List. |
+| uint8 | numLayers | Number of offsets to paint tables to read from LayerV1List. |
 | uint32 | firstLayerIndex | Index (base 0) into the LayerV1List. |
 
 NOTE: An 8-bit value is used for numLayers to minimize size for common
