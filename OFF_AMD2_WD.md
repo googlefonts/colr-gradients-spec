@@ -261,9 +261,9 @@ unbounded in either direction.
 
 **Figure 5.11 Color gradation extended using reflect mode**
 
-NOTE: The extend modes are the same as the [spreadMethod][30] attribute used for
+NOTE: The extend modes are the same as the [spreadMethod][31] attribute used for
 linear and radial gradients in the [Scalable Vector Graphics (SVG) 1.1 (Second
-Edition)][31] specification.
+Edition)][32] specification.
 
 When combining a color line with the geometry of a particular gradient
 definition, one might want to achieve a certain number of repetitions of the
@@ -329,7 +329,7 @@ capabilities. In some contexts, the type of gradient defined here is referred to
 as a “two point conical” gradient.
 
 The drawing algorithm for radial gradients follows the [HTML WHATWG Canvas
-specification for createRadialGradient()][32], but adapted with with alternate
+specification for createRadialGradient()][33], but adapted with with alternate
 color line extend modes, as described in 5.7.11.1.2.1. Radial gradients shall be
 rendered with results that match the results produced by the following steps.
 
@@ -718,7 +718,7 @@ case, the black or red PaintSolid could have been re-used instead of adding a
 separate PaintSolid table. See 5.7.11.1.7.1 for more information on re-use of
 paint tables for such situations.
 
-[Scalable Vector Graphics (SVG)][31] supports alpha channel masking using the
+[Scalable Vector Graphics (SVG)][32] supports alpha channel masking using the
 &lt;mask&gt; element. The same effects can be implemented in COLR version 1
 using a PaintComposite table by setting a pattern of alpha values in the source
 sub-graph and selecting the *Source In* composite mode. This is illustrated in
@@ -1626,23 +1626,24 @@ The compositionMode value must be one of the values defined in the CompositeMode
 | 9 | COMPOSITE_SRC_ATOP | See [Source Atop][11] |
 | 10 | COMPOSITE_DEST_ATOP | See [Destination Atop][12] |
 | 11 | COMPOSITE_XOR | See [XOR][13] |
+| 12 | COMPOSITE_PLUS | See [PLUS][14] |
 | | *Separable color blend modes:* | |
-| 12 | COMPOSITE_SCREEN | See [screen blend mode][14] |
-| 13 | COMPOSITE_OVERLAY | See [overlay blend mode][15] |
-| 14 | COMPOSITE_DARKEN | See [darken blend mode][16] |
-| 15 | COMPOSITE_LIGHTEN | See [lighten blend mode][17] |
-| 16 | COMPOSITE_COLOR_DODGE | See [color-dodge blend mode][18] |
-| 17 | COMPOSITE_COLOR_BURN | See [color-burn blend mode][19] |
-| 18 | COMPOSITE_HARD_LIGHT | See [hard-light blend mode][20] |
-| 19 | COMPOSITE_SOFT_LIGHT | See [soft-light blend mode][21] |
-| 20 | COMPOSITE_DIFFERENCE | See [difference blend mode][22] |
-| 21 | COMPOSITE_EXCLUSION | See [exclusion blend mode][23] |
-| 22 | COMPOSITE_MULTIPLY | See [multiply blend mode][24] |
+| 13 | COMPOSITE_SCREEN | See [screen blend mode][15] |
+| 14 | COMPOSITE_OVERLAY | See [overlay blend mode][16] |
+| 15 | COMPOSITE_DARKEN | See [darken blend mode][17] |
+| 16 | COMPOSITE_LIGHTEN | See [lighten blend mode][18] |
+| 17 | COMPOSITE_COLOR_DODGE | See [color-dodge blend mode][19] |
+| 18 | COMPOSITE_COLOR_BURN | See [color-burn blend mode][20] |
+| 19 | COMPOSITE_HARD_LIGHT | See [hard-light blend mode][21] |
+| 20 | COMPOSITE_SOFT_LIGHT | See [soft-light blend mode][22] |
+| 21 | COMPOSITE_DIFFERENCE | See [difference blend mode][23] |
+| 22 | COMPOSITE_EXCLUSION | See [exclusion blend mode][24] |
+| 23 | COMPOSITE_MULTIPLY | See [multiply blend mode][25] |
 | | *Non-separable color blend modes:* | |
-| 23 | COMPOSITE_HSL_HUE | See [hue blend mode][25] |
-| 24 | COMPOSITE_HSL_SATURATION | See [saturation blend mode][26] |
-| 25 | COMPOSITE_HSL_COLOR | See [color blend mode][27] |
-| 26 | COMPOSITE_HSL_LUMINOSITY | See [luminosity blend mode][28] |
+| 24 | COMPOSITE_HSL_HUE | See [hue blend mode][26] |
+| 25 | COMPOSITE_HSL_SATURATION | See [saturation blend mode][27] |
+| 26 | COMPOSITE_HSL_COLOR | See [color blend mode][28] |
+| 27 | COMPOSITE_HSL_LUMINOSITY | See [luminosity blend mode][29] |
 
 The supported modes are taken from the W3C [Compositing and Blending Level 1][1]
 specification. For details on each mode, including specifications of the
@@ -2011,22 +2012,23 @@ _Add two new entries as follows:_
 [11]: https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_srcatop
 [12]: https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_dstatop
 [13]: https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_xor
-[14]: https://www.w3.org/TR/compositing-1/#blendingscreen
-[15]: https://www.w3.org/TR/compositing-1/#blendingoverlay
-[16]: https://www.w3.org/TR/compositing-1/#blendingdarken
-[17]: https://www.w3.org/TR/compositing-1/#blendinglighten
-[18]: https://www.w3.org/TR/compositing-1/#blendingcolordodge
-[19]: https://www.w3.org/TR/compositing-1/#blendingcolorburn
-[20]: https://www.w3.org/TR/compositing-1/#blendinghardlight
-[21]: https://www.w3.org/TR/compositing-1/#blendingsoftlight
-[22]: https://www.w3.org/TR/compositing-1/#blendingdifference
-[23]: https://www.w3.org/TR/compositing-1/#blendingexclusion
-[24]: https://www.w3.org/TR/compositing-1/#blendingmultiply
-[25]: https://www.w3.org/TR/compositing-1/#blendinghue
-[26]: https://www.w3.org/TR/compositing-1/#blendingsaturation
-[27]: https://www.w3.org/TR/compositing-1/#blendingcolor
-[28]: https://www.w3.org/TR/compositing-1/#blendingluminosity
-[29]: https://www.w3.org/TR/compositing-1/#blendingnormal
-[30]: https://www.w3.org/TR/2011/REC-SVG11-20110816/pservers.html#LinearGradientElementSpreadMethodAttribute
-[31]: https://www.w3.org/TR/SVG11/
-[32]: https://html.spec.whatwg.org/multipage/canvas.html#dom-context-2d-createradialgradient
+[14]: https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_plus
+[15]: https://www.w3.org/TR/compositing-1/#blendingscreen
+[16]: https://www.w3.org/TR/compositing-1/#blendingoverlay
+[17]: https://www.w3.org/TR/compositing-1/#blendingdarken
+[18]: https://www.w3.org/TR/compositing-1/#blendinglighten
+[19]: https://www.w3.org/TR/compositing-1/#blendingcolordodge
+[20]: https://www.w3.org/TR/compositing-1/#blendingcolorburn
+[21]: https://www.w3.org/TR/compositing-1/#blendinghardlight
+[22]: https://www.w3.org/TR/compositing-1/#blendingsoftlight
+[23]: https://www.w3.org/TR/compositing-1/#blendingdifference
+[24]: https://www.w3.org/TR/compositing-1/#blendingexclusion
+[25]: https://www.w3.org/TR/compositing-1/#blendingmultiply
+[26]: https://www.w3.org/TR/compositing-1/#blendinghue
+[27]: https://www.w3.org/TR/compositing-1/#blendingsaturation
+[28]: https://www.w3.org/TR/compositing-1/#blendingcolor
+[29]: https://www.w3.org/TR/compositing-1/#blendingluminosity
+[30]: https://www.w3.org/TR/compositing-1/#blendingnormal
+[31]: https://www.w3.org/TR/2011/REC-SVG11-20110816/pservers.html#LinearGradientElementSpreadMethodAttribute
+[32]: https://www.w3.org/TR/SVG11/
+[33]: https://html.spec.whatwg.org/multipage/canvas.html#dom-context-2d-createradialgradient
