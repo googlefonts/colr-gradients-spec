@@ -3,59 +3,65 @@
   <style>
     .label { font-size: 64px; font-family: Calibri, sans-serif; stroke-width: 0; stroke: black; fill: #1a2127; }
   </style>
+  
   <defs>
     <radialGradient id="radgrad-pad"
                     gradientUnits="userSpaceOnUse"
-                    fx="205" fy="0" fr="35"
-                    cx="250" cy="0" r="80"
+                    fx="-22.9" fy="60" fr="35"
+                    cx="120" cy="0" r="190"
                     spreadMethod="pad">
       <stop offset="0%" stop-color="#DA0025"/>
       <stop offset="50%" stop-color="#FFC600"/>
       <stop offset="100%" stop-color="#0052AB"/>
     </radialGradient>
+
     <radialGradient id="radgrad-repeat"
                     gradientUnits="userSpaceOnUse"
-                    fx="205" fy="0" fr="35"
-                    cx="250" cy="0" r="80"
+                    fx="-22.9" fy="60" fr="35"
+                    cx="120" cy="0" r="190"
                     spreadMethod="repeat">
       <stop offset="0%" stop-color="#DA0025"/>
       <stop offset="50%" stop-color="#FFC600"/>
       <stop offset="100%" stop-color="#0052AB"/>
     </radialGradient>
+
     <radialGradient id="radgrad-reflect"
                     gradientUnits="userSpaceOnUse"
-                    fx="205" fy="0" fr="35"
-                    cx="250" cy="0" r="80"
+                    fx="-22.9" fy="60" fr="35"
+                    cx="120" cy="0" r="190"
                     spreadMethod="reflect">
       <stop offset="0%" stop-color="#DA0025"/>
       <stop offset="50%" stop-color="#FFC600"/>
       <stop offset="100%" stop-color="#0052AB"/>
     </radialGradient>
-    <rect id="filled-rect" x="-300" y="-200" width="800" height="400" stroke-width="2" stroke="gray"/>
-  </defs>
-  <g transform="" class="spreadmethod-repeat">
-    <use href="#filled-rect" fill="url(#radgrad-pad)"/>
-    <g id="points" fill="none" stroke="#1a2127" stroke-width="2">
-      <circle cx="205" cy="0" r="35" />
-      <circle cx="205" cy="0" r="4" fill="#1a2127"/>
-      <line x1="205" y1="0" x2="223.386" y2="-29.781" />
-      <text class="label" x="165" y="40">c₀</text>
-      <text class="label" x="160" y="-20">r₀</text>
-      <circle cx="250" cy="0" r="80"  />
-      <circle cx="250" cy="0" r="4" fill="#1a2127"/>
-      <line x1="250" y1="0" x2="292.012" y2="-68.05" />
-      <text class="label" x="250" y="40">c₁</text>
-      <text class="label" x="287" y="-20">r₁</text>
-    </g>
-  </g>
 
+    <rect id="filled-rect" x="-300" y="-200" width="800" height="400" stroke-width="2" stroke="gray"/>
+  
+  </defs>
+  <use href="#filled-rect" fill="url(#radgrad-pad)"/>
+  
+  <g id="points" fill="none" stroke-width="2" stroke="#1a2127">
+    <circle cx="-22.9" cy="60" r="35" />
+    <circle cx="-22.9" cy="60" r="4" fill="#1a2127"/>
+    <line x1="-22.9" y1="60" x2="-4.514" y2="29.781" />
+    <text class="label" x="-22.9" y="110">c₀</text>
+    <text class="label" x="1.1" y="55">r₀</text>
+
+    <circle cx="120" cy="0" r="190" />
+    <circle cx="120" cy="0" r="4" fill="#1a2127"/>
+    <line x1="120" y1="0" x2="219.7785" y2="-161.61875" />
+    <text class="label" x="120" y="50">c₁</text>
+    <text class="label" x="190" y="-55">r₁</text>
+  </g>
+  
   <g transform="translate(0, 430)">
-    <use href="#filled-rect" fill="url(#radgrad-repeat)"/>
+    <use href="#filled-rect" fill="url(#radgrad-repeat)" />
     <use href="#points" />
   </g>
 
   <g transform="translate(0, 860)">
-    <use href="#filled-rect" fill="url(#radgrad-reflect)"/>
-    <use href="#points"/>
+    <use href="#filled-rect" fill="url(#radgrad-reflect)" />
+    <use href="#points" />
   </g>
+
 </svg>
