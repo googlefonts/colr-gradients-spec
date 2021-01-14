@@ -335,7 +335,7 @@ A radial gradient provides gradation of colors along a cylinder defined by two
 circles. The gradient is defined by circles with center c₀ and radius r₀, and
 with center c₁ and radius r₁, plus a color line. The color line aligns with the
 two circles by associating stop offset 0 with the first circle (with center c₀)
-and aligning stop offset 1.0 with  the second circle (with center c₁).
+and aligning stop offset 1.0 with the second circle (with center c₁).
 
 NOTE: The term “radial gradient” is used in some contexts for more limited
 capabilities. In some contexts, the type of gradient defined here is referred to
