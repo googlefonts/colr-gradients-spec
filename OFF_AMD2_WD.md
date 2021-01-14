@@ -334,9 +334,8 @@ yellow at 0.5, and red at 1.0.
 A radial gradient provides gradation of colors along a cylinder defined by two
 circles. The gradient is defined by circles with center c₀ and radius r₀, and
 with center c₁ and radius r₁, plus a color line. The color line aligns with the
-two circles by associating stop offset 0 with the circumference of the first
-circle (with center c₀) and aligning stop offset 1.0 with the circumference of
-the second circle (with center c₁).
+two circles by associating stop offset 0 with the first circle (with center c₀)
+and aligning stop offset 1.0 with  the second circle (with center c₁).
 
 NOTE: The term “radial gradient” is used in some contexts for more limited
 capabilities. In some contexts, the type of gradient defined here is referred to
@@ -357,7 +356,7 @@ With circle center points c₀ and c₁ defined as c₀ = (x₀, y₀) and c₁ 
    Let the color at ω be the color at position ω on the color line.
 3. For all values of ω where r(ω) > 0, starting with the value of ω nearest to
    positive infinity and ending with the value of ω nearest to negative
-   infinity, draw the circumference of the ellipse resulting from translating
+   infinity, draw the circumference of the circle resulting from translating
    a circle with radius r(ω) centered at position (x(ω), y(ω)), with
    the color at ω, but only painting on the parts of the bitmap that have not
    yet been painted on by earlier circles in this step for this rendering of the
