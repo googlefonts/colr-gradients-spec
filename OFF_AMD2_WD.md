@@ -5,6 +5,7 @@ Changes to the following sections of ISO/IEC 14496-22:2019 Open Font Format
 
 - [4.3 Data types](#changes-to-off-43-data-types)
 - [5.7.11 COLR – Color Table](#changes-to-off-5711---color-table)
+- [5.7.12 CPAL – Palette Table](#changes-to-off-5712---palette-table)
 - [7.2.3 Item variation stores](#changes-to-off-723-item-variation-stores)
 - [Bibliography](#changes-to-off-bibliography)
 
@@ -1983,6 +1984,93 @@ indicate that an item has no variation data, the index fields shall be set to
 
 For general information on OFF font variations, see 7.1.
 
+## Changes to OFF 5.7.12 - Palette Table
+
+_After the first paragraph, insert the following paragraph. (The referenced IEC
+standard is already included in the normative references.)_
+
+Palettes are defined by a set of color records. Each color record specifies a
+color in the sRGB color space using 8-bit BGRA (blue, green, red, alpha)
+representation. The sRGB color space is specified in IEC 61966-2-1. Details on
+the specification for the sRGB color space, including the color primaries and
+“gamma” transfer function, are also provided in [CSS Color Module Level 4,
+section 10.2](https://www.w3.org/TR/css-color-4/#predefined).
+
+_Insert the following paragraphs at the end of 5.7.12 with the heading, “Interpolation of colours”:_
+
+### Interpolation of Colors
+
+The SVG table and version 1 of the COLR table both support color gradient fills.
+The gradients are defined using color stops to specify color values at specific
+positions along a color line, with color values for other positions on the color
+line derived by interpolation.
+
+When interpolating color values, linear interpolation between color stop
+positions is used. For example, suppose adjacent color stops are specied for
+positions 0.5 and 0.9 on a color line, and a color value is being calculated for
+position 0.8. The color value of the first color stop will contribute 75% of the
+value ((0.8 - 0.5) / (0.9 - 0.5)), and the color value of the second color stop
+will contribute 25% of the value. Interpolated values at each position of the
+color line are computed in this way for each of the R, G and B color components.
+
+When interpolating color values, specific aspects of the representation of
+colors as well as handling of alpha need to be considered.
+
+Representations of sRGB color values are expressed as levels of red, green and
+blue color “primaries” with specific, absolute chromaticity values, which are
+defined in the sRGB specification. Color-primary levels can potentially be
+expressed using a linear-light-energy scale. For sRGB, however, standard
+practice is to represent levels using a scale defined by a transfer function,
+sometimes referred to as a non-linear or “gamma” representation. This transfer
+function is also defined in the sRGB specification. (See [CSS Color Module Level
+4, section 10.2](https://www.w3.org/TR/css-color-4/#predefined) for details.) In
+the CPAL table, sRGB color values are always specified in terms of the
+non-linear, sRGB transfer function.
+
+When interpolating colors, different results will be obtained if the
+interpolation is computed using the non-linear scale for color levels than if
+using the linear scale. For interoperable results, whether the non-linear or
+linear scale is to be used needs to be specified.
+
+For gradient color values in the SVG table, the required interpolation behavior
+is defined in the SVG 1.1 specification: the [‘color-interpolation’
+property](https://www.w3.org/TR/SVG11/painting.html#ColorInterpolationProperty)
+can be used in an SVG document to declare whether interpolation is done using
+the non-linear sRGB scale (the default), or using a linear scale by applying the
+inverse sRGB transfer function.
+
+For gradient color values in the COLR table, interpolation must be computed
+using linear values.
+
+After an interpolated color value is computed, whether or not the non-linear
+sRGB transfer function needs to be re-applied is determined by the requirements
+of the implementation context.
+
+For both the COLR and SVG tables, interpolation must be done with alpha
+pre-multiplied into each linearized R, G and B component. For alpha specified in
+a CPAL ColorRecord, the value is converted to a floating value in the range [0,
+1.0] by dividing by 255, then multiplied into each R, G and B component. For
+ColorIndex records in the COLR table, the alpha value from the ColorIndex record
+(with variation, in a variable font) is multiplied into the R, G and B
+components as well. Interpolated values are then calculated by linear
+interpolation using these pre-multiplied, linear R, G and B values.
+
+Alpha components use a linear scale and can be directly interpolated apart from
+the R, G and B components. Since the interpolated color values are not stored,
+however, this computation is never required.
+
+While color values are specified as 8-bit integers, the interpolation
+computations will require greater precision in each of the linearization,
+pre-multiply, and interpolation steps. These operations should generally be done
+using floating values. Also, when rendered results are to be presented on a
+imaging device with known characteristics, visual bending effects in a gradient
+can be minimized by taking full advantage of the color bit depth supported by
+the device. For instance, if a display supports 10- or 12-bit quantization per
+color channel, then ideally the ramp of color values in a gradient would use
+that level of quantization. Other factors from the presentation context may also
+affect the available capabilities, however. Therefore, no minimum level of
+precision is specified as a requirement.
+
 ## Changes to OFF 7.2.3 Item variation stores
 
 _Delete the fourth paragraph, "Variation data is comprised..."._
@@ -2185,13 +2273,13 @@ tuple variation store.
 
 ## Changes to OFF Bibliography
 
-_Add two new entries as follows:_
+_Add three new entries as follows:_
 
 - HTML Living Standard, 4.12.5, The canvas element. https://html.spec.whatwg.org/multipage/canvas.html#the-canvas-element
 
 - Compositing and Blending Level 1. W3C Candidate Recommendation, 13 January 2015. https://www.w3.org/TR/compositing-1/
 
-
+- CSS Color Module Level 4. W3C Working Draft, 12 November 2020. https://www.w3.org/TR/css-color-4/
 
 
 [1]: https://www.w3.org/TR/compositing-1/
