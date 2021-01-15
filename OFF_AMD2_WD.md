@@ -1459,7 +1459,10 @@ For information about applying a fill to a shape, see 5.7.11.1.3.
 
 The glyphID value shall be less than the numGlyphs value in the &#39;maxp&#39;
 table (5.2.6). That is, it shall be a valid glyph with outline data in the
-&#39;glyf&#39; (5.3.4), &#39;CFF &#39; (5.4.2) or CFF2 (5.4.3) table.
+&#39;glyf&#39; (5.3.4), &#39;CFF &#39; (5.4.2) or CFF2 (5.4.3) table. Only that
+outline data is used. In particular, if this glyph ID has a description in the
+COLR table (glyphID appears in a COLR BaseGlyph record or the BaseGlyphV1List),
+that COLR data is not relevant for purposes of the PaintGlyph table.
 
 **5.7.11.2.5.6 Format 6: PaintColrGlyph**
 
