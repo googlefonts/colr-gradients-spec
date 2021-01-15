@@ -1843,13 +1843,21 @@ The compositionMode value must be one of the values defined in the CompositeMode
 | 26 | COMPOSITE_HSL_COLOR | See [color blend mode][28] |
 | 27 | COMPOSITE_HSL_LUMINOSITY | See [luminosity blend mode][29] |
 
-The supported modes are taken from the W3C [Compositing and Blending Level 1][1]
-specification. For details on each mode, including specifications of the
-required behaviors, see the W3C specification.
 
 The graphic compositions defined by the source and backdrop paint tables (and
 their respective sub-graphs) are rendered into bitmaps, and the source is
-blended into the backdrop using the specified composite mode.
+composited or blended into the backdrop using the specified composite mode. The
+supported modes are taken from the W3C [Compositing and Blending Level 1][1]
+specification. Details on each mode, including specifications of the required
+calculations using pixel color and alpha values, are provided in that
+specification. 
+
+While color values obtained from the CPAL table are represented in sRGB using
+the non-linear transfer function defined in the sRGB specification, the
+compositing and blending calculations are done after applying the inverse
+transfer function to derive linear RGB values. For more information regarding
+the non-linear and linear representations for sRGB, see *Interpolation of
+Colors* in 5.7.12.
 
 As mentioned in 5.7.11.1.8.2, a color glyph definition shall be bounded. A
 sub-graph that has PaintComposite as its root is either bounded or unbounded,
