@@ -2006,7 +2006,7 @@ positions along a color line, with color values for other positions on the color
 line derived by interpolation.
 
 When interpolating color values, linear interpolation between color stop
-positions is used. For example, suppose adjacent color stops are specied for
+positions is used. For example, suppose adjacent color stops are specified for
 positions 0.5 and 0.9 on a color line, and a color value is being calculated for
 position 0.8. The color value of the first color stop will contribute 75% of the
 value ((0.8 - 0.5) / (0.9 - 0.5)), and the color value of the second color stop
@@ -2019,13 +2019,22 @@ colors as well as handling of alpha need to be considered.
 Representations of sRGB color values are expressed as levels of red, green and
 blue color “primaries” with specific, absolute chromaticity values, which are
 defined in the sRGB specification. Color-primary levels can potentially be
-expressed using a linear-light-energy scale. For sRGB, however, standard
-practice is to represent levels using a scale defined by a transfer function,
-sometimes referred to as a non-linear or “gamma” representation. This transfer
-function is also defined in the sRGB specification. (See [CSS Color Module Level
-4, section 10.2](https://www.w3.org/TR/css-color-4/#predefined) for details.) In
-the CPAL table, sRGB color values are always specified in terms of the
-non-linear, sRGB transfer function.
+expressed using a linear scale that correlates directly to light energy. (On a
+linear scale, for example, a doubling of a color value would correspond to a
+doubling of display luminance.) For sRGB, however, standard practice is to
+represent levels using a scale defined by a non-linear transfer function,
+sometimes referred to as “gamma”. This transfer function is also defined in the
+sRGB specification. (See [CSS Color Module Level 4, section
+10.2](https://www.w3.org/TR/css-color-4/#predefined) for details.) In the CPAL
+table, sRGB color values are always specified in terms of the non-linear, sRGB
+transfer function. 
+
+NOTE: An advantage of representing colours using a non-linear scale is that it
+allows more effective use of limited bit depth when color-primary levels are
+represented as integers: smaller differences in light energy can be represented
+for lower levels than for higher levels. This is beneficial since the human
+visual system is more sensitive to differences at low luminance levels than to
+differences at high luminance levels.
 
 When interpolating colors, different results will be obtained if the
 interpolation is computed using the non-linear scale for color levels than if
@@ -2055,21 +2064,21 @@ ColorIndex records in the COLR table, the alpha value from the ColorIndex record
 components as well. Interpolated values are then calculated by linear
 interpolation using these pre-multiplied, linear R, G and B values.
 
-Alpha components use a linear scale and can be directly interpolated apart from
-the R, G and B components. Since the interpolated color values are not stored,
-however, this computation is never required.
+NOTE: Alpha components use a linear scale and can be directly interpolated apart
+from the R, G and B components without any linearlization step. Since the
+interpolated color values are not stored, however, this computation is never
+required.
 
 While color values are specified as 8-bit integers, the interpolation
 computations will require greater precision in each of the linearization,
-pre-multiply, and interpolation steps. These operations should generally be done
-using floating values. Also, when rendered results are to be presented on a
-imaging device with known characteristics, visual bending effects in a gradient
-can be minimized by taking full advantage of the color bit depth supported by
-the device. For instance, if a display supports 10- or 12-bit quantization per
-color channel, then ideally the ramp of color values in a gradient would use
-that level of quantization. Other factors from the presentation context may also
-affect the available capabilities, however. Therefore, no minimum level of
-precision is specified as a requirement.
+pre-multiply, and interpolation steps. Also, when rendered results are to be
+presented on a imaging device with known characteristics, visual banding
+artifacts in a gradient can be minimized by taking full advantage of the color
+bit depth supported by the device. For instance, if a display supports 10- or
+12-bit quantization per color channel, then ideally the ramp of color values in
+a gradient would use that level of quantization. Other factors from the
+presentation context may also affect the available capabilities, however.
+Therefore, no minimum level of precision is specified as a requirement.
 
 ## Changes to OFF 7.2.3 Item variation stores
 
