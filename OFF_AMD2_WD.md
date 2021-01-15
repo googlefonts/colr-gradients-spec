@@ -1843,14 +1843,13 @@ The compositionMode value must be one of the values defined in the CompositeMode
 | 26 | COMPOSITE_HSL_COLOR | See [color blend mode][28] |
 | 27 | COMPOSITE_HSL_LUMINOSITY | See [luminosity blend mode][29] |
 
-
 The graphic compositions defined by the source and backdrop paint tables (and
-their respective sub-graphs) are rendered into bitmaps, and the source is
-composited or blended into the backdrop using the specified composite mode. The
-supported modes are taken from the W3C [Compositing and Blending Level 1][1]
-specification. Details on each mode, including specifications of the required
-calculations using pixel color and alpha values, are provided in that
-specification. 
+their respective sub-graphs). Conceptually, they are rendered into bitmaps, and
+the source is composited or blended into the backdrop using the specified
+composite mode. The supported modes are taken from the W3C [Compositing and
+Blending Level 1][1] specification. Details on each mode, including
+specifications of the required calculations using pixel color and alpha values,
+are provided in that specification.
 
 While color values obtained from the CPAL table are represented in sRGB using
 the non-linear transfer function defined in the sRGB specification, the
