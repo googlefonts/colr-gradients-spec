@@ -218,9 +218,8 @@ line; at least two color stops are needed to create color gradation.
 
 Color gradation is defined over the interval from the first color stop, through
 the successive color stops, to the last color stop. Between adjacent color
-stops, color values are linearly interpolated.
-
-> **_TBD: Does interpolation of colors need further specification?_**
+stops, color values are linearly interpolated. See _Interpolation of Colors_ in
+5.7.12 for requirements on how colors are interpolated.
 
 If there are multiple color stops defined for the same stop offset, the first
 one is used for computing color values on the color line below that stop offset,
@@ -1855,8 +1854,8 @@ While color values obtained from the CPAL table are represented in sRGB using
 the non-linear transfer function defined in the sRGB specification, the
 compositing and blending calculations are done after applying the inverse
 transfer function to derive linear RGB values. For more information regarding
-the non-linear and linear representations for sRGB, see *Interpolation of
-Colors* in 5.7.12.
+the non-linear and linear representations for sRGB, see _Interpolation of
+Colors_ in 5.7.12.
 
 As mentioned in 5.7.11.1.8.2, a color glyph definition shall be bounded. A
 sub-graph that has PaintComposite as its root is either bounded or unbounded,
