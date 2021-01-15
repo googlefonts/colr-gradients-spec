@@ -502,6 +502,38 @@ caution if the circles are in close proximity (either in a static design or for
 some variable font instances), and should not rely on these display artifacts to
 obtain a particular pattern.
 
+**5.7.11.1.2.4 Sweep gradients**
+
+A sweep gradient provides a gradation of colors that sweep around a center point. For a given color on a color line, that color projects as a ray from the center point in a given direction. This is illustrated in figure 5.x.
+
+NOTE: The following figures illustrate conic gradients clipped to a circular region. Conic gradients are not bounded, however, and fill the entire space.
+
+![A conic gradient](images/colr_conic_gradient.png)
+
+**Figure 5.x Conic gradient**
+
+NOTE: In some contexts, this type of gradient is referred to as a “conic” gradient.
+
+A sweep gradient is defined by a center point, starting and ending angles, and a color line. The angles are expressed in counter-clockwise degrees from the direction of the y-axis on the design grid.
+
+The color line is aligned to a circular path around the center point, with arbitrary radius, with stop offset 0 aligned with the starting angle, and stop offset 1 aligned with the ending angle. The color line progresses in the counter-clockwise direction; for example, if the start and stop angles are both 0°, then stop offset 0.1 is at 36° counter-clockwise from the direction of the y-axis. The color line may be defined using color stops outside the range [0, 1], but only color values in the range [0, 1] are used. In a conic gradient, the extend mode specified for the color line is ignored.
+
+A conic gradient is defined using start and stop angles. In this way, the gradient does not need to cover a full 360° sweep around the center. This is illustrated in figure 5.x:
+
+![A conic gradient, from red to yellow, with start angle of -60° and a stop angle of 60°.](images/colr_conic_gradient_start_stop_angles.png)
+
+**Figure 5.x A conic gradient, from red to yellow, with start angle of -60° and a stop angle of 60°.**
+
+If the starting and ending angle are the same, a sharp color transition can occur if the colors at stop offsets 0 and 1 are different. This is illustrated in figure 5.x, showing a gradient from red to yellow that starts and stops at 0°.
+
+![A conic gradient, from red to yellow, with a sharp transition at the common start/stop angle.](images/colr_conic_gradient_sharp_transition.png)
+
+**Figure 5.x A conic gradient, from red to yellow, with a sharp transition at the common start/stop angle.**
+
+To avoid such a sharp transition, the stop offsets 0 and 1 on the color line need to have the same color value. Figure 5.x illustrates a conic gradient that transitions from red at stop offset 0, to yellow at stop offset 0.5, and back to red at stop offset 1.0.
+
+![A conic gradient, from red to yellow to red, with a smooth transition at the common start/stop angle.](images/colr_conic_gradient_rotation-0.png)
+
 **5.7.11.1.3 Filling shapes**
 
 All basic shapes used in a color glyph are obtained from glyph outlines,
@@ -1720,6 +1752,31 @@ source and backdrop as follows:
   * COMPOSITE_DEST_IN
 * Bounded *if and only if* both the source *and* backdrop are bounded:
   * All other modes
+
+**5.7.11.2.5.11 Format 12: PaintSweepGradient**
+
+Format 12 is used to specify a sweep gradient fill. For general information
+about sweep gradients, see 5.7.11.1.2.x.
+
+The PaintRadialGradient table has a ColorLine subtable. The ColorLine table
+format is specified in 5.7.11.2.4. For background information on the color line,
+see 5.7.11.1.2.1.
+
+For information about applying a fill to a shape, see 5.7.11.1.3.
+
+*PaintRadialGradient table (format 4):*
+
+| Type | Field name | Description |
+|-|-|-|
+| uint8 | format | Set to 4. |
+| Offset24 | colorLineOffset | Offset to ColorLine table. |
+| VarFWord | x0 | Center x coordinate. |
+| VarFWord | y0 | Center y coordinate. |
+| VarFixed | startAngle | Start of the angular range of the gradient. |
+| VarFixed | endAngle | End of the angular range of the gradient. |
+
+Angles are expressed in counter-clockwise degrees from the direction of the
+y-axis in the design grid.
 
 **5.7.11.3 COLR version 1 rendering algorithm**
 
