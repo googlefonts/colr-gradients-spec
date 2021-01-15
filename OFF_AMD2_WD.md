@@ -487,8 +487,9 @@ extend mode.
 When the repeat or reflect extend modes are used, having the two circles in very
 close proximity results in very high spatial-frequency transitions that can lead
 to Moiré patterns or other display artifacts. This is illustrated in figure
-5.28, for one particular rendering context, using a radial gradient defined
-using nearly-identical circles and the reflect extend mode.
+5.28, which shows the display result, for one particular rendering context, of a
+radial gradient defined using nearly-identical circles and the reflect extend
+mode.
 
 ![Radial gradient defined using nearly-identical circles and reflect extend mode, displaying with interference patterns](images/colr_radial_gradients_interference_patterns_reflect.png)
 
