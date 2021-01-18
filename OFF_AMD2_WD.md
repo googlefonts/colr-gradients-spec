@@ -504,35 +504,58 @@ obtain a particular pattern.
 
 **5.7.11.1.2.4 Sweep gradients**
 
-A sweep gradient provides a gradation of colors that sweep around a center point. For a given color on a color line, that color projects as a ray from the center point in a given direction. This is illustrated in figure 5.x.
+A sweep gradient provides a gradation of colors that sweep around a center
+point. For a given color on a color line, that color projects as a ray from the
+center point in a given direction. This is illustrated in figure 5.x.
 
-NOTE: The following figures illustrate conic gradients clipped to a circular region. Conic gradients are not bounded, however, and fill the entire space.
+NOTE: The following figures illustrate sweep gradients clipped to a circular
+region. Sweep gradients are not bounded, however, and fill the entire space.
 
-![A conic gradient](images/colr_conic_gradient.png)
+![A sweep gradient](images/colr_conic_gradient.png)
 
-**Figure 5.x Conic gradient**
+**Figure 5.x Sweep gradient**
 
-NOTE: In some contexts, this type of gradient is referred to as a “conic” gradient.
+NOTE: In some contexts, this type of gradient is referred to as a “conic”
+gradient.
 
-A sweep gradient is defined by a center point, starting and ending angles, and a color line. The angles are expressed in counter-clockwise degrees from the direction of the y-axis on the design grid.
+A sweep gradient is defined by a center point, starting and ending angles, and a
+color line. The angles are expressed in counter-clockwise degrees from the
+direction of the y-axis on the design grid.
 
-The color line is aligned to a circular path around the center point, with arbitrary radius, with stop offset 0 aligned with the starting angle, and stop offset 1 aligned with the ending angle. The color line progresses in the counter-clockwise direction; for example, if the start and stop angles are both 0°, then stop offset 0.1 is at 36° counter-clockwise from the direction of the y-axis. The color line may be defined using color stops outside the range [0, 1], but only color values in the range [0, 1] are used. In a conic gradient, the extend mode specified for the color line is ignored.
+The color line is aligned to a circular arc around the center point, with
+arbitrary radius, with stop offset 0 aligned with the starting angle, and stop
+offset 1 aligned with the ending angle. The color line progresses in the
+counter-clockwise direction; for example, if the start and stop angles are both
+0°, then stop offset 0.1 is at 36° counter-clockwise from the direction of the
+y-axis. The color line may be defined using color stops outside the range [0,
+1], but only color values in the range [0, 1] are used. In a sweep gradient, the
+extend mode specified for the color line is ignored.
 
-A conic gradient is defined using start and stop angles. In this way, the gradient does not need to cover a full 360° sweep around the center. This is illustrated in figure 5.x:
+A sweep gradient is defined using start and stop angles. In this way, the
+gradient does not need to cover a full 360° sweep around the center. This is
+illustrated in figure 5.x:
 
-![A conic gradient, from red to yellow, with start angle of -60° and a stop angle of 60°.](images/colr_conic_gradient_start_stop_angles.png)
+![A sweep gradient, from red to yellow, with start angle of -60° and a stop angle of 60°.](images/colr_conic_gradient_start_stop_angles.png)
 
-**Figure 5.x A conic gradient, from red to yellow, with start angle of -60° and a stop angle of 60°.**
+**Figure 5.x A sweep gradient, from red to yellow, with start angle of -60° and a stop angle of 60°.**
 
-If the starting and ending angle are the same, a sharp color transition can occur if the colors at stop offsets 0 and 1 are different. This is illustrated in figure 5.x, showing a gradient from red to yellow that starts and stops at 0°.
+If the starting and ending angle are the same, a sharp color transition can
+occur if the colors at stop offsets 0 and 1 are different. This is illustrated
+in figure 5.x, showing a gradient from red to yellow that starts and stops at
+0°.
 
-![A conic gradient, from red to yellow, with a sharp transition at the common start/stop angle.](images/colr_conic_gradient_sharp_transition.png)
+![A sweep gradient, from red to yellow, with a sharp transition at the common start/stop angle.](images/colr_conic_gradient_sharp_transition.png)
 
-**Figure 5.x A conic gradient, from red to yellow, with a sharp transition at the common start/stop angle.**
+**Figure 5.x A sweep gradient, from red to yellow, with a sharp transition at the common start/stop angle.**
 
-To avoid such a sharp transition, the stop offsets 0 and 1 on the color line need to have the same color value. Figure 5.x illustrates a conic gradient that transitions from red at stop offset 0, to yellow at stop offset 0.5, and back to red at stop offset 1.0.
+To avoid such a sharp transition, the stop offsets 0 and 1 on the color line
+need to have the same color value. Figure 5.x illustrates a sweep gradient that
+transitions from red at stop offset 0, to yellow at stop offset 0.5, and back to
+red at stop offset 1.0.
 
-![A conic gradient, from red to yellow to red, with a smooth transition at the common start/stop angle.](images/colr_conic_gradient_rotation-0.png)
+![A sweep gradient, from red to yellow to red, with a smooth transition at the common start/stop angle.](images/colr_conic_gradient_rotation-0.png)
+
+**Figure 5.x A sweep gradient, from red to yellow to red, with a smooth transition at the common start/stop angle.**
 
 **5.7.11.1.3 Filling shapes**
 
