@@ -2002,9 +2002,11 @@ the specification for the sRGB color space, including the color primaries and
 “gamma” transfer function, are also provided in [CSS Color Module Level 4,
 section 10.2](https://www.w3.org/TR/css-color-4/#predefined).
 
-_Insert the following paragraphs at the end of 5.7.12 with the heading, “Interpolation of colours”:_
+_Insert the following paragraphs at the end of 5.7.12 with the heading,
+“Interpolation of colours”. (This heading should have the same heading level as
+the earlier heading, “Palette Entries and Color Records”.):_
 
-### Interpolation of Colors
+**Interpolation of Colors**
 
 The SVG table and version 1 of the COLR table both support color gradient fills.
 The gradients are defined using color stops to specify color values at specific
