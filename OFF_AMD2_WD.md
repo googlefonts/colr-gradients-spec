@@ -2083,7 +2083,7 @@ artifacts in a gradient can be minimized by taking full advantage of the color
 bit depth supported by the device. For instance, if a display supports 10- or
 12-bit quantization per color channel, then ideally the ramp of color values in
 a gradient would use that level of quantization. Other factors from the
-presentation context may also affect the available capabilities, however.
+presentation context may, however, also affect the available capabilities.
 Therefore, no minimum level of precision is specified as a requirement.
 
 ## Changes to OFF 7.2.3 Item variation stores
