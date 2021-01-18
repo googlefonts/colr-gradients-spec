@@ -539,6 +539,12 @@ illustrated in figure 5.x:
 
 **Figure 5.x A sweep gradient, from red to yellow, with start angle of -60° and a stop angle of 60°.**
 
+Start and stop angle values can be outside the range [0, 360], but are
+interpreted as values within that range by applying a modulus operation. For
+example, an angle -60° is treated the same as 300°; an angle 480° is treated the
+same as 120°. As a consequence, the color line covers at most one full
+revolution around the center, never more.
+
 If the starting and ending angle are the same, a sharp color transition can
 occur if the colors at stop offsets 0 and 1 are different. This is illustrated
 in figure 5.x, showing a gradient from red to yellow that starts and stops at
