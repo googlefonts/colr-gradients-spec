@@ -356,11 +356,10 @@ With circle center points c₀ and c₁ defined as c₀ = (x₀, y₀) and c₁ 
    Let the color at ω be the color at position ω on the color line.
 3. For all values of ω where r(ω) > 0, starting with the value of ω nearest to
    positive infinity and ending with the value of ω nearest to negative
-   infinity, draw the circumference of the circle resulting from translating
-   a circle with radius r(ω) centered at position (x(ω), y(ω)), with
-   the color at ω, but only painting on the parts of the bitmap that have not
-   yet been painted on by earlier circles in this step for this rendering of the
-   gradient.
+   infinity, draw the circular line with radius r(ω) centered at position
+   (x(ω), y(ω)), with the color at ω, but only painting on the parts of the
+   bitmap that have not yet been painted on in this step of the algorithm for
+   earlier values of ω.
 
 The algorithm provides results in various cases as follows:
 
