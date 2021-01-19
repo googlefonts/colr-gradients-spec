@@ -232,10 +232,20 @@ struct PaintRadialGradient
   VarUFWORD           radius1;
 };
 
+struct PaintSweepGradient
+{
+  uint8               format; // = 5
+  Offset24<ColorLine> colorLine;
+  VarFWORD            x;
+  VarFWORD            y;
+  VarFixed            startAngle;
+  VarFixed            endAngle;
+};
+
 // Paint a non-COLR glyph, filled as indicated by paint.
 struct PaintGlyph
 {
-  uint8               format; // = 5
+  uint8               format; // = 6
   Offset24<Paint>     paint;
   uint16              gid;    // not a COLR-only gid
                               // shall be less than maxp.numGlyphs
@@ -243,47 +253,47 @@ struct PaintGlyph
 
 struct PaintColrGlyph
 {
-  uint8               format; // = 6
+  uint8               format; // = 7
   uint16              gid;    // shall be a COLR gid
 }
 
 struct PaintTransformed
 {
-  uint8               format; // = 7
+  uint8               format; // = 8
   Offset24<Paint>     src;
   Affine2x3           transform;
 };
 
 struct PaintTranslate
 {
-  uint8               format; // = 8
+  uint8               format; // = 9
   Offset24<Paint>     src;
-  VarFixed            dx
-  VarFixed            dy
+  VarFixed            dx;
+  VarFixed            dy;
 };
 
 struct PaintRotate
 {
-  uint8               format; // = 9
+  uint8               format; // = 10
   Offset24<Paint>     src;
-  VarFixed            angle
-  VarFixed            centerX
-  VarFixed            centerY
+  VarFixed            angle;
+  VarFixed            centerX;
+  VarFixed            centerY;
 };
 
 struct PaintSkew
 {
-  uint8               format; // = 10
+  uint8               format; // = 11
   Offset24<Paint>     src;
-  VarFixed            xSkewAngle
-  VarFixed            ySkewAngle
-  VarFixed            centerX
-  VarFixed            centerY
+  VarFixed            xSkewAngle;
+  VarFixed            ySkewAngle;
+  VarFixed            centerX;
+  VarFixed            centerY;
 };
 
 struct PaintComposite
 {
-  uint8               format; // = 11
+  uint8               format; // = 12
   Offset24<Paint>     src;
   CompositeMode       mode;   // If mode is unrecognized use COMPOSITE_CLEAR
   Offset24<Paint>     backdrop;
