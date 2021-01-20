@@ -1853,9 +1853,8 @@ function renderPaint(paint)
     if format 2: // PaintSolid
         paint the specified color onto the surface
 
-    if format 3: // PaintLinearGradient
-    or if format 4: // PaintRadialGradient
-    or if format 5: // PaintSweepGradient
+    if format 3, 4 or 5:
+        // PaintLinearGradient, PaintRadialGradient, PaintSweepGradient
         paint the gradient onto the surface following the gradient algorithm
 
     if format 6: // PaintGlyph
@@ -1867,10 +1866,8 @@ function renderPaint(paint)
     if format 7: // PaintColrGlyph
         call renderPaint() passing the paint table referenced by the base glyph ID
 
-    if format 8: // PaintTransformed
-    or if format 9: // PaintTranslate
-    or if format 10: // PaintRotate
-    or if format 11: // PaintSkew
+    if format 8, 9, 10 or 11:
+        // PaintTransformed, PaintTranslate, PaintRotate, PaintSkew
         apply the specified transform
             // compose the transform with the current transform state—see 5.7.11.1.5
         call renderPaint() passing the child paint table
