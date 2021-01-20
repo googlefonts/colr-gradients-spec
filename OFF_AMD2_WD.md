@@ -535,29 +535,30 @@ direction of the y-axis on the design grid.
 The color line is aligned to a circular arc around the center point, with
 arbitrary radius, with stop offset 0 aligned with the starting angle, and stop
 offset 1 aligned with the ending angle. The color line progresses in the
-counter-clockwise direction; for example, if the start and stop angles are both
+counter-clockwise direction; for example, if the start and end angles are both
 0°, then stop offset 0.1 is at 36° counter-clockwise from the direction of the
 y-axis.
 
-The color line may be defined using color stops outside the range [0, 1], but
-only color values in the range [0, 1] are used. If the specified color stops
-cover the entire [0, 1] range (or beyond), then the extend mode is not relevant
-and may be ignored. If the specified color stops do not cover the entire [0, 1]
-range, the extend mode is used to determine color values for the remainder of
-that range. For example, if a color line is specified with two color stops, red
-at stop offset 0.3 and yellow at stop offset 0.6, and the pad extend mode is
-specified, then the extend mode is used to derive color values from 0.0 to 0.3
-(red), and from 0.6 to 1.0 (yellow).
+The color line may be defined using color stops outside the range [0, 1], and
+color stops outside the range [0, 1] can be used to interpolate color values
+within the range [0, 1], but only color values for the range [0, 1] are painted.
+If the specified color stops cover the entire [0, 1] range (or beyond), then the
+extend mode is not relevant and may be ignored. If the specified color stops do
+not cover the entire [0, 1] range, the extend mode is used to determine color
+values for the remainder of that range. For example, if a color line is
+specified with two color stops, red at stop offset 0.3 and yellow at stop offset
+0.6, and the pad extend mode is specified, then the extend mode is used to
+derive color values from 0.0 to 0.3 (red), and from 0.6 to 1.0 (yellow).
 
-A sweep gradient is defined using start and stop angles. In this way, the
-gradient does not need to cover a full 360° sweep around the center. This is
-illustrated in figure 5.30:
+Because a sweep gradient is defined using start and end angles, the gradient
+does not need to cover a full 360° sweep around the center. This is illustrated
+in figure 5.30:
 
-![A sweep gradient, from red to yellow, with start angle of -60° and a stop angle of 60°.](images/colr_conic_gradient_start_stop_angles.png)
+![A sweep gradient, from red to yellow, with start angle of -60° and an end angle of 60°.](images/colr_conic_gradient_start_stop_angles.png)
 
-**Figure 5.30 A sweep gradient, from red to yellow, with start angle of -60° and a stop angle of 60°.**
+**Figure 5.30 A sweep gradient, from red to yellow, with start angle of -60° and an end angle of 60°.**
 
-Start and stop angle values can be outside the range [0, 360], but are
+Start and end angle values can be outside the range [0, 360], but are
 interpreted as values within that range by applying a modulus operation. For
 example, an angle -60° is treated the same as 300°; an angle 480° is treated the
 same as 120°. As a consequence, the color line covers at most one full
@@ -568,18 +569,18 @@ occur if the colors at stop offsets 0 and 1 are different. This is illustrated
 in figure 5.31, showing a gradient from red to yellow that starts and stops at
 0°.
 
-![A sweep gradient, from red to yellow, with a sharp transition at the common start/stop angle.](images/colr_conic_gradient_sharp_transition.png)
+![A sweep gradient, from red to yellow, with a sharp transition at the common start/end angle.](images/colr_conic_gradient_sharp_transition.png)
 
-**Figure 5.31 A sweep gradient, from red to yellow, with a sharp transition at the common start/stop angle.**
+**Figure 5.31 A sweep gradient, from red to yellow, with a sharp transition at the common start/end angle.**
 
 To avoid such a sharp transition, the stop offsets 0 and 1 on the color line
 need to have the same color value. Figure 5.32 illustrates a sweep gradient that
 transitions from red at stop offset 0, to yellow at stop offset 0.5, and back to
 red at stop offset 1.0.
 
-![A sweep gradient, from red to yellow to red, with a smooth transition at the common start/stop angle.](images/colr_conic_gradient_rotation-0.png)
+![A sweep gradient, from red to yellow to red, with a smooth transition at the common start/end angle.](images/colr_conic_gradient_rotation-0.png)
 
-**Figure 5.32 A sweep gradient, from red to yellow to red, with a smooth transition at the common start/stop angle.**
+**Figure 5.32 A sweep gradient, from red to yellow to red, with a smooth transition at the common start/end angle.**
 
 **5.7.11.1.3 Filling shapes**
 
