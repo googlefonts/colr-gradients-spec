@@ -526,13 +526,12 @@ is used to represent a triangle filled with the linear gradient.
 
 **Figure 5.29 PaintGlyph and PaintLinearGradient tables used to fill a shape with a linear gradient.**
 
-Another way to describe the relationship between a PaintGlyph table and its
-child paint table is that the child provides a fill, and the glyph outline
-defines a bounds, or *clip region*, for the fill. The child for a PaintGlyph
-table is not limited to only the basic fill formats. In general, the child can
-be the root of a sub-graph that describes some graphic composition that
-comprises the fill for the shape. Or, in the alternate view, the glyph outline
-defines a clip region that is applied to the composition.
+The child of a PaintGlyph table is not, however, limited to one of the basic
+fill formats. Rather, the child can be the root of a sub-graph that describes
+some graphic composition that is used as a fill. Another way to describe the
+relationship between a PaintGlyph table and its child sub-graph is that the
+glyph outline specified by the PaintGlyph table defines a bounds, or *clip
+region*, that is applied to the fill composition defined by the child sub-graph.
 
 To illustrate this, the example in figure 5.29 is extended in figure 5.30 so
 that a PaintGlyph table links to a second PaintGlyph that links to a
