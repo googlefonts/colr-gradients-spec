@@ -189,7 +189,7 @@ In version 1, a solid color fill is specified using a PaintSolid table. See
 **5.7.11.1.2 Gradients**
 
 COLR version 1 supports three types of gradients: linear gradients, radial
-gradients, and sweep gradients. Each type of gradient are defined using a color
+gradients, and sweep gradients. Each type of gradient is defined using a color
 line.
 
 **5.7.11.1.2.1 Color Lines**
@@ -283,12 +283,9 @@ reflected gradient pattern, divide 1 by two times the number of desired
 repetitions, use the result as the maximum stop offset for specified color
 stops, and set the extend mode to *reflect*.
 
-NOTE: While color stops can be defined for stop offsets outside the range [0, 1]
-and the color line is extended indefinitely in either direction, for a sweep
-gradient, only color values within the range [0, 1] are used. The extend mode is
-relevant for a sweep gradient only if color stops are defined for a sub-range
-smaller than [0, 1] and the extend mode is needed to fill in values for the
-entire [0, 1] range. See 5.7.11.1.2.4.
+NOTE: Sweep gradients have special considerations in relation to color line
+extend modes and do not support repetition of gradient patterns. See
+5.7.11.1.2.4 for details.
 
 **5.7.11.1.2.2 Linear gradients**
 
