@@ -558,7 +558,7 @@ in figure 5.30:
 
 **Figure 5.30 A sweep gradient, from red to yellow, with start angle of -60° and an end angle of 60°.**
 
-Start and end angle values can be outside the range [0, 360], but are
+Start and end angle values can be outside the range [0, 360), but are
 interpreted as values within that range by applying a modulus operation. For
 example, an angle -60° is treated the same as 300°; an angle 480° is treated the
 same as 120°. As a consequence, the color line covers at most one full
@@ -569,18 +569,18 @@ occur if the colors at stop offsets 0 and 1 are different. This is illustrated
 in figure 5.31, showing a gradient from red to yellow that starts and stops at
 0°.
 
-![A sweep gradient, from red to yellow, with a sharp transition at the common start/end angle.](images/colr_conic_gradient_sharp_transition.png)
+![A sweep gradient, from red to yellow, with a sharp transition at the start/end angle 0°.](images/colr_conic_gradient_sharp_transition.png)
 
-**Figure 5.31 A sweep gradient, from red to yellow, with a sharp transition at the common start/end angle.**
+**Figure 5.31 A sweep gradient, from red to yellow, with a sharp transition at the start/end angle 0°.**
 
 To avoid such a sharp transition, the stop offsets 0 and 1 on the color line
 need to have the same color value. Figure 5.32 illustrates a sweep gradient that
 transitions from red at stop offset 0, to yellow at stop offset 0.5, and back to
 red at stop offset 1.0.
 
-![A sweep gradient, from red to yellow to red, with a smooth transition at the common start/end angle.](images/colr_conic_gradient_rotation-0.png)
+![A sweep gradient, from red to yellow to red, with a smooth transition at the start/end angle 0°.](images/colr_conic_gradient_rotation-0.png)
 
-**Figure 5.32 A sweep gradient, from red to yellow to red, with a smooth transition at the common start/end angle.**
+**Figure 5.32 A sweep gradient, from red to yellow to red, with a smooth transition at the start/end angle 0°.**
 
 **5.7.11.1.3 Filling shapes**
 
