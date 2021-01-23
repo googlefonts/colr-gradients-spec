@@ -760,7 +760,7 @@ The affine transformation is specified in a PaintTransform table as matrix
 elements. See 5.7.11.2.5.8 for format details.
 
 Whereas the PaintTransformed table supports several types of transforms, the
-PaintTranslate, PaintRotate and PaintSkew tables support specific
+PaintTranslate, PaintRotate and PaintSkew tables each support specific
 transformations: translation, rotation and skew. The PaintTranslate table
 provides a more compact representation for this common transform. The
 significant difference of the PaintRotate and PaintSkew formats is that
@@ -773,6 +773,14 @@ matrix elements. This is because the matrix elements for a rotation or skew are
 the sine, cosine or tangent of the rotation angle, which do not change in linear
 proportion to the angle. To achieve a linear variation of rotation using matrix
 elements would require approximating the variation using multiple delta sets.
+
+The rotations and skews specified using PaintRotate or PaintSkew tables can also
+be representated as a matrix using a PaintTransformed table. If a PaintRotate or
+PaintSkew table is used in combination with a PaintTransformed table, the
+combined behavior shall be the same as if the rotation or skew were represented
+using an equivalent matrix. See 5.7.11.2.5.10 for details regarding the matrix
+equivalent for a rotation expressed as an angle; and see 5.7.11.2.5.11 for
+similar details in relation to skews.
 
 **5.7.11.1.6 Compositing and blending**
 
@@ -1682,9 +1690,9 @@ glyph definition.
 | VarFixed | centerX | x coordinate for the center of rotation. |
 | VarFixed | centerY | y coordinate for the center of rotation. |
 
-NOTE: Pure rotation can also be represented using the PaintTransformed table.
-For rotation about the origin, this could be done by setting matrix values as
-follows for angle &theta;: 
+NOTE: Pure rotation about a point can also be represented using the
+PaintTransformed table. For rotation about the origin, this could be done by
+setting matrix values as follows for angle &theta;:
 
 * _xx_ = cos(&theta;)
 * _yx_ = sin(&theta;)
@@ -1697,6 +1705,10 @@ specified directly in degrees, rather than as changes to basis vectors. In
 variable fonts, if a rotation angle needs to vary, it is easier to get smooth
 variation if an angle is specified directly than when using trigonometric
 functions to derive matrix elements.
+
+When combining the transform effect of a PaintRotate table with other
+transforms, the result shall be the same as if the rotation were represented
+using an equivalent matrix.
 
 A rotation can result in the pre-transform position (0, 0) being moved
 elsewhere. See 5.7.11.2.5.8 regarding alignment of the transformed content with
@@ -1723,9 +1735,10 @@ glyph definition.
 | VarFixed | centerX | x coordinate for the center of rotation. |
 | VarFixed | centerY | y coordinate for the center of rotation. |
 
-NOTE: Pure skews can also be represented using the PaintTransformed table. For
-skews about the origin, this could be done by setting matrix values as follows
-for _x_ skew angle &phi; and _y_ skew angle &psi;:
+NOTE: Pure skews about a point can also be represented using the
+PaintTransformed table. For skews about the origin, this could be done by
+setting matrix values as follows for _x_ skew angle &phi; and _y_ skew angle
+&psi;:
 
 * _xx_ = _yy_ = 1
 * _yx_ = tan(&psi;)
@@ -1737,6 +1750,10 @@ as an angle, rather than as changes to basis vectors. In variable fonts, if a
 skew angle needs to vary, it is easier to get smooth variation if an angle is
 specified directly than when using trigonometric functions to derive matrix
 elements.
+
+When combining the transform effect of a PaintSkew table with other transforms,
+the result shall be the same as if the skew were represented using an equivalent
+matrix.
 
 A skew can result in the pre-transform position (0, 0) being moved elsewhere.
 See 5.7.11.2.5.8 regarding alignment of the transformed content with the
