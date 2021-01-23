@@ -289,52 +289,52 @@ extend modes and do not support repetition of gradient patterns. See
 
 **5.7.11.1.2.2 Linear gradients**
 
-A linear gradient provide gradation of colors along a straight line. The
-gradient is defined by two points, p₀ and p₁, plus a color line, with stop
-offset 0 aligned to p₀ and stop offset 1.0 aligned to p₁. (The line passing
-through p₀ and p₁ will be referred to as line p₀p₁.) Colors at each position on
-line p₀p₁ are interpolated using the color line. For each position along line
-p₀p₁, the color at that position is projected on other side of the line.
+A linear gradient provides gradation of colors along a straight line. The
+gradient is defined by three points, p₀, p₁ and p₂, plus a color line. The color
+line is positioned in the design grid with stop offset 0 aligned to p₀ and stop
+offset 1.0 aligned to p₁. (The line passing through p₀ and p₁ will be referred
+to as line p₀p₁.) Colors at each position on line p₀p₁ are interpolated using
+the color line. For each position along line p₀p₁, the color at that position is
+projected on other side of the line.
 
-An additional point, p₂, is also used to rotate the gradient orientation in the
+The additional point, p₂, is used to rotate the gradient orientation in the
 space on either side of the line p₀p₁. The line passing through points p₀ and p₂
-(line p₀p₂) determine the direction in which the gradient progresses. If p₂ is
-is on line p₀p₁, there is no rotation: colors in the space on either side of
-line p₀p₁ extend in the perpendicular direction. But if p₂ is not on line p₀p₁
-(i.e., p₀p₂ is not colinear with p₀p₁), then the gradient is drawn skewed by the
-acute angle (less than 90°) between the lines p₀p₁ and p₀p₂. For each position
-along line p₀p₁, the color at that position projects on either side in a
-direction orthogonal to line p₀p₂.
+(line p₀p₂) determines the direction in which colors are projected on either
+side of the color line. That is, for each position on line p₀p₁, the line that
+passes through that position on line p₀p₁ and that is parallel to line p₀p₂ will
+have the color for that position on line p₀p₁.
+
+Points p₁ and p₂ shall not be the same as point p₀. 
+
+If line p₀p₂ is parallel to line p₀p₁ (or the angle between them is near-zero
+for an implementation-defined threshold), then the gradient is ill-formed and
+shall not be rendered.
 
 NOTE: An implementation can derive a single vector, p₀p₃, by computing the
-orthogonal projection of vector p₀p₁ onto line p₀p₂ to obtain point p₃. The
-linear gradient defined using p₀, p₁ and p₂ as described above is functionally
-equivalent to a linear gradient defined by aligning stop offset 0 to p₀ and
-aligning stop offset 1.0 to p₃, with each color projecting on either side of
-that line in an orthogonal direction. This specification uses three points, p₀,
-p₁ and p₂, as that provides greater flexibility in controlling the placement and
-orientation of the gradient, as well as variations thereof.
-
-If the dot-product (p₁ - p₀) · (p₂ - p₀) is zero (or near-zero for an
-implementation-defined definition) then the gradient is ill-formed and shall not
-be rendered.
+orthogonal projection of vector p₀p₁ onto a line perpendicular to line p₀p₂ to
+obtain point p₃. The linear gradient defined using p₀, p₁ and p₂ as described
+above is functionally equivalent to a linear gradient defined by aligning stop
+offset 0 to p₀ and aligning stop offset 1.0 to p₃, with each color projecting on
+either side of that line in a perpendicular direction. This specification uses
+three points, p₀, p₁ and p₂, as that provides greater flexibility in controlling
+the placement and orientation of the gradient, as well as variations thereof.
 
 Figures 5.12 – 5.14 illustrate linear gradients using the three different color
 line extend modes. Each figure illustrates linear gradients with two different
 rotation vectors. In each case, three color stops are specified: red at 0.0,
 yellow at 0.5, and red at 1.0.
 
-![Linear gradients with different rotation vectors using the pad extend mode.](images/colr_linear_gradients_pad.png)
+![Linear gradients with different color-projection orientations using the pad extend mode.](images/colr_linear_gradients_pad.png)
 
-**Figure 5.12 Linear gradients with different rotation vectors using the pad extend mode.**
+**Figure 5.12 Linear gradients with different color-projection orientations using the pad extend mode.**
 
-![Linear gradients with different rotation vectors using the repeat extend mode.](images/colr_linear_gradients_repeat.png)
+![Linear gradients with different color-projection orientations vectors using the repeat extend mode.](images/colr_linear_gradients_repeat.png)
 
-**Figure 5.13 Linear gradients with different rotation vectors using the repeat extend mode.**
+**Figure 5.13 Linear gradients with different color-projection orientations vectors using the repeat extend mode.**
 
-![Linear gradients with different rotation vectors using the reflect extend mode.](images/colr_linear_gradients_reflect.png)
+![Linear gradients with different color-projection orientations vectors using the reflect extend mode.](images/colr_linear_gradients_reflect.png)
 
-**Figure 5.14 Linear gradients with different rotation vectors using the reflect extend mode.**
+**Figure 5.14 Linear gradients with different color-projection orientations vectors using the reflect extend mode.**
 
 **5.7.11.1.2.3 Radial gradients**
 
@@ -1511,12 +1511,12 @@ For information about applying a fill to a shape, see 5.7.11.1.3.
 |-|-|-|
 | uint8 | format | Set to 3. |
 | Offset24 | colorLineOffset | Offset to ColorLine table. |
-| VarFWord | x0 | Start point x coordinate. |
-| VarFWord | y0 | Start point y coordinate. |
-| VarFWord | x1 | End point x coordinate. |
-| VarFWord | y1 | End point y coordinate. |
-| VarFWord | x2 | Rotation vector end point x coordinate. |
-| VarFWord | y2 | Rotation vector end point y coordinate. |
+| VarFWord | x0 | Start point (p₀) x coordinate. |
+| VarFWord | y0 | Start point (p₀) y coordinate. |
+| VarFWord | x1 | End point (p₁) x coordinate. |
+| VarFWord | y1 | End point (p₁) y coordinate. |
+| VarFWord | x2 | Orientation end point (p₂) x coordinate. |
+| VarFWord | y2 | Orientation end point (p₂) y coordinate. |
 
 **5.7.11.2.5.4 Format 4: PaintRadialGradient**
 

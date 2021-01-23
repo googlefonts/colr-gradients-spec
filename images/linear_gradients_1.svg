@@ -1,0 +1,52 @@
+<svg viewBox="-301 -206 802 1271" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" height="700">
+  <style>
+    .label {
+      font-size: 64px;
+      font-family: Calibri, sans-serif;
+      stroke-width: 0;
+      stroke: black;
+      fill: #1a2127;
+    }
+  </style>
+  <defs>
+    <linearGradient id="lingrad-pad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="125" y2="-125" spreadMethod="pad">
+      <stop offset="0%" stop-color="#DA0025" />
+      <stop offset="50%" stop-color="#FFC600" />
+      <stop offset="100%" stop-color="#0052AB" />
+    </linearGradient>
+    <linearGradient id="lingrad-repeat" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="125" y2="-125" spreadMethod="repeat">
+      <stop offset="0%" stop-color="#DA0025" />
+      <stop offset="50%" stop-color="#FFC600" />
+      <stop offset="100%" stop-color="#0052AB" />
+    </linearGradient>
+    <linearGradient id="lingrad-reflect" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="125" y2="-125" spreadMethod="reflect">
+      <stop offset="0%" stop-color="#DA0025" />
+      <stop offset="50%" stop-color="#FFC600" />
+      <stop offset="100%" stop-color="#0052AB" />
+    </linearGradient>
+    <rect id="filled-rect" x="-300" y="-200" width="800" height="400" stroke-width="2" stroke="gray" />
+  </defs>
+  <g>
+    <use href="#filled-rect" fill="url(#lingrad-pad)" />
+    <g id="points" fill="none" stroke="#1a2127" stroke-width="2">
+      <circle id="p0dot" cx="0" cy="0" r="4" fill="#1a2127" />
+      <text id="p0label" class="label" x="-40" y="40">p₀</text>
+      <circle id="p1dot" cx="250" cy="0" r="4" fill="#1a2127" />
+      <text id="p1label" class="label" x="250" y="40">p₁</text>
+      <circle id="p2dot" cx="100" cy="100" r="4" fill="#1a2127" />
+      <text id="p2label" class="label" x="60" y="140">p₂</text>
+      <line id="p0p1line" x1="0" y1="0" x2="250" y2="0" stroke-width="3" />
+      <line id="p0p2line" x1="-50" y1="-50" x2="150" y2="150" stroke-width="2" stroke-dasharray="4" vector-effect="non-scaling-stroke" />
+    </g>
+  </g>
+
+  <g transform="translate(0, 430)">
+    <use href="#filled-rect" fill="url(#lingrad-repeat)" />
+    <use href="#points" />
+  </g>
+
+  <g transform="translate(0, 860)">
+    <use href="#filled-rect" fill="url(#lingrad-reflect)" />
+    <use href="#points" />
+  </g>
+</svg>
