@@ -336,9 +336,9 @@ yellow at 0.5, and red at 1.0.
 
 **Figure 5.14 Linear gradients with different color-projection orientations vectors using the reflect extend mode.**
 
-When a linear gradient is combined with a transformation, the appearance shall
-be the same as if the gradient were defined using the transformed positions of
-points p₀, p₁ and p₂.
+When a linear gradient is combined with a transformation (see 5.7.11.1.5), the
+appearance shall be the same as if the gradient were defined using the
+transformed positions of points p₀, p₁ and p₂.
 
 **5.7.11.1.2.3 Radial gradients**
 
