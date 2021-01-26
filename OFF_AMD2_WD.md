@@ -467,11 +467,17 @@ extend mode. Figures 5.24 – 5.26 illustrate this for the different extend mode
 
 **Figure 5.26 Radial gradient with one circle contained within the other, reflect extend mode.**
 
-NOTE: A scale transformation (see 5.7.11.1.5) can flatten shapes to resemble
-lines. If a radial gradient is nested in the child sub-graph of a transformation
-that flattens the circles so that they are nearly lines, the centers may still
-be separated by some distance. In that case, a radial gradient would appear as a
-strip or a cone filled with a linear gradient.
+NOTE: When a radial gradient is combined with a transformation (see 5.7.11.1.5),
+the appearance will be the same as if the geometry of the two circles were
+transformed and step 3 of the algorithm were performed by interpolating the
+shapes derived from the two transformed circles. For the condition r(ω) > 0, the
+pre-transformation values of r(ω) can be used.
+
+NOTE: A scale transformation can flatten shapes to resemble lines. If a radial
+gradient is nested in the child sub-graph of a transformation that flattens the
+circles so that they are nearly lines, the centers could still be separated by
+some distance. In that case, the radial gradient would appear as a strip or a
+cone filled with a linear gradient.
 
 > **_TBD: We still need to specify required behaviour for the case in which the transform really flattens the two circles, and the centers, to a line._**
 
@@ -577,6 +583,17 @@ red at stop offset 1.0.
 ![A sweep gradient, from red to yellow to red, with a smooth transition at the start/end angle 0°.](images/colr_conic_gradient_rotation-0.png)
 
 **Figure 5.32 A sweep gradient, from red to yellow to red, with a smooth transition at the start/end angle 0°.**
+
+NOTE: When a sweep gradient is combined with a transformation (see 5.7.11.1.5),
+the appearance will be the same as if a circular arc of some non-zero radius
+were computed from the start and end angles; the center point and arc
+transformed; the color line aligned to the transformed arc; and then a gradient
+derived from the result, with rays from the transformed center point passing
+through the transformed color arc. When aligning the color line to the
+transformed arc, stop offset 0 would be aligned to the transformed point derived
+from the start angle, with stop offset 1 aligned to the transformed point
+derived from the end angle. Thus, a transform can result in the color line
+progressing in a clockwise rather than counter-clockwise direction.
 
 **5.7.11.1.3 Filling shapes**
 
