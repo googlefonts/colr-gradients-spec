@@ -310,15 +310,15 @@ If line p₀p₂ is parallel to line p₀p₁ (or the angle between them is near
 for an implementation-defined threshold), then the gradient is ill-formed and
 shall not be rendered.
 
-NOTE: An implementation can derive a single vector, p₀p₃, by computing the
-orthogonal projection of vector p₀p₁ onto a line perpendicular to line p₀p₂ and
-passing through p₀ to obtain point p₃. The linear gradient defined using p₀, p₁
-and p₂ as described above is functionally equivalent to a linear gradient
-defined by aligning stop offset 0 to p₀ and aligning stop offset 1.0 to p₃, with
-each color projecting on either side of that line in a perpendicular direction.
-This specification uses three points, p₀, p₁ and p₂, as that provides greater
-flexibility in controlling the placement and orientation of the gradient, as
-well as variations thereof.
+NOTE: An implementation can derive a single vector, from p₀ to a point p₃, by
+computing the orthogonal projection of the vector from p₀ to p₁ onto a line
+perpendicular to line p₀p₂ and passing through p₀ to obtain point p₃. The linear
+gradient defined using p₀, p₁ and p₂ as described above is functionally
+equivalent to a linear gradient defined by aligning stop offset 0 to p₀ and
+aligning stop offset 1.0 to p₃, with each color projecting on either side of
+that line in a perpendicular direction. This specification uses three points,
+p₀, p₁ and p₂, as that provides greater flexibility in controlling the placement
+and orientation of the gradient, as well as variations thereof.
 
 Figures 5.12 – 5.14 illustrate linear gradients using the three different color
 line extend modes. Each figure illustrates linear gradients with two different
