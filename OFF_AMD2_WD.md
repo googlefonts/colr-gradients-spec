@@ -469,13 +469,15 @@ extend mode. Figures 5.24 – 5.26 illustrate this for the different extend mode
 
 NOTE: When a radial gradient is combined with a transformation (see 5.7.11.1.5),
 the appearance will be the same as if the geometry of the two circles were
-transformed and step 3 of the algorithm were performed by interpolating shapes
-from the two transformed circles. For the condition r(ω) > 0, the
-pre-transformation values of r(ω) can be used. A scale transformation can
-flatten shapes to resemble lines. If a radial gradient is nested in the child
-sub-graph of a transformation that flattens the circles so that they are nearly
-lines, the centers may still be separated by some distance. In that case, a
-radial gradient would appear as a strip or a cone filled with a linear gradient.
+transformed and step 3 of the algorithm were performed by interpolating the
+shapes derived from the two transformed circles. For the condition r(ω) > 0, the
+pre-transformation values of r(ω) can be used.
+
+NOTE: A scale transformation can flatten shapes to resemble lines. If a radial
+gradient is nested in the child sub-graph of a transformation that flattens the
+circles so that they are nearly lines, the centers could still be separated by
+some distance. In that case, the radial gradient would appear as a strip or a
+cone filled with a linear gradient.
 
 > **_TBD: We still need to specify required behaviour for the case in which the transform really flattens the two circles, and the centers, to a line._**
 
