@@ -370,6 +370,7 @@ With circle center points c₀ and c₁ defined as c₀ = (x₀, y₀) and c₁ 
 
 The algorithm provides results in various cases as follows:
 
+* When the circles are identical, then nothing is painted.
 * When both radii are 0 (r₀ = r₁ = 0), then r(ω) is always 0 and nothing is
 painted.
 * If the centers of the circles are distinct, the radii of the circles are
@@ -384,8 +385,6 @@ the strip is not painted. (See figures 5.18 – 5.20.)
 within the radius of the other circle, the gradient will radiate in all
 directions from the inner circle, and the entire surface will be painted. (See
 figures 5.24 – 5.26.)
-
-> **_TBD: What should the expected behaviour be in the case of both circles exactly overlapping with r > 0? (Only the extensions get painted, but how?)_**
 
 Figures 5.15 – 5.17 illustrate radial gradients using the three different color
 line extend modes. The color line is defined with stops for the interval [0, 1]:
