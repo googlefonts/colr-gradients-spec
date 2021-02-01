@@ -304,6 +304,11 @@ side of the color line. That is, for each position on line p₀p₁, the line th
 passes through that position on line p₀p₁ and that is parallel to line p₀p₂ will
 have the color for that position on line p₀p₁.
 
+NOTE: For convenience, point p₂ can be referred to as the _rotation point_, and
+the vector from p₀ to p₂ can be referred to as the _rotation vector_. However,
+neither the magnitude nor direction of the vector (from p₀ to p₂, versus from p₂
+to p₀) has significance.
+
 If either point p₁ or p₂ is the same as point p₀, the gradient is ill-formed and
 shall not be rendered. 
 
@@ -1521,8 +1526,8 @@ For information about applying a fill to a shape, see 5.7.11.1.3.
 | VarFWord | y0 | Start point (p₀) y coordinate. |
 | VarFWord | x1 | End point (p₁) x coordinate. |
 | VarFWord | y1 | End point (p₁) y coordinate. |
-| VarFWord | x2 | Orientation end point (p₂) x coordinate. |
-| VarFWord | y2 | Orientation end point (p₂) y coordinate. |
+| VarFWord | x2 | Rotation point (p₂) x coordinate. |
+| VarFWord | y2 | Rotation point (p₂) y coordinate. |
 
 **5.7.11.2.5.4 Format 4: PaintRadialGradient**
 
