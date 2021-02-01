@@ -1853,9 +1853,9 @@ are provided in that specification.
 While color values obtained from the CPAL table are represented in sRGB using
 the non-linear transfer function defined in the sRGB specification, the
 compositing and blending calculations are done after applying the inverse
-transfer function to derive linear RGB values. For more information regarding
-the non-linear and linear representations for sRGB, see _Interpolation of
-Colors_ in 5.7.12.
+transfer function to derive linear-light RGB values. For more information
+regarding the non-linear and linear-light representations for sRGB, see
+_Interpolation of Colors_ in 5.7.12.
 
 As mentioned in 5.7.11.1.8.2, a color glyph definition shall be bounded. A
 sub-graph that has PaintComposite as its root is either bounded or unbounded,
@@ -2027,12 +2027,12 @@ colors as well as handling of alpha need to be considered.
 Representations of sRGB color values are expressed as levels of red, green and
 blue color “primaries” with specific, absolute chromaticity values, which are
 defined in the sRGB specification. Color-primary levels can potentially be
-expressed using a linear scale that correlates directly to light energy. (On a
-linear scale, for example, a doubling of a color value would correspond to a
-doubling of display luminance.) For sRGB, however, standard practice is to
-represent levels using a scale defined by a non-linear transfer function,
-sometimes referred to as “gamma”. This transfer function is also defined in the
-sRGB specification. (See [CSS Color Module Level 4, section
+expressed using a linear-light scale that correlates directly to light energy.
+(On a linear-light scale, for example, a doubling of a color value would
+correspond to a doubling of display luminance.) For sRGB, however, standard
+practice is to represent levels using a scale defined by a non-linear transfer
+function, sometimes referred to as “gamma”. This transfer function is also
+defined in the sRGB specification. (See [CSS Color Module Level 4, section
 10.2](https://www.w3.org/TR/css-color-4/#predefined) for details.) In the CPAL
 table, sRGB color values are always specified in terms of the non-linear, sRGB
 transfer function. 
@@ -2046,18 +2046,18 @@ differences at high luminance levels.
 
 When interpolating colors, different results will be obtained if the
 interpolation is computed using the non-linear scale for color levels than if
-using the linear scale. For interoperable results, whether the non-linear or
-linear scale is to be used needs to be specified.
+using the linear-light scale. For interoperable results, whether the non-linear
+or linear-light scale is to be used needs to be specified.
 
 For gradient color values in the SVG table, the required interpolation behavior
 is defined in the SVG 1.1 specification: the [‘color-interpolation’
 property](https://www.w3.org/TR/SVG11/painting.html#ColorInterpolationProperty)
 can be used in an SVG document to declare whether interpolation is done using
-the non-linear sRGB scale (the default), or using a linear scale by applying the
-inverse sRGB transfer function.
+the non-linear sRGB scale (the default), or using a linear-light scale by
+applying the inverse sRGB transfer function.
 
 For gradient color values in the COLR table, interpolation must be computed
-using linear values after applying the inverse sRGB transfer function.
+using linear-light values after applying the inverse sRGB transfer function.
 
 After an interpolated color value is computed, whether or not the non-linear
 sRGB transfer function needs to be re-applied is determined by the requirements
@@ -2073,9 +2073,12 @@ components as well. Interpolated values are then calculated by linear
 interpolation using these pre-multiplied, linear R, G and B values.
 
 NOTE: Alpha components use a linear scale and can be directly interpolated apart
-from the R, G and B components without any linearlization step. Since the
-interpolated color values are not stored, however, this computation is never
-required.
+from the R, G and B components without any linearlization step.
+
+Once interpolation of the pre-multiplied red, green and blue values and of the
+alpha value is complete, the red, green and blue results are then
+un-premultiplied by dividing each interpolated value by the corresponding
+interpolated alpha.
 
 While color values are specified as 8-bit integers, the interpolation
 computations will require greater precision in each of the linearization,
