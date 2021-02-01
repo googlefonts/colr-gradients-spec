@@ -304,11 +304,12 @@ side of the color line. That is, for each position on line p₀p₁, the line th
 passes through that position on line p₀p₁ and that is parallel to line p₀p₂ will
 have the color for that position on line p₀p₁.
 
-Points p₁ and p₂ shall not be the same as point p₀. 
+If either point p₁ or p₂ is the same as point p₀, the gradient is ill-formed and
+shall not be rendered. 
 
-If line p₀p₂ is parallel to line p₀p₁ (or the angle between them is near-zero
-for an implementation-defined threshold), then the gradient is ill-formed and
-shall not be rendered.
+If line p₀p₂ is parallel to line p₀p₁ (or near-parallel for an
+implementation-defined definition), then the gradient is ill-formed and shall
+not be rendered.
 
 NOTE: An implementation can derive a single vector, from p₀ to a point p₃, by
 computing the orthogonal projection of the vector from p₀ to p₁ onto a line

@@ -30,7 +30,7 @@
     <use href="#filled-rect" fill="url(#lingrad-pad)" />
     <g id="points" fill="none" stroke="#1a2127" stroke-width="2">
       <circle id="p0dot" cx="0" cy="0" r="4" fill="#1a2127" />
-      <text id="p0label" class="label" x="-40" y="40">p₀</text>
+      <text id="p0label" class="label" x="-58" y="40">p₀</text>
       <circle id="p1dot" cx="250" cy="0" r="4" fill="#1a2127" />
       <text id="p1label" class="label" x="250" y="40">p₁</text>
       <circle id="p2dot" cx="15" cy="105" r="4" fill="#1a2127" />
