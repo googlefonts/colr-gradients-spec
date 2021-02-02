@@ -1054,9 +1054,9 @@ used for the color glyph. The advance width and height of glyphs referenced by
 PaintGlyph tables are not required to be the same as that of the base glyph and
 are ignored.
 
-The bounding box of the base glyph is used as the bounding box of the color
-glyph. A &#39;glyf&#39; entry with two points at diagonal extrema is sufficient
-to define the bounding box.
+The bounding box of the base-glyph contours is used as the bounding box of the
+color glyph. A &#39;glyf&#39; entry with two points at diagonal extrema is
+sufficient to define the bounding box.
 
 NOTE: The bounding box of the base glyph can be used to allocate a drawing
 surface without needing to traverse the graph of the color glyph definition.
