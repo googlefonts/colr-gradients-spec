@@ -313,7 +313,7 @@ If either point p₁ or p₂ is the same as point p₀, the gradient is ill-form
 shall not be rendered. 
 
 If line p₀p₂ is parallel to line p₀p₁ (or near-parallel for an
-implementation-defined definition), then the gradient is ill-formed and shall
+implementation-determined definition), then the gradient is ill-formed and shall
 not be rendered.
 
 NOTE: An implementation can derive a single vector, from p₀ to a point p₃, by
@@ -490,7 +490,10 @@ circles so that they are nearly lines, the centers could still be separated by
 some distance. In that case, the radial gradient would appear as a strip or a
 cone filled with a linear gradient.
 
-> **_TBD: We still need to specify required behaviour for the case in which the transform really flattens the two circles, and the centers, to a line._**
+If a radial gradient is nested in the sub-graph of a transformation that
+flattens the circles so that they form a single line (or nearly a line, for an
+implementation-determined definition), with both centers on that line, then the
+resulting gradient is degenerate and shall not be rendered.
 
 NOTE: As seen in the figures above, the gradient fills the space when one circle
 is contained within the other, but not when neither circle is contained within
