@@ -5,6 +5,7 @@ Changes to the following sections of ISO/IEC 14496-22:2019 Open Font Format
 
 - [4.3 Data types](#changes-to-off-43-data-types)
 - [5.7.11 COLR – Color Table](#changes-to-off-5711---color-table)
+- [5.7.12 CPAL – Palette Table](#changes-to-off-5712---palette-table)
 - [7.2.3 Item variation stores](#changes-to-off-723-item-variation-stores)
 - [Bibliography](#changes-to-off-bibliography)
 
@@ -217,9 +218,8 @@ line; at least two color stops are needed to create color gradation.
 
 Color gradation is defined over the interval from the first color stop, through
 the successive color stops, to the last color stop. Between adjacent color
-stops, color values are linearly interpolated.
-
-> **_TBD: Does interpolation of colors need further specification?_**
+stops, color values are linearly interpolated. See _Interpolation of Colors_ in
+5.7.12 for requirements on how colors are interpolated.
 
 If there are multiple color stops defined for the same stop offset, the first
 one is used for computing color values on the color line below that stop offset,
@@ -1842,13 +1842,20 @@ The compositionMode value must be one of the values defined in the CompositeMode
 | 26 | COMPOSITE_HSL_COLOR | See [color blend mode][28] |
 | 27 | COMPOSITE_HSL_LUMINOSITY | See [luminosity blend mode][29] |
 
-The supported modes are taken from the W3C [Compositing and Blending Level 1][1]
-specification. For details on each mode, including specifications of the
-required behaviors, see the W3C specification.
-
 The graphic compositions defined by the source and backdrop paint tables (and
-their respective sub-graphs) are rendered into bitmaps, and the source is
-blended into the backdrop using the specified composite mode.
+their respective sub-graphs). Conceptually, they are rendered into bitmaps, and
+the source is composited or blended into the backdrop using the specified
+composite mode. The supported modes are taken from the W3C [Compositing and
+Blending Level 1][1] specification. Details on each mode, including
+specifications of the required calculations using pixel color and alpha values,
+are provided in that specification.
+
+While color values obtained from the CPAL table are represented in sRGB using
+the non-linear transfer function defined in the sRGB specification, the
+compositing and blending calculations are done after applying the inverse
+transfer function to derive linear-light RGB values. For more information
+regarding the non-linear and linear-light representations for sRGB, see
+_Interpolation of Colors_ in 5.7.12.
 
 As mentioned in 5.7.11.1.8.2, a color glyph definition shall be bounded. A
 sub-graph that has PaintComposite as its root is either bounded or unbounded,
@@ -1982,6 +1989,108 @@ indicate that an item has no variation data, the index fields shall be set to
 0xFFFF/0xFFFF. (See 7.2.3.2.)
 
 For general information on OFF font variations, see 7.1.
+
+## Changes to OFF 5.7.12 - Palette Table
+
+_After the first paragraph, insert the following paragraph. (The referenced IEC
+standard is already included in the normative references.)_
+
+Palettes are defined by a set of color records. Each color record specifies a
+color in the sRGB color space using 8-bit BGRA (blue, green, red, alpha)
+representation. The sRGB color space is specified in IEC 61966-2-1. Details on
+the specification for the sRGB color space, including the color primaries and
+“gamma” transfer function, are also provided in [CSS Color Module Level 4,
+section 10.2](https://www.w3.org/TR/css-color-4/#predefined).
+
+_Insert the following paragraphs at the end of 5.7.12 with the heading,
+“Interpolation of colours”. (This heading should have the same heading level as
+the earlier heading, “Palette Entries and Color Records”.):_
+
+**Interpolation of Colors**
+
+The SVG table and version 1 of the COLR table both support color gradient fills.
+The gradients are defined using color stops to specify color values at specific
+positions along a color line, with color values for other positions on the color
+line derived by interpolation.
+
+When interpolating color values, linear interpolation between color stop
+positions is used. For example, suppose adjacent color stops are specified for
+positions 0.5 and 0.9 on a color line, and a color value is being calculated for
+position 0.8. The color value of the first color stop will contribute 75% of the
+value ((0.8 - 0.5) / (0.9 - 0.5)), and the color value of the second color stop
+will contribute 25% of the value. Interpolated values at each position of the
+color line are computed in this way for each of the R, G and B color components.
+
+When interpolating color values, specific aspects of the representation of
+colors as well as handling of alpha need to be considered.
+
+Representations of sRGB color values are expressed as levels of red, green and
+blue color “primaries” with specific, absolute chromaticity values, which are
+defined in the sRGB specification. Color-primary levels can potentially be
+expressed using a linear-light scale that correlates directly to light energy.
+(On a linear-light scale, for example, a doubling of a color value would
+correspond to a doubling of display luminance.) For sRGB, however, standard
+practice is to represent levels using a scale defined by a non-linear transfer
+function, sometimes referred to as “gamma”. This transfer function is also
+defined in the sRGB specification. (See [CSS Color Module Level 4, section
+10.2](https://www.w3.org/TR/css-color-4/#predefined) for details.) In the CPAL
+table, sRGB color values are always specified in terms of the non-linear, sRGB
+transfer function. 
+
+NOTE: An advantage of representing colours using a non-linear scale is that it
+allows more effective use of limited bit depth when color-primary levels are
+represented as integers: smaller differences in light energy can be represented
+for lower levels than for higher levels. This is beneficial since the human
+visual system is more sensitive to differences at low luminance levels than to
+differences at high luminance levels.
+
+When interpolating colors, different results will be obtained if the
+interpolation is computed using the non-linear scale for color levels than if
+using the linear-light scale. For interoperable results, whether the non-linear
+or linear-light scale is to be used needs to be specified.
+
+For gradient color values in the SVG table, the required interpolation behavior
+is defined in the SVG 1.1 specification: the [‘color-interpolation’
+property](https://www.w3.org/TR/SVG11/painting.html#ColorInterpolationProperty)
+can be used in an SVG document to declare whether interpolation is done using
+the non-linear sRGB scale (the default), or using a linear-light scale by
+applying the inverse sRGB transfer function.
+
+For gradient color values in the COLR table, interpolation must be computed
+using linear-light values (i.e., after applying the inverse sRGB transfer
+function).
+
+After an interpolated color value is computed, whether or not the non-linear
+sRGB transfer function needs to be re-applied is determined by the requirements
+of the implementation context.
+
+For both the COLR and SVG tables, interpolation must be done with alpha
+pre-multiplied into each linearized R, G and B component. For alpha specified in
+a CPAL ColorRecord, the value is converted to a floating value in the range [0,
+1.0] by dividing by 255, then multiplied into each R, G and B component. For
+ColorIndex records in the COLR table, the alpha value from the ColorIndex record
+(with variation, in a variable font) is multiplied into the R, G and B
+components as well. Interpolated values are then calculated by linear
+interpolation using these pre-multiplied, linear R, G and B values.
+
+NOTE: Alpha components use a linear scale and can be directly interpolated apart
+from the R, G and B components without any linearlization step.
+
+Once interpolation of the pre-multiplied red, green and blue values and of the
+alpha value is complete, the red, green and blue results are then
+un-premultiplied by dividing each interpolated value by the corresponding
+interpolated alpha.
+
+While color values are specified as 8-bit integers, the interpolation
+computations will require greater precision in each of the linearization,
+pre-multiply, and interpolation steps. Also, when rendered results are to be
+presented on a imaging device with known characteristics, visual banding
+artifacts in a gradient can be minimized by taking full advantage of the color
+bit depth supported by the device. For instance, if a display supports 10- or
+12-bit quantization per color channel, then ideally the ramp of color values in
+a gradient would use that level of quantization. Other factors from the
+presentation context may, however, also affect the available capabilities.
+Therefore, no minimum level of precision is specified as a requirement.
 
 ## Changes to OFF 7.2.3 Item variation stores
 
@@ -2185,13 +2294,13 @@ tuple variation store.
 
 ## Changes to OFF Bibliography
 
-_Add two new entries as follows:_
+_Add three new entries as follows:_
 
 - HTML Living Standard, 4.12.5, The canvas element. https://html.spec.whatwg.org/multipage/canvas.html#the-canvas-element
 
 - Compositing and Blending Level 1. W3C Candidate Recommendation, 13 January 2015. https://www.w3.org/TR/compositing-1/
 
-
+- CSS Color Module Level 4. W3C Working Draft, 12 November 2020. https://www.w3.org/TR/css-color-4/
 
 
 [1]: https://www.w3.org/TR/compositing-1/
