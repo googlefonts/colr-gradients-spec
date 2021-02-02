@@ -2057,7 +2057,8 @@ the non-linear sRGB scale (the default), or using a linear-light scale by
 applying the inverse sRGB transfer function.
 
 For gradient color values in the COLR table, interpolation must be computed
-using linear-light values after applying the inverse sRGB transfer function.
+using linear-light values (i.e., after applying the inverse sRGB transfer
+function).
 
 After an interpolated color value is computed, whether or not the non-linear
 sRGB transfer function needs to be re-applied is determined by the requirements
