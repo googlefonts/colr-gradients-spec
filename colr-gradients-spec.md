@@ -14,7 +14,7 @@ December 2019
 - [Implementation](#implementation)
   - [C++ Structures](#c-structures)
   - [Font Tooling](#font-tooling)
-  - [Chrome, Skia, FreeType support](#chrome-skia-freetype-support)
+  - [Chromium, Skia, FreeType support](#chromium-skia-freetype-support)
   - [Rendering](#rendering)
     - [Pseudocode](#pseudocode)
   - [HarfBuzz](#harfbuzz)
