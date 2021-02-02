@@ -14,10 +14,9 @@ December 2019
 - [Implementation](#implementation)
   - [C++ Structures](#c-structures)
   - [Font Tooling](#font-tooling)
+  - [Chrome, Skia, FreeType support](#chrome-skia-freetype-support)
   - [Rendering](#rendering)
     - [Pseudocode](#pseudocode)
-    - [FreeType](#freetype)
-    - [Chromium](#chromium)
   - [HarfBuzz](#harfbuzz)
 - [References](#references)
 - [Acknowledgements](#acknowledgements)
@@ -335,6 +334,14 @@ font formats, including COLR v1.
 
 [color-fonts](https://github.com/googlefonts/color-fonts) has a collection of sample color fonts.
 
+## Chrome, Skia, Freetype support
+
+Early work on Chrome support is underway:
+
+* Intent to prototype [announcement](https://groups.google.com/a/chromium.org/g/blink-dev/c/XIXudwZdr44/m/emDJRTFoAwAJ)
+* WIP Skia [implementation](https://skia-review.googlesource.com/c/skia/+/300558)
+* FreeType can read COLR v1 information as of [268bdd7764e6ab4029f](https://gitlab.freedesktop.org/freetype/freetype/-/commit/268bdd7764e6ab4029fe7f8bc35626294d791c6d)
+
 ## Rendering
 
 ### Pseudocode
@@ -389,19 +396,6 @@ Allocate a bitmap for the glyph according to glyf table entry extents for gid
           paint Paint for src, call a)
           restore with save composite mode
 ```
-
-### FreeType
-
-FreeType API extensions needed for a) rasterisation b ) as well as API exposing
-all the details of the gradients so clients can *render* them as they wish, by
-encoding as gradients in PDF output for example.
-
-### Chromium
-
-Prototype an implementation inside Skia's FreeType based COLR/CPAL
-implementation extending solid color fills with gradient fills, after extracting
-gradient fill implementation from FreeType. See
-[`SkFonstHost_FreeType_common.cpp`](https://cs.chromium.org/chromium/src/third_party/skia/src/ports/SkFontHost_FreeType_common.cpp?q=fonthost+common&sq=package:chromium&dr=C&l=433)
 
 ## HarfBuzz
 
