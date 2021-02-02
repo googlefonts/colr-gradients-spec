@@ -334,7 +334,7 @@ font formats, including COLR v1.
 
 [color-fonts](https://github.com/googlefonts/color-fonts) has a collection of sample color fonts.
 
-## Chrome, Skia, Freetype support
+## Chromium, Skia, Freetype support
 
 Early work on Chrome support is underway:
 
