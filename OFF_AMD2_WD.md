@@ -324,27 +324,27 @@ equivalent to a linear gradient defined by aligning stop offset 0 to p₀ and
 aligning stop offset 1.0 to p₃, with each color projecting on either side of
 that line in a perpendicular direction. This specification uses three points,
 p₀, p₁ and p₂, as that provides greater flexibility in controlling the placement
-and orientation of the gradient, as well as variations thereof.
+and rotation of the gradient, as well as variations thereof.
 
 Figures 5.12 – 5.14 illustrate linear gradients using the three different color
 line extend modes. Each figure illustrates linear gradients with two different
 rotation vectors. In each case, three color stops are specified: red at 0.0,
 yellow at 0.5, and red at 1.0.
 
-![Linear gradients with different color-projection orientations using the pad extend mode.](images/colr_linear_gradients_pad.png)
+![Linear gradients with different rotations using the pad extend mode.](images/colr_linear_gradients_pad.png)
 
-**Figure 5.12 Linear gradients with different color-projection orientations using the pad extend mode.**
+**Figure 5.12 Linear gradients with different rotations using the pad extend mode.**
 
-![Linear gradients with different color-projection orientations vectors using the repeat extend mode.](images/colr_linear_gradients_repeat.png)
+![Linear gradients with different rotations vectors using the repeat extend mode.](images/colr_linear_gradients_repeat.png)
 
-**Figure 5.13 Linear gradients with different color-projection orientations vectors using the repeat extend mode.**
+**Figure 5.13 Linear gradients with different rotations vectors using the repeat extend mode.**
 
-![Linear gradients with different color-projection orientations vectors using the reflect extend mode.](images/colr_linear_gradients_reflect.png)
+![Linear gradients with different rotations vectors using the reflect extend mode.](images/colr_linear_gradients_reflect.png)
 
-**Figure 5.14 Linear gradients with different color-projection orientations vectors using the reflect extend mode.**
+**Figure 5.14 Linear gradients with different rotations vectors using the reflect extend mode.**
 
-When a linear gradient is combined with a transformation (see 5.7.11.1.5), the
-appearance shall be the same as if the gradient were defined using the
+NOTE: When a linear gradient is combined with a transformation (see 5.7.11.1.5),
+the appearance will be the same as if the gradient were defined using the
 transformed positions of points p₀, p₁ and p₂.
 
 **5.7.11.1.2.3 Radial gradients**
