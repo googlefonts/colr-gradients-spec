@@ -347,7 +347,7 @@ Early work on Chrome support is underway:
 ### Pseudocode
 
 ```
-Allocate a bitmap for the glyph according to glyf table entry extents for gid
+Allocate a bitmap for the glyph according to extents of base glyph contours for gid
 0) Start at base glyph paint.
  a) Paint a paint, switch:
     1) PaintColrLayers
