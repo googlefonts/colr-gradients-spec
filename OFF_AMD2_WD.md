@@ -2245,13 +2245,15 @@ array of offsets to item variation data subtables. Before that paragraph, insert
 the following paragraph and note:_
 
 The item variation store includes an offset to a variation region list and an
-array of offsets to item variation data subtables.
+array of offsets to item variation data subtables. A NULL offset in the array
+indicates that there is no item variation data subtable for that index into the
+array.
 
 NOTE: Indices into the itemVariationDataOffsets array are stored in parent
 tables as delta-set “outer” indices with each such index having a corresponding
 “inner” index. If the outer index points to a NULL offset, then any inner index
-will be invalid. The itemVariationDataOffsets array should not include any NULL
-offsets.
+will be invalid and can be ignored: items associated with this index do not
+have any variation.
 
 _In 7.2.3.4, in the table for the ItemVariationData subtable structure, replace
 the field name "shortDeltaCount" with "wordDeltaCount", and replace the
