@@ -1570,8 +1570,8 @@ For information about applying a fill to a shape, see 5.7.11.1.3.
 |-|-|-|
 | uint8 | format | Set to 5. |
 | Offset24 | colorLineOffset | Offset to ColorLine table. |
-| VarFWord | centerX | Center x coordinate. |
-| VarFWord | centerY | Center y coordinate. |
+| VarFWord | x | Center x coordinate. |
+| VarFWord | y | Center y coordinate. |
 | VarFixed | startAngle | Start of the angular range of the gradient. |
 | VarFixed | endAngle | End of the angular range of the gradient. |
 
