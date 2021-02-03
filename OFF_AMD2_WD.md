@@ -6,6 +6,7 @@ Changes to the following sections of ISO/IEC 14496-22:2019 Open Font Format
 - [4.3 Data types](#changes-to-off-43-data-types)
 - [5.7.11 COLR – Color Table](#changes-to-off-5711---color-table)
 - [5.7.12 CPAL – Palette Table](#changes-to-off-5712---palette-table)
+- [7.2.1 Overview (Font variations common table formats)](#changes-to-off-721-overview-font-variations-common-table-formats)
 - [7.2.3 Item variation stores](#changes-to-off-723-item-variation-stores)
 - [Bibliography](#changes-to-off-bibliography)
 
@@ -2091,6 +2092,17 @@ bit depth supported by the device. For instance, if a display supports 10- or
 a gradient would use that level of quantization. Other factors from the
 presentation context may, however, also affect the available capabilities.
 Therefore, no minimum level of precision is specified as a requirement.
+
+## Changes to OFF 7.2.1 Overview (Font variations common table formats)
+
+_In the list for the fifth paragraph ("A variable font includes..."), delete the
+sixth list item, "Deltas for baseline metrics..."_
+
+_At the end of the list for the fifth paragraph, add the following list item:_
+
+— Deltas for values in other tables are stored in the respective table: deltas
+for baseline metrics in the 'BASE' table and for various items in the 'COLR'
+table are stored in each table.
 
 ## Changes to OFF 7.2.3 Item variation stores
 
