@@ -235,8 +235,8 @@ struct PaintSweepGradient
 {
   uint8               format; // = 5
   Offset24<ColorLine> colorLine;
-  VarFWORD            x;
-  VarFWORD            y;
+  VarFWORD            centerX;
+  VarFWORD            centerY;
   VarFixed            startAngle;
   VarFixed            endAngle;
 };
