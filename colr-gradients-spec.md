@@ -256,7 +256,7 @@ struct PaintColrGlyph
   uint16              gid;    // shall be a COLR gid
 }
 
-struct PaintTransformed
+struct PaintTransform
 {
   uint8               format; // = 8
   Offset24<Paint>     src;
@@ -370,7 +370,7 @@ Allocate a bitmap for the glyph according to extents of base glyph contours for 
          gid must be from
          if gid on recursion blacklist, do nothing
          recurse to 0) with different gid
-    7) PaintTransformed
+    7) PaintTransform
           saveLayer()
           apply transform
           call a) for paint
