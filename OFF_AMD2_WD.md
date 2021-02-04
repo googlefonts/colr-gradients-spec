@@ -1382,7 +1382,7 @@ paint table defines the element at the bottom of the z-order, and the sub-graph
 of each subsequent paint table defines an element that is layered on top of the
 previous element. As each element is a composition defined in a sub-graph, one
 of these elements may itself be multi-layered. In that case, the layers of this
-element are stack above all previous layers, and layers of following elements
+element are stacked above all previous layers, and layers of following elements
 are stacked above the top layer of this element.
 
 Offsets for paint tables not referenced by any PaintColrLayers table should not
