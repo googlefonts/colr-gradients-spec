@@ -1331,8 +1331,8 @@ to be used.
 
 The BaseGlyphV1List table is, conceptually, similar to the baseGlyphRecords
 array in COLR version 0, providing records that map a base glyph to a color
-glyph definition. The color glyph definition is significantly different,
-however—see 5.7.11.1.
+glyph definition. The color glyph definitions each refer to are significantly
+different, however—see 5.7.11.1.
 
 *BaseGlyphV1List table:*
 
