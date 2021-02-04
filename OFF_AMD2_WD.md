@@ -146,7 +146,7 @@ table.
 
 * The PaintGlyph table provides glyph outlines as the basic shapes.
 
-* The PaintTransformed table is used to apply an affine transformation matrix to
+* The PaintTransform table is used to apply an affine transformation matrix to
 a sub-graph of paint tables, and the graphic operations they represent. The
 PaintTranslate, PaintRotate and PaintSkew tables support specific
 transformations.
@@ -617,7 +617,7 @@ referenced using a glyph ID. In a color glyph description, a PaintGlyph table is
 used to represent a basic shape. 
 
 NOTE: Shapes can also be derived using PaintGlyph tables in combination with
-other tables, such as PaintTransformed (see 5.7.11.1.5) or PaintComposite (see
+other tables, such as PaintTransform (see 5.7.11.1.5) or PaintComposite (see
 5.7.11.1.6).
 
 The PaintGlyph table has a field for the glyph ID, plus an offset to a child
@@ -790,7 +790,7 @@ by the rotation, but only the gradient is affected by the mirroring.
 The affine transformation is specified in a PaintTransform table as matrix
 elements. See 5.7.11.2.5.8 for format details.
 
-Whereas the PaintTransformed table supports several types of transforms, the
+Whereas the PaintTransform table supports several types of transforms, the
 PaintTranslate, PaintRotate and PaintSkew tables each support specific
 transformations: translation, rotation and skew. The PaintTranslate table
 provides a more compact representation for this common transform. The
@@ -806,8 +806,8 @@ proportion to the angle. To achieve a linear variation of rotation using matrix
 elements would require approximating the variation using multiple delta sets.
 
 The rotations and skews specified using PaintRotate or PaintSkew tables can also
-be representated as a matrix using a PaintTransformed table. If a PaintRotate or
-PaintSkew table is used in combination with a PaintTransformed table, the
+be representated as a matrix using a PaintTransform table. If a PaintRotate or
+PaintSkew table is used in combination with a PaintTransform table, the
 combined behavior shall be the same as if the rotation or skew were represented
 using an equivalent matrix. See 5.7.11.2.5.10 for details regarding the matrix
 equivalent for a rotation expressed as an angle; and see 5.7.11.2.5.11 for
@@ -918,7 +918,7 @@ introducing cycles within the graph of a color glyph, which would be invalid
 **5.7.11.1.7.1 Re-use by referencing shared subtables**
 
 Several of the paint table formats link to a child paint table using a forward
-offset within the file: PaintGlyph, PaintComposite, PaintTransformed,
+offset within the file: PaintGlyph, PaintComposite, PaintTransform,
 PaintRotate, and PaintSkew. A child subtable can be shared by several tables of
 these formats. For example, several PaintGlyph tables might link to the same
 PaintSolid table, or to the same node for a sub-graph describing a more complex
@@ -1076,7 +1076,7 @@ are inherently unbounded.
 bounded.
 * PaintColrGlyph is bounded *if and only if* the color glyph definition for the
 referenced base glyph ID is bounded.
-* PaintTransformed, PaintTranslate, PaintRotate and PaintSkew are bounded *if
+* PaintTransform, PaintTranslate, PaintRotate and PaintSkew are bounded *if
 and only if* the referenced sub-graph is bounded.
 * PaintComposite is either bounded or unbounded, according to the composite mode
 used and the boundedness of the referenced sub-graphs. See 5.7.11.2.5.12 for
@@ -1627,13 +1627,13 @@ provides an offset to a paint table; that paint table and the graph linked from
 it are incorporated as a child sub-graph of the PaintColrGlyph table within the
 current color glyph definition.
 
-**5.7.11.2.5.8 Format 8: PaintTransformed**
+**5.7.11.2.5.8 Format 8: PaintTransform**
 
 Format 8 is used to apply an affine transformation to a sub-graph. The paint
 table that is the root of the sub-graph is linked as a child. See 5.7.11.1.5 for
 general information regarding transformations in a color glyph definition.
 
-*PaintTransformed table (format 8):*
+*PaintTransform table (format 8):*
 
 | Type | Field name | Description |
 |-|-|-|
@@ -1692,7 +1692,7 @@ glyph definition.
 | VarFixed | dx | Translation in x direction. |
 | VarFixed | dy | Translation in y direction. |
 
-NOTE: Pure translation can also be represented using the PaintTransformed table
+NOTE: Pure translation can also be represented using the PaintTransform table
 by setting _xx_ = 1, _yy_ = 1, _xy_ and _yx_ = 0, and setting _dx_ and _dy_ to
 the translation values. The PaintTranslate table provides a more compact
 representation when only translation is required.
@@ -1722,7 +1722,7 @@ glyph definition.
 | VarFixed | centerY | y coordinate for the center of rotation. |
 
 NOTE: Pure rotation about a point can also be represented using the
-PaintTransformed table. For rotation about the origin, this could be done by
+PaintTransform table. For rotation about the origin, this could be done by
 setting matrix values as follows for angle &theta;:
 
 * _xx_ = cos(&theta;)
@@ -1767,7 +1767,7 @@ glyph definition.
 | VarFixed | centerY | y coordinate for the center of rotation. |
 
 NOTE: Pure skews about a point can also be represented using the
-PaintTransformed table. For skews about the origin, this could be done by
+PaintTransform table. For skews about the origin, this could be done by
 setting matrix values as follows for _x_ skew angle &phi; and _y_ skew angle
 &psi;:
 
@@ -1919,7 +1919,7 @@ function renderPaint(paint)
         call renderPaint() passing the paint table referenced by the base glyph ID
 
     if format 8, 9, 10 or 11:
-        // PaintTransformed, PaintTranslate, PaintRotate, PaintSkew
+        // PaintTransform, PaintTranslate, PaintRotate, PaintSkew
         apply the specified transform
             // compose the transform with the current transform state—see 5.7.11.1.5
         call renderPaint() passing the child paint table
