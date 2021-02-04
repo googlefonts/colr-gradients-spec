@@ -1123,11 +1123,12 @@ including leaf nodes, can be re-used (see 5.7.11.1.7). Also, each separate
 visual element requires a fork in the graph, and a separate root-to-leaf path,
 but not all paths necessarily result in a distinct visual element. For example,
 a gradient mask effect can be created with a gradient with gradation of alpha
-values, and then using that as the source of a PaintComposite with the *Source
-In* compositing mode. In that case, the leaf has a visual affect but does not
-result in a distinct visual element. This was illustrated in figure 5.44,
-repeated here as figure 5.51: the PaintLinearGradient is a leaf node in the
-graph and creates a masking effect but does not add a distinct visual element.
+values, and then using that as the source of a PaintComposite table with the
+*Source In* compositing mode. In that case, the leaf has a visual affect but
+does not result in a distinct visual element. This was illustrated in figure
+5.44, repeated here as figure 5.51: the PaintLinearGradient is a leaf node in
+the graph and creates a masking effect but does not add a distinct visual
+element.
 
 ![A PaintLinearGradient used as a compositing mask is a leaf node in the graph but does not add a distinct visual element.](images/colr_gradient_mask.png)
 
