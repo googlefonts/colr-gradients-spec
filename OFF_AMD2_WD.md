@@ -1631,8 +1631,9 @@ current color glyph definition.
 **5.7.11.2.5.8 Format 8: PaintTransform**
 
 Format 8 is used to apply an affine transformation to a sub-graph. The paint
-table that is the root of the sub-graph is linked as a child. See 5.7.11.1.5 for
-general information regarding transformations in a color glyph definition.
+table that is the root of the sub-graph is linked as a child. For general
+information regarding transformations in a color glyph definition, see
+ 5.7.11.1.5.
 
 *PaintTransform table (format 8):*
 
