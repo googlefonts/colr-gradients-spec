@@ -1213,7 +1213,7 @@ the header are from the start of the table.
 
 *COLR version 0:*
 
-| Type | Field name | Description |
+| Type | Name | Description |
 |-|-|-|
 | uint16 | version | Table version number—set to 0. |
 | uint16 | numBaseGlyphRecords | Number of BaseGlyph records. |
@@ -1228,7 +1228,7 @@ the COLR table require glyph ID 1 to be the .null glyph.
 
 *COLR version 1:*
 
-| Type | Field name | Description |
+| Type | Name | Description |
 |-|-|-|
 | uint16 | version | Table version number—set to 1. |
 | uint16 | numBaseGlyphRecords | Number of BaseGlyph records; may be 0 in a version 1 table. |
@@ -1285,7 +1285,7 @@ glyph index, an index into the layerRecords array, and the number of layers.
 
 *BaseGlyph record:*
 
-| Type | Field name | Description |
+| Type | Name | Description |
 |-|-|-|
 | uint16 | glyphID | Glyph ID of the base glyph. |
 | uint16 | firstLayerIndex | Index (base 0) into the layerRecords array. |
@@ -1312,7 +1312,7 @@ the solid color fill.
 
 *Layer record:*
 
-| Type | Field name | Description |
+| Type | Name | Description |
 |-|-|-|
 | uint16 | glyphID | Glyph ID of the glyph used for a given layer. |
 | uint16 | paletteIndex | Index (base 0) for a palette entry in the CPAL table. |
@@ -1370,7 +1370,7 @@ list.
 
 *LayerV1List table:*
 
-| Type | Field name | Description |
+| Type | Name | Description |
 |-|-|-|
 | uint32 | numLayers |  |
 | Offset32 | paintOffsets[numLayers] | Offsets to Paint tables. |
@@ -1484,7 +1484,7 @@ information about its use for shared, re-usable components, see 5.7.11.1.7.2.
 
 *PaintColrLayers table (format 1):*
 
-| Type | Field name | Description |
+| Type | Name | Description |
 |-|-|-|
 | uint8 | format | Set to 1. |
 | uint8 | numLayers | Number of offsets to paint tables to read from LayerV1List. |
@@ -1503,7 +1503,7 @@ to a shape, see 5.7.11.1.3.
 
 *PaintSolid table (format 2):*
 
-| Type | Field name | Description |
+| Type | Name | Description |
 |-|-|-|
 | uint8 | format | Set to 2. |
 | ColorIndex | color | ColorIndex record for the solid color fill. |
@@ -1523,7 +1523,7 @@ For information about applying a fill to a shape, see 5.7.11.1.3.
 
 *PaintLinearGradient table (format 3):*
 
-| Type | Field name | Description |
+| Type | Name | Description |
 |-|-|-|
 | uint8 | format | Set to 3. |
 | Offset24 | colorLineOffset | Offset to ColorLine table. |
@@ -1547,7 +1547,7 @@ For information about applying a fill to a shape, see 5.7.11.1.3.
 
 *PaintRadialGradient table (format 4):*
 
-| Type | Field name | Description |
+| Type | Name | Description |
 |-|-|-|
 | uint8 | format | Set to 4. |
 | Offset24 | colorLineOffset | Offset to ColorLine table. |
@@ -1571,7 +1571,7 @@ For information about applying a fill to a shape, see 5.7.11.1.3.
 
 *PaintSweepGradient table (format 5):*
 
-| Type | Field name | Description |
+| Type | Name | Description |
 |-|-|-|
 | uint8 | format | Set to 5. |
 | Offset24 | colorLineOffset | Offset to ColorLine table. |
@@ -1595,7 +1595,7 @@ For information about applying a fill to a shape, see 5.7.11.1.3.
 
 *PaintGlyph table (format 6):*
 
-| Type | Field name | Description |
+| Type | Name | Description |
 |-|-|-|
 | uint8 | format | Set to 6. |
 | Offset24 | paintOffset | Offset to a Paint table. |
@@ -1616,7 +1616,7 @@ definitions. See 5.7.11.1.7.3 for more information.
 
 *PaintColrGlyph table (format 7):*
 
-| Type | Field name | Description |
+| Type | Name | Description |
 |-|-|-|
 | uint8 | format | Set to 7. |
 | uint16 | glyphID | Virtual glyph ID for a BaseGlyphV1List base glyph. |
@@ -1636,7 +1636,7 @@ general information regarding transformations in a color glyph definition.
 
 *PaintTransform table (format 8):*
 
-| Type | Field name | Description |
+| Type | Name | Description |
 |-|-|-|
 | uint8 | format | Set to 8. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
@@ -1686,7 +1686,7 @@ glyph definition.
 
 *PaintTranslate table (format 9):*
 
-| Type | Field name | Description |
+| Type | Name | Description |
 |-|-|-|
 | uint8 | format | Set to 9. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
@@ -1714,7 +1714,7 @@ glyph definition.
 
 *PaintRotate table (format 10):*
 
-| Type | Field name | Description |
+| Type | Name | Description |
 |-|-|-|
 | uint8 | format | Set to 10. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
@@ -1758,7 +1758,7 @@ glyph definition.
 
 *PaintSkew table (format 11):*
 
-| Type | Field name | Description |
+| Type | Name | Description |
 |-|-|-|
 | uint8 | format | Set to 11. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
@@ -1802,7 +1802,7 @@ NOTE: The backdrop is also referred to as the “destination”.
 
 *PaintComposite table (format 12):*
 
-| Type | Field name | Description |
+| Type | Name | Description |
 |-|-|-|
 | uint8 | format | Set to 12. |
 | Offset24 | sourcePaintOffset | Offset to a source Paint table. |
