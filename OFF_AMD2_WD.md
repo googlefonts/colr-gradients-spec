@@ -737,7 +737,7 @@ sub-graphs.
 
 **Figure 5.37 Version 1: PaintColrLayers tables specify slices within the LayerV1List, providing a layering of content defined in sub-graphs.**
 
-NOTE: Paint table offsets in the LayerV1List table are only used in conjuction
+NOTE: Paint table offsets in the LayerV1List table are only used in conjunction
 with PaintColrLayers tables. If a paint table does not need to be referenced via
 a PaintColrLayers table, its offset does not need to be included in the
 LayerV1List array.
@@ -1362,7 +1362,7 @@ definition will be a PaintColrLayers table, though this is not required. See
 5.7.11.1.9 more information regarding the graph of a color glyph, and 5.7.11.1.4
 for background information regarding the PaintColrLayers table.
 
-A LayerV1List table is used in conjuction with PaintColrLayers tables to
+A LayerV1List table is used in conjunction with PaintColrLayers tables to
 represent layer structures. A single LayerV1List is defined and can be used by
 multiple PaintColrLayer tables, each of which references a slice of the layer
 list.
