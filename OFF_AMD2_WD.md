@@ -1108,7 +1108,7 @@ a PaintColrGlyph table, that entire graph is considered to be a child sub-graph
 of the PaintColrGlyph table, and a continuation of the graph of which the
 PaintColrGlyph table is a part.
 
-The graph for a color glyph is a combination of paint table using any of the
+The graph for a color glyph is a combination of paint tables using any of the
 paint table formats. The simplest color glyph definition would consist of a
 PaintGlyph table linked to a basic fill table (PaintSolid, PaintLinearGradient,
 PaintRadialGradient, or PaintSweepGradient). But the graph can be arbitrarily
