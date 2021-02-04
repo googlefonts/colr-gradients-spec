@@ -88,10 +88,10 @@ example, the placement of color stops in a gradient, or the alpha values applied
 to colors. The graphic capabilities supported in version 0 and in version 1 are
 described in more detail below.
 
-The COLR table is used in combination with the CPAL table (5.7.12): all color
-values are specified as entries in color palettes defined in the CPAL table. If
-the COLR table is present in a font but no CPAL table exists, then the COLR
-table is ignored.
+The COLR table can be used in two ways:
+
+1. If a CPAL table (5.7.12) is present the font is a color font whose color values are specified as entries in color palettes defined in the CPAL table.
+1. If no CPAL table is present the font is limited to the foreground color. This is ensured by limitations on drawing capability defined in 5.7.11.1.8.3.
 
 **5.7.11.1 Graphic Compositions**
 
@@ -1040,7 +1040,7 @@ table would not require the corresponding graph of paint tables to be
 re-processed. As a result, using a PaintColrGlyph for re-used graphic components
 could provide performance benefits.
 
-**5.7.11.1.8 Glyph metrics and boundedness**
+**5.7.11.1.8 Glyph metrics, boundedness, and monochromatic use**
 
 **5.7.11.1.8.1 Metrics for color glyphs using version 0 formats**
 
@@ -1084,6 +1084,35 @@ details.
 
 Applications shall confirm that a color glyph definition is bounded, and shall
 not render a color glyph if the defining graph is not bounded.
+
+**5.7.11.1.8.3 COLR without CPAL**
+
+If a COLR table is present but there is no CPAL output is limited to
+varying the alpha value applied to the foreground color. To ensure colors other than
+(foreground + alpha are unreachable the following composite modes are replaced by
+COMPOSITE_CLEAR if encountered in a PaintComposite record:
+
+   * COMPOSITE_SCREEN
+   * COMPOSITE_OVERLAY
+   * COMPOSITE_DARKEN
+   * COMPOSITE_LIGHTEN
+   * COMPOSITE_COLOR_DODGE
+   * COMPOSITE_COLOR_BURN
+   * COMPOSITE_HARD_LIGHT
+   * COMPOSITE_SOFT_LIGHT
+   * COMPOSITE_DIFFERENCE
+   * COMPOSITE_EXCLUSION
+   * COMPOSITE_MULTIPLY
+   * COMPOSITE_HSL_HUE
+   * COMPOSITE_HSL_SATURATION
+   * COMPOSITE_HSL_COLOR
+   * COMPOSITE_HSL_LUMINOSITY
+
+This ensures colors other than (foreground + alpha) are unreachable.
+
+NOTE: This is intended to make it possible for a rasterizer that supports
+rendering in the foreground color with antialiasing to support COLR without
+CPAL even if full color is not supported.
 
 **5.7.11.1.9 Color glyphs as a directed acyclic graph**
 
@@ -1325,7 +1354,7 @@ the &#39;glyf&#39; (5.3.4), &#39;CFF &#39; (5.4.2) or CFF2 (5.4.3) table. See
 The paletteIndex value shall be less than the numPaletteEntries value in the
 CPAL table (5.7.12). A paletteIndex value of 0xFFFF is a special case,
 indicating that the text foreground color (as determined by the application) is
-to be used.
+to be used. If no CPAL table is present 0xFFFF is the only valid paletteIndex.
 
 **5.7.11.2.3 BaseGlyphV1List and LayerV1List**
 
@@ -1403,8 +1432,11 @@ specification that supports variation in a variable font.
 | uint16 | paletteIndex | Index for a CPAL palette entry. |
 | VarF2Dot14 | alpha | Variable alpha value. |
 
-A paletteIndex value of 0xFFFF is a special case, indicating that the text
-foreground color (as determined by the application) is to be used.
+The paletteIndex value shall be less than the numPaletteEntries value in the
+CPAL table (5.7.12) if a CPAL table is present. The paletteIndex value of 0xFFFF
+is a special case, indicating that the text foreground color (as determined by
+the application) is to be used. If no CPAL table is present 0xFFFF is the only
+valid paletteIndex.
 
 The alpha.value is always set explicitly. Values for alpha outside the range
 [0., 1.] (inclusive) are reserved; values outside this range shall be clipped. A
@@ -1598,7 +1630,7 @@ For information about applying a fill to a shape, see 5.7.11.1.3.
 | Type | Name | Description |
 |-|-|-|
 | uint8 | format | Set to 6. |
-| Offset24 | paintOffset | Offset to a Paint table. |
+| Offset24 | paintOffset | Offset to a Paint table. May be NULL, see 5.7.11.2.5.12 Default paint. |
 | uint16 | glyphID | Glyph ID for the source outline. |
 
 The glyphID value shall be less than the numGlyphs value in the &#39;maxp&#39;
@@ -1640,7 +1672,7 @@ information regarding transformations in a color glyph definition, see
 | Type | Name | Description |
 |-|-|-|
 | uint8 | format | Set to 8. |
-| Offset24 | paintOffset | Offset to a Paint subtable. |
+| Offset24 | paintOffset | Offset to a Paint subtable. May be NULL, see 5.7.11.2.5.12 Default paint. |
 | Affine2x3 | transform | An Affine2x3 record (inline). |
 
 The affine transformation is defined by a 2×3 matrix, specified in an Affine2x3
@@ -1690,7 +1722,7 @@ glyph definition.
 | Type | Name | Description |
 |-|-|-|
 | uint8 | format | Set to 9. |
-| Offset24 | paintOffset | Offset to a Paint subtable. |
+| Offset24 | paintOffset | Offset to a Paint subtable. May be NULL, see 5.7.11.2.5.12 Default paint. |
 | VarFixed | dx | Translation in x direction. |
 | VarFixed | dy | Translation in y direction. |
 
@@ -1718,7 +1750,7 @@ glyph definition.
 | Type | Name | Description |
 |-|-|-|
 | uint8 | format | Set to 10. |
-| Offset24 | paintOffset | Offset to a Paint subtable. |
+| Offset24 | paintOffset | Offset to a Paint subtable. May be NULL, see 5.7.11.2.5.12 Default paint. |
 | VarFixed | angle | Rotation angle, in counter-clockwise degrees. |
 | VarFixed | centerX | x coordinate for the center of rotation. |
 | VarFixed | centerY | y coordinate for the center of rotation. |
@@ -1762,7 +1794,7 @@ glyph definition.
 | Type | Name | Description |
 |-|-|-|
 | uint8 | format | Set to 11. |
-| Offset24 | paintOffset | Offset to a Paint subtable. |
+| Offset24 | paintOffset | Offset to a Paint subtable. May be NULL, see 5.7.11.2.5.12 Default paint. |
 | VarFixed | xSkewAngle | Angle of skew in the direction of the x-axis, in counter-clockwise degrees. |
 | VarFixed | ySkewAngle | Angle of skew in the direction of the y-axis, in counter-clockwise degrees. |
 | VarFixed | centerX | x coordinate for the center of rotation. |
@@ -1806,9 +1838,9 @@ NOTE: The backdrop is also referred to as the “destination”.
 | Type | Name | Description |
 |-|-|-|
 | uint8 | format | Set to 12. |
-| Offset24 | sourcePaintOffset | Offset to a source Paint table. |
+| Offset24 | sourcePaintOffset | Offset to a source Paint table. May be NULL, see 5.7.11.2.5.12 Default paint. |
 | uint8 | compositeMode | A CompositeMode enumeration value. |
-| Offset24 | backdropPaintOffset | Offset to a backdrop Paint table, from start of PaintComposite table. |
+| Offset24 | backdropPaintOffset | Offset to a backdrop Paint table. May be NULL, see 5.7.11.2.5.12 Default paint. |
 
 The compositionMode value must be one of the values defined in the CompositeMode enumeration. If an unrecognized value is encountered, COMPOSITE_CLEAR shall be used.
 
@@ -1882,6 +1914,12 @@ source and backdrop as follows:
   * COMPOSITE_DEST_IN
 * Bounded *if and only if* both the source *and* backdrop are bounded:
   * All other modes
+
+**5.7.11.2.5.12 Default paint**
+
+In all Paint records with an Offset to a Paint a NULL offset is interpreted as
+a PaintSolid whose ColorIndex has a paletteIndex of 0xFFFF (foreground color)
+and an alpha of 1.0.
 
 **5.7.11.3 COLR version 1 rendering algorithm**
 
