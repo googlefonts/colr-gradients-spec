@@ -1659,7 +1659,8 @@ the transform definition to be variable in a variable font.
 | VarFixed | dx | Translation in x direction. |
 | VarFixed | dy | Translation in y direction. |
 
-For a pre-transformation position *(x, y)*,  The post-transformation position *(x&#x2032;, y&#x2032;)* is calculated as follows:
+For a pre-transformation position *(x, y)*, the post-transformation position
+*(x&#x2032;, y&#x2032;)* is calculated as follows:
 
 *x&#x2032;* = *xx \* x + xy \* y + dx*  
 *y&#x2032;* = *yx \* x + yy \* y + dy*
