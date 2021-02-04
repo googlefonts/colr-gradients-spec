@@ -1360,8 +1360,8 @@ a color glyph definition.
 
 NOTE: Often the paint table that is the root of the graph for the color glyph
 definition will be a PaintColrLayers table, though this is not required. See
-5.7.11.1.9 more information regarding the graph of a color glyph, and 5.7.11.1.4
-for background information regarding the PaintColrLayers table.
+5.7.11.1.9 for more information regarding the graph of a color glyph, and
+5.7.11.1.4 for background information regarding the PaintColrLayers table.
 
 A LayerV1List table is used in conjunction with PaintColrLayers tables to
 represent layer structures. A single LayerV1List is defined and can be used by
