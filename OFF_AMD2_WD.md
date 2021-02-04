@@ -1508,15 +1508,15 @@ to a shape, see 5.7.11.1.3.
 | uint8 | format | Set to 2. |
 | ColorIndex | color | ColorIndex record for the solid color fill. |
 
-The ColorIndex record format is specified in 5.7.11.2.4.
+For the ColorIndex record format, see 5.7.11.2.4.
 
 **5.7.11.2.5.3 Format 3: PaintLinearGradient**
 
 Format 3 is used to specify a linear gradient fill. For general information
 about linear gradients, see 5.7.11.1.2.2. 
 
-The PaintLinearGradient table has a ColorLine subtable. The ColorLine table
-format is specified in 5.7.11.2.4. For background information on the color line,
+The PaintLinearGradient table has a ColorLine subtable. For the ColorLine table
+format, see 5.7.11.2.4. For background information on the color line,
 see 5.7.11.1.2.1.
 
 For information about applying a fill to a shape, see 5.7.11.1.3.
@@ -1539,8 +1539,8 @@ For information about applying a fill to a shape, see 5.7.11.1.3.
 Format 4 is used to specify a radial gradient fill. For general information
 about radial gradients supported in COLR version 1, see 5.7.11.1.2.3. 
 
-The PaintRadialGradient table has a ColorLine subtable. The ColorLine table
-format is specified in 5.7.11.2.4. For background information on the color line,
+The PaintRadialGradient table has a ColorLine subtable. For the ColorLine table
+format, see in 5.7.11.2.4. For background information on the color line,
 see 5.7.11.1.2.1.
 
 For information about applying a fill to a shape, see 5.7.11.1.3.
@@ -1563,8 +1563,8 @@ For information about applying a fill to a shape, see 5.7.11.1.3.
 Format 5 is used to specify a sweep gradient fill. For general information
 about sweep gradients, see 5.7.11.1.2.4.
 
-The PaintSweepGradient table has a ColorLine subtable. The ColorLine table
-format is specified in 5.7.11.2.4. For background information on the color line,
+The PaintSweepGradient table has a ColorLine subtable. For the ColorLine table
+format, see 5.7.11.2.4. For background information on the color line,
 see 5.7.11.1.2.1.
 
 For information about applying a fill to a shape, see 5.7.11.1.3.
