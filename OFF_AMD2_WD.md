@@ -1463,8 +1463,8 @@ EXTEND_PAD by default.
 
 **5.7.11.2.5 Paint tables**
 
-Paint tables are used for COLR version 1 color glyph definitions. Eleven Paint
-table formats are defined (formats 1 to 11), each providing a different graphic
+Paint tables are used for COLR version 1 color glyph definitions. Twelve Paint
+table formats are defined (formats 1 to 12), each providing a different graphic
 capability for defining the composition for a color glyph. The graphic
 capability of each format and the manner in which they are combined to represent
 a color glyph has been described above—see 5.7.11.1.
