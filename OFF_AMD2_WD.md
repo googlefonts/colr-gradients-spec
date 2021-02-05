@@ -1401,10 +1401,22 @@ be included in the paintOffsets array.
 Colors are used in solid color fills for graphic elements, or as *stops* in a
 color line used to define a gradient. Colors are defined by reference to palette
 entries in the CPAL table (5.7.12). While CPAL entries include an alpha
-component, a ColorIndex record is defined here that includes a separate alpha
-specification that supports variation in a variable font.
+component, color-index records for referencing palette entries are defined here
+that includes a separate alpha specification to allow different graphic elements
+to use the same color but with different alpha values, and to allow for
+variation of the alpha in variable fonts.
+
+Two color-index record formats are defined: one that allows for variation of
+alpha, and one that does not.
 
 *ColorIndex record:*
+
+| Type | Name | Description |
+|-|-|-|
+| uint16 | paletteIndex | Index for a CPAL palette entry. |
+| F2DOT14 | alpha | Alpha value. |
+
+*VarColorIndex record:*
 
 | Type | Name | Description |
 |-|-|-|
@@ -1414,13 +1426,14 @@ specification that supports variation in a variable font.
 A paletteIndex value of 0xFFFF is a special case, indicating that the text
 foreground color (as determined by the application) is to be used.
 
-The alpha.value is always set explicitly. Values for alpha outside the range
-[0., 1.] (inclusive) are reserved; values outside this range shall be clipped. A
-value of zero means no opacity (fully transparent); 1.0 means fully opaque (no
-transparency). The alpha indicated in this record is multiplied with the alpha
-component of the CPAL entry (converted to float—divide by 255). Note that the
-resulting alpha value can be combined with and does not supersede alpha or
-opacity attributes set in higher-level, application-defined contexts.
+The alpha value (alpha.value for VarF2Dot14) is always set explicitly. Values
+for alpha outside the range [0., 1.] (inclusive) are reserved; values outside
+this range shall be clipped. A value of zero means no opacity (fully
+transparent); 1.0 means fully opaque (no transparency). The alpha indicated in
+this record is multiplied with the alpha component of the CPAL entry (converted
+to float—divide by 255). Note that the resulting alpha value can be combined
+with and does not supersede alpha or opacity attributes set in higher-level,
+application-defined contexts.
 
 See 5.7.11.1.1 for more information regarding color references and solid color
 fills.
@@ -1429,14 +1442,29 @@ Gradients are defined using a color line. A color line is a mapping of real
 numbers to color values, defined using color stops. See 5.7.11.1.2.1 for an
 overview and additional details.
 
+Two color-stop record formats are defined: one that allows for variation of
+stop offset position or of alpha, and one that does not.
+
 *ColorStop record:*
 
 | Type | Name | Description |
 |-|-|-|
-| VarF2Dot14 | stopOffset | Position on a color line; variable. |
+| F2DOT14 | stopOffset | Position on a color line. |
 | ColorIndex | color | |
 
+*VarColorStop record:*
+
+| Type | Name | Description |
+|-|-|-|
+| VarF2Dot14 | stopOffset | Position on a color line; variable. |
+| VarColorIndex | color | |
+
 A color line is defined by an array of ColorStop records plus an extend mode.
+
+Two color-line table formats are defined: one that allows for variation of color
+stop offsets positions or of alpha values, and one that does not. Different
+paint table formats for gradients use one or the other of the color line
+formats.
 
 *ColorLine table:*
 
@@ -1445,6 +1473,14 @@ A color line is defined by an array of ColorStop records plus an extend mode.
 | uint8 | extend | An Extend enum value. |
 | uint16 | numStops | Number of ColorStop records. |
 | ColorStop | colorStops[numStops] | |
+
+*VarColorLine table:*
+
+| Type | Name | Description |
+|-|-|-|
+| uint8 | extend | An Extend enum value. |
+| uint16 | numStops | Number of ColorStop records. |
+| VarColorStop | colorStops[numStops] | Allows for variations. |
 
 Applications shall apply the colorStops in increasing stopOffset order. The
 stopOffset value uses a variable structure and, with a variable font, the
@@ -1503,11 +1539,16 @@ scenarios. If more than 256 layers are needed, then two or more PaintColrLayers
 tables can be combined in a tree using a PaintComposite table or another
 PaintColrLayers table to combine them.
 
-**5.7.11.2.5.2 Format 2: PaintSolid**
+**5.7.11.2.5.2 Formats 2 and 3: PaintSolid, PaintVarSolid**
 
-Format 2 is used to specify a solid color fill. For general information about
-specifying color values, see 5.7.11.1.1. For information about applying a fill
-to a shape, see 5.7.11.1.3.
+Formats 2 and 3 are used to specify a solid color fill. Format 3 allows for
+variation of alpha in a variable font; format 2 provides a more compact
+representation when variation is not required. Format 3 shall not be used in
+non-variable fonts or if the COLR table does not have an ItemVariationStore
+subtable.
+
+For general information about specifying color values, see 5.7.11.1.1. For
+information about applying a fill to a shape, see 5.7.11.1.3.
 
 *PaintSolid table (format 2):*
 
@@ -1516,25 +1557,49 @@ to a shape, see 5.7.11.1.3.
 | uint8 | format | Set to 2. |
 | ColorIndex | color | ColorIndex record for the solid color fill. |
 
-For the ColorIndex record format, see 5.7.11.2.4.
-
-**5.7.11.2.5.3 Format 3: PaintLinearGradient**
-
-Format 3 is used to specify a linear gradient fill. For general information
-about linear gradients, see 5.7.11.1.2.2. 
-
-The PaintLinearGradient table has a ColorLine subtable. For the ColorLine table
-format, see 5.7.11.2.4. For background information on the color line,
-see 5.7.11.1.2.1.
-
-For information about applying a fill to a shape, see 5.7.11.1.3.
-
-*PaintLinearGradient table (format 3):*
+*PaintVarSolid table (format 3):*
 
 | Type | Name | Description |
 |-|-|-|
 | uint8 | format | Set to 3. |
+| VarColorIndex | color | VarColorIndex record for the solid color fill. |
+
+For the ColorIndex and VarColorIndex record formats, see 5.7.11.2.4.
+
+**5.7.11.2.5.3 Formats 4 and 5: PaintLinearGradient, PaintVarLinearGradient**
+
+Formats 4 and 5 are used to specify a linear gradient fill. Format 4 allows for
+variation of color stop positions or of alpha in a variable font; format 5
+provides a more compact representation when variation is not required. Format 5
+shall not be used in non-variable fonts or if the COLR table does not have an
+ItemVariationStore subtable.
+
+For general information about linear gradients, see 5.7.11.1.2.2. For
+information about applying a fill to a shape, see 5.7.11.1.3.
+
+The PaintLinearGradient and PaintVarLinearGradient tables have a ColorLine
+subtable. For the ColorLine table format, see 5.7.11.2.4. For background
+information on the color line, see 5.7.11.1.2.1.
+
+*PaintLinearGradient table (format 4):*
+
+| Type | Name | Description |
+|-|-|-|
+| uint8 | format | Set to 4. |
 | Offset24 | colorLineOffset | Offset to ColorLine table. |
+| FWord | x0 | Start point (p₀) x coordinate. |
+| FWord | y0 | Start point (p₀) y coordinate. |
+| FWord | x1 | End point (p₁) x coordinate. |
+| FWord | y1 | End point (p₁) y coordinate. |
+| FWord | x2 | Rotation point (p₂) x coordinate. |
+| FWord | y2 | Rotation point (p₂) y coordinate. |
+
+*PaintVarLinearGradient table (format 5):*
+
+| Type | Name | Description |
+|-|-|-|
+| uint8 | format | Set to 5. |
+| Offset24 | colorLineOffset | Offset to VarColorLine table. |
 | VarFWord | x0 | Start point (p₀) x coordinate. |
 | VarFWord | y0 | Start point (p₀) y coordinate. |
 | VarFWord | x1 | End point (p₁) x coordinate. |
@@ -1542,23 +1607,40 @@ For information about applying a fill to a shape, see 5.7.11.1.3.
 | VarFWord | x2 | Rotation point (p₂) x coordinate. |
 | VarFWord | y2 | Rotation point (p₂) y coordinate. |
 
-**5.7.11.2.5.4 Format 4: PaintRadialGradient**
+**5.7.11.2.5.4 Formats 6 and 7: PaintRadialGradient, PaintVarRadialGradient**
 
-Format 4 is used to specify a radial gradient fill. For general information
-about radial gradients supported in COLR version 1, see 5.7.11.1.2.3. 
+Format 6 and 7 are used to specify a radial gradient fill. Format 7 allows for
+variation of color stop positions or of alpha in a variable font; format 6
+provides a more compact representation when variation is not required. Format 7
+shall not be used in non-variable fonts or if the COLR table does not have an
+ItemVariationStore subtable.
 
-The PaintRadialGradient table has a ColorLine subtable. For the ColorLine table
-format, see in 5.7.11.2.4. For background information on the color line,
-see 5.7.11.1.2.1.
+For general information about radial gradients supported in COLR version 1, see
+5.7.11.1.2.3. For information about applying a fill to a shape, see 5.7.11.1.3.
 
-For information about applying a fill to a shape, see 5.7.11.1.3.
+The PaintRadialGradient and PaintVarRadialGradient tables have a ColorLine
+subtable. For the ColorLine table format, see in 5.7.11.2.4. For background
+information on the color line, see 5.7.11.1.2.1.
 
-*PaintRadialGradient table (format 4):*
+*PaintRadialGradient table (format 6):*
 
 | Type | Name | Description |
 |-|-|-|
-| uint8 | format | Set to 4. |
+| uint8 | format | Set to 6. |
 | Offset24 | colorLineOffset | Offset to ColorLine table. |
+| FWord | x0 | Start circle center x coordinate. |
+| FWord | y0 | Start circle center y coordinate. |
+| UFWord | radius0 | Start circle radius. |
+| FWord | x1 | End circle center x coordinate. |
+| FWord | y1 | End circle center y coordinate. |
+| UFWord | radius1 | End circle radius. |
+
+*PaintVarRadialGradient table (format 7):*
+
+| Type | Name | Description |
+|-|-|-|
+| uint8 | format | Set to 7. |
+| Offset24 | colorLineOffset | Offset to VarColorLine table. |
 | VarFWord | x0 | Start circle center x coordinate. |
 | VarFWord | y0 | Start circle center y coordinate. |
 | VarUFWord | radius0 | Start circle radius. |
@@ -1566,23 +1648,38 @@ For information about applying a fill to a shape, see 5.7.11.1.3.
 | VarFWord | y1 | End circle center y coordinate. |
 | VarUFWord | radius1 | End circle radius. |
 
-**5.7.11.2.5.5 Format 5: PaintSweepGradient**
+**5.7.11.2.5.5 Formats 8 and 9: PaintSweepGradient, PaintVarSweepGradient**
 
-Format 5 is used to specify a sweep gradient fill. For general information
-about sweep gradients, see 5.7.11.1.2.4.
+Format 8 and 9 are used to specify a sweep gradient fill. Format 9 allows for
+variation of color stop positions or of alpha in a variable font; format 8
+provides a more compact representation when variation is not required. Format 9
+shall not be used in non-variable fonts or if the COLR table does not have an
+ItemVariationStore subtable.
 
-The PaintSweepGradient table has a ColorLine subtable. For the ColorLine table
-format, see 5.7.11.2.4. For background information on the color line,
-see 5.7.11.1.2.1.
+For general information about sweep gradients, see 5.7.11.1.2.4. For information
+about applying a fill to a shape, see 5.7.11.1.3.
 
-For information about applying a fill to a shape, see 5.7.11.1.3.
+The PaintSweepGradient and PaintVarSweepGradient table have a ColorLine
+subtable. For the ColorLine table format, see 5.7.11.2.4. For background
+information on the color line, see 5.7.11.1.2.1.
 
-*PaintSweepGradient table (format 5):*
+*PaintSweepGradient table (format 8):*
 
 | Type | Name | Description |
 |-|-|-|
-| uint8 | format | Set to 5. |
+| uint8 | format | Set to 8. |
 | Offset24 | colorLineOffset | Offset to ColorLine table. |
+| FWord | centerX | Center x coordinate. |
+| FWord | centerY | Center y coordinate. |
+| Fixed | startAngle | Start of the angular range of the gradient. |
+| Fixed | endAngle | End of the angular range of the gradient. |
+
+*PaintVarSweepGradient table (format 9):*
+
+| Type | Name | Description |
+|-|-|-|
+| uint8 | format | Set to 9. |
+| Offset24 | colorLineOffset | Offset to VarColorLine table. |
 | VarFWord | centerX | Center x coordinate. |
 | VarFWord | centerY | Center y coordinate. |
 | VarFixed | startAngle | Start of the angular range of the gradient. |
@@ -1590,7 +1687,6 @@ For information about applying a fill to a shape, see 5.7.11.1.3.
 
 Angles are expressed in counter-clockwise degrees from the direction of the
 y-axis in the design grid.
-
 
 **5.7.11.2.5.5 Format 6: PaintGlyph**
 
