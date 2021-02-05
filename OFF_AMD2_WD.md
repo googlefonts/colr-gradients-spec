@@ -1683,8 +1683,8 @@ aligned to the destination origin.
 Format 9 is used to apply a translation to a sub-graph. The paint table that is
 the root of the sub-graph is linked as a child.
 
-See 5.7.11.1.5 for general information regarding transformations in a color
-glyph definition.
+For general information regarding transformations in a color glyph definition, 
+see 5.7.11.1.5.
 
 *PaintTranslate table (format 9):*
 
@@ -1711,8 +1711,8 @@ root of the sub-graph is linked as a child. The amount of rotation is expressed
 directly as an angle, and X and Y coordinates can be provided for the center of
 rotation.
 
-See 5.7.11.1.5 for general information regarding transformations in a color
-glyph definition.
+For general information regarding transformations in a color glyph definition, 
+see 5.7.11.1.5.
 
 *PaintRotate table (format 10):*
 
@@ -1755,8 +1755,8 @@ root of the sub-graph is linked as a child. The amount of skew in the X or Y
 direction is expressed directly as angles, and X and Y coordinates can be
 provided for the center of rotation.
 
-See 5.7.11.1.5 for general information regarding transformations in a color
-glyph definition.
+For general information regarding transformations in a color glyph definition, 
+see 5.7.11.1.5.
 
 *PaintSkew table (format 11):*
 
@@ -1797,8 +1797,8 @@ destination.
 
 Format 12 is used to combine two layered compositions, referred to as *source*
 and *backdrop*, using different compositing or blending modes. The available
-compositing and blending modes are defined in an enumeration. See 5.7.11.1.6 for
-general information and examples.
+compositing and blending modes are defined in an enumeration. For general 
+information and examples regarding compositing and blending, see 5.7.11.1.6.
 
 NOTE: The backdrop is also referred to as the “destination”.
 
