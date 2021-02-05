@@ -1798,7 +1798,7 @@ destination.
 Format 12 is used to combine two layered compositions, referred to as *source*
 and *backdrop*, using different compositing or blending modes. The available
 compositing and blending modes are defined in an enumeration. For general 
-information and examples regarding compositing and blending, see 5.7.11.1.6.
+information and examples, see 5.7.11.1.6.
 
 NOTE: The backdrop is also referred to as the “destination”.
 
@@ -1809,53 +1809,55 @@ NOTE: The backdrop is also referred to as the “destination”.
 | uint8 | format | Set to 12. |
 | Offset24 | sourcePaintOffset | Offset to a source Paint table. |
 | uint8 | compositeMode | A CompositeMode enumeration value. |
-| Offset24 | backdropPaintOffset | Offset to a backdrop Paint table, from start of PaintComposite table. |
+| Offset24 | backdropPaintOffset | Offset to a backdrop Paint table. |
 
-The compositionMode value must be one of the values defined in the CompositeMode enumeration. If an unrecognized value is encountered, COMPOSITE_CLEAR shall be used.
+The compositionMode value must be one of the values defined in the CompositeMode
+enumeration, which are taken from the W3C [Compositing and Blending Level 1][1]
+(C&B Level 1) specification. If an unrecognized value is encountered,
+COMPOSITE_CLEAR shall be used.
 
 *CompositeMode enumeration:*
 
 | Value | Name | Description |
 |-|-|-|
 | | *Porter-Duff modes* | |
-| 0 | COMPOSITE_CLEAR | See [Clear][2] |
-| 1 | COMPOSITE_SRC | See [Copy][3] |
-| 2 | COMPOSITE_DEST | See [Destination][4] |
-| 3 | COMPOSITE_SRC_OVER | See [Source Over][5] |
-| 4 | COMPOSITE_DEST_OVER | See [Destination Over][6] |
-| 5 | COMPOSITE_SRC_IN | See [Source In][7] |
-| 6 | COMPOSITE_DEST_IN | See [Destination In][8] |
-| 7 | COMPOSITE_SRC_OUT | See [Source Out][9] |
-| 8 | COMPOSITE_DEST_OUT | See [Destination Out][10] |
-| 9 | COMPOSITE_SRC_ATOP | See [Source Atop][11] |
-| 10 | COMPOSITE_DEST_ATOP | See [Destination Atop][12] |
-| 11 | COMPOSITE_XOR | See [XOR][13] |
-| 12 | COMPOSITE_PLUS | See [PLUS][14] |
+| 0 | COMPOSITE_CLEAR | See [Clear][2] in C&B Level 1 |
+| 1 | COMPOSITE_SRC | See [Copy][3] in C&B Level 1 |
+| 2 | COMPOSITE_DEST | See [Destination][4] in C&B Level 1 |
+| 3 | COMPOSITE_SRC_OVER | See [Source Over][5] in C&B Level 1 |
+| 4 | COMPOSITE_DEST_OVER | See [Destination Over][6] in C&B Level 1 |
+| 5 | COMPOSITE_SRC_IN | See [Source In][7] in C&B Level 1 |
+| 6 | COMPOSITE_DEST_IN | See [Destination In][8] in C&B Level 1 |
+| 7 | COMPOSITE_SRC_OUT | See [Source Out][9] in C&B Level 1 |
+| 8 | COMPOSITE_DEST_OUT | See [Destination Out][10] in C&B Level 1 |
+| 9 | COMPOSITE_SRC_ATOP | See [Source Atop][11] in C&B Level 1 |
+| 10 | COMPOSITE_DEST_ATOP | See [Destination Atop][12] in C&B Level 1 |
+| 11 | COMPOSITE_XOR | See [XOR][13] in C&B Level 1 |
+| 12 | COMPOSITE_PLUS | See [PLUS][14] in C&B Level 1 |
 | | *Separable color blend modes:* | |
-| 13 | COMPOSITE_SCREEN | See [screen blend mode][15] |
-| 14 | COMPOSITE_OVERLAY | See [overlay blend mode][16] |
-| 15 | COMPOSITE_DARKEN | See [darken blend mode][17] |
-| 16 | COMPOSITE_LIGHTEN | See [lighten blend mode][18] |
-| 17 | COMPOSITE_COLOR_DODGE | See [color-dodge blend mode][19] |
-| 18 | COMPOSITE_COLOR_BURN | See [color-burn blend mode][20] |
-| 19 | COMPOSITE_HARD_LIGHT | See [hard-light blend mode][21] |
-| 20 | COMPOSITE_SOFT_LIGHT | See [soft-light blend mode][22] |
-| 21 | COMPOSITE_DIFFERENCE | See [difference blend mode][23] |
-| 22 | COMPOSITE_EXCLUSION | See [exclusion blend mode][24] |
-| 23 | COMPOSITE_MULTIPLY | See [multiply blend mode][25] |
+| 13 | COMPOSITE_SCREEN | See [screen blend mode][15] in C&B Level 1 |
+| 14 | COMPOSITE_OVERLAY | See [overlay blend mode][16] in C&B Level 1 |
+| 15 | COMPOSITE_DARKEN | See [darken blend mode][17] in C&B Level 1 |
+| 16 | COMPOSITE_LIGHTEN | See [lighten blend mode][18] in C&B Level 1 |
+| 17 | COMPOSITE_COLOR_DODGE | See [color-dodge blend mode][19] in C&B Level 1 |
+| 18 | COMPOSITE_COLOR_BURN | See [color-burn blend mode][20] in C&B Level 1 |
+| 19 | COMPOSITE_HARD_LIGHT | See [hard-light blend mode][21] in C&B Level 1 |
+| 20 | COMPOSITE_SOFT_LIGHT | See [soft-light blend mode][22] in C&B Level 1 |
+| 21 | COMPOSITE_DIFFERENCE | See [difference blend mode][23] in C&B Level 1 |
+| 22 | COMPOSITE_EXCLUSION | See [exclusion blend mode][24] in C&B Level 1 |
+| 23 | COMPOSITE_MULTIPLY | See [multiply blend mode][25] in C&B Level 1 |
 | | *Non-separable color blend modes:* | |
-| 24 | COMPOSITE_HSL_HUE | See [hue blend mode][26] |
-| 25 | COMPOSITE_HSL_SATURATION | See [saturation blend mode][27] |
-| 26 | COMPOSITE_HSL_COLOR | See [color blend mode][28] |
-| 27 | COMPOSITE_HSL_LUMINOSITY | See [luminosity blend mode][29] |
+| 24 | COMPOSITE_HSL_HUE | See [hue blend mode][26] in C&B Level 1 |
+| 25 | COMPOSITE_HSL_SATURATION | See [saturation blend mode][27] in C&B Level 1 |
+| 26 | COMPOSITE_HSL_COLOR | See [color blend mode][28] in C&B Level 1 |
+| 27 | COMPOSITE_HSL_LUMINOSITY | See [luminosity blend mode][29] in C&B Level 1 |
 
-The graphic compositions defined by the source and backdrop paint tables (and
-their respective sub-graphs). Conceptually, they are rendered into bitmaps, and
-the source is composited or blended into the backdrop using the specified
-composite mode. The supported modes are taken from the W3C [Compositing and
-Blending Level 1][1] specification. Details on each mode, including
-specifications of the required calculations using pixel color and alpha values,
-are provided in that specification.
+The graphic compositions are defined by the source and backdrop paint tables
+and their respective sub-graphs. Conceptually, they are rendered into bitmaps,
+and the source is composited or blended into the backdrop using the specified
+composite mode. Details on each mode, including specifications of the required
+calculations using pixel color and alpha values, are provided in the
+Compositing and Blending Level 1 specification.
 
 While color values obtained from the CPAL table are represented in sRGB using
 the non-linear transfer function defined in the sRGB specification, the
