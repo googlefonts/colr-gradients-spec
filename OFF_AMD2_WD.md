@@ -1579,9 +1579,10 @@ ItemVariationStore subtable.
 For general information about linear gradients, see 5.7.11.1.2.2. For
 information about applying a fill to a shape, see 5.7.11.1.3.
 
-The PaintLinearGradient and PaintVarLinearGradient tables have a ColorLine
-subtable. For the ColorLine table format, see 5.7.11.2.4. For background
-information on the color line, see 5.7.11.1.2.1.
+The PaintLinearGradient and PaintVarLinearGradient tables have a ColorLine and
+VarColorLine subtable, respectively. For the ColorLine and VarColorLine table
+formats, see 5.7.11.2.4. For background information on the color line, see
+5.7.11.1.2.1.
 
 *PaintLinearGradient table (format 4):*
 
@@ -1620,9 +1621,10 @@ ItemVariationStore subtable.
 For general information about radial gradients supported in COLR version 1, see
 5.7.11.1.2.3. For information about applying a fill to a shape, see 5.7.11.1.3.
 
-The PaintRadialGradient and PaintVarRadialGradient tables have a ColorLine
-subtable. For the ColorLine table format, see in 5.7.11.2.4. For background
-information on the color line, see 5.7.11.1.2.1.
+The PaintRadialGradient and PaintVarRadialGradient tables have a ColorLine and
+VarColorLine subtable, respectively. For the ColorLine and VarColorLine table
+formats, see in 5.7.11.2.4. For background information on the color line, see
+5.7.11.1.2.1.
 
 *PaintRadialGradient table (format 6):*
 
@@ -1661,9 +1663,10 @@ ItemVariationStore subtable.
 For general information about sweep gradients, see 5.7.11.1.2.4. For information
 about applying a fill to a shape, see 5.7.11.1.3.
 
-The PaintSweepGradient and PaintVarSweepGradient table have a ColorLine
-subtable. For the ColorLine table format, see 5.7.11.2.4. For background
-information on the color line, see 5.7.11.1.2.1.
+The PaintSweepGradient and PaintVarSweepGradient table have a ColorLine and
+VarColorLine subtable, respectively. For the ColorLine and VarColorLine table
+formats, see 5.7.11.2.4. For background information on the color line, see
+5.7.11.1.2.1.
 
 *PaintSweepGradient table (format 8):*
 
