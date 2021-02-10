@@ -223,12 +223,12 @@ stops, color values are linearly interpolated. See _Interpolation of Colors_ in
 5.7.12 for requirements on how colors are interpolated.
 
 For example, a gradient color line could be defined with two color stops at 0.2
-and 1.5. Colors for offsets between 0.5 and 1.5 are interpolated. Colors for
-offsets above 1.5 and below 0.2 are defined and determined by the color line’s
-*extend mode*, described below. The gradient color line is positioned in the
-design grid by aligning stop offsets 0 and 1 to design grid positions, as
-defined for each gradient type, using the extrapolated color of stop offset 0 at
-one position and the interpolated color of stop offset 1 at the other position.
+and 1.5. The gradient color line is positioned in the design grid by aligning
+stop offsets 0 and 1 to design grid positions, as defined for each gradient
+type, using the extrapolated color of stop offset 0 at one position and the
+interpolated color of stop offset 1 at the other position. Colors for offsets
+between 0.5 and 1.5 are interpolated. Colors for offsets above 1.5 and below 0.2
+are defined and determined by the color line’s *extend mode*, described below.
 
 If there are multiple color stops defined for the same stop offset, the first
 one is used for computing color values on the color line below that stop offset,
