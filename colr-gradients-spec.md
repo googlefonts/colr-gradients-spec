@@ -107,13 +107,25 @@ typedef Variable<F2DOT14> VarF2DOT14;
 struct ColorIndex
 {
   uint16     paletteIndex;
+  F2DOT14 alpha; // Default 1.0. Values outside [0.,1.] reserved.
+};
+
+struct VarColorIndex
+{
+  uint16     paletteIndex;
   VarF2DOT14 alpha; // Default 1.0. Values outside [0.,1.] reserved.
 };
 
 struct ColorStop
 {
-  VarF2DOT14 stopOffset;
+  F2DOT14 stopOffset;
   ColorIndex color;
+};
+
+struct VarColorStop
+{
+  VarF2DOT14 stopOffset;
+  VarColorIndex color;
 };
 
 enum Extend : uint8
@@ -127,6 +139,12 @@ struct ColorLine
 {
   Extend             extend;
   ArrayOf<ColorStop> stops;
+};
+
+struct VarColorLine
+{
+  Extend             extend;
+  ArrayOf<VarColorStop> stops;
 };
 
 
@@ -180,6 +198,16 @@ enum CompositeMode : uint8
 // This is a standard 2x3 matrix for 2D affine transformation.
 struct Affine2x3
 {
+  Fixed xx;
+  Fixed yx;
+  Fixed xy;
+  Fixed yy;
+  Fixed dx;
+  Fixed dy;
+};
+
+struct VarAffine2x3
+{
   VarFixed xx;
   VarFixed yx;
   VarFixed xy;
@@ -207,95 +235,169 @@ struct PaintSolid
   ColorIndex color;
 };
 
+struct PaintVarSolid
+{
+  uint8      format; // = 3
+  VarColorIndex color;
+};
+
 struct PaintLinearGradient
 {
-  uint8               format; // = 3
-  Offset24<ColorLine> colorLine;
-  VarFWORD            x0;
-  VarFWORD            y0;
-  VarFWORD            x1;
-  VarFWORD            y1;
-  VarFWORD            x2; // Normal; Equal to (x1,y1) in simple cases.
-  VarFWORD            y2;
+  uint8                  format; // = 4
+  Offset24<ColorLine>    colorLine;
+  FWORD                  x0;
+  FWORD                  y0;
+  FWORD                  x1;
+  FWORD                  y1;
+  FWORD                  x2; // Normal; Equal to (x1,y1) in simple cases.
+  FWORD                  y2;
+};
+
+struct PaintVarLinearGradient
+{
+  uint8                  format; // = 5
+  Offset24<VarColorLine> colorLine;
+  VarFWORD               x0;
+  VarFWORD               y0;
+  VarFWORD               x1;
+  VarFWORD               y1;
+  VarFWORD               x2; // Normal; Equal to (x1,y1) in simple cases.
+  VarFWORD               y2;
 };
 
 struct PaintRadialGradient
 {
-  uint8               format; // = 4
-  Offset24<ColorLine> colorLine;
-  VarFWORD            x0;
-  VarFWORD            y0;
-  VarUFWORD           radius0;
-  VarFWORD            x1;
-  VarFWORD            y1;
-  VarUFWORD           radius1;
+  uint8                  format; // = 6
+  Offset24<ColorLine>    colorLine;
+  FWORD                  x0;
+  FWORD                  y0;
+  UFWORD                 radius0;
+  FWORD                  x1;
+  FWORD                  y1;
+  UFWORD                 radius1;
+};
+
+struct PaintVarRadialGradient
+{
+  uint8                  format; // = 7
+  Offset24<VarColorLine> colorLine;
+  VarFWORD               x0;
+  VarFWORD               y0;
+  VarUFWORD              radius0;
+  VarFWORD               x1;
+  VarFWORD               y1;
+  VarUFWORD              radius1;
 };
 
 struct PaintSweepGradient
 {
-  uint8               format; // = 5
-  Offset24<ColorLine> colorLine;
-  VarFWORD            centerX;
-  VarFWORD            centerY;
-  VarFixed            startAngle;
-  VarFixed            endAngle;
+  uint8                  format; // = 8
+  Offset24<ColorLine>    colorLine;
+  FWORD                  centerX;
+  FWORD                  centerY;
+  Fixed                  startAngle;
+  Fixed                  endAngle;
+};
+
+struct PaintVarSweepGradient
+{
+  uint8                  format; // = 9
+  Offset24<VarColorLine> colorLine;
+  VarFWORD               centerX;
+  VarFWORD               centerY;
+  VarFixed               startAngle;
+  VarFixed               endAngle;
 };
 
 // Paint a non-COLR glyph, filled as indicated by paint.
 struct PaintGlyph
 {
-  uint8               format; // = 6
-  Offset24<Paint>     paint;
-  uint16              gid;    // not a COLR-only gid
-                              // shall be less than maxp.numGlyphs
+  uint8                  format; // = 10
+  Offset24<Paint>        paint;
+  uint16                 gid;    // not a COLR-only gid
+                                 // shall be less than maxp.numGlyphs
 }
 
 struct PaintColrGlyph
 {
-  uint8               format; // = 7
-  uint16              gid;    // shall be a COLR gid
+  uint8                  format; // = 11
+  uint16                 gid;    // shall be a COLR gid
 }
 
 struct PaintTransform
 {
-  uint8               format; // = 8
-  Offset24<Paint>     src;
-  Affine2x3           transform;
+  uint8                  format; // = 12
+  Offset24<Paint>        src;
+  Affine2x3              transform;
+};
+
+struct PaintVarTransform
+{
+  uint8                  format; // = 13
+  Offset24<Paint>        src;
+  VarAffine2x3           transform;
 };
 
 struct PaintTranslate
 {
-  uint8               format; // = 9
-  Offset24<Paint>     src;
-  VarFixed            dx;
-  VarFixed            dy;
+  uint8                  format; // = 14
+  Offset24<Paint>        src;
+  Fixed                  dx;
+  Fixed                  dy;
+};
+
+struct PaintVarTranslate
+{
+  uint8                  format; // = 15
+  Offset24<Paint>        src;
+  VarFixed               dx;
+  VarFixed               dy;
 };
 
 struct PaintRotate
 {
-  uint8               format; // = 10
-  Offset24<Paint>     src;
-  VarFixed            angle;
-  VarFixed            centerX;
-  VarFixed            centerY;
+  uint8                  format; // = 16
+  Offset24<Paint>        src;
+  Fixed                  angle;
+  Fixed                  centerX;
+  Fixed                  centerY;
+};
+
+struct PaintVarRotate
+{
+  uint8                  format; // = 17
+  Offset24<Paint>        src;
+  VarFixed               angle;
+  VarFixed               centerX;
+  VarFixed               centerY;
 };
 
 struct PaintSkew
 {
-  uint8               format; // = 11
-  Offset24<Paint>     src;
-  VarFixed            xSkewAngle;
-  VarFixed            ySkewAngle;
-  VarFixed            centerX;
-  VarFixed            centerY;
+  uint8                  format; // = 18
+  Offset24<Paint>        src;
+  Fixed                  xSkewAngle;
+  Fixed                  ySkewAngle;
+  Fixed                  centerX;
+  Fixed                  centerY;
+};
+
+struct PaintVarSkew
+{
+  uint8                  format; // = 19
+  Offset24<Paint>        src;
+  VarFixed               xSkewAngle;
+  VarFixed               ySkewAngle;
+  VarFixed               centerX;
+  VarFixed               centerY;
 };
 
 struct PaintComposite
 {
-  uint8               format; // = 12
-  Offset24<Paint>     src;
-  CompositeMode       mode;   // If mode is unrecognized use COMPOSITE_CLEAR
-  Offset24<Paint>     backdrop;
+  uint8                  format; // = 20
+  Offset24<Paint>        src;
+  CompositeMode          mode;   // If mode is unrecognized use COMPOSITE_CLEAR
+  Offset24<Paint>        backdrop;
 };
 
 struct BaseGlyphV1Record

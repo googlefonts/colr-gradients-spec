@@ -1590,12 +1590,12 @@ formats, see 5.7.11.2.4. For background information on the color line, see
 |-|-|-|
 | uint8 | format | Set to 4. |
 | Offset24 | colorLineOffset | Offset to ColorLine table. |
-| FWord | x0 | Start point (p₀) x coordinate. |
-| FWord | y0 | Start point (p₀) y coordinate. |
-| FWord | x1 | End point (p₁) x coordinate. |
-| FWord | y1 | End point (p₁) y coordinate. |
-| FWord | x2 | Rotation point (p₂) x coordinate. |
-| FWord | y2 | Rotation point (p₂) y coordinate. |
+| FWORD | x0 | Start point (p₀) x coordinate. |
+| FWORD | y0 | Start point (p₀) y coordinate. |
+| FWORD | x1 | End point (p₁) x coordinate. |
+| FWORD | y1 | End point (p₁) y coordinate. |
+| FWORD | x2 | Rotation point (p₂) x coordinate. |
+| FWORD | y2 | Rotation point (p₂) y coordinate. |
 
 *PaintVarLinearGradient table (format 5):*
 
@@ -1632,12 +1632,12 @@ formats, see in 5.7.11.2.4. For background information on the color line, see
 |-|-|-|
 | uint8 | format | Set to 6. |
 | Offset24 | colorLineOffset | Offset to ColorLine table. |
-| FWord | x0 | Start circle center x coordinate. |
-| FWord | y0 | Start circle center y coordinate. |
-| UFWord | radius0 | Start circle radius. |
-| FWord | x1 | End circle center x coordinate. |
-| FWord | y1 | End circle center y coordinate. |
-| UFWord | radius1 | End circle radius. |
+| FWORD | x0 | Start circle center x coordinate. |
+| FWORD | y0 | Start circle center y coordinate. |
+| UFWORD | radius0 | Start circle radius. |
+| FWORD | x1 | End circle center x coordinate. |
+| FWORD | y1 | End circle center y coordinate. |
+| UFWORD | radius1 | End circle radius. |
 
 *PaintVarRadialGradient table (format 7):*
 
@@ -1674,8 +1674,8 @@ formats, see 5.7.11.2.4. For background information on the color line, see
 |-|-|-|
 | uint8 | format | Set to 8. |
 | Offset24 | colorLineOffset | Offset to ColorLine table. |
-| FWord | centerX | Center x coordinate. |
-| FWord | centerY | Center y coordinate. |
+| FWORD | centerX | Center x coordinate. |
+| FWORD | centerY | Center y coordinate. |
 | Fixed | startAngle | Start of the angular range of the gradient. |
 | Fixed | endAngle | End of the angular range of the gradient. |
 
@@ -2365,7 +2365,7 @@ VarFWord record is used to represent a coordinate that can be variable.
 
 #### VarUFWord
 
-The UFWord type is used to represent distances in the glyph design grid. The
+The UFWORD type is used to represent distances in the glyph design grid. The
 VarUFWord record is used to represent a distance that can be variable.
 
 | Type | Name | Description |
@@ -2382,7 +2382,7 @@ used to represent such a value that can be variable.
 
 | Type | Name | Description |
 |-|-|-|
-| F2Dot14 | value | |
+| F2DOT14 | value | |
 | uint16 | varOuterIndex | |
 | uint16 | varInnerIndex | |
 
