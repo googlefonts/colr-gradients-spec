@@ -1401,10 +1401,22 @@ be included in the paintOffsets array.
 Colors are used in solid color fills for graphic elements, or as *stops* in a
 color line used to define a gradient. Colors are defined by reference to palette
 entries in the CPAL table (5.7.12). While CPAL entries include an alpha
-component, a ColorIndex record is defined here that includes a separate alpha
-specification that supports variation in a variable font.
+component, color-index records for referencing palette entries are defined here
+that includes a separate alpha specification to allow different graphic elements
+to use the same color but with different alpha values, and to allow for
+variation of the alpha in variable fonts.
+
+Two color-index record formats are defined: one that allows for variation of
+alpha, and one that does not.
 
 *ColorIndex record:*
+
+| Type | Name | Description |
+|-|-|-|
+| uint16 | paletteIndex | Index for a CPAL palette entry. |
+| F2DOT14 | alpha | Alpha value. |
+
+*VarColorIndex record:*
 
 | Type | Name | Description |
 |-|-|-|
@@ -1414,13 +1426,14 @@ specification that supports variation in a variable font.
 A paletteIndex value of 0xFFFF is a special case, indicating that the text
 foreground color (as determined by the application) is to be used.
 
-The alpha.value is always set explicitly. Values for alpha outside the range
-[0., 1.] (inclusive) are reserved; values outside this range shall be clipped. A
-value of zero means no opacity (fully transparent); 1.0 means fully opaque (no
-transparency). The alpha indicated in this record is multiplied with the alpha
-component of the CPAL entry (converted to float—divide by 255). Note that the
-resulting alpha value can be combined with and does not supersede alpha or
-opacity attributes set in higher-level, application-defined contexts.
+The alpha value (alpha.value for VarF2Dot14) is always set explicitly. Values
+for alpha outside the range [0., 1.] (inclusive) are reserved; values outside
+this range shall be clipped. A value of zero means no opacity (fully
+transparent); 1.0 means fully opaque (no transparency). The alpha indicated in
+this record is multiplied with the alpha component of the CPAL entry (converted
+to float—divide by 255). Note that the resulting alpha value can be combined
+with and does not supersede alpha or opacity attributes set in higher-level,
+application-defined contexts.
 
 See 5.7.11.1.1 for more information regarding color references and solid color
 fills.
@@ -1429,14 +1442,29 @@ Gradients are defined using a color line. A color line is a mapping of real
 numbers to color values, defined using color stops. See 5.7.11.1.2.1 for an
 overview and additional details.
 
+Two color-stop record formats are defined: one that allows for variation of
+stop offset position or of alpha, and one that does not.
+
 *ColorStop record:*
 
 | Type | Name | Description |
 |-|-|-|
-| VarF2Dot14 | stopOffset | Position on a color line; variable. |
+| F2DOT14 | stopOffset | Position on a color line. |
 | ColorIndex | color | |
 
+*VarColorStop record:*
+
+| Type | Name | Description |
+|-|-|-|
+| VarF2Dot14 | stopOffset | Position on a color line; variable. |
+| VarColorIndex | color | |
+
 A color line is defined by an array of ColorStop records plus an extend mode.
+
+Two color-line table formats are defined: one that allows for variation of color
+stop offsets positions or of alpha values, and one that does not. Different
+paint table formats for gradients use one or the other of the color line
+formats.
 
 *ColorLine table:*
 
@@ -1445,6 +1473,14 @@ A color line is defined by an array of ColorStop records plus an extend mode.
 | uint8 | extend | An Extend enum value. |
 | uint16 | numStops | Number of ColorStop records. |
 | ColorStop | colorStops[numStops] | |
+
+*VarColorLine table:*
+
+| Type | Name | Description |
+|-|-|-|
+| uint8 | extend | An Extend enum value. |
+| uint16 | numStops | Number of ColorStop records. |
+| VarColorStop | colorStops[numStops] | Allows for variations. |
 
 Applications shall apply the colorStops in increasing stopOffset order. The
 stopOffset value uses a variable structure and, with a variable font, the
@@ -1471,14 +1507,16 @@ EXTEND_PAD by default.
 
 **5.7.11.2.5 Paint tables**
 
-Paint tables are used for COLR version 1 color glyph definitions. Twelve Paint
-table formats are defined (formats 1 to 12), each providing a different graphic
-capability for defining the composition for a color glyph. The graphic
-capability of each format and the manner in which they are combined to represent
-a color glyph has been described above—see 5.7.11.1.
+Paint tables are used for COLR version 1 color glyph definitions. Twenty Paint
+table formats are defined (formats 1 to 20). Some formats come in non-variable
+and variable pairs, but otherwise, each provides different graphic capability
+for defining the composition for a color glyph. The graphic capability of each
+format and the manner in which they are combined to represent a color glyph has
+been described above—see 5.7.11.1.
 
-Each paint table format has a format field as the first field. When parsing font
-data, the format field can be read first to determine the format of the table.
+Each paint table format has a one-byte format field as the first field. When
+parsing font data, the format field can be read first to determine the format of
+the table.
 
 **5.7.11.2.5.1 Format 1: PaintColrLayers**
 
@@ -1503,11 +1541,16 @@ scenarios. If more than 256 layers are needed, then two or more PaintColrLayers
 tables can be combined in a tree using a PaintComposite table or another
 PaintColrLayers table to combine them.
 
-**5.7.11.2.5.2 Format 2: PaintSolid**
+**5.7.11.2.5.2 Formats 2 and 3: PaintSolid, PaintVarSolid**
 
-Format 2 is used to specify a solid color fill. For general information about
-specifying color values, see 5.7.11.1.1. For information about applying a fill
-to a shape, see 5.7.11.1.3.
+Formats 2 and 3 are used to specify a solid color fill. Format 3 allows for
+variation of alpha in a variable font; format 2 provides a more compact
+representation when variation is not required. Format 3 shall not be used in
+non-variable fonts or if the COLR table does not have an ItemVariationStore
+subtable.
+
+For general information about specifying color values, see 5.7.11.1.1. For
+information about applying a fill to a shape, see 5.7.11.1.3.
 
 *PaintSolid table (format 2):*
 
@@ -1516,25 +1559,50 @@ to a shape, see 5.7.11.1.3.
 | uint8 | format | Set to 2. |
 | ColorIndex | color | ColorIndex record for the solid color fill. |
 
-For the ColorIndex record format, see 5.7.11.2.4.
-
-**5.7.11.2.5.3 Format 3: PaintLinearGradient**
-
-Format 3 is used to specify a linear gradient fill. For general information
-about linear gradients, see 5.7.11.1.2.2. 
-
-The PaintLinearGradient table has a ColorLine subtable. For the ColorLine table
-format, see 5.7.11.2.4. For background information on the color line,
-see 5.7.11.1.2.1.
-
-For information about applying a fill to a shape, see 5.7.11.1.3.
-
-*PaintLinearGradient table (format 3):*
+*PaintVarSolid table (format 3):*
 
 | Type | Name | Description |
 |-|-|-|
 | uint8 | format | Set to 3. |
+| VarColorIndex | color | VarColorIndex record for the solid color fill. |
+
+For the ColorIndex and VarColorIndex record formats, see 5.7.11.2.4.
+
+**5.7.11.2.5.3 Formats 4 and 5: PaintLinearGradient, PaintVarLinearGradient**
+
+Formats 4 and 5 are used to specify a linear gradient fill. Format 4 allows for
+variation of color stop positions or of alpha in a variable font; format 5
+provides a more compact representation when variation is not required. Format 5
+shall not be used in non-variable fonts or if the COLR table does not have an
+ItemVariationStore subtable.
+
+For general information about linear gradients, see 5.7.11.1.2.2. For
+information about applying a fill to a shape, see 5.7.11.1.3.
+
+The PaintLinearGradient and PaintVarLinearGradient tables have a ColorLine and
+VarColorLine subtable, respectively. For the ColorLine and VarColorLine table
+formats, see 5.7.11.2.4. For background information on the color line, see
+5.7.11.1.2.1.
+
+*PaintLinearGradient table (format 4):*
+
+| Type | Name | Description |
+|-|-|-|
+| uint8 | format | Set to 4. |
 | Offset24 | colorLineOffset | Offset to ColorLine table. |
+| FWORD | x0 | Start point (p₀) x coordinate. |
+| FWORD | y0 | Start point (p₀) y coordinate. |
+| FWORD | x1 | End point (p₁) x coordinate. |
+| FWORD | y1 | End point (p₁) y coordinate. |
+| FWORD | x2 | Rotation point (p₂) x coordinate. |
+| FWORD | y2 | Rotation point (p₂) y coordinate. |
+
+*PaintVarLinearGradient table (format 5):*
+
+| Type | Name | Description |
+|-|-|-|
+| uint8 | format | Set to 5. |
+| Offset24 | colorLineOffset | Offset to VarColorLine table. |
 | VarFWord | x0 | Start point (p₀) x coordinate. |
 | VarFWord | y0 | Start point (p₀) y coordinate. |
 | VarFWord | x1 | End point (p₁) x coordinate. |
@@ -1542,23 +1610,41 @@ For information about applying a fill to a shape, see 5.7.11.1.3.
 | VarFWord | x2 | Rotation point (p₂) x coordinate. |
 | VarFWord | y2 | Rotation point (p₂) y coordinate. |
 
-**5.7.11.2.5.4 Format 4: PaintRadialGradient**
+**5.7.11.2.5.4 Formats 6 and 7: PaintRadialGradient, PaintVarRadialGradient**
 
-Format 4 is used to specify a radial gradient fill. For general information
-about radial gradients supported in COLR version 1, see 5.7.11.1.2.3. 
+Format 6 and 7 are used to specify a radial gradient fill. Format 7 allows for
+variation of color stop positions or of alpha in a variable font; format 6
+provides a more compact representation when variation is not required. Format 7
+shall not be used in non-variable fonts or if the COLR table does not have an
+ItemVariationStore subtable.
 
-The PaintRadialGradient table has a ColorLine subtable. For the ColorLine table
-format, see in 5.7.11.2.4. For background information on the color line,
-see 5.7.11.1.2.1.
+For general information about radial gradients supported in COLR version 1, see
+5.7.11.1.2.3. For information about applying a fill to a shape, see 5.7.11.1.3.
 
-For information about applying a fill to a shape, see 5.7.11.1.3.
+The PaintRadialGradient and PaintVarRadialGradient tables have a ColorLine and
+VarColorLine subtable, respectively. For the ColorLine and VarColorLine table
+formats, see in 5.7.11.2.4. For background information on the color line, see
+5.7.11.1.2.1.
 
-*PaintRadialGradient table (format 4):*
+*PaintRadialGradient table (format 6):*
 
 | Type | Name | Description |
 |-|-|-|
-| uint8 | format | Set to 4. |
+| uint8 | format | Set to 6. |
 | Offset24 | colorLineOffset | Offset to ColorLine table. |
+| FWORD | x0 | Start circle center x coordinate. |
+| FWORD | y0 | Start circle center y coordinate. |
+| UFWORD | radius0 | Start circle radius. |
+| FWORD | x1 | End circle center x coordinate. |
+| FWORD | y1 | End circle center y coordinate. |
+| UFWORD | radius1 | End circle radius. |
+
+*PaintVarRadialGradient table (format 7):*
+
+| Type | Name | Description |
+|-|-|-|
+| uint8 | format | Set to 7. |
+| Offset24 | colorLineOffset | Offset to VarColorLine table. |
 | VarFWord | x0 | Start circle center x coordinate. |
 | VarFWord | y0 | Start circle center y coordinate. |
 | VarUFWord | radius0 | Start circle radius. |
@@ -1566,23 +1652,39 @@ For information about applying a fill to a shape, see 5.7.11.1.3.
 | VarFWord | y1 | End circle center y coordinate. |
 | VarUFWord | radius1 | End circle radius. |
 
-**5.7.11.2.5.5 Format 5: PaintSweepGradient**
+**5.7.11.2.5.5 Formats 8 and 9: PaintSweepGradient, PaintVarSweepGradient**
 
-Format 5 is used to specify a sweep gradient fill. For general information
-about sweep gradients, see 5.7.11.1.2.4.
+Format 8 and 9 are used to specify a sweep gradient fill. Format 9 allows for
+variation of color stop positions or of alpha in a variable font; format 8
+provides a more compact representation when variation is not required. Format 9
+shall not be used in non-variable fonts or if the COLR table does not have an
+ItemVariationStore subtable.
 
-The PaintSweepGradient table has a ColorLine subtable. For the ColorLine table
-format, see 5.7.11.2.4. For background information on the color line,
-see 5.7.11.1.2.1.
+For general information about sweep gradients, see 5.7.11.1.2.4. For information
+about applying a fill to a shape, see 5.7.11.1.3.
 
-For information about applying a fill to a shape, see 5.7.11.1.3.
+The PaintSweepGradient and PaintVarSweepGradient table have a ColorLine and
+VarColorLine subtable, respectively. For the ColorLine and VarColorLine table
+formats, see 5.7.11.2.4. For background information on the color line, see
+5.7.11.1.2.1.
 
-*PaintSweepGradient table (format 5):*
+*PaintSweepGradient table (format 8):*
 
 | Type | Name | Description |
 |-|-|-|
-| uint8 | format | Set to 5. |
+| uint8 | format | Set to 8. |
 | Offset24 | colorLineOffset | Offset to ColorLine table. |
+| FWORD | centerX | Center x coordinate. |
+| FWORD | centerY | Center y coordinate. |
+| Fixed | startAngle | Start of the angular range of the gradient. |
+| Fixed | endAngle | End of the angular range of the gradient. |
+
+*PaintVarSweepGradient table (format 9):*
+
+| Type | Name | Description |
+|-|-|-|
+| uint8 | format | Set to 9. |
+| Offset24 | colorLineOffset | Offset to VarColorLine table. |
 | VarFWord | centerX | Center x coordinate. |
 | VarFWord | centerY | Center y coordinate. |
 | VarFixed | startAngle | Start of the angular range of the gradient. |
@@ -1591,21 +1693,20 @@ For information about applying a fill to a shape, see 5.7.11.1.3.
 Angles are expressed in counter-clockwise degrees from the direction of the
 y-axis in the design grid.
 
+**5.7.11.2.5.5 Format 10: PaintGlyph**
 
-**5.7.11.2.5.5 Format 6: PaintGlyph**
-
-Format 6 is used to specify a glyph outline to use as a shape to be filled or,
+Format 10 is used to specify a glyph outline to use as a shape to be filled or,
 equivalently, a clip region. The outline sets a clip region that constrains the
 content of a separate paint subtable and the sub-graph linked from that
 subtable.
 
 For information about applying a fill to a shape, see 5.7.11.1.3.
 
-*PaintGlyph table (format 6):*
+*PaintGlyph table (format 10):*
 
 | Type | Name | Description |
 |-|-|-|
-| uint8 | format | Set to 6. |
+| uint8 | format | Set to 10. |
 | Offset24 | paintOffset | Offset to a Paint table. |
 | uint16 | glyphID | Glyph ID for the source outline. |
 
@@ -1616,17 +1717,17 @@ outline data is used. In particular, if this glyph ID has a description in the
 COLR table (glyphID appears in a COLR BaseGlyph record or the BaseGlyphV1List),
 that COLR data is not relevant for purposes of the PaintGlyph table.
 
-**5.7.11.2.5.7 Format 7: PaintColrGlyph**
+**5.7.11.2.5.7 Format 11: PaintColrGlyph**
 
 Format 7 is used to allow a color glyph definition from the BaseGlyphV1List to
 be a re-usable component that can be incorporated into multiple color glyph
 definitions. See 5.7.11.1.7.3 for more information.
 
-*PaintColrGlyph table (format 7):*
+*PaintColrGlyph table (format 11):*
 
 | Type | Name | Description |
 |-|-|-|
-| uint8 | format | Set to 7. |
+| uint8 | format | Set to 11. |
 | uint16 | glyphID | Virtual glyph ID for a BaseGlyphV1List base glyph. |
 
 The glyphID value shall be a glyphID found in a BaseGlyphV1Record within the
@@ -1636,27 +1737,53 @@ provides an offset to a paint table; that paint table and the graph linked from
 it are incorporated as a child sub-graph of the PaintColrGlyph table within the
 current color glyph definition.
 
-**5.7.11.2.5.8 Format 8: PaintTransform**
+**5.7.11.2.5.8 Formats 12 and 13: PaintTransform, PaintVarTransform**
 
-Format 8 is used to apply an affine transformation to a sub-graph. The paint
-table that is the root of the sub-graph is linked as a child. For general
-information regarding transformations in a color glyph definition, see
- 5.7.11.1.5.
+Formats 12 and 13 are used to apply an affine transformation to a sub-graph. The
+paint table that is the root of the sub-graph is linked as a child.
 
-*PaintTransform table (format 8):*
+Format 13 allows for variation of the transformation in a variable font; format
+12 provides a more compact representation when variation is not required. Format
+13 shall not be used in non-variable fonts or if the COLR table does not have an
+ItemVariationStore subtable.
+
+For general information regarding transformations in a color glyph definition,
+see 5.7.11.1.5.
+
+*PaintTransform table (format 12):*
 
 | Type | Name | Description |
 |-|-|-|
-| uint8 | format | Set to 8. |
+| uint8 | format | Set to 12. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
 | Affine2x3 | transform | An Affine2x3 record (inline). |
 
+*PaintVarTransform table (format 13):*
+
+| Type | Name | Description |
+|-|-|-|
+| uint8 | format | Set to 13. |
+| Offset24 | paintOffset | Offset to a Paint subtable. |
+| VarAffine2x3 | transform | A VarAffine2x3 record (inline). |
+
 The affine transformation is defined by a 2×3 matrix, specified in an Affine2x3
-record. The 2×3 matrix supports scale, skew, reflection, rotation, and
-translation transformations. The matrix elements use VarFixed records, allowing
-the transform definition to be variable in a variable font.
+or VarAffine2x3 record. The 2×3 matrix supports scale, skew, reflection,
+rotation, and translation transformations. The matrix elements in the
+VarAffine2x3 record use VarFixed records, allowing the transform definition to
+be variable in a variable font.
 
 *Affine2x3 record:*
+
+| Type | Name | Description |
+|-|-|-|
+| Fixed | xx | x-component of transformed x-basis vector |
+| Fixed | yx | y-component of transformed x-basis vector |
+| Fixed | xy | x-component of transformed y-basis vector |
+| Fixed | yy | y-component of transformed y-basis vector |
+| Fixed | dx | Translation in x direction. |
+| Fixed | dy | Translation in y direction. |
+
+*VarAffine2x3 record:*
 
 | Type | Name | Description |
 |-|-|-|
@@ -1673,11 +1800,10 @@ For a pre-transformation position *(x, y)*, the post-transformation position
 *x&#x2032;* = *xx \* x + xy \* y + dx*  
 *y&#x2032;* = *yx \* x + yy \* y + dy*
 
-NOTE: It is helpful to understand linear transformations by their effect
-on *x-* and *y-basis* vectors _î = (1, 0)_ and _ĵ = (0, 1)_. The transform
-described by the Affine2x3 record maps the basis vectors to _î&#x2032; = (xx,
-yx)_ 
-and _ĵ&#x2032; = (xy, yy)_, and translates the origin to _(dx, dy)_.
+NOTE: It is helpful to understand linear transformations by their effect on *x-*
+and *y-basis* vectors _î = (1, 0)_ and _ĵ = (0, 1)_. The transform described by
+the Affine2x3 or VarAffine2x3 record maps the basis vectors to _î&#x2032; = (xx,
+yx)_  and _ĵ&#x2032; = (xy, yy)_, and translates the origin to _(dx, dy)_.
 
 When the transformed composition from the referenced paint table (and its
 sub-graph) is composed into the destination (represented by the parent of this
@@ -1686,55 +1812,85 @@ origin. The transform can translate the source such that a pre-transform
 position (0,0) is moved elsewhere. The *post-transform* origin, (0,0), is
 aligned to the destination origin.
 
-**5.7.11.2.5.9 Format 9: PaintTranslate**
+**5.7.11.2.5.9 Formats 14 and 15: PaintTranslate, PaintVarTranslate**
 
-Format 9 is used to apply a translation to a sub-graph. The paint table that is
-the root of the sub-graph is linked as a child.
+Format 14 and 15 are used to apply a translation to a sub-graph. The paint table
+that is the root of the sub-graph is linked as a child.
+
+Format 15 allows for variation of the translation in a variable font; format 14
+provides a more compact representation when variation is not required. Format 15
+shall not be used in non-variable fonts or if the COLR table does not have an
+ItemVariationStore subtable.
 
 For general information regarding transformations in a color glyph definition, 
 see 5.7.11.1.5.
 
-*PaintTranslate table (format 9):*
+*PaintTranslate table (format 14):*
 
 | Type | Name | Description |
 |-|-|-|
-| uint8 | format | Set to 9. |
+| uint8 | format | Set to 14. |
+| Offset24 | paintOffset | Offset to a Paint subtable. |
+| Fixed | dx | Translation in x direction. |
+| Fixed | dy | Translation in y direction. |
+
+*PaintVarTranslate table (format 15):*
+
+| Type | Name | Description |
+|-|-|-|
+| uint8 | format | Set to 15. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
 | VarFixed | dx | Translation in x direction. |
 | VarFixed | dy | Translation in y direction. |
 
-NOTE: Pure translation can also be represented using the PaintTransform table
-by setting _xx_ = 1, _yy_ = 1, _xy_ and _yx_ = 0, and setting _dx_ and _dy_ to
-the translation values. The PaintTranslate table provides a more compact
-representation when only translation is required.
+NOTE: Pure translation can also be represented using the PaintTransform or
+PaintVarTransform table by setting _xx_ = 1, _yy_ = 1, _xy_ and _yx_ = 0, and
+setting _dx_ and _dy_ to the translation values. The PaintTranslate or
+PaintVarTranslate table provides a more compact representation when only
+translation is required.
 
 The translation will result in the pre-transform position (0,0) being moved
 elsewhere. See 5.7.11.2.5.8 regarding alignment of the transformed content with
 the destination.
 
-**5.7.11.2.5.10 Format 10: PaintRotate**
+**5.7.11.2.5.10 Formats 16 and 17: PaintRotate, PaintVarRotate**
 
-Format 10 is used to apply a rotation to a sub-graph. The paint table that is the
-root of the sub-graph is linked as a child. The amount of rotation is expressed
-directly as an angle, and X and Y coordinates can be provided for the center of
-rotation.
+Formats 16 and 17 are used to apply a rotation to a sub-graph. The paint table
+that is the root of the sub-graph is linked as a child. The amount of rotation
+is expressed directly as an angle, and X and Y coordinates can be provided for
+the center of rotation.
+
+Format 17 allows for variation of the rotation in a variable font; format 16
+provides a more compact representation when variation is not required. Format 17
+shall not be used in non-variable fonts or if the COLR table does not have an
+ItemVariationStore subtable.
 
 For general information regarding transformations in a color glyph definition, 
 see 5.7.11.1.5.
 
-*PaintRotate table (format 10):*
+*PaintRotate table (format 16):*
 
 | Type | Name | Description |
 |-|-|-|
-| uint8 | format | Set to 10. |
+| uint8 | format | Set to 16. |
+| Offset24 | paintOffset | Offset to a Paint subtable. |
+| Fixed | angle | Rotation angle, in counter-clockwise degrees. |
+| Fixed | centerX | x coordinate for the center of rotation. |
+| Fixed | centerY | y coordinate for the center of rotation. |
+
+*PaintVarRotate table (format 17):*
+
+| Type | Name | Description |
+|-|-|-|
+| uint8 | format | Set to 17. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
 | VarFixed | angle | Rotation angle, in counter-clockwise degrees. |
 | VarFixed | centerX | x coordinate for the center of rotation. |
 | VarFixed | centerY | y coordinate for the center of rotation. |
 
 NOTE: Pure rotation about a point can also be represented using the
-PaintTransform table. For rotation about the origin, this could be done by
-setting matrix values as follows for angle &theta;:
+PaintTransform or PaintVarTransform table. For rotation about the origin, this
+could be done by setting matrix values as follows for angle &theta;:
 
 * _xx_ = cos(&theta;)
 * _yx_ = sin(&theta;)
@@ -1742,43 +1898,59 @@ setting matrix values as follows for angle &theta;:
 * _yy_ = cos(&theta;)
 * _dx_ = _dy_ = 0
 
-The important difference of the PaintRotate table is in allowing an angle to be
-specified directly in degrees, rather than as changes to basis vectors. In
-variable fonts, if a rotation angle needs to vary, it is easier to get smooth
-variation if an angle is specified directly than when using trigonometric
-functions to derive matrix elements.
+The important difference of the PaintRotate and PaintVarRotate tables is in
+allowing an angle to be specified directly in degrees, rather than as changes to
+basis vectors. In variable fonts, if a rotation angle needs to vary, it is
+easier to get smooth variation if an angle is specified directly than when using
+trigonometric functions to derive matrix elements.
 
-When combining the transform effect of a PaintRotate table with other
-transforms, the result shall be the same as if the rotation were represented
-using an equivalent matrix.
+When combining the transform effect of a PaintRotate or PaintVarRotate table
+with other transforms, the result shall be the same as if the rotation were
+represented using an equivalent matrix.
 
 A rotation can result in the pre-transform position (0, 0) being moved
 elsewhere. See 5.7.11.2.5.8 regarding alignment of the transformed content with
 the destination.
 
-**5.7.11.2.5.11 Format 11: PaintSkew**
+**5.7.11.2.5.11 Formats 18 and 19: PaintSkew, PaintVarSkew**
 
-Format 11 is used to apply a skew to a sub-graph. The paint table that is the
-root of the sub-graph is linked as a child. The amount of skew in the X or Y
-direction is expressed directly as angles, and X and Y coordinates can be
+Formats 18 and 19 are used to apply a skew to a sub-graph. The paint table that
+is the root of the sub-graph is linked as a child. The amount of skew in the X
+or Y direction is expressed directly as angles, and X and Y coordinates can be
 provided for the center of rotation.
+
+Format 19 allows for variation of the rotation in a variable font; format 18
+provides a more compact representation when variation is not required. Format 19
+shall not be used in non-variable fonts or if the COLR table does not have an
+ItemVariationStore subtable.
 
 For general information regarding transformations in a color glyph definition, 
 see 5.7.11.1.5.
 
-*PaintSkew table (format 11):*
+*PaintSkew table (format 18):*
 
 | Type | Name | Description |
 |-|-|-|
-| uint8 | format | Set to 11. |
+| uint8 | format | Set to 18. |
+| Offset24 | paintOffset | Offset to a Paint subtable. |
+| Fixed | xSkewAngle | Angle of skew in the direction of the x-axis, in counter-clockwise degrees. |
+| Fixed | ySkewAngle | Angle of skew in the direction of the y-axis, in counter-clockwise degrees. |
+| Fixed | centerX | x coordinate for the center of rotation. |
+| Fixed | centerY | y coordinate for the center of rotation. |
+
+*PaintVarSkew table (format 19):*
+
+| Type | Name | Description |
+|-|-|-|
+| uint8 | format | Set to 19. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
 | VarFixed | xSkewAngle | Angle of skew in the direction of the x-axis, in counter-clockwise degrees. |
 | VarFixed | ySkewAngle | Angle of skew in the direction of the y-axis, in counter-clockwise degrees. |
 | VarFixed | centerX | x coordinate for the center of rotation. |
 | VarFixed | centerY | y coordinate for the center of rotation. |
 
-NOTE: Pure skews about a point can also be represented using the
-PaintTransform table. For skews about the origin, this could be done by
+NOTE: Pure skews about a point can also be represented using the PaintTransform
+or PaintVarTransform table. For skews about the origin, this could be done by
 setting matrix values as follows for _x_ skew angle &phi; and _y_ skew angle
 &psi;:
 
@@ -1787,34 +1959,34 @@ setting matrix values as follows for _x_ skew angle &phi; and _y_ skew angle
 * _xy_ = -tan(&phi;)
 * _dx_ = _dy_ = 0
 
-The important difference of the PaintSkew table is in being able to specify skew
-as an angle, rather than as changes to basis vectors. In variable fonts, if a
-skew angle needs to vary, it is easier to get smooth variation if an angle is
-specified directly than when using trigonometric functions to derive matrix
-elements.
+The important difference of the PaintSkew and PaintVarSkew tables is in being
+able to specify skew as an angle, rather than as changes to basis vectors. In
+variable fonts, if a skew angle needs to vary, it is easier to get smooth
+variation if an angle is specified directly than when using trigonometric
+functions to derive matrix elements.
 
-When combining the transform effect of a PaintSkew table with other transforms,
-the result shall be the same as if the skew were represented using an equivalent
-matrix.
+When combining the transform effect of a PaintSkew or PaintVarSkew table with
+other transforms, the result shall be the same as if the skew were represented
+using an equivalent matrix.
 
 A skew can result in the pre-transform position (0, 0) being moved elsewhere.
 See 5.7.11.2.5.8 regarding alignment of the transformed content with the
 destination.
 
-**5.7.11.2.5.12 Format 12: PaintComposite**
+**5.7.11.2.5.12 Format 20: PaintComposite**
 
-Format 12 is used to combine two layered compositions, referred to as *source*
+Format 20 is used to combine two layered compositions, referred to as *source*
 and *backdrop*, using different compositing or blending modes. The available
 compositing and blending modes are defined in an enumeration. For general 
 information and examples, see 5.7.11.1.6.
 
 NOTE: The backdrop is also referred to as the “destination”.
 
-*PaintComposite table (format 12):*
+*PaintComposite table (format 20):*
 
 | Type | Name | Description |
 |-|-|-|
-| uint8 | format | Set to 12. |
+| uint8 | format | Set to 20. |
 | Offset24 | sourcePaintOffset | Offset to a source Paint table. |
 | uint8 | compositeMode | A CompositeMode enumeration value. |
 | Offset24 | backdropPaintOffset | Offset to a backdrop Paint table. |
@@ -2193,7 +2365,7 @@ VarFWord record is used to represent a coordinate that can be variable.
 
 #### VarUFWord
 
-The UFWord type is used to represent distances in the glyph design grid. The
+The UFWORD type is used to represent distances in the glyph design grid. The
 VarUFWord record is used to represent a distance that can be variable.
 
 | Type | Name | Description |
@@ -2210,7 +2382,7 @@ used to represent such a value that can be variable.
 
 | Type | Name | Description |
 |-|-|-|
-| F2Dot14 | value | |
+| F2DOT14 | value | |
 | uint16 | varOuterIndex | |
 | uint16 | varInnerIndex | |
 
