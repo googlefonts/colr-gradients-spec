@@ -292,8 +292,8 @@ reflected gradient pattern, divide 1 by two times the number of desired
 repetitions, use the result as the maximum stop offset for specified color
 stops, and set the extend mode to *reflect*.
 
-NOTE: Sweep gradients have special considerations in relation to color line
-extend modes. See 5.7.11.1.2.4 for details.
+NOTE: Special considerations apply to color line extend modes for sweep
+gradients. See 5.7.11.1.2.4 for details.
 
 **5.7.11.1.2.2 Linear gradients**
 
