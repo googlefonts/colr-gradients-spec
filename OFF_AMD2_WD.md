@@ -594,20 +594,20 @@ revolution around the center, never more.
 If the starting and ending angle are the same, a sharp color transition can
 occur if the colors at stop offsets 0 and 1 are different. This is illustrated
 in figure 5.31, showing a gradient from red to yellow that starts and stops at
-90°.
+0°.
 
-![A sweep gradient, from red to yellow, with a sharp transition at the start/end angle 90°.](images/colr_conic_gradient_sharp_transition.png)
+![A sweep gradient, from red to yellow, with a sharp transition at the start/end angle 0°.](images/colr_conic_gradient_sharp_transition.png)
 
-**Figure 5.31 A sweep gradient, from red to yellow, with a sharp transition at the start/end angle 90°.**
+**Figure 5.31 A sweep gradient, from red to yellow, with a sharp transition at the start/end angle 0°.**
 
 To avoid such a sharp transition, the stop offsets 0 and 1 on the color line
 need to have the same color value. Figure 5.32 illustrates a sweep gradient that
 transitions from red at stop offset 0, to yellow at stop offset 0.5, and back to
 red at stop offset 1.0.
 
-![A sweep gradient, from red to yellow to red, with a smooth transition at the start/end angle 90°.](images/colr_conic_gradient_rotation-0.png)
+![A sweep gradient, from red to yellow to red, with a smooth transition at the start/end angle 0°.](images/colr_conic_gradient_rotation-0.png)
 
-**Figure 5.32 A sweep gradient, from red to yellow to red, with a smooth transition at the start/end angle 90°.**
+**Figure 5.32 A sweep gradient, from red to yellow to red, with a smooth transition at the start/end angle 0°.**
 
 NOTE: When a sweep gradient is combined with a transformation (see 5.7.11.1.5),
 the appearance will be the same as if a circular arc of some non-zero radius
