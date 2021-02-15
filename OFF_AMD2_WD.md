@@ -292,9 +292,8 @@ reflected gradient pattern, divide 1 by two times the number of desired
 repetitions, use the result as the maximum stop offset for specified color
 stops, and set the extend mode to *reflect*.
 
-NOTE: Sweep gradients have special considerations in relation to color line
-extend modes and do not support repetition of gradient patterns. See
-5.7.11.1.2.4 for details.
+NOTE: Special considerations apply to color line extend modes for sweep
+gradients. See 5.7.11.1.2.4 for details.
 
 **5.7.11.1.2.2 Linear gradients**
 
@@ -555,14 +554,17 @@ gradient, or as an “angular” gradient.
 
 A sweep gradient is defined by a center point, starting and ending angles, and a
 color line. The angles are expressed in counter-clockwise degrees from the
-direction of the y-axis on the design grid.
+direction of the positive x-axis on the design grid.
 
 The color line is aligned to a circular arc around the center point, with
 arbitrary radius, with stop offset 0 aligned with the starting angle, and stop
-offset 1 aligned with the ending angle. The color line progresses in the
-counter-clockwise direction; for example, if the start and end angles are both
-0°, then stop offset 0.1 is at 36° counter-clockwise from the direction of the
-y-axis.
+offset 1 aligned with the ending angle. The color line progresses from the start
+angle to the end angle in the counter-clockwise direction; for example, if the
+start and end angles are both 0°, then stop offset 0.1 is at 36°
+counter-clockwise from the direction of the positive x-axis. For each position
+along the circular arc, from start to end in the counter-clockwise direction, a
+ray from the center outward is painted with the color of the color line at the
+point where the ray passes through the arc.
 
 The color line may be defined using color stops outside the range [0, 1], and
 color stops outside the range [0, 1] can be used to interpolate color values
@@ -579,15 +581,15 @@ Because a sweep gradient is defined using start and end angles, the gradient
 does not need to cover a full 360° sweep around the center. This is illustrated
 in figure 5.30:
 
-![A sweep gradient, from red to yellow, with start angle of -60° and an end angle of 60°.](images/colr_conic_gradient_start_stop_angles.png)
+![A sweep gradient, from red to yellow, with start angle of 30° and an end angle of 150°.](images/colr_conic_gradient_start_stop_angles.png)
 
-**Figure 5.30 A sweep gradient, from red to yellow, with start angle of -60° and an end angle of 60°.**
+**Figure 5.30 A sweep gradient, from red to yellow, with start angle of 30° and an end angle of 150°.**
 
 Start and end angle values can be outside the range [0, 360), but are
 interpreted as values within that range by applying a modulus operation. For
 example, an angle -60° is treated the same as 300°; an angle 480° is treated the
-same as 120°. As a consequence, the color line covers at most one full
-revolution around the center, never more.
+same as 120°. As a consequence, the color line covers at most one full rotation
+around the center, never more.
 
 If the starting and ending angle are the same, a sharp color transition can
 occur if the colors at stop offsets 0 and 1 are different. This is illustrated
@@ -1691,7 +1693,7 @@ formats, see 5.7.11.2.4. For background information on the color line, see
 | VarFixed | endAngle | End of the angular range of the gradient. |
 
 Angles are expressed in counter-clockwise degrees from the direction of the
-y-axis in the design grid.
+positive x-axis in the design grid.
 
 **5.7.11.2.5.5 Format 10: PaintGlyph**
 
