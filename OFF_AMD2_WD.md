@@ -561,7 +561,10 @@ arbitrary radius, with stop offset 0 aligned with the starting angle, and stop
 offset 1 aligned with the ending angle. The color line progresses from the start
 angle to the end angle in the counter-clockwise direction; for example, if the
 start and end angles are both 0°, then stop offset 0.1 is at 36°
-counter-clockwise from the direction of the positive x-axis.
+counter-clockwise from the direction of the positive x-axis. For each position
+along the circular arc, from start to end in the counter-clockwise direction, a
+ray from the center outward is painted with the color of the color line at the
+point where the ray passes through the arc.
 
 The color line may be defined using color stops outside the range [0, 1], and
 color stops outside the range [0, 1] can be used to interpolate color values
