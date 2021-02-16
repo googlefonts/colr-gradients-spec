@@ -126,7 +126,7 @@ layer, and a red triangle with some transparency in the top layer.
 **Figure 5.8 Basic graphic capabilities of COLR version 0**
 
 The basic concepts also apply to color glyphs defined using the version 1
-formats: shapes are arranged in layers and have fills. But the additional
+formats: shapes have fills and can be arranged in layers. But the additional
 formats of version 1 support much richer capabilities. In a version 1 color
 glyph, graphic constructs and capabilities are represented primarily in *Paint*
 tables, which are linked together in a *directed, acyclic graph*. Several
@@ -140,15 +140,17 @@ glyph definition. A PaintColrLayers table can also be nested within the graph,
 providing a set of layers to define some graphic sub-component within the color
 glyph.
 
-* The PaintSolid, PaintLinearGradient, PaintRadialGradient, and
-PaintSweepGradient tables provide basic fills, using color entries from the CPAL
-table.
+* The PaintSolid, PaintVarSolid, PaintLinearGradient, PaintVarLinearGradient,
+PaintRadialGradient, PaintVarRadialGradient, PaintSweepGradient, and
+PaintVarSweepGradient tables provide basic fills, using color entries from the
+CPAL table.
 
 * The PaintGlyph table provides glyph outlines as the basic shapes.
 
-* The PaintTransform table is used to apply an affine transformation matrix to
-a sub-graph of paint tables, and the graphic operations they represent. The
-PaintTranslate, PaintRotate and PaintSkew tables support specific
+* The PaintTransform and PaintVarTransform tables are used to apply an affine
+transformation matrix to a sub-graph of paint tables, and the graphic operations
+they represent. The PaintTranslate, PaintVarTranslate, PaintRotate,
+PaintVarRotate, PaintSkew, and PaintVarSkew tables support specific
 transformations.
 
 * The PaintComposite table supports alternate compositing and blending modes for
@@ -156,6 +158,11 @@ two sub-graphs.
 
 * The PaintColrGlyph table allows a color glyph definition, referenced by a base
 glyph ID, to be re-used as a sub-graph within multiple color glyphs.
+
+NOTE: Some paint formats come in *Paint\** and *PaintVar\** pairs. In these
+cases, the latter format supports variations in variable fonts, while the former
+provides a more compact representation for the same graphic capability but
+without variation capability.
 
 In a simple color glyph description, a PaintGlyph table might be linked to a
 PaintSolid table, for example, representing a glyph outline filled using a basic
@@ -179,20 +186,26 @@ into the CPAL ColorRecord array.
 The CPAL color data includes alpha information, as well as RGB values. In the
 COLR version 0 formats, a color reference is made in LayerRecord as a palette
 entry index alone. In the formats added for COLR version 1, a color reference is
-made in a ColorIndex record, which includes a palette entry index and a separate
+made in a color index record, which includes a palette entry index and a separate
 alpha value. Separation of alpha from palette entries in version 1 allows use of
 transparency in a color glyph definition independent of the choice of palette.
-The alpha value in the ColorIndex record is multiplied into the alpha value
+The alpha value in the color index record is multiplied into the alpha value
 given in the CPAL color entry.
 
-In version 1, a solid color fill is specified using a PaintSolid table. See
-5.7.11.1.3 for details on how a PaintSolid fill is applied to a shape.
+Two color index record formats are defined: ColorIndex, and VarColorIndex. The
+latter can be used in variable fonts to make the alpha value variable.
+
+In version 1, a solid color fill is specified using a PaintVarSolid or
+PaintSolid table, with or without variation support, respectively. See
+5.7.11.2.5.2 for format details.
+
+See 5.7.11.1.3 for details on how fills are applied to a shape.
 
 **5.7.11.1.2 Gradients**
 
 COLR version 1 supports three types of gradients: linear gradients, radial
-gradients, and sweep gradients. Each type of gradient is defined using a color
-line.
+gradients, and sweep gradients. For each type, non-variable and variable formats
+are defined. Each type of gradient is specified using a color line.
 
 **5.7.11.1.2.1 Color Lines**
 
@@ -218,9 +231,9 @@ If only one color stop is specified, that color is used for the entire color
 line; at least two color stops are needed to create color gradation.
 
 Color gradation is defined over the interval from the first color stop, through
-the successive color stops, to the last color stop. Between adjacent color
-stops, color values are linearly interpolated. See _Interpolation of Colors_ in
-5.7.12 for requirements on how colors are interpolated.
+the successive color stops, to the last color stop. Between numerically-adjacent
+color stops, color values are linearly interpolated. See _Interpolation of
+Colors_ in 5.7.12 for requirements on how colors are interpolated.
 
 For example, a gradient color line could be defined with two color stops at 0.2
 and 1.5. The gradient color line is positioned in the design grid by aligning
@@ -295,6 +308,19 @@ stops, and set the extend mode to *reflect*.
 NOTE: Special considerations apply to color line extend modes for sweep
 gradients. See 5.7.11.1.2.4 for details.
 
+Color lines are specified using color line tables, which contain arrays of color
+stop records. Two color line table and two color stop record formats are
+defined:
+
+* ColorLine table and ColorStop record
+* VarColorLine table and VarColorStop record
+
+The VarColorLine and VarColorStop formats can be used in variable fonts and
+allow for stop offsets to be variable. The VarColorStop record also uses the
+VarColorIndex record, allowing the alpha to be variable. The ColorLine and
+ColorStop formats provide a more compact representation when variation is not
+required. See 5.7.11.2.4 for format details.
+
 **5.7.11.1.2.2 Linear gradients**
 
 A linear gradient provides gradation of colors along a straight line. The
@@ -314,8 +340,8 @@ have the color for that position on line p₀p₁.
 
 NOTE: For convenience, point p₂ can be referred to as the _rotation point_, and
 the vector from p₀ to p₂ can be referred to as the _rotation vector_. However,
-neither the magnitude nor direction of the vector (from p₀ to p₂, versus from p₂
-to p₀) has significance.
+neither the magnitude of the vector nor the direction (from p₀ to p₂, versus
+from p₂ to p₀) has significance.
 
 If either point p₁ or p₂ is the same as point p₀, the gradient is ill-formed and
 shall not be rendered. 
@@ -337,7 +363,7 @@ and rotation of the gradient, as well as variations thereof.
 Figures 5.12 – 5.14 illustrate linear gradients using the three different color
 line extend modes. Each figure illustrates linear gradients with two different
 rotation vectors. In each case, three color stops are specified: red at 0.0,
-yellow at 0.5, and red at 1.0.
+yellow at 0.5, and blue at 1.0.
 
 ![Linear gradients with different rotations using the pad extend mode.](images/colr_linear_gradients_pad.png)
 
@@ -354,6 +380,12 @@ yellow at 0.5, and red at 1.0.
 NOTE: When a linear gradient is combined with a transformation (see 5.7.11.1.5),
 the appearance will be the same as if the gradient were defined using the
 transformed positions of points p₀, p₁ and p₂.
+
+Linear gradients are specified using a PaintVarLinearGradient or
+PaintLinearGradient table, with or without variation support, respectively. See
+5.7.11.2.5.3 for format details.
+
+See 5.7.11.1.3 for details on how fills are applied to a shape.
 
 **5.7.11.1.2.3 Radial gradients**
 
@@ -536,6 +568,12 @@ caution if the circles are in close proximity (either in a static design or for
 some variable font instances), and should not rely on these display artifacts to
 obtain a particular pattern.
 
+Radial gradients are specified using a PaintVarRadialGradient or
+PaintRadialGradient table, with or without variation support, respectively. See
+5.7.11.2.5.4 for format details.
+
+See 5.7.11.1.3 for details on how fills are applied to a shape.
+
 **5.7.11.1.2.4 Sweep gradients**
 
 A sweep gradient provides a gradation of colors that sweep around a center
@@ -588,8 +626,8 @@ in figure 5.30:
 Start and end angle values can be outside the range [0, 360), but are
 interpreted as values within that range by applying a modulus operation. For
 example, an angle -60° is treated the same as 300°; an angle 480° is treated the
-same as 120°. As a consequence, the color line covers at most one full rotation
-around the center, never more.
+same as 120°. As a consequence, the [0, 1] range of the color line covers at
+most one full rotation around the center, never more.
 
 If the starting and ending angle are the same, a sharp color transition can
 occur if the colors at stop offsets 0 and 1 are different. This is illustrated
@@ -620,6 +658,12 @@ from the start angle, with stop offset 1 aligned to the transformed point
 derived from the end angle. Thus, a transform can result in the color line
 progressing in a clockwise rather than counter-clockwise direction.
 
+Sweep gradients are specified using a PaintVarSweepGradient or
+PaintSweepGradient table, with or without variation support, respectively. See
+5.7.11.2.5.5 for format details.
+
+See 5.7.11.1.3 for details on how fills are applied to a shape.
+
 **5.7.11.1.3 Filling shapes**
 
 All basic shapes used in a color glyph are obtained from glyph outlines,
@@ -634,8 +678,9 @@ The PaintGlyph table has a field for the glyph ID, plus an offset to a child
 paint table that is used as the fill for the shape. The glyph outline is not
 rendered; only the fill is rendered.
 
-Any of the basic fill formats—PaintSolid, PaintLinearGradient,
-PaintRadialGradient, or PaintSweepGradient—can be used as the child paint table.
+Any of the basic fill formats (PaintSolid, PaintVarSolid, PaintLinearGradient,
+PaintVarLinearGradient, PaintRadialGradient, PaintVarRadialGradient,
+PaintSweepGradient, PaintVarSweepGradient) can be used as the child paint table.
 This is illustrated in figure 5.33: a PaintGlyph table has a glyph ID for an
 outline in the shape of a triangle, and it links to a child PaintLinearGradient
 table. The combination is used to represent a triangle filled with the linear
@@ -678,7 +723,7 @@ color fill). Each color glyph definition is a slice from that array (that is, a
 contiguous sub-sequence), specified in a BaseGlyphRecord for a particular base
 glyph. Within a given slice, the first record specifies the content of the
 bottom layer, and each subsequent record specifies content that overlays the
-preceding content(increasing z-order). A single array is used for defining all
+preceding content (increasing z-order). A single array is used for defining all
 color glyphs. The LayerRecord slices for two base glyphs may overlap, though
 often will not overlap.
 
@@ -698,10 +743,11 @@ illustrated in figure 5.36:
 
 The version 1 formats define a color glyph as a directed, acyclic graph of paint
 tables, and the concept of layering corresponds roughly to the number of
-distinct leaf nodes in the graph. (See 5.7.11.1.9.) The basic fill
-formats—PaintSolid, PaintLinearGradient, PaintRadialGradient, and
-PaintSweepGradient—do not have child paint tables and so can only be leaf nodes
-in the graph. Some paint tables, such as the PaintGlyph table, have only a
+distinct leaf nodes in the graph. (See 5.7.11.1.9.) The basic fill formats
+(PaintSolid, PaintVarSolid, PaintLinearGradient, PaintVarLinearGradient,
+PaintRadialGradient, PaintVarRadialGradient, PaintSweepGradient,
+PaintVarSweepGradient) do not have child paint tables and so can only be leaf
+nodes in the graph. Some paint tables, such as the PaintGlyph table, have only a
 single child, so can be used within a layer but do not provide any means of
 adding additional layers. Increasing the number of layers requires paint tables
 that have two or more children, creating a fork in the graph.
@@ -770,21 +816,26 @@ within the graph, which would be invalid (see 5.7.11.1.9).
 
 **5.7.11.1.5 Transformations**
 
-A PaintTransform table can be used within a color glyph description to apply an
-affine transformation matrix. Transformations supported by a matrix can be a
-combination of scale, skew, mirror, rotate, or translate. The transformation is
-applied to all nested paints in the child sub-graph.
+A 2 × 3 transformation matrix can be used within a color glyph description to
+apply an affine transformation to a sub-graph in the color glyph description.
+Affine transformations supported by a matrix can be a combination of scale,
+skew, mirror, rotate, or translate. The transformation is applied to all nested
+paints in the child sub-graph.
 
-The effect of a PaintTransform table is illustrated in figure 5.39: a
-PaintTransform is used to specify a rotation, and both the glyph outline and
-gradient in the sub-graph are rotated.
+A transformation matrix is specified using a PaintVarTransform or PaintTransform
+table, with or without variation support, respectively. See 5.7.11.2.5.8 for
+format details.
+
+The effect of a transformation is illustrated in figure 5.39: a PaintTransform
+table is used to specify a rotation, and both the glyph outline and gradient in
+the sub-graph are rotated.
 
 ![A rotation transformation rotates the fill content defined by the child sub-graph.](images/colr_transform_glyph_gradient.png)
 
 **Figure 5.39 A rotation transformation rotates the fill content defined by the child sub-graph.**
 
-If another PaintTransform table occurs within the child sub-graph of the first
-PaintTransform table, then the other PaintTransform also applies to its child
+If the sub-graph of a transformation table contains another nested
+transformation table, then the second transformation also applies to its child
 sub-graph. For the sub-sub-graph, the two transformations are combined. To
 illustrate this, the example in figure 5.39 is extended in figure 5.40 by
 inserting a mirroring transformation between the PaintGlyph and
@@ -797,15 +848,24 @@ by the rotation, but only the gradient is affected by the mirroring.
 
 **Figure 5.40 Combined effects of a transformation nested within the child sub-graph of another transformation.**
 
-The affine transformation is specified in a PaintTransform table as matrix
-elements. See 5.7.11.2.5.8 for format details.
+While the PaintTransform and PaintVarTransform tables support several types of
+transforms, addition paint formats are defined to support specific
+transformations:
 
-Whereas the PaintTransform table supports several types of transforms, the
-PaintTranslate, PaintRotate and PaintSkew tables each support specific
-transformations: translation, rotation and skew. The PaintTranslate table
-provides a more compact representation for this common transform. The
-significant difference of the PaintRotate and PaintSkew formats is that
-rotations and skews are specified as angles, in counter-clockwise degrees.
+* PaintVarTranslate and PaintTranslate support translation only, with or without
+variation support, respectively. See 5.7.11.2.5.9 for format details.
+
+* PaintVarRotate and PaintRotate support rotation only, with or without
+variation support, respectively. See 5.7.11.2.5.10 for format details.
+
+* PaintVarSkew and PaintSkew support skew only, with or without variation
+support, respectively. See 5.7.11.2.5.11 for format details.
+
+When only one of these specific types of transformation is required, these
+formats provide a more compact representation than the PaintTransform or
+PaintVarTransform formats. Another significant difference of the rotation and
+skew formats is that the rotations and skews are specified as angles, in
+counter-clockwise degrees.
 
 NOTE: Specifying the rotation or skew as an angle can have a signficant benefit
 in variable fonts if an angle of skew or rotation needs to vary, since it is
@@ -815,13 +875,14 @@ the sine, cosine or tangent of the rotation angle, which do not change in linear
 proportion to the angle. To achieve a linear variation of rotation using matrix
 elements would require approximating the variation using multiple delta sets.
 
-The rotations and skews specified using PaintRotate or PaintSkew tables can also
-be representated as a matrix using a PaintTransform table. If a PaintRotate or
-PaintSkew table is used in combination with a PaintTransform table, the
-combined behavior shall be the same as if the rotation or skew were represented
-using an equivalent matrix. See 5.7.11.2.5.10 for details regarding the matrix
-equivalent for a rotation expressed as an angle; and see 5.7.11.2.5.11 for
-similar details in relation to skews.
+The rotations and skews specified using PaintRotate, PaintVarRotate, PaintSkew,
+or PaintVarSkew tables can also be representated as a matrix using a
+PaintTransform or PaintVarTransform table. If a PaintRotate, PaintVarRotate,
+PaintSkew, or PaintVarSkew table is used in combination with a PaintTransform or
+PaintVarTransform table, the combined behavior shall be the same as if the
+rotation or skew were represented using an equivalent matrix. See 5.7.11.2.5.10
+for details regarding the matrix equivalent for a rotation expressed as an
+angle; and see 5.7.11.2.5.11 for similar details in relation to skews.
 
 **5.7.11.1.6 Compositing and blending**
 
@@ -928,13 +989,21 @@ introducing cycles within the graph of a color glyph, which would be invalid
 **5.7.11.1.7.1 Re-use by referencing shared subtables**
 
 Several of the paint table formats link to a child paint table using a forward
-offset within the file: PaintGlyph, PaintComposite, PaintTransform,
-PaintRotate, and PaintSkew. A child subtable can be shared by several tables of
-these formats. For example, several PaintGlyph tables might link to the same
-PaintSolid table, or to the same node for a sub-graph describing a more complex
-fill. The only limitation is that child paint tables are referenced using a
-forward offset from the start of the referencing table, so a re-used paint table
-can only occur later in the file than any of the paint tables that use it.
+offset within the file: 
+
+* PaintGlyph
+* PaintComposite
+* PaintTransform, PaintVarTransform
+* PaintTranslate, PaintVarTranslate
+* PaintRotate, PaintVarRotate
+* PaintSkew, PaintVarSkew
+
+A child subtable can be shared by several tables of these formats. For example,
+several PaintGlyph tables might link to the same PaintSolid table, or to the
+same node for a sub-graph describing a more complex fill. The only limitation is
+that child paint tables are referenced using a forward offset from the start of
+the referencing table, so a re-used paint table can only occur later in the file
+than any of the paint tables that use it.
 
 The clock faces shown in figure 5.45 provide an example of how PaintRotate
 tables can be combined with re-use of a sub-graph. As noted above, the hour
@@ -1080,14 +1149,16 @@ paint within a region for which a finite bounding box could be defined. The
 different paint formats have different boundedness characteristics:
 
 * PaintGlyph is inherently bounded.
-* PaintSolid, PaintLinearGradient, PaintRadialGradient, and PaintSweepGradient
-are inherently unbounded.
+* PaintSolid, PaintVarSolid, PaintLinearGradient, PaintVarLinearGradient,
+PaintRadialGradient, PaintVarRadialGradient, PaintSweepGradient, and
+PaintVarSweepGradient are inherently unbounded.
 * PaintColrLayers is bounded *if and only if* all referenced sub-graphs are
 bounded.
 * PaintColrGlyph is bounded *if and only if* the color glyph definition for the
 referenced base glyph ID is bounded.
-* PaintTransform, PaintTranslate, PaintRotate and PaintSkew are bounded *if
-and only if* the referenced sub-graph is bounded.
+* PaintTransform, PaintVarTransform, PaintTranslate, PaintVarTranslate,
+PaintRotate, PaintVarRotate, PaintSkew, and PaintVarSkew are bounded *if and
+only if* the referenced sub-graph is bounded.
 * PaintComposite is either bounded or unbounded, according to the composite mode
 used and the boundedness of the referenced sub-graphs. See 5.7.11.2.5.12 for
 details.
@@ -1120,10 +1191,11 @@ PaintColrGlyph table is a part.
 
 The graph for a color glyph is a combination of paint tables using any of the
 paint table formats. The simplest color glyph definition would consist of a
-PaintGlyph table linked to a basic fill table (PaintSolid, PaintLinearGradient,
-PaintRadialGradient, or PaintSweepGradient). But the graph can be arbitrarily
-complex, with an arbitrary depth of paint nodes (to the limits inherent in the
-formats).
+PaintGlyph table linked to a basic fill table (PaintSolid, PaintVarSolid,
+PaintLinearGradient, PaintVarLinearGradient,  PaintRadialGradient,
+PaintVarRadialGradient, PaintSweepGradient, PaintVarSweepGradient). But the
+graph can be arbitrarily complex, with an arbitrary depth of paint nodes (to the
+limits inherent in the formats).
 
 The graph can define a visual element in a single layer, or many elements in
 many layers. The concept of layers, as distinct visual elements stacked in a
@@ -1159,7 +1231,8 @@ referenced base glyph ID.
 * The graph shall be acyclic.
 
 NOTE: These constraints imply that all leaf nodes will be one of PaintSolid,
-PaintLinearGradient, PaintRadialGradient, or PaintSweepGradient.
+PaintVarSolid, PaintLinearGradient, PaintVarLinearGradient, PaintRadialGradient,
+PaintVarRadialGradient, PaintSweepGradient, or PaintVarSweepGradient.
 
 For the graph to be acyclic, no paint table shall have any child or descendent
 paint table that is also its parent or ancestor within the graph. In particular,
@@ -2102,15 +2175,17 @@ function renderPaint(paint)
             compose the returned graphic onto the surface using simple
             alpha blending
 
-    if format 2: // PaintSolid
+    if format 2 or 3: // PaintSolid, PaintVarSolid
         paint the specified color onto the surface
 
-    if format 3, 4 or 5:
-        // PaintLinearGradient, PaintRadialGradient, PaintSweepGradient
+    if format 4, 5, 6, 7, 8 or 9:
+        // PaintLinearGradient, PaintVarLinearGradient
+        // PaintRadialGradient, PaintVarRadialGradient
+        // PaintSweepGradient, PaintVarSweepGradient
         paint the gradient onto the surface following the gradient
         algorithm
 
-    if format 6: // PaintGlyph
+    if format 10: // PaintGlyph
         apply the outline of the referenced glyph to the clip region
             // take the intersection of clip regions—see 5.7.11.1.3
 
@@ -2118,12 +2193,15 @@ function renderPaint(paint)
 
         restore the previous clip region
 
-    if format 7: // PaintColrGlyph
+    if format 11: // PaintColrGlyph
         call renderPaint() passing the paint table referenced by the base
         glyph ID
 
-    if format 8, 9, 10 or 11:
-        // PaintTransform, PaintTranslate, PaintRotate, PaintSkew
+    if format 12, 13, 14, 15, 16, 17, 18 or 19:
+        // PaintTransform, PaintVarTransform
+        // PaintTranslate, PaintVarTranslate
+        // PaintRotate, PaintVarRotate
+        // PaintSkew, PaintVarSkew
         apply the specified transform
             // compose the transform with the current transform state—see
             // 5.7.11.1.5
@@ -2132,7 +2210,7 @@ function renderPaint(paint)
 
         restore the previous transform state
 
-    if format 12: // PaintComposite
+    if format 20: // PaintComposite
 
         // render backdrop sub-graph
         call renderPaint() passing the backdrop child paint table and save
