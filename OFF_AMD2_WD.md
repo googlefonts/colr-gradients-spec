@@ -195,11 +195,9 @@ given in the CPAL color entry.
 Two color index record formats are defined: ColorIndex, and VarColorIndex. The
 latter can be used in variable fonts to make the alpha value variable.
 
-In version 1, a solid color fill is specified using a PaintSolid or
-PaintVarSolid table. The latter can be used in a variable font to allow the
-color alpha value to be variable. The former provides a more compact
-representation when variation is not required. See 5.7.11.2.5.2 for format
-details. 
+In version 1, a solid color fill is specified using a PaintVarSolid or
+PaintSolid table, with or without variation support, respectively. See
+5.7.11.2.5.2 for format details.
 
 See 5.7.11.1.3 for details on how fills are applied to a shape.
 
@@ -383,11 +381,9 @@ NOTE: When a linear gradient is combined with a transformation (see 5.7.11.1.5),
 the appearance will be the same as if the gradient were defined using the
 transformed positions of points p₀, p₁ and p₂.
 
-Linear gradients are specified using the PaintLinearGradient or
-PaintVarLinearGradient table formats. The latter can be used in variable fonts
-to allow the positioning of points p₀, p₁ and p₂ or the color line details to be
-variable. The former provides a more compact representation when variation is
-not required. See 5.7.11.2.5.3 for format details. 
+Linear gradients are specified using a PaintVarLinearGradient or
+PaintLinearGradient table, with or without variation support, respectively. See
+5.7.11.2.5.3 for format details.
 
 See 5.7.11.1.3 for details on how fills are applied to a shape.
 
@@ -572,11 +568,9 @@ caution if the circles are in close proximity (either in a static design or for
 some variable font instances), and should not rely on these display artifacts to
 obtain a particular pattern.
 
-Radial gradients are specified using the PaintRadialGradient or
-PaintVarRadialGradient table formats. The latter can be used in variable fonts
-to allow the positioning and radii of the circles or the color line details to
-be variable. The former provides a more compact representation when variation is
-not required. See 5.7.11.2.5.4 for format details. 
+Radial gradients are specified using a PaintVarRadialGradient or
+PaintRadialGradient table, with or without variation support, respectively. See
+5.7.11.2.5.4 for format details.
 
 See 5.7.11.1.3 for details on how fills are applied to a shape.
 
@@ -664,11 +658,9 @@ from the start angle, with stop offset 1 aligned to the transformed point
 derived from the end angle. Thus, a transform can result in the color line
 progressing in a clockwise rather than counter-clockwise direction.
 
-Sweep gradients are specified using the PaintSweepGradient or
-PaintVarSweepGradient table formats. The latter can be used in variable fonts to
-allow variation of the positioning of the center, the start or end angle, or the
-color line details. The former provides a more compact representation when
-variation is not required. See 5.7.11.2.5.5 for format details. 
+Sweep gradients are specified using a PaintVarSweepGradient or
+PaintSweepGradient table, with or without variation support, respectively. See
+5.7.11.2.5.5 for format details.
 
 See 5.7.11.1.3 for details on how fills are applied to a shape.
 
@@ -830,10 +822,9 @@ Affine transformations supported by a matrix can be a combination of scale,
 skew, mirror, rotate, or translate. The transformation is applied to all nested
 paints in the child sub-graph.
 
-A transformation matrix is specified using a PaintTransform or PaintVarTransform
-table. The latter can be used in a variable font to allow any of the matrix
-elements to be variable. The former provides a more compact representation when
-variation is not required. See 5.7.11.2.5.8 for format details.
+A transformation matrix is specified using a PaintVarTransform or PaintTransform
+table, with or without variation support, respectively. See 5.7.11.2.5.8 for
+format details.
 
 The effect of a transformation is illustrated in figure 5.39: a PaintTransform
 table is used to specify a rotation, and both the glyph outline and gradient in
@@ -857,22 +848,18 @@ by the rotation, but only the gradient is affected by the mirroring.
 
 **Figure 5.40 Combined effects of a transformation nested within the child sub-graph of another transformation.**
 
-While the PaintTransform and PaintVarTransform tables support several types of transforms, addition paint formats are defined to support specific transformations:
+While the PaintTransform and PaintVarTransform tables support several types of
+transforms, addition paint formats are defined to support specific
+transformations:
 
-* PaintTranslate and PaintVarTranslate support translation only.
-PaintVarTranslate can be used in a variable font to allow the translation vector
-to be variable. PaintTranslate provides a more compact representation when
-variation is not required. See 5.7.11.2.5.9 for format details.
+* PaintVarTranslate and PaintTranslate support translation only, with or without
+variation support, respectively. See 5.7.11.2.5.9 for format details.
 
-* PaintRotate and PaintVarRotate support rotation only. PaintVarRotate can be
-used in a variable font to allow the rotation angle and center of rotation to be
-variable. PaintRotate provides a more compact representation when variation is
-not required. See 5.7.11.2.5.10 for format details.
+* PaintVarRotate and PaintRotate support rotation only, with or without
+variation support, respectively. See 5.7.11.2.5.10 for format details.
 
-* PaintSkew and PaintVarSkew support skew only. PaintVarSkew can be used in a
-variable font to allow the skew angle and center of rotation to be variable.
-PaintSkew provides a more compact representation when variation is not required.
-See 5.7.11.2.5.11 for format details.
+* PaintVarSkew and PaintSkew support skew only, with or without variation
+support, respectively. See 5.7.11.2.5.11 for format details.
 
 When only one of these specific types of transformation is required, these
 formats provide a more compact representation than the PaintTransform or
@@ -1009,7 +996,7 @@ offset within the file:
 * PaintTransform, PaintVarTransform
 * PaintTranslate, PaintVarTranslate
 * PaintRotate, PaintVarRotate
-* PaintSkew, PaintVarSkew. 
+* PaintSkew, PaintVarSkew
 
 A child subtable can be shared by several tables of these formats. For example,
 several PaintGlyph tables might link to the same PaintSolid table, or to the
@@ -1236,7 +1223,7 @@ root-to-leaf paths will be greater than or equal to the number of layers.
 The following are necessary for the graph to be well-formed and valid:
 
 * All subtable links shall satisfy the following criteria:
-  * Forward offsets and non-NULL and are within the COLR table bounds.
+  * Forward offsets are within the COLR table bounds.
   * If a PaintColrLayers table is present, then a LayersV1List is also present,
 and the referenced slice is within the length of the LayersV1List.
   * If a PaintColrGlyph table is present, there is a BaseGlyphV1Record for the
