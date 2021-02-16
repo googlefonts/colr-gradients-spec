@@ -1166,6 +1166,17 @@ details.
 Applications shall confirm that a color glyph definition is bounded, and shall
 not render a color glyph if the defining graph is not bounded.
 
+To ensure that rendering implementations do not clip any part of a color glyph,
+the bounding box of the base needs to be large enough to encompass the entire
+color glyph composition. In a variable font, glyph outlines can vary, but
+transformations in a color glyph description can also vary, affecting the
+portions of the design grid to be painted. For example, a filled rectangle that
+is wide but not tall for one variation instance can be variably rotated to be
+tall but not wide for other instances. The bounding box of the base glyph either
+should be large enough to encompass the color glyph for all instances, or should
+itself vary such that each instance bounding box encompasses the instance color
+glyph.
+
 **5.7.11.1.9 Color glyphs as a directed acyclic graph**
 
 When using version 1 formats, a color glyph is defined by a directed, acyclic
@@ -2246,7 +2257,7 @@ within the COLR table.
 
 Each value within the COLR version 1 formats that can be variable is represented
 using a record that combines a field for the default value together with fields
-for a delta-set index. The delta set index is used to reference the variation
+for a delta-set index. The delta-set index is used to reference the variation
 data within the Item Variation Store. The record formats used include:
 
 * VarFWord
@@ -2279,6 +2290,9 @@ VarF2Dot14 and VarFixed records shall always be set with specific values. The
 indices are base 0, therefore 0x0000 cannot be used as an ignorable default. To
 indicate that an item has no variation data, the index fields shall be set to
 0xFFFF/0xFFFF. (See 7.2.3.2.)
+
+For variable fonts that use COLR version 1 formats, special considerations apply
+to the effect of variation on the bounding box. See 5.7.11.1.8.2 for details.
 
 For general information on OFF font variations, see 7.1.
 
