@@ -274,15 +274,15 @@ Figures 5.9 – 5.11 illustrate the different color line extend modes. The figur
 show the color line extended over a limited interval, but the extension is
 unbounded in either direction.
 
-![Yellow-to-red color gradition, extended to the left with yellow and extended to the right with red.](images/colr_gradient_extend_pad.png)
+![Yellow-to-red color gradation, extended to the left with yellow and extended to the right with red.](images/colr_gradient_extend_pad.png)
 
 **Figure 5.9 Color gradation extended using pad mode**
 
-![Yellow-to-red color gradition, extended by repeating the gradation patterns to the left and right.](images/colr_gradient_extend_repeat.png)
+![Yellow-to-red color gradation, extended by repeating the gradation patterns to the left and right.](images/colr_gradient_extend_repeat.png)
 
 **Figure 5.10 Color gradation extended using repeat mode**
 
-![Yellow-to-red color gradition, extended by repeating alternating mirrors of the gradation pattern to the left and right.](images/colr_gradient_extend_reflect.png)
+![Yellow-to-red color gradation, extended by repeating alternating mirrors of the gradation pattern to the left and right.](images/colr_gradient_extend_reflect.png)
 
 **Figure 5.11 Color gradation extended using reflect mode**
 
@@ -1125,7 +1125,7 @@ could provide performance benefits.
 
 For color glyphs using version 0 formats, the advance width of glyphs used for
 each layer shall be the same as the advance width of the base glyph. If the font
-has vertical metrics,  the glyphs used for each layer shall also have the same
+has vertical metrics, the glyphs used for each layer shall also have the same
 advance height and vertical Y origin as the base glyph.
 
 **5.7.11.1.8.2 Metrics and boundedness of color glyphs using version 1 formats**
@@ -1192,7 +1192,7 @@ PaintColrGlyph table is a part.
 The graph for a color glyph is a combination of paint tables using any of the
 paint table formats. The simplest color glyph definition would consist of a
 PaintGlyph table linked to a basic fill table (PaintSolid, PaintVarSolid,
-PaintLinearGradient, PaintVarLinearGradient,  PaintRadialGradient,
+PaintLinearGradient, PaintVarLinearGradient, PaintRadialGradient,
 PaintVarRadialGradient, PaintSweepGradient, PaintVarSweepGradient). But the
 graph can be arbitrarily complex, with an arbitrary depth of paint nodes (to the
 limits inherent in the formats).
@@ -1878,7 +1878,7 @@ For a pre-transformation position *(x, y)*, the post-transformation position
 NOTE: It is helpful to understand linear transformations by their effect on *x-*
 and *y-basis* vectors _î = (1, 0)_ and _ĵ = (0, 1)_. The transform described by
 the Affine2x3 or VarAffine2x3 record maps the basis vectors to _î&#x2032; = (xx,
-yx)_  and _ĵ&#x2032; = (xy, yy)_, and translates the origin to _(dx, dy)_.
+yx)_ and _ĵ&#x2032; = (xy, yy)_, and translates the origin to _(dx, dy)_.
 
 When the transformed composition from the referenced paint table (and its
 sub-graph) is composed into the destination (represented by the parent of this
