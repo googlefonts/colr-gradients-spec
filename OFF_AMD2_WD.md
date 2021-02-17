@@ -2377,7 +2377,7 @@ a CPAL ColorRecord, the value is converted to a floating value in the range [0,
 ColorIndex records in the COLR table, the alpha value from the ColorIndex record
 (with variation, in a variable font) is multiplied into the R, G and B
 components as well. Interpolated values are then calculated by linear
-interpolation using these pre-multiplied, linear R, G and B values.
+interpolation using these pre-multiplied, linear-light R, G and B values.
 
 NOTE: Alpha components use a linear scale and can be directly interpolated apart
 from the R, G and B components without any linearlization step.
