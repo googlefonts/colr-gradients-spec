@@ -2077,7 +2077,7 @@ NOTE: The backdrop is also referred to as the “destination”.
 | uint8 | compositeMode | A CompositeMode enumeration value. |
 | Offset24 | backdropPaintOffset | Offset to a backdrop Paint table. |
 
-The compositionMode value must be one of the values defined in the CompositeMode
+The compositionMode value shall be one of the values defined in the CompositeMode
 enumeration, which are taken from the W3C [Compositing and Blending Level 1][1]
 (C&B Level 1) specification. If an unrecognized value is encountered,
 COMPOSITE_CLEAR shall be used.
@@ -2362,7 +2362,7 @@ can be used in an SVG document to declare whether interpolation is done using
 the non-linear sRGB scale (the default), or using a linear-light scale by
 applying the inverse sRGB transfer function.
 
-For gradient color values in the COLR table, interpolation must be computed
+For gradient color values in the COLR table, interpolation shall be computed
 using linear-light values (i.e., after applying the inverse sRGB transfer
 function).
 
@@ -2370,14 +2370,14 @@ After an interpolated color value is computed, whether or not the non-linear
 sRGB transfer function needs to be re-applied is determined by the requirements
 of the implementation context.
 
-For both the COLR and SVG tables, interpolation must be done with alpha
+For both the COLR and SVG tables, interpolation shall be done with alpha
 pre-multiplied into each linearized R, G and B component. For alpha specified in
 a CPAL ColorRecord, the value is converted to a floating value in the range [0,
 1.0] by dividing by 255, then multiplied into each R, G and B component. For
 ColorIndex records in the COLR table, the alpha value from the ColorIndex record
 (with variation, in a variable font) is multiplied into the R, G and B
 components as well. Interpolated values are then calculated by linear
-interpolation using these pre-multiplied, linear R, G and B values.
+interpolation using these pre-multiplied, linear-light R, G and B values.
 
 NOTE: Alpha components use a linear scale and can be directly interpolated apart
 from the R, G and B components without any linearlization step.
@@ -2432,8 +2432,8 @@ other tables, along with the delta-set index for each respective item.
 the &#39;hmtx&#39; and &#39;vmtx&#39; tables. Subtables in the HVAR and VVAR
 tables provide the mapping between the target data items and delta-set indices.
 * For the BASE, GDEF, GPOS, and JSTF tables, a target data item is associated
-with a delta-set index using a related VariationIndex table (see 6.2.8) within
-the same subtable that contains the target item.
+with a delta-set index using a related VariationIndex table (6.2.8) within the
+same subtable that contains the target item.
 * In the COLR table, target data items are specified in structures that combine
 a basic data type, such FWORD, with a delta-set index.
 
@@ -2504,8 +2504,8 @@ variable.
 While in most cases deltas are applied to 16-bit types, Fixed is a 32-bit
 (16.16) type and requires 32-bit deltas. The DeltaSet record used in the
 ItemVariationData subtable format can accommodate deltas that are, logically,
-either 16-bit or 32-bit. See the description of the [ItemVariationData
-subtable](#itemvariationdata-subtable), below, for details.
+either 16-bit or 32-bit. See the description of the ItemVariationData subtable
+(7.2.3.4) for details.
 
 When scaled deltas are applied to Fixed values, the Fixed value is treated like
 a 32-bit integer. (In this sense, the delta and the Fixed value can be viewed as
@@ -2601,8 +2601,8 @@ delta-value table — one delta set.
 Logically, each DeltaSet record has regionIndexCount number of elements. The
 elements are represented using long and short types, as described above. These
 are either int16 and int8, or int32 and int16, according to whether the
-LONG_WORDS flag was set. The delta array has a sequence of deltas using the long
-type followed by sequence of deltas using the short type. The count of deltas
+LONG_WORDS flag is set. The delta array has a sequence of deltas using the long
+type followed by a sequence of deltas using the short type. The count of deltas
 using the long type is derived using WORD_DELTA_COUNT_MASK. The remaining
 elements use the short type. The length of the data for each row, in bytes, is
 regionIndexCount + (wordDeltaCount && WORD_DELTA_COUNT_MASK) if the LONG_WORDS
