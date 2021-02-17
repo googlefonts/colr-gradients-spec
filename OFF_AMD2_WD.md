@@ -2077,7 +2077,7 @@ NOTE: The backdrop is also referred to as the “destination”.
 | uint8 | compositeMode | A CompositeMode enumeration value. |
 | Offset24 | backdropPaintOffset | Offset to a backdrop Paint table. |
 
-The compositionMode value must be one of the values defined in the CompositeMode
+The compositionMode value shall be one of the values defined in the CompositeMode
 enumeration, which are taken from the W3C [Compositing and Blending Level 1][1]
 (C&B Level 1) specification. If an unrecognized value is encountered,
 COMPOSITE_CLEAR shall be used.
@@ -2362,7 +2362,7 @@ can be used in an SVG document to declare whether interpolation is done using
 the non-linear sRGB scale (the default), or using a linear-light scale by
 applying the inverse sRGB transfer function.
 
-For gradient color values in the COLR table, interpolation must be computed
+For gradient color values in the COLR table, interpolation shall be computed
 using linear-light values (i.e., after applying the inverse sRGB transfer
 function).
 
@@ -2370,7 +2370,7 @@ After an interpolated color value is computed, whether or not the non-linear
 sRGB transfer function needs to be re-applied is determined by the requirements
 of the implementation context.
 
-For both the COLR and SVG tables, interpolation must be done with alpha
+For both the COLR and SVG tables, interpolation shall be done with alpha
 pre-multiplied into each linearized R, G and B component. For alpha specified in
 a CPAL ColorRecord, the value is converted to a floating value in the range [0,
 1.0] by dividing by 255, then multiplied into each R, G and B component. For
