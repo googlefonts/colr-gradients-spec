@@ -1167,8 +1167,8 @@ Applications shall confirm that a color glyph definition is bounded, and shall
 not render a color glyph if the defining graph is not bounded.
 
 To ensure that rendering implementations do not clip any part of a color glyph,
-the bounding box of the base needs to be large enough to encompass the entire
-color glyph composition. In a variable font, glyph outlines can vary, but
+the bounding box of the base glyph needs to be large enough to encompass the
+entire color glyph composition. In a variable font, glyph outlines can vary, but
 transformations in a color glyph description can also vary, affecting the
 portions of the design grid to be painted. For example, a filled rectangle that
 is wide but not tall for one variation instance can be variably rotated to be
