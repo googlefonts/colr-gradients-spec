@@ -82,6 +82,8 @@ To enable the feature and experiment with it, follow these steps:
 1. Download and open Chrome Canary at a version equal or newer than 90.0.4421.5.
 2. Go to [chrome://flags/#colr-v1-fonts](chrome://flags/#colr-v1-fonts) and enable the feature.
 
+![Screenshot of Chrome flag settings page.](images/colrv1_enable.png)
+
 __Skia__ support is in tip-of-tree Skia, [implementation details](https://source.chromium.org/chromium/chromium/src/+/master:third_party/skia/src/ports/SkFontHost_FreeType_common.cpp;l=375)
 
 __FreeType__ support is in tip-of-tree FreeType, see [freetype.h](https://gitlab.freedesktop.org/freetype/freetype/-/blob/master/include/freetype/freetype.h#L4995) for API details.
