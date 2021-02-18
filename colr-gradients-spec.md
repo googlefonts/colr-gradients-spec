@@ -79,8 +79,10 @@ font formats, including COLR v1.
 Chrome Canary as of version 90.0.4421.5 and above supports COLRv1 fonts when switching on the COLR v1 flag.
 
 To enable the feature and experiment with it, follow these steps:
-1. Download and open Chrome Canary at a version equal or newer than 90.0.4421.5.
-2. Go to [chrome://flags/#colr-v1-fonts](chrome://flags/#colr-v1-fonts) and enable the feature.
+1. Download and open [Chrome Canary](https://www.google.com/chrome/canary/),
+   make sure it's updated to a version equal or newer than 90.0.4421.5.
+2. Go to [chrome://flags/#colr-v1-fonts](chrome://flags/#colr-v1-fonts) and
+   enable the feature.
 
 ![Screenshot of Chrome flag settings page.](images/colrv1_enable.png)
 
