@@ -12,9 +12,9 @@ December 2019
 - [Introduction](#introduction)
 - [Extending ISO/IEC 14496-22 Open Font Format](#extending-isoiec-14496-22-open-font-format)
 - [Implementation](#implementation)
-  - [C++ Structures](#c-structures)
   - [Font Tooling](#font-tooling)
   - [Chromium, Skia, FreeType support](#chromium-skia-freetype-support)
+  - [C++ Structures](#c-structures)
   - [Rendering](#rendering)
     - [Pseudocode](#pseudocode)
   - [HarfBuzz](#harfbuzz)
@@ -65,6 +65,27 @@ for a working draft of that amendment has been prepared in a separate doc:
 # Implementation
 
 **This section is NOT meant for ISO submissions**
+
+## Font Tooling
+
+Cosimo ([@anthrotype](https://github.com/anthrotype)) and Rod ([@rsheeter](https://github.com/rsheeter))
+have implemented [nanoemoji](https://github.com/googlefonts/nanoemoji) to compile a set of SVGs into color
+font formats, including COLR v1.
+
+[color-fonts](https://github.com/googlefonts/color-fonts) has a collection of sample color fonts.
+
+## Chromium, Skia, Freetype support
+
+Chrome Canary as of version 90.0.4421.5 and above supports COLRv1 fonts when switching on the COLR v1 flag.
+
+To enable the feature and experiment with it, follow these steps:
+1. Download and open Chrome Canary at a version equal or newer than 90.0.4421.5.
+2. Go to [chrome://flags/#colr-v1-fonts](chrome://flags/#colr-v1-fonts) and enable the feature.
+
+__Skia__ support is in tip-of-tree Skia, [implementation details](https://source.chromium.org/chromium/chromium/src/+/master:third_party/skia/src/ports/SkFontHost_FreeType_common.cpp;l=375)
+
+__FreeType__ support is in tip-of-tree FreeType, see [freetype.h](https://gitlab.freedesktop.org/freetype/freetype/-/blob/master/include/freetype/freetype.h#L4995) for API details.
+
 
 ## C++ Structures
 
@@ -427,22 +448,6 @@ struct COLRv1
 };
 
 ```
-
-## Font Tooling
-
-Cosimo ([@anthrotype](https://github.com/anthrotype)) and Rod ([@rsheeter](https://github.com/rsheeter))
-have implemented [nanoemoji](https://github.com/googlefonts/nanoemoji) to compile a set of SVGs into color
-font formats, including COLR v1.
-
-[color-fonts](https://github.com/googlefonts/color-fonts) has a collection of sample color fonts.
-
-## Chromium, Skia, Freetype support
-
-Early work on Chrome support is underway:
-
-* Intent to prototype [announcement](https://groups.google.com/a/chromium.org/g/blink-dev/c/XIXudwZdr44/m/emDJRTFoAwAJ)
-* WIP Skia [implementation](https://skia-review.googlesource.com/c/skia/+/300558)
-* FreeType can read COLR v1 information as of [268bdd7764e6ab4029f](https://gitlab.freedesktop.org/freetype/freetype/-/commit/268bdd7764e6ab4029fe7f8bc35626294d791c6d)
 
 ## Rendering
 
