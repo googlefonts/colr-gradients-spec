@@ -369,13 +369,13 @@ yellow at 0.5, and blue at 1.0.
 
 **Figure 5.12 Linear gradients with different rotations using the pad extend mode.**
 
-![Linear gradients with different rotations vectors using the repeat extend mode.](images/colr_linear_gradients_repeat.png)
+![Linear gradients with different rotations using the repeat extend mode.](images/colr_linear_gradients_repeat.png)
 
-**Figure 5.13 Linear gradients with different rotations vectors using the repeat extend mode.**
+**Figure 5.13 Linear gradients with different rotations using the repeat extend mode.**
 
-![Linear gradients with different rotations vectors using the reflect extend mode.](images/colr_linear_gradients_reflect.png)
+![Linear gradients with different rotations using the reflect extend mode.](images/colr_linear_gradients_reflect.png)
 
-**Figure 5.14 Linear gradients with different rotations vectors using the reflect extend mode.**
+**Figure 5.14 Linear gradients with different rotations using the reflect extend mode.**
 
 NOTE: When a linear gradient is combined with a transformation (see 5.7.11.1.5),
 the appearance will be the same as if the gradient were defined using the
