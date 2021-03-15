@@ -367,15 +367,15 @@ yellow at 0.5, and blue at 1.0.
 
 ![Linear gradients with different rotations using the pad extend mode.](images/colr_linear_gradients_pad.png)
 
-**Figure 5.12 Linear gradients with different rotations using the pad extend mode.**
+**Figure 5.12 Linear gradients with different rotations using the pad extend mode**
 
 ![Linear gradients with different rotations using the repeat extend mode.](images/colr_linear_gradients_repeat.png)
 
-**Figure 5.13 Linear gradients with different rotations using the repeat extend mode.**
+**Figure 5.13 Linear gradients with different rotations using the repeat extend mode**
 
 ![Linear gradients with different rotations using the reflect extend mode.](images/colr_linear_gradients_reflect.png)
 
-**Figure 5.14 Linear gradients with different rotations using the reflect extend mode.**
+**Figure 5.14 Linear gradients with different rotations using the reflect extend mode**
 
 NOTE: When a linear gradient is combined with a transformation (see 5.7.11.1.5),
 the appearance will be the same as if the gradient were defined using the
@@ -446,31 +446,31 @@ that is painted in relation to the two circles.
 
 ![Radial gradient using pad extend mode.](images/colr_radial_gradients_pad.png)
 
-**Figure 5.15 Radial gradient using pad extend mode.**
+**Figure 5.15 Radial gradient using pad extend mode**
 
 ![Radial gradient using repeat extend mode.](images/colr_radial_gradients_repeat.png)
 
-**Figure 5.16 Radial gradient using repeat extend mode.**
+**Figure 5.16 Radial gradient using repeat extend mode**
 
 ![Radial gradient using reflect extend mode.](images/colr_radial_gradients_reflect.png)
 
-**Figure 5.17 Radial gradient using reflect extend mode.**
+**Figure 5.17 Radial gradient using reflect extend mode**
 
 Figures 5.18 – 5.20 illustrate the case in which the circles have distinct centers but
 the same radii, and neither circle is contained within the other, giving the
 appearance of a strip. The color stops are as in the previous figures.
 
-![Radial gradient with same-size circles appearing as a string, using pad extend mode.](images/colr_radial_gradients_strip_pad.png)
+![Radial gradient with same-size circles appearing as a strip, using pad extend mode.](images/colr_radial_gradients_strip_pad.png)
 
-**Figure 5.18 Radial gradient with same-size circles appearing as a string, using pad extend mode.**
+**Figure 5.18 Radial gradient with same-size circles appearing as a strip, using pad extend mode**
 
-![Radial gradient with same-size circles appearing as a string, using repeat extend mode.](images/colr_radial_gradients_strip_repeat.png)
+![Radial gradient with same-size circles appearing as a strip, using repeat extend mode.](images/colr_radial_gradients_strip_repeat.png)
 
-**Figure 5.19 Radial gradient with same-size circles appearing as a string, using repeat extend mode.**
+**Figure 5.19 Radial gradient with same-size circles appearing as a strip, using repeat extend mode**
 
-![Radial gradient with same-size circles appearing as a string, using reflect extend mode.](images/colr_radial_gradients_strip_reflect.png)
+![Radial gradient with same-size circles appearing as a strip, using reflect extend mode.](images/colr_radial_gradients_strip_reflect.png)
 
-**Figure 5.20 Radial gradient with same-size circles appearing as a string, using reflect extend mode.**
+**Figure 5.20 Radial gradient with same-size circles appearing as a strip, using reflect extend mode**
 
 Because the rendering algorithm progresses ω in a particular direction, from
 positive infinity to negative infinity, and because pixels are not re-painted as
@@ -491,15 +491,15 @@ the other: in that case, the arcs of constant color are complete circles.
 
 ![Cone-shaped radial gradient with circle 0 on the left.](images/colr_radial_gradients_direction_1.png)
 
-**Figure 5.21 Cone-shaped radial gradient with circle 0 on the left.**
+**Figure 5.21 Cone-shaped radial gradient with circle 0 on the left**
 
 ![Cone-shaped radial gradient with start and end circles swapped.](images/colr_radial_gradients_direction_2.png)
 
-**Figure 5.22 Cone-shaped radial gradient with start and end circles swapped.**
+**Figure 5.22 Cone-shaped radial gradient with start and end circles swapped**
 
 ![Cone-shaped radial gradient with start and end circles swapped and color line reversed.](images/colr_radial_gradients_direction_3.png)
 
-**Figure 5.23 Cone-shaped radial gradient with start and end circles swapped and color line reversed.**
+**Figure 5.23 Cone-shaped radial gradient with start and end circles swapped and color line reversed**
 
 When one circle is contained within the other, the extension of the gradient
 beyond the larger circle will fill the entire surface. Colors in the areas
@@ -508,15 +508,15 @@ extend mode. Figures 5.24 – 5.26 illustrate this for the different extend mode
 
 ![Radial gradient with one circle contained within the other, pad extend mode.](images/colr_radial_gradients_circle_within_circle_pad.png)
 
-**Figure 5.24 Radial gradient with one circle contained within the other, pad extend mode.**
+**Figure 5.24 Radial gradient with one circle contained within the other, pad extend mode**
 
 ![Radial gradient with one circle contained within the other, repeat extend mode.](images/colr_radial_gradients_circle_within_circle_repeat.png)
 
-**Figure 5.25 Radial gradient with one circle contained within the other, repeat extend mode.**
+**Figure 5.25 Radial gradient with one circle contained within the other, repeat extend mode**
 
 ![Radial gradient with one circle contained within the other, reflect extend mode.](images/colr_radial_gradients_circle_within_circle_reflect.png)
 
-**Figure 5.26 Radial gradient with one circle contained within the other, reflect extend mode.**
+**Figure 5.26 Radial gradient with one circle contained within the other, reflect extend mode**
 
 NOTE: When a radial gradient is combined with a transformation (see 5.7.11.1.5),
 the appearance will be the same as if the geometry of the two circles were
@@ -547,7 +547,7 @@ extend mode.
 
 ![Radial gradient with inner circle just touching the outer circle, pad extend mode](images/colr_radial_gradients_inner_circle_touching_outer_pad.png)
 
-**Figure 5.27 Radial gradient with inner circle just touching the outer circle, pad extend mode.**
+**Figure 5.27 Radial gradient with inner circle just touching the outer circle, pad extend mode**
 
 When the repeat or reflect extend modes are used, having the two circles in very
 close proximity results in very high spatial-frequency transitions that can lead
@@ -558,7 +558,7 @@ mode.
 
 ![Radial gradient defined using nearly-identical circles and reflect extend mode, displaying with interference patterns](images/colr_radial_gradients_interference_patterns_reflect.png)
 
-**Figure 5.28 Radial gradient defined using nearly-identical circles and reflect extend mode, displaying with interference patterns**
+**Figure 5.28 Radial gradient defined using nearly-identical circles, showing interference patterns**
 
 The artifacts seen can be affected by a combination of several factors, such as
 image scaling, sub-pixel rendering, display technology, and limitations in
@@ -621,7 +621,7 @@ in figure 5.30:
 
 ![A sweep gradient, from red to yellow, with start angle of 30° and an end angle of 150°.](images/colr_conic_gradient_start_stop_angles.png)
 
-**Figure 5.30 A sweep gradient, from red to yellow, with start angle of 30° and an end angle of 150°.**
+**Figure 5.30 A sweep gradient with start angle of 30° and an end angle of 150°**
 
 Start and end angle values can be outside the range [0, 360), but are
 interpreted as values within that range by applying a modulus operation. For
@@ -636,7 +636,7 @@ in figure 5.31, showing a gradient from red to yellow that starts and stops at
 
 ![A sweep gradient, from red to yellow, with a sharp transition at the start/end angle 0°.](images/colr_conic_gradient_sharp_transition.png)
 
-**Figure 5.31 A sweep gradient, from red to yellow, with a sharp transition at the start/end angle 0°.**
+**Figure 5.31 A sweep gradient with a sharp transition at the start/end angle 0°**
 
 To avoid such a sharp transition, the stop offsets 0 and 1 on the color line
 need to have the same color value. Figure 5.32 illustrates a sweep gradient that
@@ -645,7 +645,7 @@ red at stop offset 1.0.
 
 ![A sweep gradient, from red to yellow to red, with a smooth transition at the start/end angle 0°.](images/colr_conic_gradient_rotation-0.png)
 
-**Figure 5.32 A sweep gradient, from red to yellow to red, with a smooth transition at the start/end angle 0°.**
+**Figure 5.32 A sweep gradient with a smooth transition at the start/end angle 0°**
 
 NOTE: When a sweep gradient is combined with a transformation (see 5.7.11.1.5),
 the appearance will be the same as if a circular arc of some non-zero radius
@@ -688,7 +688,7 @@ gradient.
 
 ![PaintGlyph and PaintLinearGradient tables are used to fill a triangle shape with a linear gradient.](images/colr_shape_gradient.png)
 
-**Figure 5.33 PaintGlyph and PaintLinearGradient tables used to fill a shape with a linear gradient.**
+**Figure 5.33 PaintGlyph and PaintLinearGradient tables used to fill a shape with a linear gradient**
 
 The child of a PaintGlyph table is not, however, limited to one of the basic
 fill formats. Rather, the child can be the root of a sub-graph that describes
@@ -704,7 +704,7 @@ by the child sub-graph.
 
 ![A PaintGlyph table defines a clip region for the composition defined by its child sub-graph.](images/colr_shape_shape_gradient.png)
 
-**Figure 5.34 A PaintGlyph table defines a clip region for the composition defined by its child sub-graph.**
+**Figure 5.34 A PaintGlyph table defines a clip region for the composition defined by its child sub-graph**
 
 A PaintGlyph table on its own does not add content: if there is no child paint
 table, then the graph is not well formed. See 5.7.11.1.9 for details regarding
@@ -731,7 +731,7 @@ Figure 5.35 illustrates layers using version 0 formats.
 
 ![Version 0: Color glyphs are defined by slices of a layer records array.](images/colr_layers_v0.png)
 
-**Figure 5.35 Version 0: Color glyphs are defined by slices of a layer records array.**
+**Figure 5.35 Version 0: Color glyphs are defined by slices of a layer records array**
 
 When using version 1 formats, use of multiple layers is supported but is
 optional. For example, a simple glyph description need not use any layering, as
@@ -739,7 +739,7 @@ illustrated in figure 5.36:
 
 ![Complete color glyph definition without use of layers.](images/colr_color_glyph_without_layers.png)
 
-**Figure 5.36 Complete color glyph definition without use of layers.**
+**Figure 5.36 Complete color glyph definition without use of layers**
 
 The version 1 formats define a color glyph as a directed, acyclic graph of paint
 tables, and the concept of layering corresponds roughly to the number of
@@ -791,7 +791,7 @@ sub-graphs.
 
 ![Version 1: PaintColrLayers tables specify slices within the LayerV1List, providing a layering of content defined in sub-graphs.](images/colr_layers_v1.png)
 
-**Figure 5.37 Version 1: PaintColrLayers tables specify slices within the LayerV1List, providing a layering of content defined in sub-graphs.**
+**Figure 5.37 Version 1: PaintColrLayers tables specify slices within the LayerV1List, providing a layering of content defined in sub-graphs**
 
 NOTE: Paint table offsets in the LayerV1List table are only used in conjunction
 with PaintColrLayers tables. If a paint table does not need to be referenced via
@@ -806,7 +806,7 @@ illustrated in figure 5.38.
 
 ![PaintColrLayers table used as the root of a color glyph definition.](images/colr_PaintColrLayers_as_root.png)
 
-**Figure 5.38 PaintColrLayers table used as the root of a color glyph definition.**
+**Figure 5.38 PaintColrLayers table used as the root of a color glyph definition**
 
 A PaintColorLayers table can also be nested more deeply within the graph,
 providing a layer structure to define some component within a larger color glyph
@@ -832,7 +832,7 @@ the sub-graph are rotated.
 
 ![A rotation transformation rotates the fill content defined by the child sub-graph.](images/colr_transform_glyph_gradient.png)
 
-**Figure 5.39 A rotation transformation rotates the fill content defined by the child sub-graph.**
+**Figure 5.39 A rotation transformation rotates the fill content defined by the child sub-graph**
 
 If the sub-graph of a transformation table contains another nested
 transformation table, then the second transformation also applies to its child
@@ -846,7 +846,7 @@ by the rotation, but only the gradient is affected by the mirroring.
 
 ![Combined effects of a transformation nested within the child sub-graph of another transformation.](images/colr_transform_glyph_transform_gradient.png)
 
-**Figure 5.40 Combined effects of a transformation nested within the child sub-graph of another transformation.**
+**Figure 5.40 Combined effects of a transformation nested within the child sub-graph of another transformation**
 
 While the PaintTransform and PaintVarTransform tables support several types of
 transforms, addition paint formats are defined to support specific
@@ -867,7 +867,7 @@ PaintVarTransform formats. Another significant difference of the rotation and
 skew formats is that the rotations and skews are specified as angles, in
 counter-clockwise degrees.
 
-NOTE: Specifying the rotation or skew as an angle can have a signficant benefit
+NOTE: Specifying the rotation or skew as an angle can have a significant benefit
 in variable fonts if an angle of skew or rotation needs to vary, since it is
 easier to implement variation of angles when specified directly rather than as
 matrix elements. This is because the matrix elements for a rotation or skew are
@@ -916,7 +916,7 @@ that only non-overlapping pixels contribute to the result.
 
 ![Two content elements combined using the Porter-Duff XOR mode.](images/colr_porter-duff_xor.png)
 
-**Figure 5.41 Two content elements combined using the Porter-Duff *XOR* mode.**
+**Figure 5.41 Two content elements combined using the Porter-Duff *XOR* mode**
 
 Figure 5.42 shows the effect of a *lighten* blending mode, which has the effect
 that the R, G, and B color components for each pixel in the result is the
@@ -925,7 +925,7 @@ backdrop.
 
 ![Two content elements combined using the *lighten* blending mode.](images/colr_blend_lighten.png)
 
-**Figure 5.42 Two content elements combined using the *lighten* blending mode.**
+**Figure 5.42 Two content elements combined using the *lighten* blending mode**
 
 For complete details on each of the Porter-Duff and blending modes, see the
 [Compositing and Blending Level 1][1] specification.
@@ -942,7 +942,7 @@ visible.
 
 ![A color glyph using a PaintComposite table to punch out a shape from the fill of a circle.](images/colr_PaintCompositeGraph.png)
 
-**Figure 5.43 A color glyph using a PaintComposite table to punch out a shape from the fill of a circle.**
+**Figure 5.43 A color glyph using a PaintComposite table to punch out a shape from the fill of a circle**
 
 NOTE: In figure 5.43, the “A” is filled with green to illustrate that the color
 of the fill has no affect for the *Source Out* composite mode. Because that is the
@@ -958,7 +958,7 @@ figure 5.44.
 
 ![A PaintComposite table using the *Source In* mode to implement an alpha mask.](images/colr_gradient_mask.png)
 
-**Figure 5.44 An alpha mask implemented using a PaintComposite table and the *Source In* mode.**
+**Figure 5.44 An alpha mask implemented using a PaintComposite table and the *Source In* mode**
 
 **5.7.11.1.7 Re-usable components**
 
@@ -966,7 +966,7 @@ Within a color font, many color glyphs might share components in common. For exa
 
 ![Emoji clock faces for 12 o’clock, 1 o’clock and 2 o’clock.](images/colr_clocks-12-1-2.png)
 
-**Figure 5.45 Emoji clock faces for 12 o’clock, 1 o’clock and 2 o’clock.**
+**Figure 5.45 Emoji clock faces for 12 o’clock, 1 o’clock and 2 o’clock**
 
 Several components are shared between these color glyphs: the entire face, with
 a gradient background and dots at the 3, 6, 9 and 12 positions; the minute hand
@@ -1018,7 +1018,7 @@ PaintSolid table. Example file offsets for the tables are indicated.
 
 ![A PaintGlyph and PaintSolid table are used to define the clock hour hand pointing to 12.](images/colr_hour-hand-component.png)
 
-**Figure 5.46 A PaintGlyph and PaintSolid table are used to define the clock hour hand pointing to 12.**
+**Figure 5.46 A PaintGlyph and PaintSolid table are used to define the clock hour hand pointing to 12**
 
 Figure 5.47 shows this sub-graph of paint tables being re-used, in some cases
 linked from PaintRotate tables that rotate the hour hand to point to different
@@ -1027,7 +1027,7 @@ occur earlier in the file.
 
 ![The sub-graph for the hour hand is re-used with PaintRotate tables to point to different hours.](images/colr_reuse-hour-hand-rotated.png)
 
-**Figure 5.47 The sub-graphs for the hour hand are re-used with PaintRotate tables to point to different hours.**
+**Figure 5.47 The sub-graphs for the hour hand are re-used with PaintRotate tables to point to different hours**
 
 **5.7.11.1.7.2 Re-use using PaintColrLayers**
 
@@ -1047,7 +1047,7 @@ details.)
 
 ![Common clock face elements given as a slice within the LayerV1List table.](images/colr_clock_common.png)
 
-**Figure 5.48 Common clock face elements given as a slice within the LayerV1List table.**
+**Figure 5.48 Common clock face elements given as a slice within the LayerV1List table**
 
 A PaintColrLayers table can reference any contiguous slice of layers in the
 LayerV1List table. Thus, the set of layers shown in figure 5.48 can be
@@ -1067,7 +1067,7 @@ for the common clock face elements shown in figure 5.48.
 
 ![A PaintColrLayers table is used to reference a set of layers that define a shared clock face composition.](images/colr_reuse_clock-face_PaintColrLayers.png)
 
-**Figure 5.49 A PaintColrLayers table is used to reference a set of layers that define a shared clock face composition.**
+**Figure 5.49 A PaintColrLayers table is used to reference a set of layers that define a shared clock face composition**
 
 The color glyphs for other clock face emoji could be structured in exactly the
 same way, using a nested PaintColrLayers table to re-use the layer composition
@@ -1108,7 +1108,7 @@ that references the color glyph definition for glyph ID 63163.
 
 ![A PaintColrGlyph table is used to reference the shared clock face composition via a glyph ID.](images/colr_reuse_clock-face_PaintColrGlyph.png)
 
-**Figure 5.50 A PaintColrGlyph table is used to reference the shared clock face composition via a glyph ID.**
+**Figure 5.50 A PaintColrGlyph table is used to reference the shared clock face composition via a glyph ID**
 
 While the PaintColrGlyph and PaintColrLayers tables are similar in being able to
 reference a layer set as a re-usable component, they could be handled
@@ -1225,7 +1225,7 @@ element.
 
 ![A PaintLinearGradient used as a compositing mask is a leaf node in the graph but does not add a distinct visual element.](images/colr_gradient_mask.png)
 
-**Figure 5.51 Graph with a leaf node that isn’t a distinct visual element.**
+**Figure 5.51 Graph with a leaf node that isn’t a distinct visual element**
 
 Thus, the generalization that can be made regarding the relationship between the
 number of layers and the nature of the graph is that the number of distinct
@@ -1425,8 +1425,8 @@ to be used.
 
 The BaseGlyphV1List table is, conceptually, similar to the baseGlyphRecords
 array in COLR version 0, providing records that map a base glyph to a color
-glyph definition. The color glyph definitions each refer to are significantly
-different, however—see 5.7.11.1.
+glyph definition. The color glyph definitions that each refer to are
+significantly different, however—see 5.7.11.1.
 
 *BaseGlyphV1List table:*
 
@@ -1779,7 +1779,7 @@ formats, see 5.7.11.2.4. For background information on the color line, see
 Angles are expressed in counter-clockwise degrees from the direction of the
 positive x-axis in the design grid.
 
-**5.7.11.2.5.5 Format 10: PaintGlyph**
+**5.7.11.2.5.6 Format 10: PaintGlyph**
 
 Format 10 is used to specify a glyph outline to use as a shape to be filled or,
 equivalently, a clip region. The outline sets a clip region that constrains the
