@@ -2577,10 +2577,9 @@ The wordDeltaCount field contains a packed value that includes a flag and a
 
 The representation of delta values uses a mix of long types (“words”) and short
 types. If the LONG_WORDS flag is set, deltas are represented using a mix of
-int32 and int16 values. This representation is only used for deltas that are to
-be applied to data items of Fixed or 32-bit integer types. If the flag is not
-set, deltas are presented using a mix of int16 and int8 values. See the
-description of the DeltaSet record below for additional details.
+int32 and int16 values. If the flag is not set, deltas are presented using a
+mix of int16 and int8 values. See the description of the DeltaSet record
+below for additional details.
 
 The count value indicated by WORD_DELTA_COUNT_MASK is a count of the number of
 deltas that use the long (“word”) representation, and shall be less than or
