@@ -1027,7 +1027,7 @@ occur earlier in the file.
 
 ![The sub-graph for the hour hand is re-used with PaintRotate tables to point to different hours.](images/colr_reuse-hour-hand-rotated.png)
 
-**Figure 5.47 The sub-graphs for the hour hand are re-used with PaintRotate tables to point to different hours**
+**Figure 5.47 The sub-graph for the hour hand is re-used with PaintRotate tables to point to different hours**
 
 **5.7.11.1.7.2 Re-use using PaintColrLayers**
 
