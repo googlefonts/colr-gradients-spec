@@ -2079,51 +2079,51 @@ NOTE: The backdrop is also referred to as the “destination”.
 
 The compositionMode value shall be one of the values defined in the CompositeMode
 enumeration, which are taken from the W3C [Compositing and Blending Level 1][1]
-(C&B Level 1) specification. If an unrecognized value is encountered,
-COMPOSITE_CLEAR shall be used.
+specification. Details on each mode, including specifications of the required
+calculations using pixel color and alpha values, are provided in that
+specification. If an unrecognized value is encountered, COMPOSITE_CLEAR shall
+be used.
 
 *CompositeMode enumeration:*
 
 | Value | Name | Description |
 |-|-|-|
 | | *Porter-Duff modes* | |
-| 0 | COMPOSITE_CLEAR | See [Clear][2] in C&B Level 1 |
-| 1 | COMPOSITE_SRC | See [Copy][3] in C&B Level 1 |
-| 2 | COMPOSITE_DEST | See [Destination][4] in C&B Level 1 |
-| 3 | COMPOSITE_SRC_OVER | See [Source Over][5] in C&B Level 1 |
-| 4 | COMPOSITE_DEST_OVER | See [Destination Over][6] in C&B Level 1 |
-| 5 | COMPOSITE_SRC_IN | See [Source In][7] in C&B Level 1 |
-| 6 | COMPOSITE_DEST_IN | See [Destination In][8] in C&B Level 1 |
-| 7 | COMPOSITE_SRC_OUT | See [Source Out][9] in C&B Level 1 |
-| 8 | COMPOSITE_DEST_OUT | See [Destination Out][10] in C&B Level 1 |
-| 9 | COMPOSITE_SRC_ATOP | See [Source Atop][11] in C&B Level 1 |
-| 10 | COMPOSITE_DEST_ATOP | See [Destination Atop][12] in C&B Level 1 |
-| 11 | COMPOSITE_XOR | See [XOR][13] in C&B Level 1 |
-| 12 | COMPOSITE_PLUS | See [PLUS][14] in C&B Level 1 |
+| 0 | COMPOSITE_CLEAR | Clear |
+| 1 | COMPOSITE_SRC | Source (“Copy” in Composition & Blending Level 1) |
+| 2 | COMPOSITE_DEST | Destination |
+| 3 | COMPOSITE_SRC_OVER | Source Over |
+| 4 | COMPOSITE_DEST_OVER | Destination Over |
+| 5 | COMPOSITE_SRC_IN | Source In |
+| 6 | COMPOSITE_DEST_IN | Destination In |
+| 7 | COMPOSITE_SRC_OUT | Source Out |
+| 8 | COMPOSITE_DEST_OUT | Destination Out |
+| 9 | COMPOSITE_SRC_ATOP | Source Atop |
+| 10 | COMPOSITE_DEST_ATOP | Destination Atop |
+| 11 | COMPOSITE_XOR | XOR |
+| 12 | COMPOSITE_PLUS | Plus (“Lighter” in Composition & Blending Level 1) |
 | | *Separable color blend modes:* | |
-| 13 | COMPOSITE_SCREEN | See [screen blend mode][15] in C&B Level 1 |
-| 14 | COMPOSITE_OVERLAY | See [overlay blend mode][16] in C&B Level 1 |
-| 15 | COMPOSITE_DARKEN | See [darken blend mode][17] in C&B Level 1 |
-| 16 | COMPOSITE_LIGHTEN | See [lighten blend mode][18] in C&B Level 1 |
-| 17 | COMPOSITE_COLOR_DODGE | See [color-dodge blend mode][19] in C&B Level 1 |
-| 18 | COMPOSITE_COLOR_BURN | See [color-burn blend mode][20] in C&B Level 1 |
-| 19 | COMPOSITE_HARD_LIGHT | See [hard-light blend mode][21] in C&B Level 1 |
-| 20 | COMPOSITE_SOFT_LIGHT | See [soft-light blend mode][22] in C&B Level 1 |
-| 21 | COMPOSITE_DIFFERENCE | See [difference blend mode][23] in C&B Level 1 |
-| 22 | COMPOSITE_EXCLUSION | See [exclusion blend mode][24] in C&B Level 1 |
-| 23 | COMPOSITE_MULTIPLY | See [multiply blend mode][25] in C&B Level 1 |
+| 13 | COMPOSITE_SCREEN | screen |
+| 14 | COMPOSITE_OVERLAY | overlay |
+| 15 | COMPOSITE_DARKEN | darken |
+| 16 | COMPOSITE_LIGHTEN | lighten |
+| 17 | COMPOSITE_COLOR_DODGE | color-dodge |
+| 18 | COMPOSITE_COLOR_BURN | color-burn |
+| 19 | COMPOSITE_HARD_LIGHT | hard-light |
+| 20 | COMPOSITE_SOFT_LIGHT | soft-light |
+| 21 | COMPOSITE_DIFFERENCE | difference |
+| 22 | COMPOSITE_EXCLUSION | exclusion |
+| 23 | COMPOSITE_MULTIPLY | multiply |
 | | *Non-separable color blend modes:* | |
-| 24 | COMPOSITE_HSL_HUE | See [hue blend mode][26] in C&B Level 1 |
-| 25 | COMPOSITE_HSL_SATURATION | See [saturation blend mode][27] in C&B Level 1 |
-| 26 | COMPOSITE_HSL_COLOR | See [color blend mode][28] in C&B Level 1 |
-| 27 | COMPOSITE_HSL_LUMINOSITY | See [luminosity blend mode][29] in C&B Level 1 |
+| 24 | COMPOSITE_HSL_HUE | hue |
+| 25 | COMPOSITE_HSL_SATURATION | saturation |
+| 26 | COMPOSITE_HSL_COLOR | color |
+| 27 | COMPOSITE_HSL_LUMINOSITY | luminosity |
 
 The graphic compositions are defined by the source and backdrop paint tables
 and their respective sub-graphs. Conceptually, they are rendered into bitmaps,
 and the source is composited or blended into the backdrop using the specified
-composite mode. Details on each mode, including specifications of the required
-calculations using pixel color and alpha values, are provided in the
-Compositing and Blending Level 1 specification.
+composite mode.
 
 While color values obtained from the CPAL table are represented in sRGB using
 the non-linear transfer function defined in the sRGB specification, the
@@ -2622,35 +2622,6 @@ _Add three new entries as follows:_
 
 
 [1]: https://www.w3.org/TR/compositing-1/
-[2]: https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_clear
-[3]: https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_src
-[4]: https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_dst
-[5]: https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_srcover
-[6]: https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_dstover
-[7]: https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_srcin
-[8]: https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_dstin
-[9]: https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_srcout
-[10]: https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_dstout
-[11]: https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_srcatop
-[12]: https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_dstatop
-[13]: https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_xor
-[14]: https://www.w3.org/TR/compositing-1/#porterduffcompositingoperators_plus
-[15]: https://www.w3.org/TR/compositing-1/#blendingscreen
-[16]: https://www.w3.org/TR/compositing-1/#blendingoverlay
-[17]: https://www.w3.org/TR/compositing-1/#blendingdarken
-[18]: https://www.w3.org/TR/compositing-1/#blendinglighten
-[19]: https://www.w3.org/TR/compositing-1/#blendingcolordodge
-[20]: https://www.w3.org/TR/compositing-1/#blendingcolorburn
-[21]: https://www.w3.org/TR/compositing-1/#blendinghardlight
-[22]: https://www.w3.org/TR/compositing-1/#blendingsoftlight
-[23]: https://www.w3.org/TR/compositing-1/#blendingdifference
-[24]: https://www.w3.org/TR/compositing-1/#blendingexclusion
-[25]: https://www.w3.org/TR/compositing-1/#blendingmultiply
-[26]: https://www.w3.org/TR/compositing-1/#blendinghue
-[27]: https://www.w3.org/TR/compositing-1/#blendingsaturation
-[28]: https://www.w3.org/TR/compositing-1/#blendingcolor
-[29]: https://www.w3.org/TR/compositing-1/#blendingluminosity
-[30]: https://www.w3.org/TR/compositing-1/#blendingnormal
 [31]: https://www.w3.org/TR/2011/REC-SVG11-20110816/pservers.html#LinearGradientElementSpreadMethodAttribute
 [32]: https://www.w3.org/TR/SVG11/
 [33]: https://html.spec.whatwg.org/multipage/canvas.html#dom-context-2d-createradialgradient
