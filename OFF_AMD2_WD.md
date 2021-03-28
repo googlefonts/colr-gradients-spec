@@ -2298,7 +2298,10 @@ For general information on OFF font variations, see 7.1.
 
 ## Changes to OFF 5.7.12 - Palette Table
 
-_After the first paragraph, insert the following paragraph. (The referenced IEC
+_In the first sentence of the first paragraph, delete the words, “with BGRA
+values”.
+
+_Replace the second paragraph with the following text. (The referenced IEC
 standard is already included in the normative references.)_
 
 Palettes are defined by a set of color records. Each color record specifies a
@@ -2307,6 +2310,12 @@ representation. The sRGB color space is specified in IEC 61966-2-1. Details on
 the specification for the sRGB color space, including the color primaries and
 “gamma” transfer function, are also provided in [CSS Color Module Level 4,
 section 10.2](https://www.w3.org/TR/css-color-4/#predefined).
+
+All palettes have the same number of color records, specified by
+numColorRecords. All color records for all palettes are arranged in a single
+array, and the color records for any given palette are a contiguous sequence of
+color records within that array. The first color record of each palette is
+provided in the colorRecordIndices array.
 
 _Insert the following paragraphs at the end of 5.7.12 with the heading,
 “Interpolation of colours”. (This heading should have the same heading level as
