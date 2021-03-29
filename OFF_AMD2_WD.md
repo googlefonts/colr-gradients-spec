@@ -2416,11 +2416,12 @@ In calculation of scalars (S, AS) and of interpolated values (scaledDelta,
 netAjustment, interpolatedValue), at least 16 fractional bits of precision
 should be maintained. Rounding should be done only when the final result is
 used. When scaled deltas are applied to a default value, the possibility of
-overflow exists. The integer bit-depth used in calculation must be at least that
+overflow exists. The integer bit-depth used in calculation shall be at least that
 of the data type of the item to which deltas are applied; for example, at least
-16 integer bits when applying scaled deltas to an FWORD value. The final result
-must be clamped to the range of the data type of the item to which deltas are
-applied; for example, [-32768, 32,767] for an FWORD value.
+16 integer bits when applying scaled deltas to an FWORD value. Saturation
+arithmetic shall be used, with the final result clamped to the range of the
+data type of the item to which deltas are applied; for example, [-32768, 32,767]
+for an FWORD value.
 
 ## Changes to OFF 7.2.1 Overview (Font variations common table formats)
 
