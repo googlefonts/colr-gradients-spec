@@ -2418,13 +2418,18 @@ should be maintained. Rounding should be done only when the final result is
 used, and may retain greater fractional bit-depth than that of the data type of
 the item to which deltas are applied. When scaled deltas are applied to a
 default value, the possibility of overflow exists. The integer bit-depth used in
-calculation shall be at least that of the data type of the item to which deltas
+calculation must be at least that of the data type of the item to which deltas
 are applied; for example, at least 16 integer bits when applying scaled deltas
-to an FWORD value. If overflow in the implementation-internal representation
-occurs, saturation arithmetic shall be used; values shall not wrap from maximum
-to minimum values, or vice versa. The final result should be clamped to the
-range of the data type of the item to which deltas are applied; for example,
-[-32768, 32767] for an FWORD value.
+to an FWORD value. Even if a final result is within range for the type of the
+default value, the possibility remains for overflow to occur at intermediate
+steps in calculation, and for the order in which deltas are added to affect the
+result. Sufficient integer bit-depth should be used to avoid any possible
+overflow at intermediate steps during calculation. An implementation-determined
+representation may be used for the final result (interpolatedValue), but
+saturation arithmetic must be used: values must not wrap from maximum to minimum
+values, or vice versa. The final result should be clamped to the range of the
+data type of the item to which deltas are applied; for example, [-32768, 32767]
+for an FWORD value.
 
 ## Changes to OFF 7.2.1 Overview (Font variations common table formats)
 
