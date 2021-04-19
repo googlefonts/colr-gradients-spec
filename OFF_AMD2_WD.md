@@ -5,6 +5,48 @@ Changes to the following sections of ISO/IEC 14496-22:2019 Open Font Format
 
 - [4.3 Data types](#changes-to-off-43-data-types)
 - [5.7.11 COLR – Color Table](#changes-to-off-5711---color-table)
+  - [5.7.11.1 Graphic Compositions](#graphics-composition)
+    - [5.7.11.1.1 Colors and solid color fills](#colors-and-solid-color-fills)
+    - [5.7.11.1.2 Gradients](#gradients)
+      - [5.7.11.1.2.1 Color Lines](#color-lines)
+      - [5.7.11.1.2.2 Linear gradients](#linear-gradients)
+      - [5.7.11.1.2.3 Radial gradients](#radial-gradients)
+      - [5.7.11.1.2.4 Sweep gradients](#sweep-gradients)
+    - [5.7.11.1.3 Filling shapes](#filling-shapes)
+    - [5.7.11.1.4 Layering](#layering)
+    - [5.7.11.1.5 Transformations](#transformations)
+    - [5.7.11.1.6 Compositing and blending](#compositing-and-blending)
+    - [5.7.11.1.7 Re-usable components](#reusable-components)
+      - [5.7.11.1.7.1 Re-use by referencing shared subtables](#re-use-by-referencing)
+      - [5.7.11.1.7.2 Re-use using PaintColrLayers](#re-use-using-layers)
+      - [5.7.11.1.7.3 Re-use using PaintColrGlyph](#re-use-using-glyphs)
+    - [5.7.11.1.8 Glyph metrics and boundedness](#glyph-metrics-and-boundedness)
+      - [5.7.11.1.8.1 Metrics for color glyphs using version 0 formats](#metrics-for-color-glyphs-v0)
+      - [5.7.11.1.8.2 Metrics and boundedness of color glyphs using version 1 formats](#metrics-and-boundedness-v1)
+    - [5.7.11.1.9 Color glyphs as a directed acyclic graph](#color-glyphs-as-dag)
+  - [5.7.11.2 COLR table formats](#COLR-table-formats)
+    - [5.7.11.2.1 COLR header](#COLR-header)
+      - [5.7.11.2.1.1 COLR version 0](#COLR-v0)
+      - [5.7.11.2.1.2 COLR version 1](#COLR-v1)
+      - [5.7.11.2.1.3 Mixing version 0 and version 1 formats](#mixing-v0-and-1-formats)
+    - [5.7.11.2.2 BaseGlyph and Layer records](#baseglyph-and-layer-records)
+    - [5.7.11.2.3 BaseGlyphV1List and LayerV1List](#baseglyphv1list-and-layerv1list)
+    - [5.7.11.2.4 ColorIndex, ColorStop and ColorLine](#colorindex-stop-and-line)
+    - [5.7.11.2.5 Paint tables](#paint-tables)
+      - [5.7.11.2.5.1 Format 1: PaintColrLayers](#format-1)
+      - [5.7.11.2.5.2 Formats 2 and 3: PaintSolid, PaintVarSolid](#format-2-and-3)
+      - [5.7.11.2.5.3 Formats 4 and 5: PaintLinearGradient, PaintVarLinearGradient](#format-4-and-5)
+      - [5.7.11.2.5.4 Formats 6 and 7: PaintRadialGradient, PaintVarRadialGradient](#format-6-and-7)
+      - [5.7.11.2.5.5 Formats 8 and 9: PaintSweepGradient, PaintVarSweepGradient](#format-8-and-9)
+      - [5.7.11.2.5.6 Format 10: PaintGlyph](#format-10)
+      - [5.7.11.2.5.7 Format 11: PaintColrGlyph](#format-11)
+      - [5.7.11.2.5.8 Formats 12 and 13: PaintTransform, PaintVarTransform](#format-12-and-13)
+      - [5.7.11.2.5.9 Formats 14 and 15: PaintTranslate, PaintVarTranslate](#format-14-and-15)
+      - [5.7.11.2.5.10 Formats 16 and 17: PaintRotate, PaintVarRotate](#format-16-and-17)
+      - [5.7.11.2.5.11 Formats 18 and 19: PaintSkew, PaintVarSkew](#format-18-and-19)
+      - [5.7.11.2.5.12 Format 20: PaintComposite](#format-20)
+  - [5.7.11.3 COLR version 1 rendering algorithm](#colrv1-rendering-algorithm)
+  - [5.7.11.4 COLR table and OFF Font Variations](#colr-table-and-off-font-variations)
 - [5.7.12 CPAL – Palette Table](#changes-to-off-5712---palette-table)
 - [7.2.1 Overview (Font variations common table formats)](#changes-to-off-721-overview-font-variations-common-table-formats)
 - [7.2.3 Item variation stores](#changes-to-off-723-item-variation-stores)
@@ -93,7 +135,7 @@ values are specified as entries in color palettes defined in the CPAL table. If
 the COLR table is present in a font but no CPAL table exists, then the COLR
 table is ignored.
 
-**5.7.11.1 Graphic Compositions**
+**5.7.11.1 Graphic Compositions<a id="graphics-composition"></a>**
 
 The graphic compositions in a color glyph definition use a set of 2D graphic
 concepts and constructs:
@@ -174,7 +216,7 @@ tables.
 The graphic capabilities are described in more detail in 5.7.11.1.1 –
 5.7.11.1.9. The formats used for each are specified 5.7.11.2.
 
-**5.7.11.1.1 Colors and solid color fills**
+**5.7.11.1.1 Colors and solid color fills<a id="colors-and-solid-color-fills"></a>**
 
 All colors are specified as a base zero index into CPAL (5.7.12) palette
 entries. A font can define alternate palettes in its CPAL table; it is up to the
@@ -201,13 +243,13 @@ PaintSolid table, with or without variation support, respectively. See
 
 See 5.7.11.1.3 for details on how fills are applied to a shape.
 
-**5.7.11.1.2 Gradients**
+**5.7.11.1.2 Gradients<a id="gradients"></a>**
 
 COLR version 1 supports three types of gradients: linear gradients, radial
 gradients, and sweep gradients. For each type, non-variable and variable formats
 are defined. Each type of gradient is specified using a color line.
 
-**5.7.11.1.2.1 Color Lines**
+**5.7.11.1.2.1 Color Lines<a id="color-lines"></a>**
 
 A color line is a function that maps real numbers to color values to define a
 one-dimensional gradation of colors, to be used in the definition of linear,
@@ -321,7 +363,7 @@ VarColorIndex record, allowing the alpha to be variable. The ColorLine and
 ColorStop formats provide a more compact representation when variation is not
 required. See 5.7.11.2.4 for format details.
 
-**5.7.11.1.2.2 Linear gradients**
+**5.7.11.1.2.2 Linear gradients<a id="linear-gradients"></a>**
 
 A linear gradient provides gradation of colors along a straight line. The
 gradient is defined by three points, p₀, p₁ and p₂, plus a color line. The color
@@ -387,7 +429,7 @@ PaintLinearGradient table, with or without variation support, respectively. See
 
 See 5.7.11.1.3 for details on how fills are applied to a shape.
 
-**5.7.11.1.2.3 Radial gradients**
+**5.7.11.1.2.3 Radial gradients<a id="radial-gradients"></a>**
 
 A radial gradient provides gradation of colors along a cylinder defined by two
 circles. The gradient is defined by circles with center c₀ and radius r₀, and
@@ -574,7 +616,7 @@ PaintRadialGradient table, with or without variation support, respectively. See
 
 See 5.7.11.1.3 for details on how fills are applied to a shape.
 
-**5.7.11.1.2.4 Sweep gradients**
+**5.7.11.1.2.4 Sweep gradients<a id="sweep-gradients"></a>**
 
 A sweep gradient provides a gradation of colors that sweep around a center
 point. For a given color on a color line, that color projects as a ray from the
@@ -664,7 +706,7 @@ PaintSweepGradient table, with or without variation support, respectively. See
 
 See 5.7.11.1.3 for details on how fills are applied to a shape.
 
-**5.7.11.1.3 Filling shapes**
+**5.7.11.1.3 Filling shapes<a id="filling-shapes"></a>**
 
 All basic shapes used in a color glyph are obtained from glyph outlines,
 referenced using a glyph ID. In a color glyph description, a PaintGlyph table is
@@ -710,7 +752,7 @@ A PaintGlyph table on its own does not add content: if there is no child paint
 table, then the graph is not well formed. See 5.7.11.1.9 for details regarding
 well-formedness and validity of the graph.
 
-**5.7.11.1.4 Layering**
+**5.7.11.1.4 Layering<a id="layering"></a>**
 
 Layering of visual elements was introduced above, in the introduction to
 5.7.11.1. Both version 0 and version 1 support use of multiple layers, though in
@@ -814,7 +856,7 @@ definition. (See 5.7.11.1.7.2 for more information.) The ability to nest a
 PaintColrLayers table within a graph creates the potential to introduce a cycle
 within the graph, which would be invalid (see 5.7.11.1.9).
 
-**5.7.11.1.5 Transformations**
+**5.7.11.1.5 Transformations<a id="transformations"></a>**
 
 A 2 × 3 transformation matrix can be used within a color glyph description to
 apply an affine transformation to a sub-graph in the color glyph description.
@@ -884,7 +926,7 @@ rotation or skew were represented using an equivalent matrix. See 5.7.11.2.5.10
 for details regarding the matrix equivalent for a rotation expressed as an
 angle; and see 5.7.11.2.5.11 for similar details in relation to skews.
 
-**5.7.11.1.6 Compositing and blending**
+**5.7.11.1.6 Compositing and blending<a id="compositing-and-blending"></a>**
 
 When a color glyph has overlapping content in two layers, the pixels in the two
 layers must be combined in some way. If the content in the top layer has full
@@ -960,7 +1002,7 @@ figure 5.44.
 
 **Figure 5.44 An alpha mask implemented using a PaintComposite table and the *Source In* mode**
 
-**5.7.11.1.7 Re-usable components**
+**5.7.11.1.7 Re-usable components<a id="reusable-components"></a>**
 
 Within a color font, many color glyphs might share components in common. For example, in emoji fonts, many different “smilies” or clock faces share a common background. This can be seen in figure 5.45, which shows color glyphs for three emoji clock faces.
 
@@ -986,7 +1028,7 @@ The PaintColrLayers and PaintColrGlyph table formats create a potential for
 introducing cycles within the graph of a color glyph, which would be invalid
 (see 5.7.11.1.9).
 
-**5.7.11.1.7.1 Re-use by referencing shared subtables**
+**5.7.11.1.7.1 Re-use by referencing shared subtables<a id="re-use-by-referencing"></a>**
 
 Several of the paint table formats link to a child paint table using a forward
 offset within the file: 
@@ -1029,7 +1071,7 @@ occur earlier in the file.
 
 **Figure 5.47 The sub-graph for the hour hand is re-used with PaintRotate tables to point to different hours**
 
-**5.7.11.1.7.2 Re-use using PaintColrLayers**
+**5.7.11.1.7.2 Re-use using PaintColrLayers<a id="re-use-using-layers"></a>**
 
 As described above (see 5.7.11.1.4), a PaintColrLayers table defines a set of
 paint sub-graphs arranged in bottom-up z-order layers, and an example was given
@@ -1073,7 +1115,7 @@ The color glyphs for other clock face emoji could be structured in exactly the
 same way, using a nested PaintColrLayers table to re-use the layer composition
 of the common clock face elements.
 
-**5.7.11.1.7.3 Re-use using PaintColrGlyph**
+**5.7.11.1.7.3 Re-use using PaintColrGlyph<a id="re-use-using-glyphs"></a>**
 
 A third way to re-use components in color glyph definitions is to use a nested
 PaintColrGlyph table. This format references a base glyph ID, which is used to
@@ -1119,16 +1161,16 @@ table would not require the corresponding graph of paint tables to be
 re-processed. As a result, using a PaintColrGlyph for re-used graphic components
 could provide performance benefits.
 
-**5.7.11.1.8 Glyph metrics and boundedness**
+**5.7.11.1.8 Glyph metrics and boundedness<a id="glyph-metrics-and-boundedness"></a>**
 
-**5.7.11.1.8.1 Metrics for color glyphs using version 0 formats**
+**5.7.11.1.8.1 Metrics for color glyphs using version 0 formats<a id="metrics-for-color-glyphs-v0"></a>**
 
 For color glyphs using version 0 formats, the advance width of glyphs used for
 each layer shall be the same as the advance width of the base glyph. If the font
 has vertical metrics, the glyphs used for each layer shall also have the same
 advance height and vertical Y origin as the base glyph.
 
-**5.7.11.1.8.2 Metrics and boundedness of color glyphs using version 1 formats**
+**5.7.11.1.8.2 Metrics and boundedness of color glyphs using version 1 formats<a id="metrics-and-boundedness-v1"></a>**
 
 For color glyphs using version 1 formats, the advance width of the base glyph
 shall be used as the advance width for the color glyph. If the font has vertical
@@ -1177,7 +1219,7 @@ should be large enough to encompass the color glyph for all instances, or should
 itself vary such that each instance bounding box encompasses the instance color
 glyph.
 
-**5.7.11.1.9 Color glyphs as a directed acyclic graph**
+**5.7.11.1.9 Color glyphs as a directed acyclic graph<a id="color-glyphs-as-dag"></a>**
 
 When using version 1 formats, a color glyph is defined by a directed, acyclic
 graph of linked paint tables. For each BaseGlyphV1Record, the paint table
@@ -1287,7 +1329,7 @@ If an application is not able to recover from errors while traversing the graph,
 it may ignore the color glyph entirely. If the base glyph ID has an outline,
 that may be rendered as a non-color glyph instead.
 
-**5.7.11.2 COLR table formats**
+**5.7.11.2 COLR table formats<a id="COLR-table-formats"></a>**
 
 Various table and record formats are defined for COLR version 0 and version 1.
 Several values contained within the version 1 formats are variable. These use
@@ -1298,12 +1340,12 @@ index: VarFWord, VarUFWord, VarF2Dot14, and VarFixed. These are described in
 All table offsets are from the start of the parent table in which the offset is
 given, unless otherwise indicated.
 
-**5.7.11.2.1 COLR header**
+**5.7.11.2.1 COLR header<a id="COLR-header"></a>**
 
 The COLR table begins with a header. Two versions have been defined. Offsets in
 the header are from the start of the table.
 
-**5.7.11.2.1.1 COLR version 0**
+**5.7.11.2.1.1 COLR version 0<a id="COLR-v0"></a>**
 
 *COLR version 0:*
 
@@ -1318,7 +1360,7 @@ the header are from the start of the table.
 NOTE: For fonts that use COLR version 0, some early Windows implementations of
 the COLR table require glyph ID 1 to be the .null glyph.
 
-**5.7.11.2.1.2 COLR version 1**
+**5.7.11.2.1.2 COLR version 1<a id="COLR-v1"></a>**
 
 *COLR version 1:*
 
@@ -1344,7 +1386,7 @@ The ItemVariationStore is used in conjunction with a BaseGlyphV1List and its
 subtables, but only in variable fonts. If it is not used, set
 itemVariationStoreOffset to NULL.
 
-**5.7.11.2.1.3 Mixing version 0 and version 1 formats**
+**5.7.11.2.1.3 Mixing version 0 and version 1 formats<a id="mixing-v0-and-1-formats"></a>**
 
 A font that uses COLR version 1 and that includes a BaseGlyphV1List can also
 include BaseGlyph and Layer records for compatibility with applications that
@@ -1368,7 +1410,7 @@ For applications that support COLR version 1, the application should search for
 a base glyph ID first in the BaseGlyphV1List. Then, if not found, search in the
 baseGlyphRecords array, if present.
 
-**5.7.11.2.2 BaseGlyph and Layer records**
+**5.7.11.2.2 BaseGlyph and Layer records<a id="baseglyph-and-layer-records"></a>**
 
 BaseGlyph and Layer records are required for COLR version 0, but optional for
 version 1. (See 5.7.11.2.1.3.)
@@ -1421,7 +1463,7 @@ CPAL table (5.7.12). A paletteIndex value of 0xFFFF is a special case,
 indicating that the text foreground color (as determined by the application) is
 to be used.
 
-**5.7.11.2.3 BaseGlyphV1List and LayerV1List**
+**5.7.11.2.3 BaseGlyphV1List and LayerV1List<a id="baseglyphv1list-and-layerv1list"></a>**
 
 The BaseGlyphV1List table is, conceptually, similar to the baseGlyphRecords
 array in COLR version 0, providing records that map a base glyph to a color
@@ -1482,7 +1524,7 @@ are stacked above the top layer of this element.
 Offsets for paint tables not referenced by any PaintColrLayers table should not
 be included in the paintOffsets array.
 
-**5.7.11.2.4 ColorIndex, ColorStop and ColorLine**
+**5.7.11.2.4 ColorIndex, ColorStop and ColorLine<a id="colorindex-stop-and-line"></a>**
 
 Colors are used in solid color fills for graphic elements, or as *stops* in a
 color line used to define a gradient. Colors are defined by reference to palette
@@ -1591,7 +1633,7 @@ The extend mode behaviors are described in detail in 5.7.11.1.2.1. If a
 ColorLine in a font has an unrecognized extend value, applications should use
 EXTEND_PAD by default.
 
-**5.7.11.2.5 Paint tables**
+**5.7.11.2.5 Paint tables<a id="paint-tables"></a>**
 
 Paint tables are used for COLR version 1 color glyph definitions. Twenty Paint
 table formats are defined (formats 1 to 20). Some formats come in non-variable
@@ -1604,7 +1646,7 @@ Each paint table format has a one-byte format field as the first field. When
 parsing font data, the format field can be read first to determine the format of
 the table.
 
-**5.7.11.2.5.1 Format 1: PaintColrLayers**
+**5.7.11.2.5.1 Format 1: PaintColrLayers<a id="format-1"></a>**
 
 Format 1 is used to define a vector of layers. The layers are a slice of layers
 from the LayerV1List table. The first layer is the bottom of the z-order, and
@@ -1627,7 +1669,7 @@ scenarios. If more than 256 layers are needed, then two or more PaintColrLayers
 tables can be combined in a tree using a PaintComposite table or another
 PaintColrLayers table to combine them.
 
-**5.7.11.2.5.2 Formats 2 and 3: PaintSolid, PaintVarSolid**
+**5.7.11.2.5.2 Formats 2 and 3: PaintSolid, PaintVarSolid<a id="format-2-and-3"></a>**
 
 Formats 2 and 3 are used to specify a solid color fill. Format 3 allows for
 variation of alpha in a variable font; format 2 provides a more compact
@@ -1654,7 +1696,7 @@ information about applying a fill to a shape, see 5.7.11.1.3.
 
 For the ColorIndex and VarColorIndex record formats, see 5.7.11.2.4.
 
-**5.7.11.2.5.3 Formats 4 and 5: PaintLinearGradient, PaintVarLinearGradient**
+**5.7.11.2.5.3 Formats 4 and 5: PaintLinearGradient, PaintVarLinearGradient<a id="format-4-and-5"></a>**
 
 Formats 4 and 5 are used to specify a linear gradient fill. Format 4 allows for
 variation of color stop positions or of alpha in a variable font; format 5
@@ -1696,7 +1738,7 @@ formats, see 5.7.11.2.4. For background information on the color line, see
 | VarFWord | x2 | Rotation point (p₂) x coordinate. |
 | VarFWord | y2 | Rotation point (p₂) y coordinate. |
 
-**5.7.11.2.5.4 Formats 6 and 7: PaintRadialGradient, PaintVarRadialGradient**
+**5.7.11.2.5.4 Formats 6 and 7: PaintRadialGradient, PaintVarRadialGradient<a id="format-6-and-7"></a>**
 
 Format 6 and 7 are used to specify a radial gradient fill. Format 7 allows for
 variation of color stop positions or of alpha in a variable font; format 6
@@ -1738,7 +1780,7 @@ formats, see in 5.7.11.2.4. For background information on the color line, see
 | VarFWord | y1 | End circle center y coordinate. |
 | VarUFWord | radius1 | End circle radius. |
 
-**5.7.11.2.5.5 Formats 8 and 9: PaintSweepGradient, PaintVarSweepGradient**
+**5.7.11.2.5.5 Formats 8 and 9: PaintSweepGradient, PaintVarSweepGradient<a id="format-8-and-9"></a>**
 
 Format 8 and 9 are used to specify a sweep gradient fill. Format 9 allows for
 variation of color stop positions or of alpha in a variable font; format 8
@@ -1779,7 +1821,7 @@ formats, see 5.7.11.2.4. For background information on the color line, see
 Angles are expressed in counter-clockwise degrees from the direction of the
 positive x-axis in the design grid.
 
-**5.7.11.2.5.6 Format 10: PaintGlyph**
+**5.7.11.2.5.6 Format 10: PaintGlyph<a id="format-10"></a>**
 
 Format 10 is used to specify a glyph outline to use as a shape to be filled or,
 equivalently, a clip region. The outline sets a clip region that constrains the
@@ -1803,7 +1845,7 @@ outline data is used. In particular, if this glyph ID has a description in the
 COLR table (glyphID appears in a COLR BaseGlyph record or the BaseGlyphV1List),
 that COLR data is not relevant for purposes of the PaintGlyph table.
 
-**5.7.11.2.5.7 Format 11: PaintColrGlyph**
+**5.7.11.2.5.7 Format 11: PaintColrGlyph<a id="format-11"></a>**
 
 Format 7 is used to allow a color glyph definition from the BaseGlyphV1List to
 be a re-usable component that can be incorporated into multiple color glyph
@@ -1823,7 +1865,7 @@ provides an offset to a paint table; that paint table and the graph linked from
 it are incorporated as a child sub-graph of the PaintColrGlyph table within the
 current color glyph definition.
 
-**5.7.11.2.5.8 Formats 12 and 13: PaintTransform, PaintVarTransform**
+**5.7.11.2.5.8 Formats 12 and 13: PaintTransform, PaintVarTransform<a id="format-12-and-13"></a>**
 
 Formats 12 and 13 are used to apply an affine transformation to a sub-graph. The
 paint table that is the root of the sub-graph is linked as a child.
@@ -1898,7 +1940,7 @@ origin. The transform can translate the source such that a pre-transform
 position (0,0) is moved elsewhere. The *post-transform* origin, (0,0), is
 aligned to the destination origin.
 
-**5.7.11.2.5.9 Formats 14 and 15: PaintTranslate, PaintVarTranslate**
+**5.7.11.2.5.9 Formats 14 and 15: PaintTranslate, PaintVarTranslate<a id="format-14-and-15"></a>**
 
 Format 14 and 15 are used to apply a translation to a sub-graph. The paint table
 that is the root of the sub-graph is linked as a child.
@@ -1939,7 +1981,7 @@ The translation will result in the pre-transform position (0,0) being moved
 elsewhere. See 5.7.11.2.5.8 regarding alignment of the transformed content with
 the destination.
 
-**5.7.11.2.5.10 Formats 16 and 17: PaintRotate, PaintVarRotate**
+**5.7.11.2.5.10 Formats 16 and 17: PaintRotate, PaintVarRotate<a id="format-16-and-17"></a>**
 
 Formats 16 and 17 are used to apply a rotation to a sub-graph. The paint table
 that is the root of the sub-graph is linked as a child. The amount of rotation
@@ -1998,7 +2040,7 @@ A rotation can result in the pre-transform position (0, 0) being moved
 elsewhere. See 5.7.11.2.5.8 regarding alignment of the transformed content with
 the destination.
 
-**5.7.11.2.5.11 Formats 18 and 19: PaintSkew, PaintVarSkew**
+**5.7.11.2.5.11 Formats 18 and 19: PaintSkew, PaintVarSkew<a id="format-18-and-19"></a>**
 
 Formats 18 and 19 are used to apply a skew to a sub-graph. The paint table that
 is the root of the sub-graph is linked as a child. The amount of skew in the X
@@ -2059,7 +2101,7 @@ A skew can result in the pre-transform position (0, 0) being moved elsewhere.
 See 5.7.11.2.5.8 regarding alignment of the transformed content with the
 destination.
 
-**5.7.11.2.5.12 Format 20: PaintComposite**
+**5.7.11.2.5.12 Format 20: PaintComposite<a id="format-20"></a>**
 
 Format 20 is used to combine two layered compositions, referred to as *source*
 and *backdrop*, using different compositing or blending modes. The available
@@ -2152,7 +2194,7 @@ source and backdrop as follows:
 * Bounded *if and only if* both the source *and* backdrop are bounded:
   * All other modes
 
-**5.7.11.3 COLR version 1 rendering algorithm**
+**5.7.11.3 COLR version 1 rendering algorithm<a id="colrv1-rendering-algorithm"></a>**
 
 The various graphic concepts represented by COLR version 1 formats were
 individually described in 5.7.11.1, and the various formats were described in
@@ -2239,7 +2281,7 @@ function renderPaint(paint)
         simple alpha blending
 ```
 
-**5.7.11.4 COLR table and OFF Font Variations**
+**5.7.11.4 COLR table and OFF Font Variations<a id="colr-table-and-off-font-variations"></a>**
 
 The COLR table can be used in variable fonts. For color glyphs defined using
 version 0 formats, the glyph outlines can be variable, but no other aspect of
