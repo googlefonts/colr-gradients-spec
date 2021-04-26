@@ -2427,7 +2427,7 @@ Sufficient precision should be used to avoid any possible overflow at any point
 during calculation, and to ensure that the order in which deltas are applied
 does not affect the final result. An implementation-determined representation
 may be used for the final result (interpolatedValue), but saturation arithmetic
-must be used: values must not wrap from maximum to minimum values, or vice
+shall be used: values shall not wrap from maximum to minimum values, or vice
 versa. The final result should be clamped to the range of the data type of the
 item to which deltas are applied; for example, [-32768, 32767] for an FWORD
 value.
