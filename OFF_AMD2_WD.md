@@ -2412,25 +2412,20 @@ Therefore, no minimum level of precision is specified as a requirement.
 
 _At the end of 7.1.7, insert the following text._
 
-In calculation of scalars (S, AS) and of interpolated values (scaledDelta,
-netAjustment, interpolatedValue), at least 16 fractional bits of precision
-should be maintained. Rounding should be done only when the final result is
-used, and may retain greater fractional bit-depth than that of the data type of
-the item to which deltas are applied. When scaled deltas are applied to a
-default value, the possibility of overflow exists. The integer-portion numeric
-range used in calculation must be at least that of the data type of the item to
-which deltas are applied; for example, at least [-32768, 32767] when applying
-scaled deltas to an FWORD value. Even if a final result is within range for the
-type of the default value, the possibility remains for overflow to occur during
-calculation, and for the order in which deltas are added to affect the result.
-Sufficient precision should be used to avoid any possible overflow at any point
-during calculation, and to ensure that the order in which deltas are applied
-does not affect the final result. An implementation-determined representation
-may be used for the final result (interpolatedValue), but saturation arithmetic
-shall be used: values shall not wrap from maximum to minimum values, or vice
-versa. The final result should be clamped to the range of the data type of the
-item to which deltas are applied; for example, [-32768, 32767] for an FWORD
-value.
+An implementation-determined representation may be used during calculation and
+for the final result (interpolatedValue). In calculation of scalars (S, AS) and
+of interpolated values (scaledDelta, netAjustment, interpolatedValue), at least
+16 fractional bits of precision should be maintained. Rounding should be done
+only when the final result is used, and may retain greater fractional bit-depth
+than that of the data type of the item to which deltas are applied. When scaled
+deltas are applied to a default value, the possibility of overflow exists. The
+numeric range used in calculation must be at least that of the data type of the
+item to which deltas are applied; for example, at least [-32768, 32767] when
+applying scaled deltas to an FWORD value. Also, larger ranges should be allowed
+for during calculation to avoid any possible overflow at any point during
+calculation, and to ensure that the order in which deltas are applied does not
+affect the final result. Saturation arithmetic shall be used: values shall not
+wrap from maximum to minimum values, or vice versa.
 
 ## Changes to OFF 7.2.1 Overview (Font variations common table formats)
 
