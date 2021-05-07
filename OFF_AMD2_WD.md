@@ -783,9 +783,9 @@ paint tables that specifies a graphic composition to be used as a layer. Within
 a given slice, the first offset provides the content for the bottom layer, and
 each subsequent offset provides content that overlays the preceding content.
 Definition of a layer set—a slice within the layer list—is given in a
-PaintColorLayers table.
+PaintColrLayers table.
 
-Figure 5.37 illustrates the organizational relationship between PaintColorLayers
+Figure 5.37 illustrates the organizational relationship between PaintColrLayers
 tables, the LayerV1List, and referenced paint tables that are roots of
 sub-graphs.
 
@@ -798,7 +798,7 @@ with PaintColrLayers tables. If a paint table does not need to be referenced via
 a PaintColrLayers table, its offset does not need to be included in the
 LayerV1List array.
 
-A PaintColorLayers table can be used as the root of a color glyph definition,
+A PaintColrLayers table can be used as the root of a color glyph definition,
 providing a base layering structure for the color glyph. In this usage, the
 PaintColrLayers table is referenced by a BaseGlyphV1Record, which specifies the
 root of the graph of a color glyph definition for a given base glyph. This is
@@ -808,7 +808,7 @@ illustrated in figure 5.38.
 
 **Figure 5.38 PaintColrLayers table used as the root of a color glyph definition**
 
-A PaintColorLayers table can also be nested more deeply within the graph,
+A PaintColrLayers table can also be nested more deeply within the graph,
 providing a layer structure to define some component within a larger color glyph
 definition. (See 5.7.11.1.7.2 for more information.) The ability to nest a
 PaintColrLayers table within a graph creates the potential to introduce a cycle
