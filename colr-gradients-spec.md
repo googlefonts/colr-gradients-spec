@@ -379,18 +379,100 @@ struct PaintVarTranslate
   VarFixed               dy;
 };
 
-struct PaintRotate
+struct PaintScale
 {
   uint8                  format; // = 16
+  Offset24<Paint>        src;
+  Fixed                  scaleX;
+  Fixed                  scaleY;
+};
+
+struct PaintVArScale
+{
+  uint8                  format; // = 17
+  Offset24<Paint>        src;
+  VarFixed               scaleX;
+  VarFixed               scaleY;
+};
+
+struct PaintScaleAroundCenter
+{
+  uint8                  format; // = 18
+  Offset24<Paint>        src;
+  Fixed                  scaleX;
+  Fixed                  scaleY;
+  Fixed                  centerX;
+  Fixed                  centerY;
+};
+
+struct PaintVarScaleAroundCenter
+{
+  uint8                  format; // = 19
+  Offset24<Paint>        src;
+  VarFixed               scaleX;
+  VarFixed               scaleY;
+  VarFixed               centerX;
+  VarFixed               centerY;
+};
+
+struct PaintScaleUniform
+{
+  uint8                  format; // = 20
+  Offset24<Paint>        src;
+  Fixed                  scale;
+};
+
+struct PaintVarScaleUniform
+{
+  uint8                  format; // = 21
+  Offset24<Paint>        src;
+  VarFixed               scale;
+};
+
+struct PaintScaleUniformAroundCenter
+{
+  uint8                  format; // = 22
+  Offset24<Paint>        src;
+  Fixed                  scale;
+  Fixed                  centerX;
+  Fixed                  centerY;
+};
+
+struct PaintVarScaleUniformAroundCenter
+{
+  uint8                  format; // = 23
+  Offset24<Paint>        src;
+  VarFixed               scale;
+  VarFixed               centerX;
+  VarFixed               centerY;
+};
+
+struct PaintRotate
+{
+  uint8                  format; // = 24
+  Offset24<Paint>        src;
+  Fixed                  angle;
+};
+
+struct PaintVarRotate
+{
+  uint8                  format; // = 25
+  Offset24<Paint>        src;
+  VarFixed               angle;
+};
+
+struct PaintRotateAroundCenter
+{
+  uint8                  format; // = 26
   Offset24<Paint>        src;
   Fixed                  angle;
   Fixed                  centerX;
   Fixed                  centerY;
 };
 
-struct PaintVarRotate
+struct PaintVarRotateAroundCenter
 {
-  uint8                  format; // = 17
+  uint8                  format; // = 27
   Offset24<Paint>        src;
   VarFixed               angle;
   VarFixed               centerX;
@@ -399,7 +481,7 @@ struct PaintVarRotate
 
 struct PaintSkew
 {
-  uint8                  format; // = 18
+  uint8                  format; // = 28
   Offset24<Paint>        src;
   Fixed                  xSkewAngle;
   Fixed                  ySkewAngle;
@@ -409,7 +491,27 @@ struct PaintSkew
 
 struct PaintVarSkew
 {
-  uint8                  format; // = 19
+  uint8                  format; // = 29
+  Offset24<Paint>        src;
+  VarFixed               xSkewAngle;
+  VarFixed               ySkewAngle;
+  VarFixed               centerX;
+  VarFixed               centerY;
+};
+
+struct PaintSkewAroundCenter
+{
+  uint8                  format; // = 30
+  Offset24<Paint>        src;
+  Fixed                  xSkewAngle;
+  Fixed                  ySkewAngle;
+  Fixed                  centerX;
+  Fixed                  centerY;
+};
+
+struct PaintVarSkewAroundCenter
+{
+  uint8                  format; // = 31
   Offset24<Paint>        src;
   VarFixed               xSkewAngle;
   VarFixed               ySkewAngle;
@@ -419,7 +521,7 @@ struct PaintVarSkew
 
 struct PaintComposite
 {
-  uint8                  format; // = 20
+  uint8                  format; // = 32
   Offset24<Paint>        src;
   CompositeMode          mode;   // If mode is unrecognized use COMPOSITE_CLEAR
   Offset24<Paint>        backdrop;
