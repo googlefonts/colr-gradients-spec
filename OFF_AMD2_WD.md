@@ -2421,7 +2421,7 @@ used, and may retain greater fractional bit-depth than that of the data type of
 the item to which deltas are applied. 
 
 When scaled deltas are applied to a default value, the possibility of overflow
-exists. The numeric range used in calculation must be at least that of the data
+exists. The numeric range used in calculation shall be at least that of the data
 type of the item to which deltas are applied; for example, at least [-32768,
 32767] when applying scaled deltas to an FWORD value. Also, larger ranges should
 be allowed for to avoid any possible overflow at any point during calculation,
