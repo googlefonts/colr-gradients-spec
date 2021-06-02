@@ -387,7 +387,7 @@ struct PaintScale
   Fixed                  scaleY;
 };
 
-struct PaintVArScale
+struct PaintVarScale
 {
   uint8                  format; // = 17
   Offset24<Paint>        src;
