@@ -6,6 +6,7 @@ Changes to the following sections of ISO/IEC 14496-22:2019 Open Font Format
 - [4.3 Data types](#changes-to-off-43-data-types)
 - [5.7.11 COLR – Color Table](#changes-to-off-5711---color-table)
 - [5.7.12 CPAL – Palette Table](#changes-to-off-5712---palette-table)
+- [7.1.7 Algorithm for interpolation of instance values](#changes-to-OFF-717-algorithm-for-interpolation-of-instance-values)
 - [7.2.1 Overview (Font variations common table formats)](#changes-to-off-721-overview-font-variations-common-table-formats)
 - [7.2.3 Item variation stores](#changes-to-off-723-item-variation-stores)
 - [Bibliography](#changes-to-off-bibliography)
@@ -2406,6 +2407,27 @@ bit depth supported by the device. For instance, if a display supports 10- or
 a gradient would use that level of quantization. Other factors from the
 presentation context may, however, also affect the available capabilities.
 Therefore, no minimum level of precision is specified as a requirement.
+
+## Changes to OFF 7.1.7 Algorithm for interpolation of instance values
+
+_At the end of 7.1.7, insert the following text._
+
+An implementation-determined representation may be used during calculation and
+for the final result (interpolatedValue). In calculation of scalars (S, AS) and
+of interpolated values (scaledDelta, netAjustment, interpolatedValue), at least
+16 fractional bits of precision should be maintained. If required for the
+internal representation, rounding should be done only when the final result is
+used, and may retain greater fractional bit-depth than that of the data type of
+the item to which deltas are applied. 
+
+When scaled deltas are applied to a default value, the possibility of overflow
+exists. The numeric range used in calculation must be at least that of the data
+type of the item to which deltas are applied; for example, at least [-32768,
+32767] when applying scaled deltas to an FWORD value. Also, larger ranges should
+be allowed for to avoid any possible overflow at any point during calculation,
+and to ensure that the order in which deltas are applied does not affect the
+final result. Saturation arithmetic shall be used: values shall not wrap from
+maximum to minimum values, or vice versa.
 
 ## Changes to OFF 7.2.1 Overview (Font variations common table formats)
 
