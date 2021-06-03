@@ -50,7 +50,8 @@ COLR table; and the term “base glyph” is used to refer to a glyph for which 
 color glyph is provided. Processing of the COLR table is done on glyph sequences
 after text layout processing is completed and prior to final presentation of
 glyphs. Typically, a base glyph is a glyph that may occur in a sequence that
-results from the text layout process.
+results from the text layout process. In some cases, a base glyph may be a
+virtual glyph defined within this table as a re-usable color composition.
 
 For example, the Unicode character U+1F600 is the grinning face emoji. Suppose
 in an emoji font the 'cmap' table maps U+1F600 to glyph ID 718. Assuming no
@@ -1086,6 +1087,13 @@ ID using a PaintColrGlyph table. The graph of the referenced color glyph is
 thereby incorporated into the graph of the PaintColrGlyph table as its child
 sub-graph.
 
+The glyph ID used may be that for a glyph outline, if there is an appropriate
+glyph outline that corresponds to this composition. But the glyph ID may also be
+greater than the last glyph ID used for outlines—that is, greater than or equal
+to the numGlyphs value in the &#39;maxp&#39; table (5.2.6). Such virtual base
+glyph IDs in the COLR table are only used within a PaintColrGlyph table, and are
+not related to glyph IDs used in any other tables.
+
 When a PaintColrGlyph table is used, a BaseGlyphV1Record with the specified
 glyph ID is expected. If no BaseGlyphV1Record with that glyph ID is found, the
 color glyph is not well formed. See 5.7.11.1.9 for details regarding
@@ -1434,6 +1442,9 @@ significantly different, however—see 5.7.11.1.
 |-|-|-|
 | uint16 | glyphID | Glyph ID of the base glyph. |
 | Offset32 | paintOffset | Offset to a Paint table. |
+
+The glyph ID is not limited to the numGlyphs value in the &#39;maxp&#39; table
+(5.2.6). See 5.7.11.1.7.3 for more information.
 
 The records in the baseGlyphV1Records array shall be sorted in increasing
 glyphID order. It is intended that a binary search can be used to find a
@@ -1804,12 +1815,14 @@ definitions. See 5.7.11.1.7.3 for more information.
 | Type | Name | Description |
 |-|-|-|
 | uint8 | format | Set to 11. |
-| uint16 | glyphID | Glyph ID for a BaseGlyphV1List base glyph. |
+| uint16 | glyphID | Virtual glyph ID for a BaseGlyphV1List base glyph. |
 
 The glyphID value shall be a glyphID found in a BaseGlyphV1Record within the
-BaseGlyphV1List. The BaseGlyphV1Record provides an offset to a paint table; that
-paint table and the graph linked from it are incorporated as a child sub-graph
-of the PaintColrGlyph table within the current color glyph definition.
+BaseGlyphV1List. It may be a *virtual* glyph ID, greater than or equal to the
+numGlyph value in the &#39;maxp&#39; table (5.2.6). The BaseGlyphV1Record
+provides an offset to a paint table; that paint table and the graph linked from
+it are incorporated as a child sub-graph of the PaintColrGlyph table within the
+current color glyph definition.
 
 **5.7.11.2.5.8 Formats 12 and 13: PaintTransform, PaintVarTransform**
 
