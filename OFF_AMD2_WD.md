@@ -231,24 +231,21 @@ only be specified within the range [-2, 2). See 5.7.11.2.4 for format details.)
 If only one color stop is specified, that color is used for the entire color
 line; at least two color stops are needed to create color gradation.
 
-Color gradation is defined over the interval from the first color stop, through
-the successive color stops, to the last color stop. Between numerically-adjacent
-color stops, color values are linearly interpolated. See _Interpolation of
-Colors_ in 5.7.12 for requirements on how colors are interpolated.
+Color gradation is defined over the interval from the color stop with the
+minimum offset, through successive color stops, to the color stop with the
+maximum offset. Between numerically-adjacent color stops, color values are
+linearly interpolated. See _Interpolation of Colors_ in 5.7.12 for requirements
+on how colors are interpolated.
 
-While the color gradation is specified over a defined interval, the color line
-continues indefinitely outside that interval in both directions. The color
-patterns outside the defined interval are determined by the color line’s *extend
-mode*, described below. In this way, colors are defined for all stop offset
-values, from negative infinity to positive infinity.
+Color values outside the defined interval are determined by the color line’s
+*extend mode*, described below. In this way, colors are defined for all stop
+offset values, from negative infinity to positive infinity.
 
 For example, a gradient color line could be defined with two color stops at 0.2
 and 1.5. Colors for offsets between 0.2 and 1.5 are interpolated. Colors for
 offsets above 1.5 and below 0.2 are determined by the color line’s extend mode.
 The gradient color line is positioned in the design grid by aligning stop
-offsets 0 and 1 to design grid positions. In this example, the color at stop
-offset 1 will be derived by interpolation between the two color stops, and the
-color at stop offset 0 will be derived based on the extend mode.
+offsets 0 and 1 to design grid positions.
 
 If there are multiple color stops defined for the same stop offset, the first
 one is used for computing color values on the color line below that stop offset,
