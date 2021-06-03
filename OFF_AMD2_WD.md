@@ -243,8 +243,6 @@ offset values, from negative infinity to positive infinity.
 For example, a gradient color line could be defined with two color stops at 0.2
 and 1.5. Colors for offsets between 0.2 and 1.5 are interpolated. Colors for
 offsets above 1.5 and below 0.2 are determined by the color line’s extend mode.
-The gradient color line is positioned in the design grid by aligning stop
-offsets 0 and 1 to the design grid as defined for the given gradient type.
 
 If there are multiple color stops defined for the same stop offset, the first
 one is used for computing color values on the color line below that stop offset,
