@@ -485,8 +485,6 @@ struct PaintSkew
   Offset24<Paint>        src;
   Fixed                  xSkewAngle;
   Fixed                  ySkewAngle;
-  Fixed                  centerX;
-  Fixed                  centerY;
 };
 
 struct PaintVarSkew
@@ -495,8 +493,6 @@ struct PaintVarSkew
   Offset24<Paint>        src;
   VarFixed               xSkewAngle;
   VarFixed               ySkewAngle;
-  VarFixed               centerX;
-  VarFixed               centerY;
 };
 
 struct PaintSkewAroundCenter
