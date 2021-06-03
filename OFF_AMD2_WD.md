@@ -1435,6 +1435,9 @@ significantly different, however—see 5.7.11.1.
 | uint16 | glyphID | Glyph ID of the base glyph. |
 | Offset32 | paintOffset | Offset to a Paint table. |
 
+The glyphID value shall be less than the numGlyphs value in the &#39;maxp&#39;
+table (5.2.6).
+
 The records in the baseGlyphV1Records array shall be sorted in increasing
 glyphID order. It is intended that a binary search can be used to find a
 matching BaseGlyphV1Record for a specific glyphID.
