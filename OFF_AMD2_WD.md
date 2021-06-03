@@ -230,38 +230,39 @@ only be specified within the range [-2, 2). See 5.7.11.2.4 for format details.)
 If only one color stop is specified, that color is used for the entire color
 line; at least two color stops are needed to create color gradation.
 
-Color gradation is defined over the interval from the first color stop, through
-the successive color stops, to the last color stop. Between numerically-adjacent
-color stops, color values are linearly interpolated. See _Interpolation of
-Colors_ in 5.7.12 for requirements on how colors are interpolated.
+Color gradation is defined over the interval from the color stop with the
+minimum offset, through successive color stops, to the color stop with the
+maximum offset. Between numerically-adjacent color stops, color values are
+linearly interpolated. See _Interpolation of Colors_ in 5.7.12 for requirements
+on how colors are interpolated.
+
+Color values outside the defined interval are determined by the color line’s
+*extend mode*, described below. In this way, colors are defined for all stop
+offset values, from negative infinity to positive infinity.
 
 For example, a gradient color line could be defined with two color stops at 0.2
-and 1.5. The gradient color line is positioned in the design grid by aligning
-stop offsets 0 and 1 to design grid positions, as defined for each gradient
-type, using an extrapolated color of stop offset 0 at one position and an
-interpolated color of stop offset 1 at the other position. Colors for offsets
-between 0.5 and 1.5 are interpolated. Colors for offsets above 1.5 and below 0.2
-are defined and determined by the color line’s *extend mode*, described below.
+and 1.5. Colors for offsets between 0.2 and 1.5 are interpolated. Colors for
+offsets above 1.5 and below 0.2 are determined by the color line’s extend mode.
+The gradient color line is positioned in the design grid by aligning stop
+offsets 0 and 1 to design grid positions.
 
 If there are multiple color stops defined for the same stop offset, the first
 one is used for computing color values on the color line below that stop offset,
 and the last one is used for computing color values at or above that stop
 offset. All other color stops for that stop offset are ignored.
 
-While the color gradation is specified over a defined interval, the color line
-continues indefinitely outside that interval in both directions. The color
-pattern outside the defined interval is repeated according to the color line’s
-extend mode. Three extend modes are supported:
+The color patterns outside the defined interval are determined by the color
+line’s extend mode. Three extend modes are supported:
 
 * **Pad:** outside the defined interval, the color of the closest color stop is
 used. Using a sequence of letters as an analogy, given a sequence “ABC”, it is
 extended to “…*AA* ABC *CC*…”.
 
 * **Repeat:** The color line is repeated over repeated multiples of the defined
-interval. For example, if color stops are specified for defined interval of [0,
-0.7], then the pattern is repeated above the defined interval for intervals
-[0.7, 1.4], [1.4, 2.1], etc.; and also repeated below the defined interval for
-intervals [-0.7, 0], [-1.4, -0.7], etc. In each repeated interval, the first
+interval. For example, if color stops are specified for a defined interval of [0.2,
+1.5], then the pattern is repeated above the defined interval for intervals
+(1.5, 2.8], (2.8, 4.1], etc.; and also repeated below the defined interval for
+intervals [-1.1, 0.2), [-2.4, -1.1), etc. In each repeated interval, the first
 color is that of the farthest defined color stop. By analogy, given a sequence
 “ABC”, it is extended to “…*ABC* ABC *ABC*…”.
 
