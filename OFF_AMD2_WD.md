@@ -149,9 +149,9 @@ CPAL table.
 
 * The PaintTransform and PaintVarTransform tables are used to apply an affine
 transformation matrix to a sub-graph of paint tables, and the graphic operations
-they represent. The PaintTranslate, PaintVarTranslate, PaintRotate,
-PaintVarRotate, PaintSkew, and PaintVarSkew tables support specific
-transformations.
+they represent. Several Paint formats are also provided for specific
+transformation types: translate, scale, rotate, or skew, with additional
+variants of these formats for variations and other options.
 
 * The PaintComposite table supports alternate compositing and blending modes for
 two sub-graphs.
@@ -816,10 +816,9 @@ within the graph, which would be invalid (see 5.7.11.1.9).
 **5.7.11.1.5 Transformations**
 
 A 2 × 3 transformation matrix can be used within a color glyph description to
-apply an affine transformation to a sub-graph in the color glyph description.
-Affine transformations supported by a matrix can be a combination of scale,
-skew, mirror, rotate, or translate. The transformation is applied to all nested
-paints in the child sub-graph.
+apply an affine transformation to a sub-graph. Affine transformations supported
+by a matrix can be a combination of scale, skew, mirror, rotate, or translate.
+The transformation is applied to all nested paints in the child sub-graph.
 
 A transformation matrix is specified using a PaintVarTransform or PaintTransform
 table, with or without variation support, respectively. See 5.7.11.2.5.8 for
@@ -848,17 +847,33 @@ by the rotation, but only the gradient is affected by the mirroring.
 **Figure 5.40 Combined effects of a transformation nested within the child sub-graph of another transformation**
 
 While the PaintTransform and PaintVarTransform tables support several types of
-transforms, addition paint formats are defined to support specific
+transforms, additional paint formats are defined to support specific
 transformations:
 
-* PaintVarTranslate and PaintTranslate support translation only, with or without
-variation support, respectively. See 5.7.11.2.5.9 for format details.
+* PaintTranslate and PaintVarTranslate support translation only, without or with
+variation support. See 5.7.11.2.5.9 for format details.
 
-* PaintVarRotate and PaintRotate support rotation only, with or without
-variation support, respectively. See 5.7.11.2.5.10 for format details.
+* PaintScale and PaintVarScale support scaling only, without or with variation
+support. These two formats scale relative to the origin, and allow for different
+scale factors in X and Y directions. Other variant formats support scaling
+relative to a different center, scaling uniformly in both X and Y directions, or
+both: PaintScaleAroundCenter, PaintVarScaleAroundCenter, PaintScaleUniform,
+PaintVarScaleUniform, PaintScaleUniformAroundCenter, and
+PaintVarScaleUniformAroundCenter. See 5.7.11.2.5.10 for format details.
 
-* PaintVarSkew and PaintSkew support skew only, with or without variation
-support, respectively. See 5.7.11.2.5.11 for format details.
+* PaintRotate and PaintVarRotate support rotation only, without or with
+variation support. These two formats rotate around the origin; the
+PaintRotateAroundCenter and PaintVarRotateAroundCenter formats support rotation
+around a different center. See 5.7.11.2.5.11 for format details.
+
+* PaintSkew and PaintVarSkew support skew only, without or with variation
+support. These two formats skew using the origin as a center for the skew
+rotation; the PaintSkewAroundCenter and PaintVarSkewAroundCenter formats support
+skews using a different center. See 5.7.11.2.5.12 for format details.
+
+NOTE: Horizontal mirroring is done by scaling using a scale factor in the x
+direction of -1. Vertical mirroring is done by scaling with a -1 scale factor in
+the y direction.
 
 When only one of these specific types of transformation is required, these
 formats provide a more compact representation than the PaintTransform or
@@ -874,14 +889,13 @@ the sine, cosine or tangent of the rotation angle, which do not change in linear
 proportion to the angle. To achieve a linear variation of rotation using matrix
 elements would require approximating the variation using multiple delta sets.
 
-The rotations and skews specified using PaintRotate, PaintVarRotate, PaintSkew,
-or PaintVarSkew tables can also be representated as a matrix using a
-PaintTransform or PaintVarTransform table. If a PaintRotate, PaintVarRotate,
-PaintSkew, or PaintVarSkew table is used in combination with a PaintTransform or
-PaintVarTransform table, the combined behavior shall be the same as if the
-rotation or skew were represented using an equivalent matrix. See 5.7.11.2.5.10
-for details regarding the matrix equivalent for a rotation expressed as an
-angle; and see 5.7.11.2.5.11 for similar details in relation to skews.
+The rotations and skews specified using PaintRotate, PaintSkew and their
+variants can also be representated as a matrix using a PaintTransform or
+PaintVarTransform table. The behavior for the PaintRotate or PaintSkew formats
+and their variants must be the same as if the rotation or skew were represented
+using an equivalent matrix. See 5.7.11.2.5.11 for details regarding the matrix
+equivalent for a rotation expressed as an angle; and see 5.7.11.2.5.12 for
+similar details in relation to skews.
 
 **5.7.11.1.6 Compositing and blending**
 
@@ -900,7 +914,7 @@ sub-graph; and a destination, or *backdrop*, sub-graph. First, the paint
 operations for the backdrop sub-graph are executed, then the drawing operations
 for the source sub-graph are executed and combined with backdrop using a
 specified compositing or blending mode. The available modes are given in the
-CompositionModes enumeration (see 5.7.11.2.5.12). The effect and processing rule
+CompositionModes enumeration (see 5.7.11.2.5.13). The effect and processing rule
 of each mode are specified in [Compositing and Blending Level 1][1].
 
 The available modes fall into two general types: compositing modes, also
@@ -995,8 +1009,9 @@ offset within the file:
 * PaintComposite
 * PaintTransform, PaintVarTransform
 * PaintTranslate, PaintVarTranslate
-* PaintRotate, PaintVarRotate
-* PaintSkew, PaintVarSkew
+* PaintScale, PaintVarScale, and the other variant scaling paint formats
+* PaintRotate, PaintVarRotate, PaintRotateAroundCenter, PaintVarRotateAroundCenter
+* PaintSkew, PaintVarSkew, PaintSkewAroundCenter, PaintVarSkewAroundCenter
 
 A child subtable can be shared by several tables of these formats. For example,
 several PaintGlyph tables might link to the same PaintSolid table, or to the
@@ -1149,11 +1164,11 @@ PaintVarSweepGradient are inherently unbounded.
 bounded.
 * PaintColrGlyph is bounded *if and only if* the color glyph definition for the
 referenced base glyph ID is bounded.
-* PaintTransform, PaintVarTransform, PaintTranslate, PaintVarTranslate,
-PaintRotate, PaintVarRotate, PaintSkew, and PaintVarSkew are bounded *if and
-only if* the referenced sub-graph is bounded.
+* Paint formats for transformations (PaintTransform, PaintVarTransform,
+PaintTranslate, PaintScale, etc.) are bounded *if and only if* the referenced
+sub-graph is bounded.
 * PaintComposite is either bounded or unbounded, according to the composite mode
-used and the boundedness of the referenced sub-graphs. See 5.7.11.2.5.12 for
+used and the boundedness of the referenced sub-graphs. See 5.7.11.2.5.13 for
 details.
 
 Applications shall confirm that a color glyph definition is bounded, and shall
@@ -1586,8 +1601,8 @@ EXTEND_PAD by default.
 
 **5.7.11.2.5 Paint tables**
 
-Paint tables are used for COLR version 1 color glyph definitions. Twenty Paint
-table formats are defined (formats 1 to 20). Some formats come in non-variable
+Paint tables are used for COLR version 1 color glyph definitions. Thirty-two paint
+table formats are defined (formats 1 to 32). Some formats come in non-variable
 and variable pairs, but otherwise, each provides different graphic capability
 for defining the composition for a color glyph. The graphic capability of each
 format and the manner in which they are combined to represent a color glyph has
@@ -1602,7 +1617,7 @@ the table.
 Format 1 is used to define a vector of layers. The layers are a slice of layers
 from the LayerV1List table. The first layer is the bottom of the z-order, and
 subsequent layers are composited on top using the COMPOSITE_SRC_OVER composition
-mode (see 5.7.11.2.5.12).
+mode (see 5.7.11.2.5.13).
 
 For general information on the PaintColrLayers table, see 5.7.11.1.4. For
 information about its use for shared, re-usable components, see 5.7.11.1.7.2.
@@ -1930,36 +1945,168 @@ The translation will result in the pre-transform position (0,0) being moved
 elsewhere. See 5.7.11.2.5.8 regarding alignment of the transformed content with
 the destination.
 
-**5.7.11.2.5.10 Formats 16 and 17: PaintRotate, PaintVarRotate**
+**5.7.11.2.5.10 Formats 16 to 23: PaintScale and variant scaling formats**
 
-Formats 16 and 17 are used to apply a rotation to a sub-graph. The paint table
-that is the root of the sub-graph is linked as a child. The amount of rotation
-is expressed directly as an angle, and X and Y coordinates can be provided for
-the center of rotation.
+Formats 16 to 23 are used to scale a sub-graph. The paint table that is the root
+of the sub-graph is linked as a child. Several variant formats are provided:
 
-Format 17 allows for variation of the rotation in a variable font; format 16
-provides a more compact representation when variation is not required. Format 17
-shall not be used in non-variable fonts or if the COLR table does not have an
-ItemVariationStore subtable.
+* Formats 16 and 17: scale in x or y directions relative to the origin. Format
+17 allows for variation of the x and y scale factors in a variable font; format
+16 provides a more compact representation when variation is not required.
+
+* Formats 18 and 19: scale in x or y directions relative to a specified center.
+Format 19 allows for variation of the x and y scale factors or of the center
+position; format 18 provides a more compact representation when variation is not
+required.
+
+* Formats 20 and 21: scale uniformly in x and y directions relative to the
+origin. Format 21 allows for variation of the scale factor in a variable font;
+format 20 provides a more compact representation when variation is not required.
+
+* Formats 22 and 23: scale uniformly in x and y directions relative to a
+specified center. Format 23 allows for variation of the scale factor or of the
+center position; format 22 provides a more compact representation when variation
+is not required.
+
+Formats 17, 19, 21 and 23 shall not be used in non-variable fonts or if the COLR
+table does not have an ItemVariationStore subtable.
 
 For general information regarding transformations in a color glyph definition, 
 see 5.7.11.1.5.
 
-*PaintRotate table (format 16):*
+*PaintScale table (format 16):*
 
 | Type | Name | Description |
 |-|-|-|
 | uint8 | format | Set to 16. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
-| Fixed | angle | Rotation angle, in counter-clockwise degrees. |
-| Fixed | centerX | x coordinate for the center of rotation. |
-| Fixed | centerY | y coordinate for the center of rotation. |
+| Fixed | scaleX | Scale factor in x direction. |
+| Fixed | scaleY | Scale factor in y direction. |
 
-*PaintVarRotate table (format 17):*
+*PaintVarScale table (format 17):*
 
 | Type | Name | Description |
 |-|-|-|
 | uint8 | format | Set to 17. |
+| Offset24 | paintOffset | Offset to a Paint subtable. |
+| VarFixed | scaleX | Scale factor in x direction. |
+| VarFixed | scaleY | Scale factor in y direction. |
+
+*PaintScaleAroundCenter table (format 18):*
+
+| Type | Name | Description |
+|-|-|-|
+| uint8 | format | Set to 18. |
+| Offset24 | paintOffset | Offset to a Paint subtable. |
+| Fixed | scaleX | Scale factor in x direction. |
+| Fixed | scaleY | Scale factor in y direction. |
+| Fixed | centerX | x coordinate for the center of scaling. |
+| Fixed | centerY | y coordinate for the center of scaling. |
+
+*PaintVarScaleAroundCenter table (format 19):*
+
+| Type | Name | Description |
+|-|-|-|
+| uint8 | format | Set to 19. |
+| Offset24 | paintOffset | Offset to a Paint subtable. |
+| VarFixed | scaleX | Scale factor in x direction. |
+| VarFixed | scaleY | Scale factor in y direction. |
+| VarFixed | centerX | x coordinate for the center of scaling. |
+| VarFixed | centerY | y coordinate for the center of scaling. |
+
+*PaintScaleUniform table (format 20):*
+
+| Type | Name | Description |
+|-|-|-|
+| uint8 | format | Set to 20. |
+| Offset24 | paintOffset | Offset to a Paint subtable. |
+| Fixed | scale | Scale factor in x and y directions. |
+
+*PaintVarScaleUniform table (format 21):*
+
+| Type | Name | Description |
+|-|-|-|
+| uint8 | format | Set to 21. |
+| Offset24 | paintOffset | Offset to a Paint subtable. |
+| VarFixed | scale | Scale factor in x and y directions. |
+
+*PaintScaleUniformAroundCenter table (format 22):*
+
+| Type | Name | Description |
+|-|-|-|
+| uint8 | format | Set to 22. |
+| Offset24 | paintOffset | Offset to a Paint subtable. |
+| Fixed | scale | Scale factor in x and y directions. |
+| Fixed | centerX | x coordinate for the center of scaling. |
+| Fixed | centerY | y coordinate for the center of scaling. |
+
+*PaintVarScaleUniformAroundCenter table (format 23):*
+
+| Type | Name | Description |
+|-|-|-|
+| uint8 | format | Set to 23. |
+| Offset24 | paintOffset | Offset to a Paint subtable. |
+| VarFixed | scale | Scale factor in x and y directions. |
+| VarFixed | centerX | x coordinate for the center of scaling. |
+| VarFixed | centerY | y coordinate for the center of scaling. |
+
+NOTE: Pure scaling can also be represented using the PaintTransform or
+PaintVarTransform table by setting xx and yy to x and y scale factors, and
+setting xy, yx, dx and dy = 0. The PaintScale table and variants provide more
+compact representation when only scaling is required.
+
+**5.7.11.2.5.11 Formats 24 to 27: PaintRotate, PaintVarRotate, PaintRotateAroundCenter, PaintVarRotateAroundCenter**
+
+Formats 24 to 27 are used to apply a rotation to a sub-graph. The paint table
+that is the root of the sub-graph is linked as a child. The amount of rotation
+is expressed directly as an angle.
+
+Formats 24 and 25 apply rotations using the origin as the center of rotation.
+Format 25 allows for variation of the rotation in a variable font; format 24
+provides a more compact representation when variation is not required.
+
+Formats 26 and 27 apply rotations around a specified center of rotation. Format
+27 allows for variation of the rotation or of the position of the center of
+rotation in a variable font; format 26 provides a more compact representation
+when variation is not required.
+
+Formats 25 and 27 shall not be used in non-variable fonts or if the COLR table
+does not have an ItemVariationStore subtable.
+
+For general information regarding transformations in a color glyph definition,
+see 5.7.11.1.5.
+
+*PaintRotate table (format 24):*
+
+| Type | Name | Description |
+|-|-|-|
+| uint8 | format | Set to 24. |
+| Offset24 | paintOffset | Offset to a Paint subtable. |
+| Fixed | angle | Rotation angle, in counter-clockwise degrees. |
+
+*PaintVarRotate table (format 25):*
+
+| Type | Name | Description |
+|-|-|-|
+| uint8 | format | Set to 25. |
+| Offset24 | paintOffset | Offset to a Paint subtable. |
+| VarFixed | angle | Rotation angle, in counter-clockwise degrees. |
+
+*PaintRotateAroundCenter table (format 26):*
+
+| Type | Name | Description |
+|-|-|-|
+| uint8 | format | Set to 26. |
+| Offset24 | paintOffset | Offset to a Paint subtable. |
+| Fixed | angle | Rotation angle, in counter-clockwise degrees. |
+| Fixed | centerX | x coordinate for the center of rotation. |
+| Fixed | centerY | y coordinate for the center of rotation. |
+
+*PaintVarRotateAroundCenter table (format 27):*
+
+| Type | Name | Description |
+|-|-|-|
+| uint8 | format | Set to 27. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
 | VarFixed | angle | Rotation angle, in counter-clockwise degrees. |
 | VarFixed | centerX | x coordinate for the center of rotation. |
@@ -1975,13 +2122,13 @@ could be done by setting matrix values as follows for angle &theta;:
 * _yy_ = cos(&theta;)
 * _dx_ = _dy_ = 0
 
-The important difference of the PaintRotate and PaintVarRotate tables is in
+The important difference of the PaintRotate table and its variants is in
 allowing an angle to be specified directly in degrees, rather than as changes to
 basis vectors. In variable fonts, if a rotation angle needs to vary, it is
 easier to get smooth variation if an angle is specified directly than when using
 trigonometric functions to derive matrix elements.
 
-When combining the transform effect of a PaintRotate or PaintVarRotate table
+When combining the transform effect of a PaintRotate table (or variants)
 with other transforms, the result shall be the same as if the rotation were
 represented using an equivalent matrix.
 
@@ -1989,37 +2136,61 @@ A rotation can result in the pre-transform position (0, 0) being moved
 elsewhere. See 5.7.11.2.5.8 regarding alignment of the transformed content with
 the destination.
 
-**5.7.11.2.5.11 Formats 18 and 19: PaintSkew, PaintVarSkew**
+**5.7.11.2.5.12 Formats 28 to 31: PaintSkew, PaintVarSkew, PaintSkewAroundCenter, PaintVarSkewAroundCenter**
 
-Formats 18 and 19 are used to apply a skew to a sub-graph. The paint table that
-is the root of the sub-graph is linked as a child. The amount of skew in the X
-or Y direction is expressed directly as angles, and X and Y coordinates can be
-provided for the center of rotation.
+Formats 28 to 31 are used to apply a skew to a sub-graph. The paint table that
+is the root of the sub-graph is linked as a child. The amounts of skew in the x
+or y direction are expressed directly as angles.
 
-Format 19 allows for variation of the rotation in a variable font; format 18
-provides a more compact representation when variation is not required. Format 19
-shall not be used in non-variable fonts or if the COLR table does not have an
-ItemVariationStore subtable.
+Formats 28 and 29 apply skews using the origin as the center of rotation for the
+skew. Format 29 allows for variation of the rotation in a variable font; format
+28 provides a more compact representation when variation is not required.
+
+Formats 30 and 31 apply skews around a specified center of rotation. Format 31
+allows for variation of the rotation or of the position of the center of
+rotation in a variable font; format 30 provides a more compact representation
+when variation is not required.
+
+Formats 29 and 31 shall not be used in non-variable fonts or if the COLR table
+does not have an ItemVariationStore subtable.
 
 For general information regarding transformations in a color glyph definition, 
 see 5.7.11.1.5.
 
-*PaintSkew table (format 18):*
+*PaintSkew table (format 28):*
 
 | Type | Name | Description |
 |-|-|-|
-| uint8 | format | Set to 18. |
+| uint8 | format | Set to 28. |
+| Offset24 | paintOffset | Offset to a Paint subtable. |
+| Fixed | xSkewAngle | Angle of skew in the direction of the x-axis, in counter-clockwise degrees. |
+| Fixed | ySkewAngle | Angle of skew in the direction of the y-axis, in counter-clockwise degrees. |
+
+*PaintVarSkew table (format 29):*
+
+| Type | Name | Description |
+|-|-|-|
+| uint8 | format | Set to 29. |
+| Offset24 | paintOffset | Offset to a Paint subtable. |
+| VarFixed | xSkewAngle | Angle of skew in the direction of the x-axis, in counter-clockwise degrees. |
+| VarFixed | ySkewAngle | Angle of skew in the direction of the y-axis, in counter-clockwise degrees. |
+
+*PaintSkewAroundCenter table (format 30):*
+
+| Type | Name | Description |
+|-|-|-|
+| uint8 | format | Set to 30. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
 | Fixed | xSkewAngle | Angle of skew in the direction of the x-axis, in counter-clockwise degrees. |
 | Fixed | ySkewAngle | Angle of skew in the direction of the y-axis, in counter-clockwise degrees. |
 | Fixed | centerX | x coordinate for the center of rotation. |
 | Fixed | centerY | y coordinate for the center of rotation. |
 
-*PaintVarSkew table (format 19):*
+*PaintVarSkewAroundCenter table (format 31):*
 
 | Type | Name | Description |
 |-|-|-|
-| uint8 | format | Set to 19. |
+| uint8 | format | Set to 31. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
 | VarFixed | xSkewAngle | Angle of skew in the direction of the x-axis, in counter-clockwise degrees. |
 | VarFixed | ySkewAngle | Angle of skew in the direction of the y-axis, in counter-clockwise degrees. |
@@ -2036,13 +2207,13 @@ setting matrix values as follows for _x_ skew angle &phi; and _y_ skew angle
 * _xy_ = -tan(&phi;)
 * _dx_ = _dy_ = 0
 
-The important difference of the PaintSkew and PaintVarSkew tables is in being
+The important difference of the PaintSkew tables and its variants is in being
 able to specify skew as an angle, rather than as changes to basis vectors. In
 variable fonts, if a skew angle needs to vary, it is easier to get smooth
 variation if an angle is specified directly than when using trigonometric
 functions to derive matrix elements.
 
-When combining the transform effect of a PaintSkew or PaintVarSkew table with
+When combining the transform effect of a PaintSkew table (or variants) with
 other transforms, the result shall be the same as if the skew were represented
 using an equivalent matrix.
 
@@ -2050,20 +2221,20 @@ A skew can result in the pre-transform position (0, 0) being moved elsewhere.
 See 5.7.11.2.5.8 regarding alignment of the transformed content with the
 destination.
 
-**5.7.11.2.5.12 Format 20: PaintComposite**
+**5.7.11.2.5.13 Format 32: PaintComposite**
 
-Format 20 is used to combine two layered compositions, referred to as *source*
+Format 32 is used to combine two layered compositions, referred to as *source*
 and *backdrop*, using different compositing or blending modes. The available
 compositing and blending modes are defined in an enumeration. For general 
 information and examples, see 5.7.11.1.6.
 
 NOTE: The backdrop is also referred to as the “destination”.
 
-*PaintComposite table (format 20):*
+*PaintComposite table (format 32):*
 
 | Type | Name | Description |
 |-|-|-|
-| uint8 | format | Set to 20. |
+| uint8 | format | Set to 32. |
 | Offset24 | sourcePaintOffset | Offset to a source Paint table. |
 | uint8 | compositeMode | A CompositeMode enumeration value. |
 | Offset24 | backdropPaintOffset | Offset to a backdrop Paint table. |
@@ -2199,11 +2370,12 @@ function renderPaint(paint)
         call renderPaint() passing the paint table referenced by the base
         glyph ID
 
-    if format 12, 13, 14, 15, 16, 17, 18 or 19:
+    if format 12 to 31:
         // PaintTransform, PaintVarTransform
         // PaintTranslate, PaintVarTranslate
-        // PaintRotate, PaintVarRotate
-        // PaintSkew, PaintVarSkew
+        // PaintScale*, PaintVarScale*
+        // PaintRotate*, PaintVarRotate*
+        // PaintSkew*, PaintVarSkew*
         apply the specified transform
             // compose the transform with the current transform state—see
             // 5.7.11.1.5
@@ -2212,7 +2384,7 @@ function renderPaint(paint)
 
         restore the previous transform state
 
-    if format 20: // PaintComposite
+    if format 32: // PaintComposite
 
         // render backdrop sub-graph
         call renderPaint() passing the backdrop child paint table and save
