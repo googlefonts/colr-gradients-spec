@@ -328,7 +328,7 @@ line is positioned in the design grid with stop offset 0 aligned to p₀ and sto
 offset 1.0 aligned to p₁. (The line passing through p₀ and p₁ will be referred
 to as line p₀p₁.) Colors at each position on line p₀p₁ are interpolated using
 the color line. For each position along line p₀p₁, the color at that position is
-projected on other side of the line.
+projected on either side of the line.
 
 The additional point, p₂, is used to rotate the gradient orientation in the
 space on either side of the line p₀p₁. The line passing through points p₀ and p₂
@@ -891,7 +891,8 @@ opacity, then normally the pixels from that layer are shown, occluding
 overlapping pixels from lower layers. If the top layer has some transparency
 (some portion has alpha less than 1.0), then blending of colors for overlapping
 pixels occurs by default. The default interaction between layers uses simple
-alpha compositing, as described in [Compositing and Blending Level 1][1].
+alpha compositing, as described in the W3C specification, [Compositing and
+Blending Level 1][1].
 
 A PaintComposite table can be used to get other compositing or blending effects.
 The PaintComposite table combines content defined by two sub-graphs: a *source*
