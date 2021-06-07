@@ -892,7 +892,7 @@ elements would require approximating the variation using multiple delta sets.
 The rotations and skews specified using PaintRotate, PaintSkew and their
 variants can also be representated as a matrix using a PaintTransform or
 PaintVarTransform table. The behavior for the PaintRotate or PaintSkew formats
-and their variants must be the same as if the rotation or skew were represented
+and their variants shall be the same as if the rotation or skew were represented
 using an equivalent matrix. See 5.7.11.2.5.11 for details regarding the matrix
 equivalent for a rotation expressed as an angle; and see 5.7.11.2.5.12 for
 similar details in relation to skews.
