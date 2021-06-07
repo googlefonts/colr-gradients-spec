@@ -893,9 +893,9 @@ The rotations and skews specified using PaintRotate, PaintSkew and their
 variants can also be representated as a matrix using a PaintTransform or
 PaintVarTransform table. The behavior for the PaintRotate or PaintSkew formats
 and their variants shall be the same as if the rotation or skew were represented
-using an equivalent matrix. See 5.7.11.2.5.11 for details regarding the matrix
-equivalent for a rotation expressed as an angle; and see 5.7.11.2.5.12 for
-similar details in relation to skews.
+using an equivalent matrix or sequence of matrices. See 5.7.11.2.5.11 for
+details regarding the matrix equivalent for a rotation expressed as an angle;
+and see 5.7.11.2.5.12 for similar details in relation to skews.
 
 **5.7.11.1.6 Compositing and blending**
 
@@ -2131,7 +2131,7 @@ trigonometric functions to derive matrix elements.
 
 When combining the transform effect of a PaintRotate table (or variants)
 with other transforms, the result shall be the same as if the rotation were
-represented using an equivalent matrix.
+represented using an equivalent matrix or sequence of matrices.
 
 A rotation can result in the pre-transform position (0, 0) being moved
 elsewhere. See 5.7.11.2.5.8 regarding alignment of the transformed content with
@@ -2216,7 +2216,7 @@ functions to derive matrix elements.
 
 When combining the transform effect of a PaintSkew table (or variants) with
 other transforms, the result shall be the same as if the skew were represented
-using an equivalent matrix.
+using an equivalent matrix or sequence of matrices.
 
 A skew can result in the pre-transform position (0, 0) being moved elsewhere.
 See 5.7.11.2.5.8 regarding alignment of the transformed content with the
