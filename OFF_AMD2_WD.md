@@ -855,11 +855,11 @@ variation support. See 5.7.11.2.5.9 for format details.
 
 * PaintScale and PaintVarScale support scaling only, without or with variation
 support. These two formats scale relative to the origin, and allow for different
-scale factors in X and Y directions. Other variant formats support scaling
-relative to a different center, scaling uniformly in both X and Y directions, or
-both: PaintScaleAroundCenter, PaintVarScaleAroundCenter, PaintScaleUniform,
-PaintVarScaleUniform, PaintScaleUniformAroundCenter, and
-PaintVarScaleUniformAroundCenter. See 5.7.11.2.5.10 for format details.
+scale factors in X and Y directions. PaintScaleAroundCenter,
+PaintVarScaleAroundCenter, PaintScaleUniform, PaintVarScaleUniform,
+PaintScaleUniformAroundCenter, and PaintVarScaleUniformAroundCenter support
+scaling relative to a different center, scaling uniformly in both X and Y
+directions, or both. See 5.7.11.2.5.10 for format details.
 
 * PaintRotate and PaintVarRotate support rotation only, without or with
 variation support. These two formats rotate around the origin; the
