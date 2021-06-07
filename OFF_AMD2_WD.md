@@ -2051,9 +2051,10 @@ see 5.7.11.1.5.
 | VarFixed | centerY | y coordinate for the center of scaling. |
 
 NOTE: Pure scaling can also be represented using the PaintTransform or
-PaintVarTransform table by setting xx and yy to x and y scale factors, and
-setting xy, yx, dx and dy = 0. The PaintScale table and variants provide more
-compact representation when only scaling is required.
+PaintVarTransform table. For scaling about the origin, this could be done by
+setting xx and yy to x and y scale factors, and setting xy, yx, dx and dy = 0.
+The PaintScale table and variants provide more compact representation when only
+scaling is required.
 
 **5.7.11.2.5.11 Formats 24 to 27: PaintRotate, PaintVarRotate, PaintRotateAroundCenter, PaintVarRotateAroundCenter**
 
