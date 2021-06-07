@@ -589,17 +589,22 @@ Allocate a bitmap for the glyph according to extents of base glyph contours for 
           apply transform
           call a) for paint
           restore
-    9) PaintRotate
+    9) PaintScale
           saveLayer()
           apply transform
           call a) for paint
           restore
-    10) PaintSkew
+    10) PaintRotate
           saveLayer()
           apply transform
           call a) for paint
           restore
-    11) PaintComposite
+    11) PaintSkew
+          saveLayer()
+          apply transform
+          call a) for paint
+          restore
+    12) PaintComposite
           paint Paint for backdrop, call a)
           saveLayer() with setting composite mode, on SkPaint
           paint Paint for src, call a)
