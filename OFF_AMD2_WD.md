@@ -1051,7 +1051,7 @@ paint sub-graphs arranged in bottom-up z-order layers, and an example was given
 of a PaintColrLayers table used as the root of a color glyph definition. A
 PaintColrLayers table can also be nested more deeply within the graph of a color
 glyph. One purpose for doing this is to reference a re-usable component defined
-as a contiguous set of layers in the LayersV1List table.
+as a contiguous set of layers in the LayerV1List table.
 
 This is readily explained using the clock faces as an example. As described
 above, each clock face shares several elements in common. Some of these form a
@@ -1243,8 +1243,8 @@ The following are necessary for the graph to be well-formed and valid:
 
 * All subtable links shall satisfy the following criteria:
   * Forward offsets are within the COLR table bounds.
-  * If a PaintColrLayers table is present, then a LayersV1List is also present,
-and the referenced slice is within the length of the LayersV1List.
+  * If a PaintColrLayers table is present, then a LayerV1List is also present,
+and the referenced slice is within the length of the LayerV1List.
   * If a PaintColrGlyph table is present, there is a BaseGlyphV1Record for the
 referenced base glyph ID.
 * The graph shall be acyclic.
@@ -1338,14 +1338,14 @@ the COLR table require glyph ID 1 to be the .null glyph.
 | Offset32 | layerRecordsOffset | Offset to layerRecords array (may be NULL). |
 | uint16 | numLayerRecords | Number of Layer records; may be 0 in a version 1 table. |
 | Offset32 | baseGlyphV1ListOffset | Offset to BaseGlyphV1List table. |
-| Offset32 | layersV1Offset | Offset to LayerV1List table (may be NULL). |
+| Offset32 | layerV1Offset | Offset to LayerV1List table (may be NULL). |
 | Offset32 | itemVariationStoreOffset | Offset to ItemVariationStore (may be NULL). |
 
 The BaseGlyphV1List and its subtables are only used in COLR version 1.
 
-The LayersV1List is only used in conjunction with the BaseGlyphV1List and,
+The LayerV1List is only used in conjunction with the BaseGlyphV1List and,
 specifically, with PaintColrLayers tables (5.7.11.2.5.1); it is not required if
-no color glyphs use a PaintColrLayers table. If not used, set layersV1Offset to
+no color glyphs use a PaintColrLayers table. If not used, set layerV1Offset to
 NULL.
 
 The ItemVariationStore is used in conjunction with a BaseGlyphV1List and its
