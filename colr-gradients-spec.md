@@ -251,7 +251,7 @@ struct PaintColrLayers
 {
   uint8               format; // = 1
   uint8               numLayers;
-  uint32              firstLayerIndex;  // index into COLRv1::layersV1
+  uint32              firstLayerIndex;  // index into COLRv1::layerList
 }
 
 struct PaintSolid
@@ -523,29 +523,29 @@ struct PaintComposite
   Offset24<Paint>        backdrop;
 };
 
-struct BaseGlyphV1Record
+struct BaseGlyphPaintRecord
 {
   uint16                gid;
   Offset32<Paint>       paint;  // Typically PaintColrLayers
 };
 
-// Entries shall be sorted in ascending order of the `glyphID` field of the `BaseGlyphV1Record`s.
-typedef ArrayOf<BaseGlyphV1Record, uint32> BaseGlyphV1List;
+// Entries shall be sorted in ascending order of the `glyphID` field of the `BaseGlyphPaintRecord`s.
+typedef ArrayOf<BaseGlyphPaintRecord, uint32> BaseGlyphList;
 
 // Only layers accessed via PaintColrLayers (format 1) need be encoded here.
-typedef ArrayOf<Offset32<Paint>, uint32> LayerV1List;
+typedef ArrayOf<Offset32<Paint>, uint32> LayerList;
 
 struct COLRv1
 {
   // Version-0 fields
   uint16                                            version;
-  uint16                                            numBaseGlyphsV0;
-  Offset32<SortedUnsizedArrayOf<BaseGlyphRecordV0>> baseGlyphsV0;
-  Offset32<UnsizedArrayOf<LayerRecordV0>>           layersV0;
-  uint16                                            numLayersV0;
+  uint16                                            numBaseGlyphRecords;
+  Offset32<SortedUnsizedArrayOf<BaseGlyphRecord>>   baseGlyphRecords;
+  Offset32<UnsizedArrayOf<LayerRecord>>             layerRecords;
+  uint16                                            numLayerRecords;
   // Version-1 additions
-  Offset32<BaseGlyphV1List>                         baseGlyphsV1;
-  Offset32<LayerV1List>                             layersV1;
+  Offset32<BaseGlyphList>                           baseGlyphList;
+  Offset32<LayerList>                               layerList;
   Offset32<ItemVariationStore>                      varStore;
 };
 
