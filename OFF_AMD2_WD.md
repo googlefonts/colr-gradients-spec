@@ -777,7 +777,7 @@ table.
 The PaintColrLayers table is used to define a bottom-up z-order sequence of
 layers. Similar to version 0, it defines a layer set as a slice in an array, but
 in this case the array is an array of offsets to paint tables, contained in a
-LayerV1List table. Each referenced paint table is the root of a sub-graph of
+LayerList table. Each referenced paint table is the root of a sub-graph of
 paint tables that specifies a graphic composition to be used as a layer. Within
 a given slice, the first offset provides the content for the bottom layer, and
 each subsequent offset provides content that overlays the preceding content.
@@ -785,23 +785,22 @@ Definition of a layer set—a slice within the layer list—is given in a
 PaintColrLayers table.
 
 Figure 5.37 illustrates the organizational relationship between PaintColrLayers
-tables, the LayerV1List, and referenced paint tables that are roots of
-sub-graphs.
+tables, the LayerList, and referenced paint tables that are roots of sub-graphs.
 
-![Version 1: PaintColrLayers tables specify slices within the LayerV1List, providing a layering of content defined in sub-graphs.](images/colr_layers_v1.png)
+![Version 1: PaintColrLayers tables specify slices within the LayerList, providing a layering of content defined in sub-graphs.](images/colr_layers_v1.png)
 
-**Figure 5.37 Version 1: PaintColrLayers tables specify slices within the LayerV1List, providing a layering of content defined in sub-graphs**
+**Figure 5.37 Version 1: PaintColrLayers tables specify slices within the LayerList, providing a layering of content defined in sub-graphs**
 
-NOTE: Paint table offsets in the LayerV1List table are only used in conjunction
+NOTE: Paint table offsets in the LayerList table are only used in conjunction
 with PaintColrLayers tables. If a paint table does not need to be referenced via
 a PaintColrLayers table, its offset does not need to be included in the
-LayerV1List array.
+LayerList array.
 
 A PaintColrLayers table can be used as the root of a color glyph definition,
 providing a base layering structure for the color glyph. In this usage, the
-PaintColrLayers table is referenced by a BaseGlyphV1Record, which specifies the
-root of the graph of a color glyph definition for a given base glyph. This is
-illustrated in figure 5.38.
+PaintColrLayers table is referenced by a BaseGlyphPaintRecord, which specifies
+the root of the graph of a color glyph definition for a given base glyph. This
+is illustrated in figure 5.38.
 
 ![PaintColrLayers table used as the root of a color glyph definition.](images/colr_PaintColrLayers_as_root.png)
 
@@ -1051,33 +1050,33 @@ paint sub-graphs arranged in bottom-up z-order layers, and an example was given
 of a PaintColrLayers table used as the root of a color glyph definition. A
 PaintColrLayers table can also be nested more deeply within the graph of a color
 glyph. One purpose for doing this is to reference a re-usable component defined
-as a contiguous set of layers in the LayerV1List table.
+as a contiguous set of layers in the LayerList table.
 
 This is readily explained using the clock faces as an example. As described
 above, each clock face shares several elements in common. Some of these form a
 contiguous set of layers. Suppose four sub-graphs for shared clock face elements
-are given in the LayerV1List as contiguous layers, as shown in figure 5.48. (For
+are given in the LayerList as contiguous layers, as shown in figure 5.48. (For
 brevity, the visual result for each sub-graph is shown, but not the paint
 details.)
 
-![Common clock face elements given as a slice within the LayerV1List table.](images/colr_clock_common.png)
+![Common clock face elements given as a slice within the LayerList table.](images/colr_clock_common.png)
 
-**Figure 5.48 Common clock face elements given as a slice within the LayerV1List table**
+**Figure 5.48 Common clock face elements given as a slice within the LayerList table**
 
 A PaintColrLayers table can reference any contiguous slice of layers in the
-LayerV1List table. Thus, the set of layers shown in figure 5.48 can be
-referenced by PaintColrLayers tables anywhere in the graph of any color glyph.
-In this way, this set of layers can be re-used in multiple clock face color
-glyph definitions.
+LayerList table. Thus, the set of layers shown in figure 5.48 can be referenced
+by PaintColrLayers tables anywhere in the graph of any color glyph. In this
+way, this set of layers can be re-used in multiple clock face color glyph
+definitions.
 
 This is illustrated in figure 5.49: The color glyph definition for the one
 o’clock emoji has a PaintColrLayers table as its root, referencing a slice of
-three layers in the LayerV1List table. The upper two layers are the hour hand,
+three layers in the LayerList table. The upper two layers are the hour hand,
 which is specific to this color glyph; and the cap over the pivot for the minute
 and hour hands, which is common to other clock emoji but in a layer that is not
 contiguous with other common layers. The bottom layer of these three layers is
 the composition for all the remaining common layers. It is represented using a
-nested PaintColrLayers table that references the slice within the LayerV1List
+nested PaintColrLayers table that references the slice within the LayerList
 for the common clock face elements shown in figure 5.48.
 
 ![A PaintColrLayers table is used to reference a set of layers that define a shared clock face composition.](images/colr_reuse_clock-face_PaintColrLayers.png)
@@ -1092,27 +1091,27 @@ of the common clock face elements.
 
 A third way to re-use components in color glyph definitions is to use a nested
 PaintColrGlyph table. This format references a base glyph ID, which is used to
-access a corresponding BaseGlyphV1Record. That record will provide the offset of
-a paint table that is the root of a graph for a color glyph definition. That
-graph can potentially be used as an independent color glyph, but it can also
-define a shared composition that gets re-used in multiple color glyphs. Each
-time the shared composition is to be re-used, it is referenced by its base glyph
-ID using a PaintColrGlyph table. The graph of the referenced color glyph is
-thereby incorporated into the graph of the PaintColrGlyph table as its child
-sub-graph.
+access a corresponding BaseGlyphPaintRecord. That record will provide the
+offset of a paint table that is the root of a graph for a color glyph
+definition. That graph can potentially be used as an independent color glyph,
+but it can also define a shared composition that gets re-used in multiple color
+glyphs. Each time the shared composition is to be re-used, it is referenced by
+its base glyph ID using a PaintColrGlyph table. The graph of the referenced
+color glyph is thereby incorporated into the graph of the PaintColrGlyph table
+as its child sub-graph.
 
-When a PaintColrGlyph table is used, a BaseGlyphV1Record with the specified
-glyph ID is expected. If no BaseGlyphV1Record with that glyph ID is found, the
-color glyph is not well formed. See 5.7.11.1.9 for details regarding
+When a PaintColrGlyph table is used, a BaseGlyphPaintRecord with the specified
+glyph ID is expected. If no BaseGlyphPaintRecord with that glyph ID is found,
+the color glyph is not well formed. See 5.7.11.1.9 for details regarding
 well-formedness and validity of the graph.
 
 The example from 5.7.11.1.7.2 is modified to illustrate use of a PaintColrGlyph
 table. In figure 5.50, a PaintColrLayers table references a slice within the
-LayerV1List that defines the shared component. Now, however, this
-PaintColrLayers table is treated as the root of a color glyph definition for
-base glyph ID 63163. The color glyph for the one o’clock emoji is defined with
-three layers, as before, but now the bottom layer uses a PaintColrGlyph table
-that references the color glyph definition for glyph ID 63163.
+LayerList that defines the shared component. Now, however, this PaintColrLayers
+table is treated as the root of a color glyph definition for base glyph ID
+63163. The color glyph for the one o’clock emoji is defined with three layers,
+as before, but now the bottom layer uses a PaintColrGlyph table that references
+the color glyph definition for glyph ID 63163.
 
 ![A PaintColrGlyph table is used to reference the shared clock face composition via a glyph ID.](images/colr_reuse_clock-face_PaintColrGlyph.png)
 
@@ -1188,25 +1187,25 @@ glyph.
 **5.7.11.1.9 Color glyphs as a directed acyclic graph**
 
 When using version 1 formats, a color glyph is defined by a directed, acyclic
-graph of linked paint tables. For each BaseGlyphV1Record, the paint table
+graph of linked paint tables. For each BaseGlyphPaintRecord, the paint table
 referenced by that record is the root of a graph defining a color glyph
 composition.
 
 The graph for a given color glyph is made up of all paint tables reachable from
-the BaseGlyphV1Record. The BaseGlyphV1Record and several paint table formats use
-direct links; that is, they include a forward offset to a paint subtable. Two
-paint formats make indirect links:
+the BaseGlyphPaintRecord. The BaseGlyphPaintRecord and several paint table
+formats use direct links; that is, they include a forward offset to a paint
+subtable. Two paint formats make indirect links:
 
-* A PaintColrLayers table references a slice of offsets within the LayerV1List.
+* A PaintColrLayers table references a slice of offsets within the LayerList.
 The paint tables referenced by those offsets are considered to be linked within
 the graph as children of the PaintColrLayers table.
 
 * A PaintColrGlyph table references a base glyph ID, for which a corresponding
-BaseGlyphV1Record is expected. That record points to the root of a graph that is
-a complete color glyph definition on its own. But when referenced in this way by
-a PaintColrGlyph table, that entire graph is considered to be a child sub-graph
-of the PaintColrGlyph table, and a continuation of the graph of which the
-PaintColrGlyph table is a part.
+BaseGlyphPaintRecord is expected. That record points to the root of a graph that
+is a complete color glyph definition on its own. But when referenced in this way
+by a PaintColrGlyph table, that entire graph is considered to be a child
+sub-graph of the PaintColrGlyph table, and a continuation of the graph of which
+the PaintColrGlyph table is a part.
 
 The graph for a color glyph is a combination of paint tables using any of the
 paint table formats. The simplest color glyph definition would consist of a
@@ -1243,9 +1242,9 @@ The following are necessary for the graph to be well-formed and valid:
 
 * All subtable links shall satisfy the following criteria:
   * Forward offsets are within the COLR table bounds.
-  * If a PaintColrLayers table is present, then a LayerV1List is also present,
-and the referenced slice is within the length of the LayerV1List.
-  * If a PaintColrGlyph table is present, there is a BaseGlyphV1Record for the
+  * If a PaintColrLayers table is present, then a LayerList is also present,
+and the referenced slice is within the length of the LayerList.
+  * If a PaintColrGlyph table is present, there is a BaseGlyphPaintRecord for the
 referenced base glyph ID.
 * The graph shall be acyclic.
 
@@ -1337,35 +1336,35 @@ the COLR table require glyph ID 1 to be the .null glyph.
 | Offset32 | baseGlyphRecordsOffset | Offset to baseGlyphRecords array (may be NULL). |
 | Offset32 | layerRecordsOffset | Offset to layerRecords array (may be NULL). |
 | uint16 | numLayerRecords | Number of Layer records; may be 0 in a version 1 table. |
-| Offset32 | baseGlyphV1ListOffset | Offset to BaseGlyphV1List table. |
-| Offset32 | layerV1Offset | Offset to LayerV1List table (may be NULL). |
+| Offset32 | baseGlyphListOffset | Offset to BaseGlyphList table. |
+| Offset32 | layerListOffset | Offset to LayerList table (may be NULL). |
 | Offset32 | itemVariationStoreOffset | Offset to ItemVariationStore (may be NULL). |
 
-The BaseGlyphV1List and its subtables are only used in COLR version 1.
+The BaseGlyphList and its subtables are only used in COLR version 1.
 
-The LayerV1List is only used in conjunction with the BaseGlyphV1List and,
+The LayerList is only used in conjunction with the BaseGlyphList and,
 specifically, with PaintColrLayers tables (5.7.11.2.5.1); it is not required if
-no color glyphs use a PaintColrLayers table. If not used, set layerV1Offset to
+no color glyphs use a PaintColrLayers table. If not used, set layerListOffset to
 NULL.
 
-The ItemVariationStore is used in conjunction with a BaseGlyphV1List and its
+The ItemVariationStore is used in conjunction with a BaseGlyphList and its
 subtables, but only in variable fonts. If it is not used, set
 itemVariationStoreOffset to NULL.
 
 **5.7.11.2.1.3 Mixing version 0 and version 1 formats**
 
-A font that uses COLR version 1 and that includes a BaseGlyphV1List can also
+A font that uses COLR version 1 and that includes a BaseGlyphList can also
 include BaseGlyph and Layer records for compatibility with applications that
 only support COLR version 0.
 
 Color glyphs that can be implemented in COLR version 0 using BaseGlyph and Layer
-records can also be implemented using the version 1 BaseGlyphV1List and
-subtables. Thus, a font that uses the version 1 formats does not need to use the
-version 0 BaseGlyph and Layer records. However, a font may use the version 1
-structures for some base glyphs and the version 0 structures for other base
-glyphs. A font may also include a version 1 color glyph definition for a given
-base glyph ID that is equivalent to a version 0 definition, though this should
-never be needed. 
+records can also be implemented using the version 1 BaseGlyphList and subtables.
+Thus, a font that uses the version 1 formats does not need to use the version 0
+BaseGlyph and Layer records. However, a font may use the version 1 structures
+for some base glyphs and the version 0 structures for other base glyphs. A font
+may also include a version 1 color glyph definition for a given base glyph ID
+that is equivalent to a version 0 definition, though this should never be
+needed. 
 
 A font may define a color glyph for a given base glyph ID using version 0
 formats, and also define a different color glyph for the same base glyph ID
@@ -1373,7 +1372,7 @@ using version 1 formats. Applications that support COLR version 1 should give
 preference to the version 1 color glyph.
 
 For applications that support COLR version 1, the application should search for
-a base glyph ID first in the BaseGlyphV1List. Then, if not found, search in the
+a base glyph ID first in the BaseGlyphList. Then, if not found, search in the
 baseGlyphRecords array, if present.
 
 **5.7.11.2.2 BaseGlyph and Layer records**
@@ -1429,21 +1428,21 @@ CPAL table (5.7.12). A paletteIndex value of 0xFFFF is a special case,
 indicating that the text foreground color (as determined by the application) is
 to be used.
 
-**5.7.11.2.3 BaseGlyphV1List and LayerV1List**
+**5.7.11.2.3 BaseGlyphList and LayerList**
 
-The BaseGlyphV1List table is, conceptually, similar to the baseGlyphRecords
-array in COLR version 0, providing records that map a base glyph to a color
-glyph definition. The color glyph definitions that each refer to are
-significantly different, however—see 5.7.11.1.
+The BaseGlyphList table is, conceptually, similar to the baseGlyphRecords array
+in COLR version 0, providing records that map a base glyph to a color glyph
+definition. The color glyph definitions that each refer to are significantly
+different, however—see 5.7.11.1.
 
-*BaseGlyphV1List table:*
+*BaseGlyphList table:*
 
 | Type | Name | Description |
 |-|-|-|
-| uint32 | numBaseGlyphV1Records |  |
-| BaseGlyphV1Record | baseGlyphV1Records[numBaseGlyphV1Records] | |
+| uint32 | numBaseGlyphPaintRecords |  |
+| BaseGlyphPaintRecord | baseGlyphPaintRecords[numBaseGlyphPaintRecords] | |
 
-*BaseGlyphV1Record:*
+*BaseGlyphPaintRecord:*
 
 | Type | Name | Description |
 |-|-|-|
@@ -1453,24 +1452,24 @@ significantly different, however—see 5.7.11.1.
 The glyphID value shall be less than the numGlyphs value in the &#39;maxp&#39;
 table (5.2.6).
 
-The records in the baseGlyphV1Records array shall be sorted in increasing
+The records in the baseGlyphPaintRecords array shall be sorted in increasing
 glyphID order. It is intended that a binary search can be used to find a
-matching BaseGlyphV1Record for a specific glyphID.
+matching BaseGlyphPaintRecord for a specific glyphID.
 
-The paint table referenced by the BaseGlyphV1Record is the root of the graph for
-a color glyph definition.
+The paint table referenced by the BaseGlyphPaintRecord is the root of the graph
+for a color glyph definition.
 
 NOTE: Often the paint table that is the root of the graph for the color glyph
 definition will be a PaintColrLayers table, though this is not required. See
 5.7.11.1.9 for more information regarding the graph of a color glyph, and
 5.7.11.1.4 for background information regarding the PaintColrLayers table.
 
-A LayerV1List table is used in conjunction with PaintColrLayers tables to
-represent layer structures. A single LayerV1List is defined and can be used by
+A LayerList table is used in conjunction with PaintColrLayers tables to
+represent layer structures. A single LayerList is defined and can be used by
 multiple PaintColrLayer tables, each of which references a slice of the layer
 list.
 
-*LayerV1List table:*
+*LayerList table:*
 
 | Type | Name | Description |
 |-|-|-|
@@ -1615,7 +1614,7 @@ the table.
 **5.7.11.2.5.1 Format 1: PaintColrLayers**
 
 Format 1 is used to define a vector of layers. The layers are a slice of layers
-from the LayerV1List table. The first layer is the bottom of the z-order, and
+from the LayerList table. The first layer is the bottom of the z-order, and
 subsequent layers are composited on top using the COMPOSITE_SRC_OVER composition
 mode (see 5.7.11.2.5.13).
 
@@ -1627,8 +1626,8 @@ information about its use for shared, re-usable components, see 5.7.11.1.7.2.
 | Type | Name | Description |
 |-|-|-|
 | uint8 | format | Set to 1. |
-| uint8 | numLayers | Number of offsets to paint tables to read from LayerV1List. |
-| uint32 | firstLayerIndex | Index (base 0) into the LayerV1List. |
+| uint8 | numLayers | Number of offsets to paint tables to read from LayerList. |
+| uint32 | firstLayerIndex | Index (base 0) into the LayerList. |
 
 NOTE: An 8-bit value is used for numLayers to minimize size for common
 scenarios. If more than 256 layers are needed, then two or more PaintColrLayers
@@ -1808,13 +1807,13 @@ The glyphID value shall be less than the numGlyphs value in the &#39;maxp&#39;
 table (5.2.6). That is, it shall be a valid glyph with outline data in the
 &#39;glyf&#39; (5.3.4), &#39;CFF &#39; (5.4.2) or CFF2 (5.4.3) table. Only that
 outline data is used. In particular, if this glyph ID has a description in the
-COLR table (glyphID appears in a COLR BaseGlyph record or the BaseGlyphV1List),
+COLR table (glyphID appears in a COLR BaseGlyph record or the BaseGlyphList),
 that COLR data is not relevant for purposes of the PaintGlyph table.
 
 **5.7.11.2.5.7 Format 11: PaintColrGlyph**
 
-Format 7 is used to allow a color glyph definition from the BaseGlyphV1List to
-be a re-usable component that can be incorporated into multiple color glyph
+Format 7 is used to allow a color glyph definition from the BaseGlyphList to be
+a re-usable component that can be incorporated into multiple color glyph
 definitions. See 5.7.11.1.7.3 for more information.
 
 *PaintColrGlyph table (format 11):*
@@ -1822,12 +1821,12 @@ definitions. See 5.7.11.1.7.3 for more information.
 | Type | Name | Description |
 |-|-|-|
 | uint8 | format | Set to 11. |
-| uint16 | glyphID | Glyph ID for a BaseGlyphV1List base glyph. |
+| uint16 | glyphID | Glyph ID for a BaseGlyphList base glyph. |
 
-The glyphID value shall be a glyphID found in a BaseGlyphV1Record within the
-BaseGlyphV1List. The BaseGlyphV1Record provides an offset to a paint table; that
-paint table and the graph linked from it are incorporated as a child sub-graph
-of the PaintColrGlyph table within the current color glyph definition.
+The glyphID value shall be a glyphID found in a BaseGlyphPaintRecord within the
+BaseGlyphList. The BaseGlyphPaintRecord provides an offset to a paint table;
+that paint table and the graph linked from it are incorporated as a child
+sub-graph of the PaintColrGlyph table within the current color glyph definition.
 
 **5.7.11.2.5.8 Formats 12 and 13: PaintTransform, PaintVarTransform**
 
@@ -2334,7 +2333,7 @@ rendering processing.
 1. Start with an initial drawing surface. As mentioned in 5.7.11.1.8.2, the
 bounding box of the base glyph can be used to determine the size.
 1. Traverse the graph of a color glyph definition, starting with the root paint
-table referenced by a BaseGlyphV1Record, using the following pseudo-code
+table referenced by a BaseGlyphPaintRecord, using the following pseudo-code
 function.
 
 ```
