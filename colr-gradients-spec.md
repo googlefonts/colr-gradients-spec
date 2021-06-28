@@ -105,7 +105,11 @@ struct ArrayOf
   T      array[/*count*/];
 };
 
-typedef uint32 VarIdx;
+// Index of the first variation record in the variation index map or
+// variation store if no variation index map is present.
+// A record with N variable fields finds them at VarIdBase+0, ...,+N-1
+// Use 0xFFFFFFFF to indicate no variation.
+typedef uint32 VarIdxBase;
 
 template <typename T>
 struct Variable
@@ -138,7 +142,8 @@ struct ColorIndex
 struct VarColorIndex
 {
   uint16     paletteIndex;
-  VarF2DOT14 alpha; // Default 1.0. Values outside [0.,1.] reserved.
+  F2DOT14    alpha; // Default 1.0. Values outside [0.,1.] reserved. VarIdx varBase + 0.
+  VarIdxBase varBase;
 };
 
 struct ColorStop
@@ -149,8 +154,9 @@ struct ColorStop
 
 struct VarColorStop
 {
-  VarF2DOT14 stopOffset;
-  VarColorIndex color;
+  F2DOT14 stopOffset; // VarIdx varBase + 0
+  ColorIndex color; // VarIdx varBase + 1
+  VarIdxBase varBase;
 };
 
 enum Extend : uint8
@@ -233,12 +239,13 @@ struct Affine2x3
 
 struct VarAffine2x3
 {
-  VarFixed xx;
-  VarFixed yx;
-  VarFixed xy;
-  VarFixed yy;
-  VarFixed dx;
-  VarFixed dy;
+  Fixed xx;  // VarIdx varBase + 0
+  Fixed yx;  // VarIdx varBase + 1
+  Fixed xy;  // VarIdx varBase + 2
+  Fixed yy;  // VarIdx varBase + 3
+  Fixed dx;  // VarIdx varBase + 4
+  Fixed dy;  // VarIdx varBase + 5
+  VarIdBase varBase;
 };
 
 // Paint tables
@@ -282,12 +289,13 @@ struct PaintVarLinearGradient
 {
   uint8                  format; // = 5
   Offset24<VarColorLine> colorLine;
-  VarFWORD               x0;
-  VarFWORD               y0;
-  VarFWORD               x1;
-  VarFWORD               y1;
-  VarFWORD               x2; // Normal; Equal to (x1,y1) in simple cases.
-  VarFWORD               y2;
+  FWORD                  x0; // VarIdx varBase + 0
+  FWORD                  y0; // VarIdx varBase + 1
+  FWORD                  x1; // VarIdx varBase + 2
+  FWORD                  y1; // VarIdx varBase + 3
+  FWORD                  x2; // VarIdx varBase + 4. Normal; Equal to (x1,y1) in simple cases.
+  FWORD                  y2; // VarIdx varBase + 5
+  VarIdBase              varBase;
 };
 
 struct PaintRadialGradient
@@ -306,12 +314,13 @@ struct PaintVarRadialGradient
 {
   uint8                  format; // = 7
   Offset24<VarColorLine> colorLine;
-  VarFWORD               x0;
-  VarFWORD               y0;
-  VarUFWORD              radius0;
-  VarFWORD               x1;
-  VarFWORD               y1;
-  VarUFWORD              radius1;
+  FWORD                  x0; // VarIdx varBase + 0
+  FWORD                  y0; // VarIdx varBase + 1
+  UFWORD                 radius0; // VarIdx varBase + 2
+  FWORD                  x1; // VarIdx varBase + 3
+  FWORD                  y1; // VarIdx varBase + 4
+  UFWORD                 radius1; // VarIdx varBase + 5
+  VarIdBase              varBase;
 };
 
 struct PaintSweepGradient
@@ -328,10 +337,11 @@ struct PaintVarSweepGradient
 {
   uint8                  format; // = 9
   Offset24<VarColorLine> colorLine;
-  VarFWORD               centerX;
-  VarFWORD               centerY;
-  VarFixed               startAngle;
-  VarFixed               endAngle;
+  FWORD                  centerX; // VarIdx varBase + 0
+  FWORD                  centerY; // VarIdx varBase + 1
+  Fixed                  startAngle; // VarIdx varBase + 2
+  Fixed                  endAngle; // VarIdx varBase + 3
+  VarIdBase              varBase;
 };
 
 // Paint a non-COLR glyph, filled as indicated by paint.
@@ -375,8 +385,9 @@ struct PaintVarTranslate
 {
   uint8                  format; // = 15
   Offset24<Paint>        src;
-  VarFixed               dx;
-  VarFixed               dy;
+  Fixed                  dx; // VarIdx varBase + 0
+  Fixed                  dy; // VarIdx varBase + 1
+  VarIdBase              varBase;
 };
 
 struct PaintScale
@@ -391,8 +402,9 @@ struct PaintVarScale
 {
   uint8                  format; // = 17
   Offset24<Paint>        src;
-  VarFixed               scaleX;
-  VarFixed               scaleY;
+  Fixed                  scaleX; // VarIdx varBase + 0
+  Fixed                  scaleY; // VarIdx varBase + 1
+  VarIdBase              varBase;
 };
 
 struct PaintScaleAroundCenter
@@ -409,10 +421,11 @@ struct PaintVarScaleAroundCenter
 {
   uint8                  format; // = 19
   Offset24<Paint>        src;
-  VarFixed               scaleX;
-  VarFixed               scaleY;
-  VarFixed               centerX;
-  VarFixed               centerY;
+  Fixed                  scaleX; // VarIdx varBase + 0
+  Fixed                  scaleY; // VarIdx varBase + 1
+  Fixed                  centerX; // VarIdx varBase + 2
+  Fixed                  centerY; // VarIdx varBase + 3
+  VarIdBase              varBase;
 };
 
 struct PaintScaleUniform
@@ -426,7 +439,8 @@ struct PaintVarScaleUniform
 {
   uint8                  format; // = 21
   Offset24<Paint>        src;
-  VarFixed               scale;
+  Fixed                  scale; // VarIdx varBase + 0
+  VarIdBase              varBase;
 };
 
 struct PaintScaleUniformAroundCenter
@@ -442,9 +456,10 @@ struct PaintVarScaleUniformAroundCenter
 {
   uint8                  format; // = 23
   Offset24<Paint>        src;
-  VarFixed               scale;
-  VarFixed               centerX;
-  VarFixed               centerY;
+  Fixed                  scale; // VarIdx varBase + 0
+  Fixed                  centerX; // VarIdx varBase + 1
+  Fixed                  centerY; // VarIdx varBase + 2
+  VarIdBase              varBase;
 };
 
 struct PaintRotate
@@ -458,7 +473,8 @@ struct PaintVarRotate
 {
   uint8                  format; // = 25
   Offset24<Paint>        src;
-  VarFixed               angle;
+  Fixed                  angle; // VarIdx varBase + 0
+  VarIdBase              varBase;
 };
 
 struct PaintRotateAroundCenter
@@ -474,9 +490,10 @@ struct PaintVarRotateAroundCenter
 {
   uint8                  format; // = 27
   Offset24<Paint>        src;
-  VarFixed               angle;
-  VarFixed               centerX;
-  VarFixed               centerY;
+  Fixed                  angle; // VarIdx varBase + 0
+  Fixed                  centerX; // VarIdx varBase + 1
+  Fixed                  centerY; // VarIdx varBase + 2
+  VarIdBase              varBase;
 };
 
 struct PaintSkew
@@ -491,8 +508,9 @@ struct PaintVarSkew
 {
   uint8                  format; // = 29
   Offset24<Paint>        src;
-  VarFixed               xSkewAngle;
-  VarFixed               ySkewAngle;
+  Fixed                  xSkewAngle; // VarIdx varBase + 0
+  Fixed                  ySkewAngle; // VarIdx varBase + 1
+  VarIdBase              varBase;
 };
 
 struct PaintSkewAroundCenter
@@ -509,10 +527,11 @@ struct PaintVarSkewAroundCenter
 {
   uint8                  format; // = 31
   Offset24<Paint>        src;
-  VarFixed               xSkewAngle;
-  VarFixed               ySkewAngle;
-  VarFixed               centerX;
-  VarFixed               centerY;
+  Fixed                  xSkewAngle; // VarIdx varBase + 0
+  Fixed                  ySkewAngle; // VarIdx varBase + 1
+  Fixed                  centerX; // VarIdx varBase + 2
+  Fixed                  centerY; // VarIdx varBase + 3
+  VarIdBase              varBase;
 };
 
 struct PaintComposite
@@ -546,6 +565,7 @@ struct COLRv1
   // Version-1 additions
   Offset32<BaseGlyphList>                           baseGlyphList;
   Offset32<LayerList>                               layerList;
+  Offset32<VarIdxMap>                               varIdxMap;  // May be NULL
   Offset32<ItemVariationStore>                      varStore;
 };
 
