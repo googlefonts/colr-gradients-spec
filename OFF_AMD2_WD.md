@@ -852,6 +852,10 @@ transformations:
 * PaintTranslate and PaintVarTranslate support translation only, without or with
 variation support. See 5.7.11.2.5.9 for format details.
 
+* PaintTranslateInt16 and PaintVarTranslateInt16 support translation only, at lower
+precision than PaintTranslate and PaintVarTranslate, without or with variation support.
+See 5.7.11.2.5.9 for format details.
+
 * PaintScale and PaintVarScale support scaling only, without or with variation
 support. These two formats scale relative to the origin, and allow for different
 scale factors in X and Y directions. PaintScaleAroundCenter,
@@ -913,7 +917,7 @@ sub-graph; and a destination, or *backdrop*, sub-graph. First, the paint
 operations for the backdrop sub-graph are executed, then the drawing operations
 for the source sub-graph are executed and combined with backdrop using a
 specified compositing or blending mode. The available modes are given in the
-CompositionModes enumeration (see 5.7.11.2.5.13). The effect and processing rule
+CompositionModes enumeration (see 5.7.11.2.5.14). The effect and processing rule
 of each mode are specified in [Compositing and Blending Level 1][1].
 
 The available modes fall into two general types: compositing modes, also
@@ -1007,7 +1011,7 @@ offset within the file:
 * PaintGlyph
 * PaintComposite
 * PaintTransform, PaintVarTransform
-* PaintTranslate, PaintVarTranslate
+* PaintTranslate, PaintVarTranslate, PaintTranslateInt16, PaintVarTranslateInt16
 * PaintScale, PaintVarScale, and the other variant scaling paint formats
 * PaintRotate, PaintVarRotate, PaintRotateAroundCenter, PaintVarRotateAroundCenter
 * PaintSkew, PaintVarSkew, PaintSkewAroundCenter, PaintVarSkewAroundCenter
@@ -1167,7 +1171,7 @@ referenced base glyph ID is bounded.
 PaintTranslate, PaintScale, etc.) are bounded *if and only if* the referenced
 sub-graph is bounded.
 * PaintComposite is either bounded or unbounded, according to the composite mode
-used and the boundedness of the referenced sub-graphs. See 5.7.11.2.5.13 for
+used and the boundedness of the referenced sub-graphs. See 5.7.11.2.5.14 for
 details.
 
 Applications shall confirm that a color glyph definition is bounded, and shall
@@ -1616,7 +1620,7 @@ the table.
 Format 1 is used to define a vector of layers. The layers are a slice of layers
 from the LayerList table. The first layer is the bottom of the z-order, and
 subsequent layers are composited on top using the COMPOSITE_SRC_OVER composition
-mode (see 5.7.11.2.5.13).
+mode (see 5.7.11.2.5.14).
 
 For general information on the PaintColrLayers table, see 5.7.11.1.4. For
 information about its use for shared, re-usable components, see 5.7.11.1.7.2.
@@ -2221,20 +2225,62 @@ A skew can result in the pre-transform position (0, 0) being moved elsewhere.
 See 5.7.11.2.5.8 regarding alignment of the transformed content with the
 destination.
 
-**5.7.11.2.5.13 Format 32: PaintComposite**
+**5.7.11.2.5.13 Formats 32 and 33: PaintTranslateInt16, PaintVarTranslateInt16**
 
-Format 32 is used to combine two layered compositions, referred to as *source*
+Format 32 and 33 are used to apply a translation to a sub-graph. The paint table
+that is the root of the sub-graph is linked as a child. These Paints are preferred
+for compactness when a translation can be expressed using an Int16.
+
+Format 33 allows for variation of the translation in a variable font; format 32
+provides a more compact representation when variation is not required. Format 33
+shall not be used in non-variable fonts or if the COLR table does not have an
+ItemVariationStore subtable.
+
+For general information regarding transformations in a color glyph definition, 
+see 5.7.11.1.5.
+
+*PaintTranslateInt16 table (format 32):*
+
+| Type | Name | Description |
+|-|-|-|
+| uint8 | format | Set to 32. |
+| Offset24 | paintOffset | Offset to a Paint subtable. |
+| Int16 | dx | Translation in x direction. |
+| Int16 | dy | Translation in y direction. |
+
+*PaintVarTranslateInt16 table (format 33):*
+
+| Type | Name | Description |
+|-|-|-|
+| uint8 | format | Set to 33. |
+| Offset24 | paintOffset | Offset to a Paint subtable. |
+| VarInt16 | dx | Translation in x direction. |
+| VarInt16 | dy | Translation in y direction. |
+
+NOTE: Pure translation can also be represented using the PaintTransform or
+PaintVarTransform table by setting _xx_ = 1, _yy_ = 1, _xy_ and _yx_ = 0, and
+setting _dx_ and _dy_ to the translation values. The PaintTranslate or
+PaintVarTranslate table provides a more compact representation when only
+translation is required.
+
+The translation will result in the pre-transform position (0,0) being moved
+elsewhere. See 5.7.11.2.5.8 regarding alignment of the transformed content with
+the destination.
+
+**5.7.11.2.5.14 Format 34: PaintComposite**
+
+Format 34 is used to combine two layered compositions, referred to as *source*
 and *backdrop*, using different compositing or blending modes. The available
 compositing and blending modes are defined in an enumeration. For general 
 information and examples, see 5.7.11.1.6.
 
 NOTE: The backdrop is also referred to as the “destination”.
 
-*PaintComposite table (format 32):*
+*PaintComposite table (format 34):*
 
 | Type | Name | Description |
 |-|-|-|
-| uint8 | format | Set to 32. |
+| uint8 | format | Set to 34. |
 | Offset24 | sourcePaintOffset | Offset to a source Paint table. |
 | uint8 | compositeMode | A CompositeMode enumeration value. |
 | Offset24 | backdropPaintOffset | Offset to a backdrop Paint table. |

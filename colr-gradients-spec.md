@@ -515,9 +515,25 @@ struct PaintVarSkewAroundCenter
   VarFixed               centerY;
 };
 
-struct PaintComposite
+struct PaintTranslateInt16
 {
   uint8                  format; // = 32
+  Offset24<Paint>        src;
+  Int16                  dx;
+  Int16                  dy;
+};
+
+struct PaintVarTranslateInt16
+{
+  uint8                  format; // = 33
+  Offset24<Paint>        src;
+  VarInt16               dx;
+  VarInt16               dy;
+};
+
+struct PaintComposite
+{
+  uint8                  format; // = 34
   Offset24<Paint>        src;
   CompositeMode          mode;   // If mode is unrecognized use COMPOSITE_CLEAR
   Offset24<Paint>        backdrop;
