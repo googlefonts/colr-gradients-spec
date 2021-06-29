@@ -1913,7 +1913,7 @@ provides a more compact representation when variation is not required. Format 15
 shall not be used in non-variable fonts or if the COLR table does not have an
 ItemVariationStore subtable.
 
-These tables used reduced precision for compactness. Where higher precision is
+These tables use reduced precision for compactness. Where higher precision is
 required use PaintTransform/PaintVarTransform.
 
 For general information regarding transformations in a color glyph definition, 
