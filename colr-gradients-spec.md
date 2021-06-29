@@ -451,21 +451,21 @@ struct PaintRotate
 {
   uint8                  format; // = 24
   Offset24<Paint>        src;
-  F2Dot14                angle;
+  F2Dot14                angle; // 180° in counter-clockwise degrees per 1.0 of value
 };
 
 struct PaintVarRotate
 {
   uint8                  format; // = 25
   Offset24<Paint>        src;
-  VarF2Dot14             angle;
+  VarF2Dot14             angle; // 180° in counter-clockwise degrees per 1.0 of value
 };
 
 struct PaintRotateAroundCenter
 {
   uint8                  format; // = 26
   Offset24<Paint>        src;
-  F2Dot14                angle;
+  F2Dot14                angle; // 180° in counter-clockwise degrees per 1.0 of value
   Fixed                  centerX;
   Fixed                  centerY;
 };
@@ -474,7 +474,7 @@ struct PaintVarRotateAroundCenter
 {
   uint8                  format; // = 27
   Offset24<Paint>        src;
-  VarF2Dot14             angle;
+  VarF2Dot14             angle; // 180° in counter-clockwise degrees per 1.0 of value
   VarFixed               centerX;
   VarFixed               centerY;
 };
@@ -483,24 +483,24 @@ struct PaintSkew
 {
   uint8                  format; // = 28
   Offset24<Paint>        src;
-  F2Dot14                xSkewAngle;
-  F2Dot14                ySkewAngle;
+  F2Dot14                xSkewAngle; // 180° in counter-clockwise degrees per 1.0 of value
+  F2Dot14                ySkewAngle; // 180° in counter-clockwise degrees per 1.0 of value
 };
 
 struct PaintVarSkew
 {
   uint8                  format; // = 29
   Offset24<Paint>        src;
-  VarF2Dot14             xSkewAngle;
-  VarF2Dot14             ySkewAngle;
+  VarF2Dot14             xSkewAngle; // 180° in counter-clockwise degrees per 1.0 of value
+  VarF2Dot14             ySkewAngle; // 180° in counter-clockwise degrees per 1.0 of value
 };
 
 struct PaintSkewAroundCenter
 {
   uint8                  format; // = 30
   Offset24<Paint>        src;
-  F2Dot14                xSkewAngle;
-  F2Dot14                ySkewAngle;
+  F2Dot14                xSkewAngle; // 180° in counter-clockwise degrees per 1.0 of value
+  F2Dot14                ySkewAngle; // 180° in counter-clockwise degrees per 1.0 of value
   Fixed                  centerX;
   Fixed                  centerY;
 };
@@ -509,8 +509,8 @@ struct PaintVarSkewAroundCenter
 {
   uint8                  format; // = 31
   Offset24<Paint>        src;
-  VarF2Dot14             xSkewAngle;
-  VarF2Dot14             ySkewAngle;
+  VarF2Dot14             xSkewAngle; // 180° in counter-clockwise degrees per 1.0 of value
+  VarF2Dot14             ySkewAngle; // 180° in counter-clockwise degrees per 1.0 of value
   VarFixed               centerX;
   VarFixed               centerY;
 };
