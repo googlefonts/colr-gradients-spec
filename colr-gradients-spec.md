@@ -353,14 +353,14 @@ struct PaintTransform
 {
   uint8                  format; // = 12
   Offset24<Paint>        src;
-  Affine2x3              transform;
+  Offset24<Affine2x3>    transform;
 };
 
 struct PaintVarTransform
 {
   uint8                  format; // = 13
   Offset24<Paint>        src;
-  VarAffine2x3           transform;
+  Offset24<VarAffine2x3> transform;
 };
 
 struct PaintTranslate
