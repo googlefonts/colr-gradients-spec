@@ -622,11 +622,10 @@ in figure 5.30:
 
 **Figure 5.30 A sweep gradient with start angle of 30° and an end angle of 150°**
 
-Start and end angle values can be outside the range [0, 360), but are
-interpreted as values within that range by applying a modulus operation. For
-example, an angle -60° is treated the same as 300°; an angle 480° is treated the
-same as 120°. As a consequence, the [0, 1] range of the color line covers at
-most one full rotation around the center, never more.
+Start and end angle values can be outside the range [0, 360), and are converted
+to values within that range by applying a modulus operation. For example, an
+angle -60° is treated the same as 300°. As a consequence, the [0, 1] range of
+the color line covers at most one full rotation around the center, never more.
 
 If the starting and ending angle are the same, a sharp color transition can
 occur if the colors at stop offsets 0 and 1 are different. This is illustrated
@@ -1769,8 +1768,8 @@ formats, see 5.7.11.2.4. For background information on the color line, see
 | Offset24 | colorLineOffset | Offset to ColorLine table. |
 | FWORD | centerX | Center x coordinate. |
 | FWORD | centerY | Center y coordinate. |
-| Fixed | startAngle | Start of the angular range of the gradient. |
-| Fixed | endAngle | End of the angular range of the gradient. |
+| F2DOT14 | startAngle | Start of the angular range of the gradient, 180° in counter-clockwise degrees per 1.0 of value. |
+| F2DOT14 | endAngle | End of the angular range of the gradient, 180° in counter-clockwise degrees per 1.0 of value. |
 
 *PaintVarSweepGradient table (format 9):*
 
@@ -1780,8 +1779,8 @@ formats, see 5.7.11.2.4. For background information on the color line, see
 | Offset24 | colorLineOffset | Offset to VarColorLine table. |
 | VarFWord | centerX | Center x coordinate. |
 | VarFWord | centerY | Center y coordinate. |
-| VarFixed | startAngle | Start of the angular range of the gradient. |
-| VarFixed | endAngle | End of the angular range of the gradient. |
+| VarF2Dot14 | startAngle | Start of the angular range of the gradient, 180° in counter-clockwise degrees per 1.0 of value. |
+| VarF2Dot14 | endAngle | End of the angular range of the gradient, 180° in counter-clockwise degrees per 1.0 of value. |
 
 Angles are expressed in counter-clockwise degrees from the direction of the
 positive x-axis in the design grid.
