@@ -320,8 +320,8 @@ struct PaintSweepGradient
   Offset24<ColorLine>    colorLine;
   FWORD                  centerX;
   FWORD                  centerY;
-  Fixed                  startAngle;
-  Fixed                  endAngle;
+  F2Dot14                startAngle; // 180° in counter-clockwise degrees per 1.0 of value
+  F2Dot14                endAngle;   // 180° in counter-clockwise degrees per 1.0 of value
 };
 
 struct PaintVarSweepGradient
@@ -330,8 +330,8 @@ struct PaintVarSweepGradient
   Offset24<VarColorLine> colorLine;
   VarFWORD               centerX;
   VarFWORD               centerY;
-  VarFixed               startAngle;
-  VarFixed               endAngle;
+  VarF2Dot14             startAngle; // 180° in counter-clockwise degrees per 1.0 of value
+  VarF2Dot14             endAngle;   // 180° in counter-clockwise degrees per 1.0 of value
 };
 
 // Paint a non-COLR glyph, filled as indicated by paint.

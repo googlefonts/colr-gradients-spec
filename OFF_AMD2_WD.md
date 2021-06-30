@@ -1769,8 +1769,8 @@ formats, see 5.7.11.2.4. For background information on the color line, see
 | Offset24 | colorLineOffset | Offset to ColorLine table. |
 | FWORD | centerX | Center x coordinate. |
 | FWORD | centerY | Center y coordinate. |
-| Fixed | startAngle | Start of the angular range of the gradient. |
-| Fixed | endAngle | End of the angular range of the gradient. |
+| F2Dot14 | startAngle | Start of the angular range of the gradient. 180° in counter-clockwise degrees per 1.0 of value. |
+| F2Dot14 | endAngle | End of the angular range of the gradient. 180° in counter-clockwise degrees per 1.0 of value. |
 
 *PaintVarSweepGradient table (format 9):*
 
@@ -1780,8 +1780,8 @@ formats, see 5.7.11.2.4. For background information on the color line, see
 | Offset24 | colorLineOffset | Offset to VarColorLine table. |
 | VarFWord | centerX | Center x coordinate. |
 | VarFWord | centerY | Center y coordinate. |
-| VarFixed | startAngle | Start of the angular range of the gradient. |
-| VarFixed | endAngle | End of the angular range of the gradient. |
+| VarF2Dot14 | startAngle | Start of the angular range of the gradient. 180° in counter-clockwise degrees per 1.0 of value. |
+| VarF2Dot14 | endAngle | End of the angular range of the gradient. 180° in counter-clockwise degrees per 1.0 of value. |
 
 Angles are expressed in counter-clockwise degrees from the direction of the
 positive x-axis in the design grid.
