@@ -2165,6 +2165,9 @@ when variation is not required.
 Formats 29 and 31 shall not be used in non-variable fonts or if the COLR table
 does not have an ItemVariationStore subtable.
 
+These tables use reduced precision for compactness. Where higher precision is
+required use PaintTransform/PaintVarTransform.
+
 For general information regarding transformations in a color glyph definition, 
 see 5.7.11.1.5.
 
