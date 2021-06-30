@@ -1934,8 +1934,8 @@ see 5.7.11.1.5.
 |-|-|-|
 | uint8 | format | Set to 15. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
-| VarFWORD | dx | Translation in x direction. |
-| VarFWORD | dy | Translation in y direction. |
+| VarFWord | dx | Translation in x direction. |
+| VarFWord | dy | Translation in y direction. |
 
 NOTE: Pure translation can also be represented using the PaintTransform or
 PaintVarTransform table by setting _xx_ = 1, _yy_ = 1, _xy_ and _yx_ = 0, and
@@ -1985,8 +1985,8 @@ see 5.7.11.1.5.
 |-|-|-|
 | uint8 | format | Set to 16. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
-| F2Dot14 | scaleX | Scale factor in x direction. |
-| F2Dot14 | scaleY | Scale factor in y direction. |
+| F2DOT14 | scaleX | Scale factor in x direction. |
+| F2DOT14 | scaleY | Scale factor in y direction. |
 
 *PaintVarScale table (format 17):*
 
@@ -2003,8 +2003,8 @@ see 5.7.11.1.5.
 |-|-|-|
 | uint8 | format | Set to 18. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
-| F2Dot14 | scaleX | Scale factor in x direction. |
-| F2Dot14 | scaleY | Scale factor in y direction. |
+| F2DOT14 | scaleX | Scale factor in x direction. |
+| F2DOT14 | scaleY | Scale factor in y direction. |
 | Fixed | centerX | x coordinate for the center of scaling. |
 | Fixed | centerY | y coordinate for the center of scaling. |
 
@@ -2025,7 +2025,7 @@ see 5.7.11.1.5.
 |-|-|-|
 | uint8 | format | Set to 20. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
-| F2Dot14 | scale | Scale factor in x and y directions. |
+| F2DOT14 | scale | Scale factor in x and y directions. |
 
 *PaintVarScaleUniform table (format 21):*
 
@@ -2041,7 +2041,7 @@ see 5.7.11.1.5.
 |-|-|-|
 | uint8 | format | Set to 22. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
-| F2Dot14 | scale | Scale factor in x and y directions. |
+| F2DOT14 | scale | Scale factor in x and y directions. |
 | Fixed | centerX | x coordinate for the center of scaling. |
 | Fixed | centerY | y coordinate for the center of scaling. |
 
@@ -2065,8 +2065,8 @@ scaling is required.
 
 Formats 24 to 27 are used to apply a rotation to a sub-graph. The paint table
 that is the root of the sub-graph is linked as a child. The amount of rotation
-is expressed as a floating point value where each 1.0 is 180°. This allows an
-F2Dot14 to be used for compact expression of rotation. 
+is expressed directly as an angle, using a floating point value where 1.0
+represents an angle of 180°. 
 
 Formats 24 and 25 apply rotations using the origin as the center of rotation.
 Format 25 allows for variation of the rotation in a variable font; format 24
@@ -2092,7 +2092,7 @@ see 5.7.11.1.5.
 |-|-|-|
 | uint8 | format | Set to 24. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
-| F2Dot14 | angle | Rotation angle, 180° in counter-clockwise degrees per 1.0 of value. |
+| F2DOT14 | angle | Rotation angle, 180° in counter-clockwise degrees per 1.0 of value. |
 
 *PaintVarRotate table (format 25):*
 
@@ -2108,7 +2108,7 @@ see 5.7.11.1.5.
 |-|-|-|
 | uint8 | format | Set to 26. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
-| F2Dot14 | angle | Rotation angle, 180° in counter-clockwise degrees per 1.0 of value. |
+| F2DOT14 | angle | Rotation angle, 180° in counter-clockwise degrees per 1.0 of value. |
 | Fixed | centerX | x coordinate for the center of rotation. |
 | Fixed | centerY | y coordinate for the center of rotation. |
 
@@ -2150,7 +2150,8 @@ the destination.
 
 Formats 28 to 31 are used to apply a skew to a sub-graph. The paint table that
 is the root of the sub-graph is linked as a child. The amounts of skew in the x
-or y direction are expressed directly as angles.
+or y direction are expressed directly as angles, using floating point values
+where 1.0 represents an angle of 180°.
 
 Formats 28 and 29 apply skews using the origin as the center of rotation for the
 skew. Format 29 allows for variation of the rotation in a variable font; format
@@ -2164,6 +2165,9 @@ when variation is not required.
 Formats 29 and 31 shall not be used in non-variable fonts or if the COLR table
 does not have an ItemVariationStore subtable.
 
+These tables use reduced precision for compactness. Where higher precision is
+required use PaintTransform/PaintVarTransform.
+
 For general information regarding transformations in a color glyph definition, 
 see 5.7.11.1.5.
 
@@ -2173,8 +2177,8 @@ see 5.7.11.1.5.
 |-|-|-|
 | uint8 | format | Set to 28. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
-| F2Dot14 | xSkewAngle | Angle of skew in the direction of the x-axis, 180° in counter-clockwise degrees per 1.0 of value. |
-| F2Dot14 | ySkewAngle | Angle of skew in the direction of the y-axis, 180° in counter-clockwise degrees per 1.0 of value. |
+| F2DOT14 | xSkewAngle | Angle of skew in the direction of the x-axis, 180° in counter-clockwise degrees per 1.0 of value. |
+| F2DOT14 | ySkewAngle | Angle of skew in the direction of the y-axis, 180° in counter-clockwise degrees per 1.0 of value. |
 
 *PaintVarSkew table (format 29):*
 
@@ -2191,8 +2195,8 @@ see 5.7.11.1.5.
 |-|-|-|
 | uint8 | format | Set to 30. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
-| F2Dot14 | xSkewAngle | Angle of skew in the direction of the x-axis, 180° in counter-clockwise degrees per 1.0 of value. |
-| F2Dot14 | ySkewAngle | Angle of skew in the direction of the y-axis, 180° in counter-clockwise degrees per 1.0 of value. |
+| F2DOT14 | xSkewAngle | Angle of skew in the direction of the x-axis, 180° in counter-clockwise degrees per 1.0 of value. |
+| F2DOT14 | ySkewAngle | Angle of skew in the direction of the y-axis, 180° in counter-clockwise degrees per 1.0 of value. |
 | Fixed | centerX | x coordinate for the center of rotation. |
 | Fixed | centerY | y coordinate for the center of rotation. |
 
