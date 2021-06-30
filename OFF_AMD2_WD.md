@@ -622,8 +622,8 @@ in figure 5.30:
 
 **Figure 5.30 A sweep gradient with start angle of 30° and an end angle of 150°**
 
-Start and end angle values can be outside the range [0, 360), but are
-interpreted as values within that range by applying a modulus operation. For
+Start and end angle values can be outside the range [0, 360) when variations are applied.
+Values are converted to values within that range by applying a modulus operation. For
 example, an angle -60° is treated the same as 300°; an angle 480° is treated the
 same as 120°. As a consequence, the [0, 1] range of the color line covers at
 most one full rotation around the center, never more.
