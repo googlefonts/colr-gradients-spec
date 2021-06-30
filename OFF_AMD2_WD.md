@@ -1934,8 +1934,8 @@ see 5.7.11.1.5.
 |-|-|-|
 | uint8 | format | Set to 15. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
-| VarFWORD | dx | Translation in x direction. |
-| VarFWORD | dy | Translation in y direction. |
+| VarFWord | dx | Translation in x direction. |
+| VarFWord | dy | Translation in y direction. |
 
 NOTE: Pure translation can also be represented using the PaintTransform or
 PaintVarTransform table by setting _xx_ = 1, _yy_ = 1, _xy_ and _yx_ = 0, and
