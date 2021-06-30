@@ -1847,7 +1847,7 @@ see 5.7.11.1.5.
 |-|-|-|
 | uint8 | format | Set to 12. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
-| Offset24 | transform | Offset to a Affine2x3. |
+| Offset24 | transformOffset | Offset to an Affine2x3 table. |
 
 *PaintVarTransform table (format 13):*
 
@@ -1855,15 +1855,15 @@ see 5.7.11.1.5.
 |-|-|-|
 | uint8 | format | Set to 13. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
-| Offset24 | transform | Offset to a VarAffine2x3. |
+| Offset24 | transformOffset | Offset to a VarAffine2x3 table. |
 
 The affine transformation is defined by a 2×3 matrix, specified in an Affine2x3
-or VarAffine2x3 record. The 2×3 matrix supports scale, skew, reflection,
+or VarAffine2x3 table. The 2×3 matrix supports scale, skew, reflection,
 rotation, and translation transformations. The matrix elements in the
-VarAffine2x3 record use VarFixed records, allowing the transform definition to
+VarAffine2x3 table use VarFixed records, allowing the transform definition to
 be variable in a variable font.
 
-*Affine2x3 record:*
+*Affine2x3 table:*
 
 | Type | Name | Description |
 |-|-|-|
@@ -1874,7 +1874,7 @@ be variable in a variable font.
 | Fixed | dx | Translation in x direction. |
 | Fixed | dy | Translation in y direction. |
 
-*VarAffine2x3 record:*
+*VarAffine2x3 table:*
 
 | Type | Name | Description |
 |-|-|-|
@@ -1893,7 +1893,7 @@ For a pre-transformation position *(x, y)*, the post-transformation position
 
 NOTE: It is helpful to understand linear transformations by their effect on *x-*
 and *y-basis* vectors _î = (1, 0)_ and _ĵ = (0, 1)_. The transform described by
-the Affine2x3 or VarAffine2x3 record maps the basis vectors to _î&#x2032; = (xx,
+the Affine2x3 or VarAffine2x3 table maps the basis vectors to _î&#x2032; = (xx,
 yx)_ and _ĵ&#x2032; = (xy, yy)_, and translates the origin to _(dx, dy)_.
 
 When the transformed composition from the referenced paint table (and its
