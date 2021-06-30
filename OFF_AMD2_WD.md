@@ -1847,7 +1847,7 @@ see 5.7.11.1.5.
 |-|-|-|
 | uint8 | format | Set to 12. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
-| Offset24 | transform | Offset to an Affine2x3 table. |
+| Offset24 | transformOffset | Offset to an Affine2x3 table. |
 
 *PaintVarTransform table (format 13):*
 
@@ -1855,7 +1855,7 @@ see 5.7.11.1.5.
 |-|-|-|
 | uint8 | format | Set to 13. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
-| Offset24 | transform | Offset to a VarAffine2x3 table. |
+| Offset24 | transformOffset | Offset to a VarAffine2x3 table. |
 
 The affine transformation is defined by a 2×3 matrix, specified in an Affine2x3
 or VarAffine2x3 table. The 2×3 matrix supports scale, skew, reflection,
