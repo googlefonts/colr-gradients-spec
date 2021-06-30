@@ -320,8 +320,8 @@ struct PaintSweepGradient
   Offset24<ColorLine>    colorLine;
   FWORD                  centerX;
   FWORD                  centerY;
-  F2Dot14                startAngle; // 180° in counter-clockwise degrees per 1.0 of value
-  F2Dot14                endAngle;   // 180° in counter-clockwise degrees per 1.0 of value
+  F2DOT14                startAngle; // 180° in counter-clockwise degrees per 1.0 of value
+  F2DOT14                endAngle;   // 180° in counter-clockwise degrees per 1.0 of value
 };
 
 struct PaintVarSweepGradient
