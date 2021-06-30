@@ -624,9 +624,8 @@ in figure 5.30:
 
 Start and end angle values can be outside the range [0, 360), and are converted
 to values within that range by applying a modulus operation. For example, an
-angle -60° is treated the same as 300°; an angle 480° is treated the same as
-120°. As a consequence, the [0, 1] range of the color line covers at most one
-full rotation around the center, never more.
+angle -60° is treated the same as 300°. As a consequence, the [0, 1] range of
+the color line covers at most one full rotation around the center, never more.
 
 If the starting and ending angle are the same, a sharp color transition can
 occur if the colors at stop offsets 0 and 1 are different. This is illustrated
