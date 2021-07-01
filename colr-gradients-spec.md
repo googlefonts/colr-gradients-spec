@@ -401,8 +401,8 @@ struct PaintScaleAroundCenter
   Offset24<Paint>        src;
   F2DOT14                scaleX;
   F2DOT14                scaleY;
-  Fixed                  centerX;
-  Fixed                  centerY;
+  FWORD                  centerX;
+  FWORD                  centerY;
 };
 
 struct PaintVarScaleAroundCenter
@@ -411,8 +411,8 @@ struct PaintVarScaleAroundCenter
   Offset24<Paint>        src;
   VarF2Dot14             scaleX;
   VarF2Dot14             scaleY;
-  VarFixed               centerX;
-  VarFixed               centerY;
+  VarFWord               centerX;
+  VarFWord               centerY;
 };
 
 struct PaintScaleUniform
@@ -434,8 +434,8 @@ struct PaintScaleUniformAroundCenter
   uint8                  format; // = 22
   Offset24<Paint>        src;
   F2DOT14                scale;
-  Fixed                  centerX;
-  Fixed                  centerY;
+  FWORD                  centerX;
+  FWORD                  centerY;
 };
 
 struct PaintVarScaleUniformAroundCenter
@@ -443,8 +443,8 @@ struct PaintVarScaleUniformAroundCenter
   uint8                  format; // = 23
   Offset24<Paint>        src;
   VarF2Dot14             scale;
-  VarFixed               centerX;
-  VarFixed               centerY;
+  VarFWord               centerX;
+  VarFWord               centerY;
 };
 
 struct PaintRotate
@@ -466,8 +466,8 @@ struct PaintRotateAroundCenter
   uint8                  format; // = 26
   Offset24<Paint>        src;
   F2DOT14                angle; // 180° in counter-clockwise degrees per 1.0 of value
-  Fixed                  centerX;
-  Fixed                  centerY;
+  FWORD                  centerX;
+  FWORD                  centerY;
 };
 
 struct PaintVarRotateAroundCenter
@@ -475,8 +475,8 @@ struct PaintVarRotateAroundCenter
   uint8                  format; // = 27
   Offset24<Paint>        src;
   VarF2Dot14             angle; // 180° in counter-clockwise degrees per 1.0 of value
-  VarFixed               centerX;
-  VarFixed               centerY;
+  VarFWord               centerX;
+  VarFWord               centerY;
 };
 
 struct PaintSkew
@@ -501,8 +501,8 @@ struct PaintSkewAroundCenter
   Offset24<Paint>        src;
   F2DOT14                xSkewAngle; // 180° in counter-clockwise degrees per 1.0 of value
   F2DOT14                ySkewAngle; // 180° in counter-clockwise degrees per 1.0 of value
-  Fixed                  centerX;
-  Fixed                  centerY;
+  FWORD                  centerX;
+  FWORD                  centerY;
 };
 
 struct PaintVarSkewAroundCenter
@@ -511,8 +511,8 @@ struct PaintVarSkewAroundCenter
   Offset24<Paint>        src;
   VarF2Dot14             xSkewAngle; // 180° in counter-clockwise degrees per 1.0 of value
   VarF2Dot14             ySkewAngle; // 180° in counter-clockwise degrees per 1.0 of value
-  VarFixed               centerX;
-  VarFixed               centerY;
+  VarFWord               centerX;
+  VarFWord               centerY;
 };
 
 struct PaintComposite

@@ -2004,8 +2004,8 @@ see 5.7.11.1.5.
 | Offset24 | paintOffset | Offset to a Paint subtable. |
 | F2DOT14 | scaleX | Scale factor in x direction. |
 | F2DOT14 | scaleY | Scale factor in y direction. |
-| Fixed | centerX | x coordinate for the center of scaling. |
-| Fixed | centerY | y coordinate for the center of scaling. |
+| FWORD | centerX | x coordinate for the center of scaling. |
+| FWORD | centerY | y coordinate for the center of scaling. |
 
 *PaintVarScaleAroundCenter table (format 19):*
 
@@ -2015,8 +2015,8 @@ see 5.7.11.1.5.
 | Offset24 | paintOffset | Offset to a Paint subtable. |
 | VarF2Dot14 | scaleX | Scale factor in x direction. |
 | VarF2Dot14 | scaleY | Scale factor in y direction. |
-| VarFixed | centerX | x coordinate for the center of scaling. |
-| VarFixed | centerY | y coordinate for the center of scaling. |
+| VarFWord | centerX | x coordinate for the center of scaling. |
+| VarFWord | centerY | y coordinate for the center of scaling. |
 
 *PaintScaleUniform table (format 20):*
 
@@ -2041,8 +2041,8 @@ see 5.7.11.1.5.
 | uint8 | format | Set to 22. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
 | F2DOT14 | scale | Scale factor in x and y directions. |
-| Fixed | centerX | x coordinate for the center of scaling. |
-| Fixed | centerY | y coordinate for the center of scaling. |
+| FWORD | centerX | x coordinate for the center of scaling. |
+| FWORD | centerY | y coordinate for the center of scaling. |
 
 *PaintVarScaleUniformAroundCenter table (format 23):*
 
@@ -2051,8 +2051,8 @@ see 5.7.11.1.5.
 | uint8 | format | Set to 23. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
 | VarF2Dot14 | scale | Scale factor in x and y directions. |
-| VarFixed | centerX | x coordinate for the center of scaling. |
-| VarFixed | centerY | y coordinate for the center of scaling. |
+| VarFWord | centerX | x coordinate for the center of scaling. |
+| VarFWord | centerY | y coordinate for the center of scaling. |
 
 NOTE: Pure scaling can also be represented using the PaintTransform or
 PaintVarTransform table. For scaling about the origin, this could be done by
@@ -2108,8 +2108,8 @@ see 5.7.11.1.5.
 | uint8 | format | Set to 26. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
 | F2DOT14 | angle | Rotation angle, 180° in counter-clockwise degrees per 1.0 of value. |
-| Fixed | centerX | x coordinate for the center of rotation. |
-| Fixed | centerY | y coordinate for the center of rotation. |
+| FWORD | centerX | x coordinate for the center of rotation. |
+| FWORD | centerY | y coordinate for the center of rotation. |
 
 *PaintVarRotateAroundCenter table (format 27):*
 
@@ -2118,8 +2118,8 @@ see 5.7.11.1.5.
 | uint8 | format | Set to 27. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
 | VarF2Dot14 | angle | Rotation angle, 180° in counter-clockwise degrees per 1.0 of value |
-| VarFixed | centerX | x coordinate for the center of rotation. |
-| VarFixed | centerY | y coordinate for the center of rotation. |
+| VarFWord | centerX | x coordinate for the center of rotation. |
+| VarFWord | centerY | y coordinate for the center of rotation. |
 
 NOTE: Pure rotation about a point can also be represented using the
 PaintTransform or PaintVarTransform table. For rotation about the origin, this
@@ -2196,8 +2196,8 @@ see 5.7.11.1.5.
 | Offset24 | paintOffset | Offset to a Paint subtable. |
 | F2DOT14 | xSkewAngle | Angle of skew in the direction of the x-axis, 180° in counter-clockwise degrees per 1.0 of value. |
 | F2DOT14 | ySkewAngle | Angle of skew in the direction of the y-axis, 180° in counter-clockwise degrees per 1.0 of value. |
-| Fixed | centerX | x coordinate for the center of rotation. |
-| Fixed | centerY | y coordinate for the center of rotation. |
+| FWORD | centerX | x coordinate for the center of rotation. |
+| FWORD | centerY | y coordinate for the center of rotation. |
 
 *PaintVarSkewAroundCenter table (format 31):*
 
@@ -2207,8 +2207,8 @@ see 5.7.11.1.5.
 | Offset24 | paintOffset | Offset to a Paint subtable. |
 | VarF2Dot14 | xSkewAngle | Angle of skew in the direction of the x-axis, 180° in counter-clockwise degrees per 1.0 of value. |
 | VarF2Dot14 | ySkewAngle | Angle of skew in the direction of the y-axis, 180° in counter-clockwise degrees per 1.0 of value. |
-| VarFixed | centerX | x coordinate for the center of rotation. |
-| Fixed | centerY | y coordinate for the center of rotation. |
+| VarFWord | centerX | x coordinate for the center of rotation. |
+| VarFWord | centerY | y coordinate for the center of rotation. |
 
 NOTE: Pure skews about a point can also be represented using the PaintTransform
 or PaintVarTransform table. For skews about the origin, this could be done by
