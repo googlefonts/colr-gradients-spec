@@ -399,8 +399,8 @@ capabilities. In some contexts, the type of gradient defined here is referred to
 as a “two point conical” gradient.
 
 The drawing algorithm for radial gradients follows the [HTML WHATWG Canvas
-specification for createRadialGradient()][33], but adapted with with alternate
-color line extend modes, as described in 5.7.11.1.2.1. Radial gradients shall be
+specification for createRadialGradient()][33], but adapted with alternate color
+line extend modes, as described in 5.7.11.1.2.1. Radial gradients shall be
 rendered with results that match the results produced by the following steps.
 
 With circle center points c₀ and c₁ defined as c₀ = (x₀, y₀) and c₁ = (x₁, y₁):
