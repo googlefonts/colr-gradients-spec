@@ -2137,6 +2137,12 @@ basis vectors. In variable fonts, if a rotation angle needs to vary, it is
 easier to get smooth variation if an angle is specified directly than when using
 trigonometric functions to derive matrix elements.
 
+NOTE: If representation of rotation directly as an angle is preferred but higher
+precision is required to specify a center of rotation, a chained sequence of
+transforms can be used. For example, a PaintTransform can be used to align the
+origin to the desired center of rotation, then PaintRotate can be used for the
+desired rotation, and a second PaintTransform can be used to reset the origin.
+
 When combining the transform effect of a PaintRotate table (or variants)
 with other transforms, the result shall be the same as if the rotation were
 represented using an equivalent matrix or sequence of matrices.
