@@ -538,7 +538,7 @@ NOTE: As seen in the figures above, the gradient fills the space when one circle
 is contained within the other, but not when neither circle is contained within
 the other. In a variable font, if the placement or radii of the circles vary,
 then a sharp transition can occur if the variation results in one circle being
-contained with the other for some instances but not for other instances. This
+contained within the other for some instances but not for other instances. This
 transition will occur when the inner circle just touches the outer circle (i.e.,
 they have exactly one point in common). In this case, the gradient will fill
 exactly one half of the space. This is illustrated in figure 5.27 using the pad
