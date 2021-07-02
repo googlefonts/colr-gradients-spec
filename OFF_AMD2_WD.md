@@ -1296,10 +1296,13 @@ that may be rendered as a non-color glyph instead.
 **5.7.11.2 COLR table formats**
 
 Various table and record formats are defined for COLR version 0 and version 1.
-Several values contained within the version 1 formats are variable. These use
-various record formats that combine a basic data type with a variation delta-set
-index: VarFWord, VarUFWord, VarF2Dot14, and VarFixed. These are described in
-7.2.3.1.
+
+Several values contained within the version 1 formats are variable. For items
+that vary in a variable font, the variation data is contained in an
+ItemVariationStore table (7.2.3). To associate each variable item with the
+corresponding variation data, a DeltaSetIndexMap table is used, as in the HVAR
+table (7.3.5). Within a given table that has variable items, a base/sequence
+scheme is used to index into the mapping data. See 5.7.11.4 for details.
 
 All table offsets are from the start of the parent table in which the offset is
 given, unless otherwise indicated.
@@ -1337,6 +1340,7 @@ the COLR table require glyph ID 1 to be the .null glyph.
 | uint16 | numLayerRecords | Number of Layer records; may be 0 in a version 1 table. |
 | Offset32 | baseGlyphListOffset | Offset to BaseGlyphList table. |
 | Offset32 | layerListOffset | Offset to LayerList table (may be NULL). |
+| Offset32 | varIndexMapOffset | Offset to DeltaSetIndexMap table (may be NULL). |
 | Offset32 | itemVariationStoreOffset | Offset to ItemVariationStore (may be NULL). |
 
 The BaseGlyphList and its subtables are only used in COLR version 1.
@@ -1349,6 +1353,12 @@ NULL.
 The ItemVariationStore is used in conjunction with a BaseGlyphList and its
 subtables, but only in variable fonts. If it is not used, set
 itemVariationStoreOffset to NULL.
+
+The DeltaSetIndexMap format is described in 7.3.5.2. A DeltaSetIndexMap is used
+in conjunction with the ItemVariationStore in a variable font. The
+DeltaSetIndexMap is optional: if an ItemVariationStore is present but a 
+DeltaSetIndexMap is not included, then an implicit mapping is used. See
+5.7.11.4 for details.
 
 **5.7.11.2.1.3 Mixing version 0 and version 1 formats**
 
@@ -1513,19 +1523,22 @@ alpha, and one that does not.
 | Type | Name | Description |
 |-|-|-|
 | uint16 | paletteIndex | Index for a CPAL palette entry. |
-| VarF2Dot14 | alpha | Variable alpha value. |
+| F2DOT14 | alpha | Alpha value. For variation, use varIndexBase + 0. |
+| uint32 | varIndexBase | Base index into DeltaSetIndexMap. |
+
+The VarColorIndex record uses a base/sequence scheme to index into mapping
+data. See 5.7.11.4 for details.
 
 A paletteIndex value of 0xFFFF is a special case, indicating that the text
 foreground color (as determined by the application) is to be used.
 
-The alpha value (alpha.value for VarF2Dot14) is always set explicitly. Values
-for alpha outside the range [0., 1.] (inclusive) are reserved; values outside
-this range shall be clipped. A value of zero means no opacity (fully
-transparent); 1.0 means fully opaque (no transparency). The alpha indicated in
-this record is multiplied with the alpha component of the CPAL entry (converted
-to float—divide by 255). Note that the resulting alpha value can be combined
-with and does not supersede alpha or opacity attributes set in higher-level,
-application-defined contexts.
+The alpha value is always set explicitly. Values for alpha outside the range
+[0., 1.] (inclusive) are reserved; values outside this range shall be clipped. A
+value of zero means no opacity (fully transparent); 1.0 means fully opaque (no
+transparency). The alpha indicated in this record is multiplied with the alpha
+component of the CPAL entry (converted to float—divide by 255). Note that the
+resulting alpha value can be combined with and does not supersede alpha or
+opacity attributes set in higher-level, application-defined contexts.
 
 See 5.7.11.1.1 for more information regarding color references and solid color
 fills.
@@ -1535,7 +1548,9 @@ numbers to color values, defined using color stops. See 5.7.11.1.2.1 for an
 overview and additional details.
 
 Two color-stop record formats are defined: one that allows for variation of
-stop offset position or of alpha, and one that does not.
+stop offset position or of alpha, and one that does not. The format supporting
+variations uses a base/sequence scheme to index into mapping data; see
+5.7.11.4 for details.
 
 *ColorStop record:*
 
@@ -1548,8 +1563,9 @@ stop offset position or of alpha, and one that does not.
 
 | Type | Name | Description |
 |-|-|-|
-| VarF2Dot14 | stopOffset | Position on a color line; variable. |
-| VarColorIndex | color | |
+| F2DOT14 | stopOffset | Position on a color line. For variation, use varBaseIndex + 0. |
+| ColorIndex | color | For variation, use varBaseIndex + 1. |
+| uint32 | varIndexBase | Base index into DeltaSetIndexMap. |
 
 A color line is defined by an array of ColorStop records plus an extend mode.
 
@@ -1695,12 +1711,16 @@ formats, see 5.7.11.2.4. For background information on the color line, see
 |-|-|-|
 | uint8 | format | Set to 5. |
 | Offset24 | colorLineOffset | Offset to VarColorLine table. |
-| VarFWord | x0 | Start point (p₀) x coordinate. |
-| VarFWord | y0 | Start point (p₀) y coordinate. |
-| VarFWord | x1 | End point (p₁) x coordinate. |
-| VarFWord | y1 | End point (p₁) y coordinate. |
-| VarFWord | x2 | Rotation point (p₂) x coordinate. |
-| VarFWord | y2 | Rotation point (p₂) y coordinate. |
+| FWORD | x0 | Start point (p₀) x coordinate. For variation, use varIndexBase + 0. |
+| FWORD | y0 | Start point (p₀) y coordinate. For variation, use varIndexBase + 1. |
+| FWORD | x1 | End point (p₁) x coordinate. For variation, use varIndexBase + 2. |
+| FWORD | y1 | End point (p₁) y coordinate. For variation, use varIndexBase + 3. |
+| FWORD | x2 | Rotation point (p₂) x coordinate. For variation, use varIndexBase + 4. |
+| FWORD | y2 | Rotation point (p₂) y coordinate. For variation, use varIndexBase + 5. |
+| uint32 | varIndexBase | Base index into DeltaSetIndexMap. |
+
+The PaintVarLinearGradient format uses a base/sequence scheme to index into
+mapping data; see 5.7.11.4 for details.
 
 **5.7.11.2.5.4 Formats 6 and 7: PaintRadialGradient, PaintVarRadialGradient**
 
@@ -1737,12 +1757,16 @@ formats, see in 5.7.11.2.4. For background information on the color line, see
 |-|-|-|
 | uint8 | format | Set to 7. |
 | Offset24 | colorLineOffset | Offset to VarColorLine table. |
-| VarFWord | x0 | Start circle center x coordinate. |
-| VarFWord | y0 | Start circle center y coordinate. |
-| VarUFWord | radius0 | Start circle radius. |
-| VarFWord | x1 | End circle center x coordinate. |
-| VarFWord | y1 | End circle center y coordinate. |
-| VarUFWord | radius1 | End circle radius. |
+| FWORD | x0 | Start circle center x coordinate. For variation, use varIndexBase + 0. |
+| FWORD | y0 | Start circle center y coordinate. For variation, use varIndexBase + 1. |
+| UFWORD | radius0 | Start circle radius. For variation, use varIndexBase + 2. |
+| FWORD | x1 | End circle center x coordinate. For variation, use varIndexBase + 3. |
+| FWORD | y1 | End circle center y coordinate. For variation, use varIndexBase + 4. |
+| UFWORD | radius1 | End circle radius. For variation, use varIndexBase + 5. |
+| uint32 | varIndexBase | Base index into DeltaSetIndexMap. |
+
+The PaintVarRadialGradient format uses a base/sequence scheme to index into
+mapping data; see 5.7.11.4 for details.
 
 **5.7.11.2.5.5 Formats 8 and 9: PaintSweepGradient, PaintVarSweepGradient**
 
@@ -1777,10 +1801,14 @@ formats, see 5.7.11.2.4. For background information on the color line, see
 |-|-|-|
 | uint8 | format | Set to 9. |
 | Offset24 | colorLineOffset | Offset to VarColorLine table. |
-| VarFWord | centerX | Center x coordinate. |
-| VarFWord | centerY | Center y coordinate. |
-| VarF2Dot14 | startAngle | Start of the angular range of the gradient, 180° in counter-clockwise degrees per 1.0 of value. |
-| VarF2Dot14 | endAngle | End of the angular range of the gradient, 180° in counter-clockwise degrees per 1.0 of value. |
+| FWORD | centerX | Center x coordinate. For variation, use varIndexBase + 0. |
+| FWORD | centerY | Center y coordinate. For variation, use varIndexBase + 1. |
+| F2DOT14 | startAngle | Start of the angular range of the gradient, 180° in counter-clockwise degrees per 1.0 of value. For variation, use varIndexBase + 2. |
+| F2DOT14 | endAngle | End of the angular range of the gradient, 180° in counter-clockwise degrees per 1.0 of value. For variation, use varIndexBase + 3. |
+| uint32 | varIndexBase | Base index into DeltaSetIndexMap. |
+
+The PaintVarSweepGradient format uses a base/sequence scheme to index into
+mapping data; see 5.7.11.4 for details.
 
 Angles are expressed in counter-clockwise degrees from the direction of the
 positive x-axis in the design grid.
@@ -1858,18 +1886,18 @@ see 5.7.11.1.5.
 
 The affine transformation is defined by a 2×3 matrix, specified in an Affine2x3
 or VarAffine2x3 table. The 2×3 matrix supports scale, skew, reflection,
-rotation, and translation transformations. The matrix elements in the
-VarAffine2x3 table use VarFixed records, allowing the transform definition to
-be variable in a variable font.
+rotation, and translation transformations. The VarAffine2x3 table supports
+mapping into variation data, allowing the transform definition to be variable
+in a variable font.
 
 *Affine2x3 table:*
 
 | Type | Name | Description |
 |-|-|-|
-| Fixed | xx | x-component of transformed x-basis vector |
-| Fixed | yx | y-component of transformed x-basis vector |
-| Fixed | xy | x-component of transformed y-basis vector |
-| Fixed | yy | y-component of transformed y-basis vector |
+| Fixed | xx | x-component of transformed x-basis vector. |
+| Fixed | yx | y-component of transformed x-basis vector. |
+| Fixed | xy | x-component of transformed y-basis vector. |
+| Fixed | yy | y-component of transformed y-basis vector. |
 | Fixed | dx | Translation in x direction. |
 | Fixed | dy | Translation in y direction. |
 
@@ -1877,12 +1905,16 @@ be variable in a variable font.
 
 | Type | Name | Description |
 |-|-|-|
-| VarFixed | xx | x-component of transformed x-basis vector |
-| VarFixed | yx | y-component of transformed x-basis vector |
-| VarFixed | xy | x-component of transformed y-basis vector |
-| VarFixed | yy | y-component of transformed y-basis vector |
-| VarFixed | dx | Translation in x direction. |
-| VarFixed | dy | Translation in y direction. |
+| Fixed | xx | x-component of transformed x-basis vector. For variation, use varIndexBase + 0. |
+| Fixed | yx | y-component of transformed x-basis vector. For variation, use varIndexBase + 1. |
+| Fixed | xy | x-component of transformed y-basis vector. For variation, use varIndexBase + 2. |
+| Fixed | yy | y-component of transformed y-basis vector. For variation, use varIndexBase + 3. |
+| Fixed | dx | Translation in x direction. For variation, use varIndexBase + 4. |
+| Fixed | dy | Translation in y direction. For variation, use varIndexBase + 5. |
+| uint32 | varIndexBase | Base index into DeltaSetIndexMap. |
+
+The VarAffine2x3 format uses a base/sequence scheme to index into mapping data;
+see 5.7.11.4 for details.
 
 For a pre-transformation position *(x, y)*, the post-transformation position
 *(x&#x2032;, y&#x2032;)* is calculated as follows:
@@ -1933,8 +1965,12 @@ see 5.7.11.1.5.
 |-|-|-|
 | uint8 | format | Set to 15. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
-| VarFWord | dx | Translation in x direction. |
-| VarFWord | dy | Translation in y direction. |
+| FWORD | dx | Translation in x direction. For variation, use varIndexBase + 0. |
+| FWORD | dy | Translation in y direction. For variation, use varIndexBase + 1. |
+| uint32 | varIndexBase | Base index into DeltaSetIndexMap. |
+
+The PaintVarTranslate format uses a base/sequence scheme to index into mapping
+data; see 5.7.11.4 for details.
 
 NOTE: Pure translation can also be represented using the PaintTransform or
 PaintVarTransform table by setting _xx_ = 1, _yy_ = 1, _xy_ and _yx_ = 0, and
@@ -1993,8 +2029,9 @@ see 5.7.11.1.5.
 |-|-|-|
 | uint8 | format | Set to 17. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
-| VarF2Dot14 | scaleX | Scale factor in x direction. |
-| VarF2Dot14 | scaleY | Scale factor in y direction. |
+| F2DOT14 | scaleX | Scale factor in x direction. For variation, use varIndexBase + 0. |
+| F2DOT14 | scaleY | Scale factor in y direction. For variation, use varIndexBase + 1. |
+| uint32 | varIndexBase | Base index into DeltaSetIndexMap. |
 
 *PaintScaleAroundCenter table (format 18):*
 
@@ -2013,10 +2050,11 @@ see 5.7.11.1.5.
 |-|-|-|
 | uint8 | format | Set to 19. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
-| VarF2Dot14 | scaleX | Scale factor in x direction. |
-| VarF2Dot14 | scaleY | Scale factor in y direction. |
-| VarFWord | centerX | x coordinate for the center of scaling. |
-| VarFWord | centerY | y coordinate for the center of scaling. |
+| F2DOT14 | scaleX | Scale factor in x direction. For variation, use varIndexBase + 0. |
+| F2DOT14 | scaleY | Scale factor in y direction. For variation, use varIndexBase + 1. |
+| FWORD | centerX | x coordinate for the center of scaling. For variation, use varIndexBase + 2. |
+| FWORD | centerY | y coordinate for the center of scaling. For variation, use varIndexBase + 3. |
+| uint32 | varIndexBase | Base index into DeltaSetIndexMap. |
 
 *PaintScaleUniform table (format 20):*
 
@@ -2032,7 +2070,8 @@ see 5.7.11.1.5.
 |-|-|-|
 | uint8 | format | Set to 21. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
-| VarF2Dot14 | scale | Scale factor in x and y directions. |
+| F2DOT14 | scale | Scale factor in x and y directions. For variation, use varIndexBase + 0. |
+| uint32 | varIndexBase | Base index into DeltaSetIndexMap. |
 
 *PaintScaleUniformAroundCenter table (format 22):*
 
@@ -2050,9 +2089,14 @@ see 5.7.11.1.5.
 |-|-|-|
 | uint8 | format | Set to 23. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
-| VarF2Dot14 | scale | Scale factor in x and y directions. |
-| VarFWord | centerX | x coordinate for the center of scaling. |
-| VarFWord | centerY | y coordinate for the center of scaling. |
+| F2DOT14 | scale | Scale factor in x and y directions. For variation, use varIndexBase + 0. |
+| FWORD | centerX | x coordinate for the center of scaling. For variation, use varIndexBase + 1. |
+| FWORD | centerY | y coordinate for the center of scaling. For variation, use varIndexBase + 2. |
+| uint32 | varIndexBase | Base index into DeltaSetIndexMap. |
+
+The PaintVarScale, PaintVarScaleAroundCenter, PaintVarScaleUniform, and
+PaintVarScaleUniformAroundCenter formats use a base/sequence scheme to index
+into mapping data; see 5.7.11.4 for details.
 
 NOTE: Pure scaling can also be represented using the PaintTransform or
 PaintVarTransform table. For scaling about the origin, this could be done by
@@ -2099,7 +2143,8 @@ see 5.7.11.1.5.
 |-|-|-|
 | uint8 | format | Set to 25. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
-| VarF2Dot14 | angle | Rotation angle, 180° in counter-clockwise degrees per 1.0 of value. |
+| F2DOT14 | angle | Rotation angle, 180° in counter-clockwise degrees per 1.0 of value. For variation, use varIndexBase + 0. |
+| uint32 | varIndexBase | Base index into DeltaSetIndexMap. |
 
 *PaintRotateAroundCenter table (format 26):*
 
@@ -2117,9 +2162,13 @@ see 5.7.11.1.5.
 |-|-|-|
 | uint8 | format | Set to 27. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
-| VarF2Dot14 | angle | Rotation angle, 180° in counter-clockwise degrees per 1.0 of value |
-| VarFWord | centerX | x coordinate for the center of rotation. |
-| VarFWord | centerY | y coordinate for the center of rotation. |
+| F2DOT14 | angle | Rotation angle, 180° in counter-clockwise degrees per 1.0 of value. For variation, use varIndexBase + 0. |
+| FWORD | centerX | x coordinate for the center of rotation. For variation, use varIndexBase + 1. |
+| FWORD | centerY | y coordinate for the center of rotation. For variation, use varIndexBase + 2. |
+| uint32 | varIndexBase | Base index into DeltaSetIndexMap. |
+
+The PaintVarRotate and PaintVarRotateAroundCenter formats use a base/sequence
+scheme to index into mapping data; see 5.7.11.4 for details.
 
 NOTE: Pure rotation about a point can also be represented using the
 PaintTransform or PaintVarTransform table. For rotation about the origin, this
@@ -2191,8 +2240,9 @@ see 5.7.11.1.5.
 |-|-|-|
 | uint8 | format | Set to 29. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
-| VarF2Dot14 | xSkewAngle | Angle of skew in the direction of the x-axis, 180° in counter-clockwise degrees per 1.0 of value. |
-| VarF2Dot14 | ySkewAngle | Angle of skew in the direction of the y-axis, 180° in counter-clockwise degrees per 1.0 of value. |
+| F2DOT14 | xSkewAngle | Angle of skew in the direction of the x-axis, 180° in counter-clockwise degrees per 1.0 of value. For variation, use varIndexBase + 0. |
+| F2DOT14 | ySkewAngle | Angle of skew in the direction of the y-axis, 180° in counter-clockwise degrees per 1.0 of value. For variation, use varIndexBase + 1. |
+| uint32 | varIndexBase | Base index into DeltaSetIndexMap. |
 
 *PaintSkewAroundCenter table (format 30):*
 
@@ -2211,10 +2261,14 @@ see 5.7.11.1.5.
 |-|-|-|
 | uint8 | format | Set to 31. |
 | Offset24 | paintOffset | Offset to a Paint subtable. |
-| VarF2Dot14 | xSkewAngle | Angle of skew in the direction of the x-axis, 180° in counter-clockwise degrees per 1.0 of value. |
-| VarF2Dot14 | ySkewAngle | Angle of skew in the direction of the y-axis, 180° in counter-clockwise degrees per 1.0 of value. |
-| VarFWord | centerX | x coordinate for the center of rotation. |
-| VarFWord | centerY | y coordinate for the center of rotation. |
+| F2DOT14 | xSkewAngle | Angle of skew in the direction of the x-axis, 180° in counter-clockwise degrees per 1.0 of value. For variation, use varIndexBase + 0. |
+| F2DOT14 | ySkewAngle | Angle of skew in the direction of the y-axis, 180° in counter-clockwise degrees per 1.0 of value. For variation, use varIndexBase + 1. |
+| FWORD | centerX | x coordinate for the center of rotation. For variation, use varIndexBase + 2. |
+| FWORD | centerY | y coordinate for the center of rotation. For variation, use varIndexBase + 3. |
+| uint32 | varIndexBase | Base index into DeltaSetIndexMap. |
+
+The PaintVarSkew and PaintVarSkewAroundCenter formats use a base/sequence
+scheme to index into mapping data; see 5.7.11.4 for details.
 
 NOTE: Pure skews about a point can also be represented using the PaintTransform
 or PaintVarTransform table. For skews about the origin, this could be done by
