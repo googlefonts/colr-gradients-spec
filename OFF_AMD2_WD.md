@@ -2491,41 +2491,23 @@ color glyph definition:
 Variation data is provided in an Item Variation Store table (7.2.3) contained
 within the COLR table.
 
-Each value within the COLR version 1 formats that can be variable is represented
-using a record that combines a field for the default value together with fields
-for a delta-set index. The delta-set index is used to reference the variation
-data within the Item Variation Store. The record formats used include:
+In a variable font, each value within the COLR version 1 formats that is variable needs to be associated with corresponding variation data (delta sets) in the Item Variation Store. This is done using a DeltaSetIndexMap table (defined in 7.3.5.2). The delta-set index mapping table contains an array of entries that provide indices mapping into sets of delta data in the Item Variation Store. Each variable item in the COLR table is given an index (base 0) into the mapping data. For example, if a variable item in the COLR table is given an index value of 5, the sixth entry in the mapping data is used to index into the Item Variation Store.
 
-* VarFWord
-* VarUFWord 
-* VarF2Dot14
-* VarFixed
+The indices for variable items in the COLR table are indicated using a base/sequence scheme. Each table or record that contains variable items will use a contiguous sequence of entries in the mapping array, and will include a _varIndexBase_ field that indicates the first entry in the mapping array to be used. The variable fields within that table or record use entries in the mapping array, starting with the _varIndexBase_ entry, in the order the fields occur in the table or record.
 
-These are described in 7.2.3.1. They all follow a simple pattern: For a field
-type *SomeType* (hypothetical), the record format is as follows:
+For example, the VarAffine2x3 table (5.7.11.2.5.8) has eight variable fields followed by the varIndexBase field. For the first variable field (_xx_), _varIndexBase + 0_ is used as the index into the mapping array; for the second variable field (_yx_), _varIndexBase + 1_ is used as the index into the mapping array; and so on.
 
-| Type | Name | Description |
-|-|-|-|
-| *SomeType* | value | |
-| uint16 | varOuterIndex | |
-| uint16 | varInnerIndex | |
+If the index for a variable item is greater than or equal to the number of entries in the mapping array, the last mapping array entry shall be used.
 
-The value field of these records provides the default value for a given item.
-The remaining fields provide index values for a particular ItemVariationData
-subtable and DeltaSet record—the two-level organizational hierarchy used within
-the Item Variation Store.
+The sequence of indices derived from a _varIndexBase_ value do not wrap on overflow and shall not exceed 0xFFFFFFFF. A _varIndexBase_ value of 0XFFFFFFFF is assigned a special meaning indicating that the variable fields in the given table or record do not have variation data.
 
-If the COLR table does not contain an Item Variation Store subtable, the index
-fields of these records shall be ignored by applications, and should be set to
-zero. The value field is read directly without any variation calculation.
+Similarly, a delta-set index mapping entry with values 0xFFFF/0xFFFF can be used to indicate that an item has no variation data. (See 7.2.3.2.)
 
-If the COLR table contains an Item Variation Store subtable, the index fields
-shall be used to obtain a delta value that is combined with the value of the
-value field. In this case, the index fields of the VarFWord, VarUFWord,
-VarF2Dot14 and VarFixed records shall always be set with specific values. The
-indices are base 0, therefore 0x0000 cannot be used as an ignorable default. To
-indicate that an item has no variation data, the index fields shall be set to
-0xFFFF/0xFFFF. (See 7.2.3.2.)
+If the COLR table does not contain an Item Variation Store subtable, the _varIndexBase_
+field of variable tables or records shall be ignored by applications, and should be set to
+zero.
+
+If the COLR table contains an Item Variation Store but does not contain a mapping table, then an implicit identity mapping is used: the sequence of values beginning with _varIndexBase_ are treated directly as delta-set indices with 16-bit sub-fields for _outer_ (high word) and _inner_ (low word) index values (see 7.2.3.3).
 
 For variable fonts that use COLR version 1 formats, special considerations apply
 to the effect of variation on the bounding box. See 5.7.11.1.8.2 for details.
