@@ -118,16 +118,6 @@ struct Variable
   VarIdx varIdx; // Use 0xFFFFFFFF to indicate no variation.
 };
 
-// Variation structures
-
-typedef Variable<FWORD> VarFWORD;
-
-typedef Variable<UFWORD> VarUFWORD;
-
-typedef Variable<Fixed> VarFixed;
-
-typedef Variable<F2DOT14> VarF2DOT14;
-
 // Color structures
 
 // The ColorIndex alpha is multiplied into the alpha of the CPAL entry
