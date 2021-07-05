@@ -2677,87 +2677,33 @@ different means are used to provide these associations:
 * In the MVAR table, an array of records identifies target data items in various
 other tables, along with the delta-set index for each respective item.
 * In the HVAR and VVAR tables, the target data items are glyph metric arrays in
-the &#39;hmtx&#39; and &#39;vmtx&#39; tables. Subtables in the HVAR and VVAR
-tables provide the mapping between the target data items and delta-set indices.
+the &#39;hmtx&#39; and &#39;vmtx&#39; tables. In the HVAR and VVAR tables,
+mapping subtables provide a mapping to delta-set indices. Glyph IDs are used to
+index into the mapping subtable.
+* In the COLR table, a mapping subtable is used, as in the HVAR and VVAR tables.
+Structures that support variable items provide a starting index into the mapping
+subtable, and use a slice of consecutive mapping entries.
 * For the BASE, GDEF, GPOS, and JSTF tables, a target data item is associated
 with a delta-set index using a related VariationIndex table (6.2.8) within the
 same subtable that contains the target item.
-* In the COLR table, target data items are specified in structures that combine
-a basic data type, such FWORD, with a delta-set index.
-
-The structures used in the COLR table currently are used only in that table but
-may be used in other tables in future versions, and so are defined here as
-common formats. Structures are defined to wrap the FWORD, UFWORD, F2DOT14 and
-Fixed basic types.
-
-Note: as described below, each delta-set index is represented as two index
-components, an *outer* index and an *inner* index, corresponding to a two-level
-organizational hierarchy. This is described in detail below.
-
-#### VarFWord
-
-The FWORD type is used to represent coordinates in the glyph design grid. The
-VarFWord record is used to represent a coordinate that can be variable.
-
-| Type | Name | Description |
-|-|-|-|
-| FWORD | coordinate | |
-| uint16 | varOuterIndex | |
-| uint16 | varInnerIndex | |
-
-#### VarUFWord
-
-The UFWORD type is used to represent distances in the glyph design grid. The
-VarUFWord record is used to represent a distance that can be variable.
-
-| Type | Name | Description |
-|-|-|-|
-| UFWORD | distance | |
-| uint16 | varOuterIndex | |
-| uint16 | varInnerIndex | |
-
-#### VarF2Dot14
-
-The F2DOT14 type is typically used to represent values that are inherently
-limited to a range of [-1, 1], or a range of [0, 1]. The VarF2Dot14 record is
-used to represent such a value that can be variable.
-
-| Type | Name | Description |
-|-|-|-|
-| F2DOT14 | value | |
-| uint16 | varOuterIndex | |
-| uint16 | varInnerIndex | |
 
 In general, variation deltas are (logically) signed 16-bit integers, and in most
 cases, they are applied to signed 16-bit values (FWORDs) or unsigned 16-bit
-values (UFWORDs). When scaled deltas are applied to F2DOT14 values, the F2DOT14
-value is treated like a 16-bit integer. (In this sense, the delta and the
-F2DOT14 value can be viewed as integer values in units of 1/16384ths.)
+values (UFWORDs). In the COLR table, however, scaled deltas can be applied to
+F2DOT14 or Fixed items, which are fixed-size floating types. 
 
-If the context in which the VarF2Dot14 is used constrains the valid range for the
-default value, then any variations by applying deltas are clipped to that range.
+When applying scaled deltas to an F2DOT14 value, the F2DOT14 value is treated
+like a 16-bit integer. (In this sense, the delta and the F2DOT14 value can be
+viewed as integer values in units of 1/16384ths.) If the context in which the
+F2DOT14 is used constrains the valid range for the default value, then any
+variations by applying deltas are clipped to that range.
 
-#### VarFixed
-
-The Fixed type is intended for floating values, such as variation-space
-coordinates. The VarFixed record is used to represent such a value that can be
-variable.
-
-| Type | Name | Description |
-|-|-|-|
-| Fixed | value | |
-| uint16 | varOuterIndex | |
-| uint16 | varInnerIndex | |
-
-While in most cases deltas are applied to 16-bit types, Fixed is a 32-bit
-(16.16) type and requires 32-bit deltas. The DeltaSet record used in the
-ItemVariationData subtable format can accommodate deltas that are, logically,
-either 16-bit or 32-bit. See the description of the ItemVariationData subtable
-(7.2.3.4) for details.
-
-When scaled deltas are applied to Fixed values, the Fixed value is treated like
-a 32-bit integer. (In this sense, the delta and the Fixed value can be viewed as
-integer values in units of 1/65536ths.)
+Fixed is a 32-bit (16.16) type and, in the general case, requires 32-bit deltas.
+The DeltaSet record used in the ItemVariationData subtable format can
+accommodate deltas that are, logically, either 16-bit or 32-bit. (See 7.2.3.4
+for details.) When scaled deltas are applied to Fixed values, the Fixed value is
+treated like a 32-bit integer. (In this sense, the delta and the Fixed value can
+be viewed as integer values in units of 1/65536ths.)
 
 _Insert a sub-clause heading, "7.2.3.2 Variation data", after the newly-inserted
 text above, and before the paragraph beginning, "The ItemVariationStore table
