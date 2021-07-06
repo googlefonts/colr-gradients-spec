@@ -2499,7 +2499,7 @@ For example, the VarAffine2x3 table (5.7.11.2.5.8) has eight variable fields fol
 
 If the index for a variable item is greater than or equal to the number of entries in the mapping array, the last mapping array entry shall be used.
 
-The sequence of indices derived from a _varIndexBase_ value do not wrap on overflow and shall not exceed 0xFFFFFFFF. A _varIndexBase_ value of 0XFFFFFFFF is assigned a special meaning indicating that the variable fields in the given table or record do not have variation data.
+The sequence of indices derived from a _varIndexBase_ value do not wrap on overflow and shall not exceed 0xFFFFFFFF. A _varIndexBase_ value of 0xFFFFFFFF is assigned a special meaning indicating that the variable fields in the given table or record do not have variation data.
 
 Similarly, a delta-set index mapping entry with values 0xFFFF/0xFFFF can be used to indicate that an item has no variation data. (See 7.2.3.2.)
 
