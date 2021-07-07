@@ -1563,8 +1563,8 @@ variations uses a base/sequence scheme to index into mapping data; see
 
 | Type | Name | Description |
 |-|-|-|
-| F2DOT14 | stopOffset | Position on a color line. For variation, use varBaseIndex + 0. |
-| ColorIndex | color | For variation, use varBaseIndex + 1. |
+| F2DOT14 | stopOffset | Position on a color line. For variation, use varIndexBase + 0. |
+| ColorIndex | color | For variation, use varIndexBase + 1. |
 | uint32 | varIndexBase | Base index into DeltaSetIndexMap. |
 
 A color line is defined by an array of ColorStop records plus an extend mode.
