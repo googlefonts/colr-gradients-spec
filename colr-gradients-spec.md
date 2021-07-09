@@ -105,24 +105,11 @@ struct ArrayOf
   T      array[/*count*/];
 };
 
-typedef uint32 VarIdx;
-
-template <typename T>
-struct Variable
-{
-  T      value;
-  VarIdx varIdx; // Use 0xFFFFFFFF to indicate no variation.
-};
-
-// Variation structures
-
-typedef Variable<FWORD> VarFWORD;
-
-typedef Variable<UFWORD> VarUFWORD;
-
-typedef Variable<Fixed> VarFixed;
-
-typedef Variable<F2DOT14> VarF2DOT14;
+// Index of the first variation record in the variation index map or
+// variation store if no variation index map is present.
+// A record with N variable fields finds them at VarIdxBase+0, ...,+N-1
+// Use 0xFFFFFFFF to indicate no variation.
+typedef uint32 VarIdxBase;
 
 // Color structures
 
@@ -138,7 +125,8 @@ struct ColorIndex
 struct VarColorIndex
 {
   uint16     paletteIndex;
-  VarF2DOT14 alpha; // Default 1.0. Values outside [0.,1.] reserved.
+  F2DOT14    alpha; // Default 1.0. Values outside [0.,1.] reserved. VarIdx varIndexBase + 0.
+  VarIdxBase varIndexBase;
 };
 
 struct ColorStop
@@ -149,8 +137,9 @@ struct ColorStop
 
 struct VarColorStop
 {
-  VarF2DOT14 stopOffset;
-  VarColorIndex color;
+  F2DOT14 stopOffset; // VarIdx varIndexBase + 0
+  ColorIndex color; // VarIdx varIndexBase + 1
+  VarIdxBase varIndexBase;
 };
 
 enum Extend : uint8
@@ -233,12 +222,13 @@ struct Affine2x3
 
 struct VarAffine2x3
 {
-  VarFixed xx;
-  VarFixed yx;
-  VarFixed xy;
-  VarFixed yy;
-  VarFixed dx;
-  VarFixed dy;
+  Fixed xx;  // VarIdx varIndexBase + 0
+  Fixed yx;  // VarIdx varIndexBase + 1
+  Fixed xy;  // VarIdx varIndexBase + 2
+  Fixed yy;  // VarIdx varIndexBase + 3
+  Fixed dx;  // VarIdx varIndexBase + 4
+  Fixed dy;  // VarIdx varIndexBase + 5
+  VarIdxBase varIndexBase;
 };
 
 // Paint tables
@@ -282,12 +272,13 @@ struct PaintVarLinearGradient
 {
   uint8                  format; // = 5
   Offset24<VarColorLine> colorLine;
-  VarFWORD               x0;
-  VarFWORD               y0;
-  VarFWORD               x1;
-  VarFWORD               y1;
-  VarFWORD               x2; // Normal; Equal to (x1,y1) in simple cases.
-  VarFWORD               y2;
+  FWORD                  x0; // VarIdx varIndexBase + 0
+  FWORD                  y0; // VarIdx varIndexBase + 1
+  FWORD                  x1; // VarIdx varIndexBase + 2
+  FWORD                  y1; // VarIdx varIndexBase + 3
+  FWORD                  x2; // VarIdx varIndexBase + 4. Normal; Equal to (x1,y1) in simple cases.
+  FWORD                  y2; // VarIdx varIndexBase + 5
+  VarIdxBase             varIndexBase;
 };
 
 struct PaintRadialGradient
@@ -306,12 +297,13 @@ struct PaintVarRadialGradient
 {
   uint8                  format; // = 7
   Offset24<VarColorLine> colorLine;
-  VarFWORD               x0;
-  VarFWORD               y0;
-  VarUFWORD              radius0;
-  VarFWORD               x1;
-  VarFWORD               y1;
-  VarUFWORD              radius1;
+  FWORD                  x0; // VarIdx varIndexBase + 0
+  FWORD                  y0; // VarIdx varIndexBase + 1
+  UFWORD                 radius0; // VarIdx varIndexBase + 2
+  FWORD                  x1; // VarIdx varIndexBase + 3
+  FWORD                  y1; // VarIdx varIndexBase + 4
+  UFWORD                 radius1; // VarIdx varIndexBase + 5
+  VarIdxBase             varIndexBase;
 };
 
 struct PaintSweepGradient
@@ -328,10 +320,11 @@ struct PaintVarSweepGradient
 {
   uint8                  format; // = 9
   Offset24<VarColorLine> colorLine;
-  VarFWORD               centerX;
-  VarFWORD               centerY;
-  VarF2Dot14             startAngle; // 180° in counter-clockwise degrees per 1.0 of value
-  VarF2Dot14             endAngle;   // 180° in counter-clockwise degrees per 1.0 of value
+  FWORD                  centerX; // VarIdx varIndexBase + 0
+  FWORD                  centerY; // VarIdx varIndexBase + 1
+  F2DOT14                startAngle; // VarIdx varIndexBase + 2. 180° in counter-clockwise degrees per 1.0 of value
+  F2DOT14                endAngle; // VarIdx varIndexBase + 3. 180° in counter-clockwise degrees per 1.0 of value
+  VarIdxBase             varIndexBase;
 };
 
 // Paint a non-COLR glyph, filled as indicated by paint.
@@ -375,8 +368,9 @@ struct PaintVarTranslate
 {
   uint8                  format; // = 15
   Offset24<Paint>        src;
-  VarFWORD               dx;
-  VarFWORD               dy;
+  FWORD                  dx; // VarIdx varIndexBase + 0
+  FWORD                  dy; // VarIdx varIndexBase + 1
+  VarIdxBase             varIndexBase;
 };
 
 struct PaintScale
@@ -391,8 +385,9 @@ struct PaintVarScale
 {
   uint8                  format; // = 17
   Offset24<Paint>        src;
-  VarF2Dot14             scaleX;
-  VarF2Dot14             scaleY;
+  F2DOT14                scaleX; // VarIdx varIndexBase + 0
+  F2DOT14                scaleY; // VarIdx varIndexBase + 1
+  VarIdxBase             varIndexBase;
 };
 
 struct PaintScaleAroundCenter
@@ -409,10 +404,11 @@ struct PaintVarScaleAroundCenter
 {
   uint8                  format; // = 19
   Offset24<Paint>        src;
-  VarF2Dot14             scaleX;
-  VarF2Dot14             scaleY;
-  VarFWord               centerX;
-  VarFWord               centerY;
+  F2DOT14                scaleX; // VarIdx varIndexBase + 0
+  F2DOT14                scaleY; // VarIdx varIndexBase + 1
+  FWORD                  centerX; // VarIdx varIndexBase + 2
+  FWORD                  centerY; // VarIdx varIndexBase + 3
+  VarIdxBase             varIndexBase;
 };
 
 struct PaintScaleUniform
@@ -426,7 +422,8 @@ struct PaintVarScaleUniform
 {
   uint8                  format; // = 21
   Offset24<Paint>        src;
-  VarF2Dot14             scale;
+  F2DOT14                scale; // VarIdx varIndexBase + 0
+  VarIdxBase             varIndexBase;
 };
 
 struct PaintScaleUniformAroundCenter
@@ -442,9 +439,10 @@ struct PaintVarScaleUniformAroundCenter
 {
   uint8                  format; // = 23
   Offset24<Paint>        src;
-  VarF2Dot14             scale;
-  VarFWord               centerX;
-  VarFWord               centerY;
+  F2DOT14                scale; // VarIdx varIndexBase + 0
+  FWORD                  centerX; // VarIdx varIndexBase + 1
+  FWORD                  centerY; // VarIdx varIndexBase + 2
+  VarIdxBase             varIndexBase;
 };
 
 struct PaintRotate
@@ -458,7 +456,8 @@ struct PaintVarRotate
 {
   uint8                  format; // = 25
   Offset24<Paint>        src;
-  VarF2Dot14             angle; // 180° in counter-clockwise degrees per 1.0 of value
+  F2DOT14                angle; // VarIdx varIndexBase + 0. 180° in counter-clockwise degrees per 1.0 of value
+  VarIdxBase             varIndexBase;
 };
 
 struct PaintRotateAroundCenter
@@ -474,9 +473,10 @@ struct PaintVarRotateAroundCenter
 {
   uint8                  format; // = 27
   Offset24<Paint>        src;
-  VarF2Dot14             angle; // 180° in counter-clockwise degrees per 1.0 of value
-  VarFWord               centerX;
-  VarFWord               centerY;
+  F2DOT14                angle; // VarIdx varIndexBase + 0. 180° in counter-clockwise degrees per 1.0 of value
+  FWORD                  centerX; // VarIdx varIndexBase + 1
+  FWORD                  centerY; // VarIdx varIndexBase + 2
+  VarIdxBase             varIndexBase;
 };
 
 struct PaintSkew
@@ -491,8 +491,9 @@ struct PaintVarSkew
 {
   uint8                  format; // = 29
   Offset24<Paint>        src;
-  VarF2Dot14             xSkewAngle; // 180° in counter-clockwise degrees per 1.0 of value
-  VarF2Dot14             ySkewAngle; // 180° in counter-clockwise degrees per 1.0 of value
+  F2DOT14                xSkewAngle; // VarIdx varIndexBase + 0. 180° in counter-clockwise degrees per 1.0 of value
+  F2DOT14                ySkewAngle; // VarIdx varIndexBase + 1. 180° in counter-clockwise degrees per 1.0 of value
+  VarIdxBase             varIndexBase;
 };
 
 struct PaintSkewAroundCenter
@@ -509,10 +510,11 @@ struct PaintVarSkewAroundCenter
 {
   uint8                  format; // = 31
   Offset24<Paint>        src;
-  VarF2Dot14             xSkewAngle; // 180° in counter-clockwise degrees per 1.0 of value
-  VarF2Dot14             ySkewAngle; // 180° in counter-clockwise degrees per 1.0 of value
-  VarFWord               centerX;
-  VarFWord               centerY;
+  F2DOT14                xSkewAngle; // VarIdx varIndexBase + 0. 180° in counter-clockwise degrees per 1.0 of value
+  F2DOT14                ySkewAngle; // VarIdx varIndexBase + 1. 180° in counter-clockwise degrees per 1.0 of value
+  FWORD                  centerX; // VarIdx varIndexBase + 2
+  FWORD                  centerY; // VarIdx varIndexBase + 3
+  VarIdxBase             varIndexBase;
 };
 
 struct PaintComposite
@@ -546,6 +548,7 @@ struct COLRv1
   // Version-1 additions
   Offset32<BaseGlyphList>                           baseGlyphList;
   Offset32<LayerList>                               layerList;
+  Offset32<VarIdxMap>                               varIdxMap;  // May be NULL
   Offset32<ItemVariationStore>                      varStore;
 };
 
