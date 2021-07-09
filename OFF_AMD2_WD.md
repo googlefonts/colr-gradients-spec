@@ -1357,8 +1357,8 @@ itemVariationStoreOffset to NULL.
 The DeltaSetIndexMap format is described in 7.3.5.2. A DeltaSetIndexMap is used
 in conjunction with the ItemVariationStore in a variable font. The
 DeltaSetIndexMap is optional: if an ItemVariationStore is present but a 
-DeltaSetIndexMap is not included, then an implicit mapping is used. See
-5.7.11.4 for details.
+DeltaSetIndexMap is not included (varIndexMapOffset is NULL), then an implicit
+mapping is used. See 5.7.11.4 for details.
 
 **5.7.11.2.1.3 Mixing version 0 and version 1 formats**
 
