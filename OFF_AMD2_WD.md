@@ -2705,9 +2705,9 @@ different means are used to provide these associations:
 * In the MVAR table, an array of records identifies target data items in various
 other tables, along with the delta-set index for each respective item.
 * In the HVAR and VVAR tables, the target data items are glyph metric arrays in
-the &#39;hmtx&#39; and &#39;vmtx&#39; tables. In the HVAR and VVAR tables,
-mapping subtables provide a mapping to delta-set indices. Glyph IDs are used to
-index into the mapping subtable.
+the &#39;hmtx&#39; and &#39;vmtx&#39; tables. Mapping subtables in the HVAR and
+VVAR tables provide a mapping to delta-set indices. Glyph IDs are used to index
+into the mapping subtable.
 * In the COLR table, a mapping subtable is used, as in the HVAR and VVAR tables.
 Structures that support variable items provide a starting index into the mapping
 subtable, and use a slice of consecutive mapping entries.
@@ -2718,7 +2718,7 @@ same subtable that contains the target item.
 In general, variation deltas are (logically) signed 16-bit integers, and in most
 cases, they are applied to signed 16-bit values (FWORDs) or unsigned 16-bit
 values (UFWORDs). In the COLR table, however, scaled deltas can be applied to
-F2DOT14 or Fixed items, which are fixed-size floating types. 
+F2DOT14 or Fixed items, which are fixed-size floating types.
 
 When applying scaled deltas to an F2DOT14 value, the F2DOT14 value is treated
 like a 16-bit integer. (In this sense, the delta and the F2DOT14 value can be
