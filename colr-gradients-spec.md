@@ -113,32 +113,22 @@ typedef uint32 VarIdxBase;
 
 // Color structures
 
-// The ColorIndex alpha is multiplied into the alpha of the CPAL entry
+// The (Var)ColorStop alpha is multiplied into the alpha of the CPAL entry
 // (converted to float -- divide by 255) looked up using paletteIndex to
 // produce a final alpha.
-struct ColorIndex
-{
-  uint16     paletteIndex;
-  F2DOT14 alpha; // Default 1.0. Values outside [0.,1.] reserved.
-};
-
-struct VarColorIndex
-{
-  uint16     paletteIndex;
-  F2DOT14    alpha; // Default 1.0. Values outside [0.,1.] reserved. VarIdx varIndexBase + 0.
-  VarIdxBase varIndexBase;
-};
-
 struct ColorStop
 {
-  F2DOT14 stopOffset;
-  ColorIndex color;
+  F2DOT14    stopOffset;
+  uint16     paletteIndex;
+  F2DOT14    alpha; // Default 1.0. Values outside [0.,1.] reserved.
 };
 
 struct VarColorStop
 {
-  F2DOT14 stopOffset; // VarIdx varIndexBase + 0
-  ColorIndex color; // VarIdx varIndexBase + 1
+  F2DOT14    stopOffset; // VarIdx varIndexBase + 0
+  uint16     paletteIndex;
+  F2DOT14    alpha; // Default 1.0. Values outside [0.,1.] reserved.
+                    // VarIdx varIndexBase + 1
   VarIdxBase varIndexBase;
 };
 
@@ -244,16 +234,23 @@ struct PaintColrLayers
   uint32              firstLayerIndex;  // index into COLRv1::layerList
 }
 
+// The Paint(Var)Solid alpha is multiplied into the alpha of the CPAL entry
+// (converted to float -- divide by 255) looked up using paletteIndex to
+// produce a final alpha.
 struct PaintSolid
 {
   uint8      format; // = 2
-  ColorIndex color;
+  uint16     paletteIndex;
+  F2DOT14    alpha; // Default 1.0. Values outside [0.,1.] reserved.
 };
 
 struct PaintVarSolid
 {
   uint8      format; // = 3
-  VarColorIndex color;
+  uint16     paletteIndex;
+  F2DOT14    alpha; // Default 1.0. Values outside [0.,1.] reserved.
+                    // VarIdx varIndexBase + 0
+  VarIdxBase varIndexBase;
 };
 
 struct PaintLinearGradient
