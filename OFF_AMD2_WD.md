@@ -1140,12 +1140,13 @@ used for the color glyph. The advance width and height of glyphs referenced by
 PaintGlyph tables are not required to be the same as that of the base glyph and
 are ignored.
 
-The bounding box of the base-glyph contours is used as the bounding box of the
-color glyph. A &#39;glyf&#39; entry with two points at diagonal extrema is
-sufficient to define the bounding box.
+For each color glyph, the bounding box for the color glyph is defined within
+the color glyph description (see 5.7.11.2.3). The bounding box data can be
+variable within a variable font.
 
-NOTE: The bounding box of the base glyph can be used to allocate a drawing
-surface without needing to traverse the graph of the color glyph definition.
+NOTE: The bounding box data for the color glyph can be used to allocate a
+drawing surface without needing to traverse the graph of the color glyph
+definition.
 
 A valid color glyph definition shall define a bounded region—that is, it shall
 paint within a region for which a finite bounding box could be defined. The
@@ -1454,6 +1455,7 @@ different, however—see 5.7.11.1.
 |-|-|-|
 | uint16 | glyphID | Glyph ID of the base glyph. |
 | Offset32 | paintOffset | Offset to a Paint table. |
+| Offset32 | bboxOffset | Offset to a VarBBox table. |
 
 The glyphID value shall be less than the numGlyphs value in the &#39;maxp&#39;
 table (5.2.6).
@@ -1461,6 +1463,23 @@ table (5.2.6).
 The records in the baseGlyphPaintRecords array shall be sorted in increasing
 glyphID order. It is intended that a binary search can be used to find a
 matching BaseGlyphPaintRecord for a specific glyphID.
+
+A VarBBox subtable is used to provide the bounding box for the given color
+glyph.
+
+*VarBBox table:*
+
+| Type | Name | Description |
+|-|-|-|
+| FWORD | xMin | Minimum x of bounding box. For variation, use varIndexBase + 0. |
+| FWORD | yMin | Minimum y of bounding box. For variation, use varIndexBase + 1. |
+| FWORD | xMax | Maximum x of bounding box. For variation, use varIndexBase + 2. |
+| FWORD | yMax | Maximum y of bounding box. For variation, use varIndexBase + 3. |
+| uint32 | varIndexBase | Base index into DeltaSetIndexMap. |
+
+The same structure is used in both variable and non-variable fonts. For
+variable data, a base/sequence scheme is used to index into variation mapping
+data. See 5.7.11.4 for details.
 
 The paint table referenced by the BaseGlyphPaintRecord is the root of the graph
 for a color glyph definition.
