@@ -185,15 +185,13 @@ into the CPAL ColorRecord array.
 
 The CPAL color data includes alpha information, as well as RGB values. In the
 COLR version 0 formats, a color reference is made in LayerRecord as a palette
-entry index alone. In the formats added for COLR version 1, a color reference is
-made in a color index record, which includes a palette entry index and a separate
-alpha value. Separation of alpha from palette entries in version 1 allows use of
-transparency in a color glyph definition independent of the choice of palette.
-The alpha value in the color index record is multiplied into the alpha value
-given in the CPAL color entry.
-
-Two color index record formats are defined: ColorIndex, and VarColorIndex. The
-latter can be used in variable fonts to make the alpha value variable.
+entry index alone. In the formats added for COLR version 1, color references
+include a palette entry index and a separate alpha value within the COLR
+structure for a solid color fill or gradient color stop (described below).
+Separation of alpha from palette entries in version 1 allows use of transparency
+in a color glyph definition independent of the choice of palette. The alpha
+value in the COLR structure is multiplied into the alpha value given in the CPAL
+color entry.
 
 In version 1, a solid color fill is specified using a PaintVarSolid or
 PaintSolid table, with or without variation support, respectively. See
@@ -257,16 +255,16 @@ used. Using a sequence of letters as an analogy, given a sequence “ABC”, it 
 extended to “…*AA* ABC *CC*…”.
 
 * **Repeat:** The color line is repeated over repeated multiples of the defined
-interval. For example, if color stops are specified for a defined interval of [0.2,
-1.5], then the pattern is repeated above the defined interval for intervals
-(1.5, 2.8], (2.8, 4.1], etc.; and also repeated below the defined interval for
-intervals [-1.1, 0.2), [-2.4, -1.1), etc. In each repeated interval, the first
-color is that of the farthest defined color stop. By analogy, given a sequence
-“ABC”, it is extended to “…*ABC* ABC *ABC*…”.
+interval. For example, if color stops are specified for a defined interval of
+[0.2, 1.5], then the pattern is repeated above the defined interval for
+intervals (1.5, 2.8], (2.8, 4.1], etc.; and also repeated below the defined
+interval for intervals [-1.1, 0.2), [-2.4, -1.1), etc. In each repeated
+interval, the first color is that of the farthest defined color stop. By
+analogy, given a sequence “ABC”, it is extended to “…*ABC* ABC *ABC*…”.
 
-* **Reflect:** The color line is repeated over repeated intervals, as for the repeat
-mode. However, in each repeated interval, the ordering of color stops is the
-reverse of the adjacent interval. By analogy, given a sequence “ABC”, it is
+* **Reflect:** The color line is repeated over repeated intervals, as for the
+repeat mode. However, in each repeated interval, the ordering of color stops is
+the reverse of the adjacent interval. By analogy, given a sequence “ABC”, it is
 extended to “…*ABC CBA* ABC *CBA ABC*…”.
 
 Figures 5.9 – 5.11 illustrate the different color line extend modes. The figures
@@ -315,8 +313,7 @@ defined:
 * VarColorLine table and VarColorStop record
 
 The VarColorLine and VarColorStop formats can be used in variable fonts and
-allow for stop offsets to be variable. The VarColorStop record also uses the
-VarColorIndex record, allowing the alpha to be variable. The ColorLine and
+allow for stop offsets and color alpha values to be variable. The ColorLine and
 ColorStop formats provide a more compact representation when variation is not
 required. See 5.7.11.2.4 for format details.
 
@@ -1498,36 +1495,15 @@ are stacked above the top layer of this element.
 Offsets for paint tables not referenced by any PaintColrLayers table should not
 be included in the paintOffsets array.
 
-**5.7.11.2.4 ColorIndex, ColorStop and ColorLine**
+**5.7.11.2.4 Color references, ColorStop and ColorLine**
 
 Colors are used in solid color fills for graphic elements, or as *stops* in a
 color line used to define a gradient. Colors are defined by reference to palette
 entries in the CPAL table (5.7.12). While CPAL entries include an alpha
-component, color-index records for referencing palette entries are defined here
-that includes a separate alpha specification to allow different graphic elements
-to use the same color but with different alpha values, and to allow for
-variation of the alpha in variable fonts.
-
-Two color-index record formats are defined: one that allows for variation of
-alpha, and one that does not.
-
-*ColorIndex record:*
-
-| Type | Name | Description |
-|-|-|-|
-| uint16 | paletteIndex | Index for a CPAL palette entry. |
-| F2DOT14 | alpha | Alpha value. |
-
-*VarColorIndex record:*
-
-| Type | Name | Description |
-|-|-|-|
-| uint16 | paletteIndex | Index for a CPAL palette entry. |
-| F2DOT14 | alpha | Alpha value. For variation, use varIndexBase + 0. |
-| uint32 | varIndexBase | Base index into DeltaSetIndexMap. |
-
-The VarColorIndex record uses a base/sequence scheme to index into mapping
-data. See 5.7.11.4 for details.
+component, formats for COLR version 1 that reference palette entries also
+includes a separate alpha specification to allow different graphic elements to
+use the same color but with different alpha values, and to allow for variation
+of the alpha in variable fonts.
 
 A paletteIndex value of 0xFFFF is a special case, indicating that the text
 foreground color (as determined by the application) is to be used.
@@ -1541,33 +1517,36 @@ resulting alpha value can be combined with and does not supersede alpha or
 opacity attributes set in higher-level, application-defined contexts.
 
 See 5.7.11.1.1 for more information regarding color references and solid color
-fills.
+fills. Solid color fills are defined using a PaintSolid or PaintVarSolid table,
+described below—see 5.7.11.2.5.2.
 
 Gradients are defined using a color line. A color line is a mapping of real
 numbers to color values, defined using color stops. See 5.7.11.1.2.1 for an
 overview and additional details.
 
-Two color-stop record formats are defined: one that allows for variation of
-stop offset position or of alpha, and one that does not. The format supporting
-variations uses a base/sequence scheme to index into mapping data; see
-5.7.11.4 for details.
+Two color-stop record formats are defined: one that allows for variation of stop
+offset position or of alpha, and one that does not. The format supporting
+variations uses a base/sequence scheme to index into mapping data; see 5.7.11.4
+for details.
 
 *ColorStop record:*
 
 | Type | Name | Description |
 |-|-|-|
 | F2DOT14 | stopOffset | Position on a color line. |
-| ColorIndex | color | |
+| uint16 | paletteIndex | Index for a CPAL palette entry. |
+| F2DOT14 | alpha | Alpha value. |
 
 *VarColorStop record:*
 
 | Type | Name | Description |
 |-|-|-|
 | F2DOT14 | stopOffset | Position on a color line. For variation, use varIndexBase + 0. |
-| ColorIndex | color | For variation, use varIndexBase + 1. |
+| uint16 | paletteIndex | Index for a CPAL palette entry. |
+| F2DOT14 | alpha | Alpha value. For variation, use varIndexBase + 1. |
 | uint32 | varIndexBase | Base index into DeltaSetIndexMap. |
 
-A color line is defined by an array of ColorStop records plus an extend mode.
+A color line is defined by an array of color stop records plus an extend mode.
 
 Two color-line table formats are defined: one that allows for variation of color
 stop offsets positions or of alpha values, and one that does not. Different
@@ -1590,10 +1569,10 @@ formats.
 | uint16 | numStops | Number of ColorStop records. |
 | VarColorStop | colorStops[numStops] | Allows for variations. |
 
-Applications shall apply the colorStops in increasing stopOffset order. The
-stopOffset value uses a variable structure and, with a variable font, the
-relative orderings of ColorStop records along the color line can change as a
-result of variation. With a variable font, the colorStops shall be ordered after
+Applications shall apply the colorStops entries in increasing stopOffset order.
+Within a variable font, the stopOffset values can vary, and the relative
+orderings of color stop records along the color line can change as a result of
+variation. With a variable font, the colorStops entries shall be ordered after
 the instance values for the stop offsets have been derived.
 
 A color line defines stops for only certain positions along the line, but the
@@ -1665,16 +1644,17 @@ information about applying a fill to a shape, see 5.7.11.1.3.
 | Type | Name | Description |
 |-|-|-|
 | uint8 | format | Set to 2. |
-| ColorIndex | color | ColorIndex record for the solid color fill. |
+| uint16 | paletteIndex | Index for a CPAL palette entry. |
+| F2DOT14 | alpha | Alpha value. |
 
 *PaintVarSolid table (format 3):*
 
 | Type | Name | Description |
 |-|-|-|
 | uint8 | format | Set to 3. |
-| VarColorIndex | color | VarColorIndex record for the solid color fill. |
-
-For the ColorIndex and VarColorIndex record formats, see 5.7.11.2.4.
+| uint16 | paletteIndex | Index for a CPAL palette entry. |
+| F2DOT14 | alpha | Alpha value. For variation, use varIndexBase + 0. |
+| uint32 | varIndexBase | Base index into DeltaSetIndexMap. |
 
 **5.7.11.2.5.3 Formats 4 and 5: PaintLinearGradient, PaintVarLinearGradient**
 
@@ -2628,11 +2608,12 @@ of the implementation context.
 For both the COLR and SVG tables, interpolation shall be done with alpha
 pre-multiplied into each linearized R, G and B component. For alpha specified in
 a CPAL ColorRecord, the value is converted to a floating value in the range [0,
-1.0] by dividing by 255, then multiplied into each R, G and B component. For
-ColorIndex records in the COLR table, the alpha value from the ColorIndex record
-(with variation, in a variable font) is multiplied into the R, G and B
-components as well. Interpolated values are then calculated by linear
-interpolation using these pre-multiplied, linear-light R, G and B values.
+1.0] by dividing by 255, then multiplied into each R, G and B component. In the
+COLR table, color references in formats used for version 1 include a separate
+alpha value; that alpha value  (with variation, in a variable font) is
+multiplied into the R, G and B components as well. Interpolated values are then
+calculated by linear interpolation using these pre-multiplied, linear-light R, G
+and B values.
 
 NOTE: Alpha components use a linear scale and can be directly interpolated apart
 from the R, G and B components without any linearlization step.
