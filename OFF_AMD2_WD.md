@@ -1144,8 +1144,9 @@ For each color glyph, the bounding box for the color glyph is defined within
 the color glyph description (see 5.7.11.2.3). The bounding box data can be
 variable within a variable font.
 
-NOTE: The bounding box of the BaseGlyphPaintRecord can be used to allocate a drawing
-surface without needing to traverse the graph of the color glyph definition.
+NOTE: The bounding box data for the color glyph can be used to allocate a
+drawing surface without needing to traverse the graph of the color glyph
+definition.
 
 A valid color glyph definition shall define a bounded region—that is, it shall
 paint within a region for which a finite bounding box could be defined. The
