@@ -522,10 +522,19 @@ struct PaintComposite
   Offset24<Paint>        backdrop;
 };
 
+struct VarBBox {
+  UFWORD                 x; // VarIdx varIndexBase + 0.
+  UFWORD                 y; // VarIdx varIndexBase + 1.
+  UFWORD                 w; // VarIdx varIndexBase + 2.
+  UFWORD                 h; // VarIdx varIndexBase + 3.
+  VarIdxBase             varIndexBase;
+}
+
 struct BaseGlyphPaintRecord
 {
   uint16                gid;
   Offset32<Paint>       paint;  // Typically PaintColrLayers
+  Offset32<VarBBox>     bbox;
 };
 
 // Entries shall be sorted in ascending order of the `glyphID` field of the `BaseGlyphPaintRecord`s.

@@ -1140,11 +1140,9 @@ used for the color glyph. The advance width and height of glyphs referenced by
 PaintGlyph tables are not required to be the same as that of the base glyph and
 are ignored.
 
-The bounding box of the base-glyph contours is used as the bounding box of the
-color glyph. A &#39;glyf&#39; entry with two points at diagonal extrema is
-sufficient to define the bounding box.
+The BaseGlyphPaintRecord bbox provides the bounding box for the color glyph.
 
-NOTE: The bounding box of the base glyph can be used to allocate a drawing
+NOTE: The bounding box of the BaseGlyphPaintRecord can be used to allocate a drawing
 surface without needing to traverse the graph of the color glyph definition.
 
 A valid color glyph definition shall define a bounded region—that is, it shall
@@ -1441,6 +1439,16 @@ in COLR version 0, providing records that map a base glyph to a color glyph
 definition. The color glyph definitions that each refer to are significantly
 different, however—see 5.7.11.1.
 
+*VarBBox table:*
+
+| Type | Name | Description |
+|-|-|-|
+| UFWORD | x | x-coord of bounding box. For variation, use varIndexBase + 0. |
+| UFWORD | y | x-coord of bounding box. For variation, use varIndexBase + 1. |
+| UFWORD | w | width of bounding box. For variation, use varIndexBase + 2. |
+| UFWORD | h | height of bounding box. For variation, use varIndexBase + 3. |
+| uint32 | varIndexBase | Base index into DeltaSetIndexMap. |
+
 *BaseGlyphList table:*
 
 | Type | Name | Description |
@@ -1454,6 +1462,7 @@ different, however—see 5.7.11.1.
 |-|-|-|
 | uint16 | glyphID | Glyph ID of the base glyph. |
 | Offset32 | paintOffset | Offset to a Paint table. |
+| Offset32 | bboxOffset | Offset to a VarBBox table. |
 
 The glyphID value shall be less than the numGlyphs value in the &#39;maxp&#39;
 table (5.2.6).
