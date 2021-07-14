@@ -1443,10 +1443,10 @@ different, however—see 5.7.11.1.
 
 | Type | Name | Description |
 |-|-|-|
-| UFWORD | x | x-coord of bounding box. For variation, use varIndexBase + 0. |
-| UFWORD | y | x-coord of bounding box. For variation, use varIndexBase + 1. |
-| UFWORD | w | width of bounding box. For variation, use varIndexBase + 2. |
-| UFWORD | h | height of bounding box. For variation, use varIndexBase + 3. |
+| FWORD | xMin | Minimum x of bounding box. For variation, use varIndexBase + 0. |
+| FWORD | yMin | Minimum y of bounding box. For variation, use varIndexBase + 1. |
+| FWORD | xMax | Maximum x of bounding box. For variation, use varIndexBase + 2. |
+| FWORD | yMax | Maximum y of bounding box. For variation, use varIndexBase + 3. |
 | uint32 | varIndexBase | Base index into DeltaSetIndexMap. |
 
 *BaseGlyphList table:*

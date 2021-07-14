@@ -523,10 +523,10 @@ struct PaintComposite
 };
 
 struct VarBBox {
-  UFWORD                 x; // VarIdx varIndexBase + 0.
-  UFWORD                 y; // VarIdx varIndexBase + 1.
-  UFWORD                 w; // VarIdx varIndexBase + 2.
-  UFWORD                 h; // VarIdx varIndexBase + 3.
+  FWORD                 xMin; // VarIdx varIndexBase + 0.
+  FWORD                 yMin; // VarIdx varIndexBase + 1.
+  FWORD                 xMax; // VarIdx varIndexBase + 2.
+  FWORD                 yMax; // VarIdx varIndexBase + 3.
   VarIdxBase             varIndexBase;
 }
 
