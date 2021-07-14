@@ -527,7 +527,7 @@ struct VarBBox {
   FWORD                 yMin; // VarIdx varIndexBase + 1.
   FWORD                 xMax; // VarIdx varIndexBase + 2.
   FWORD                 yMax; // VarIdx varIndexBase + 3.
-  VarIdxBase             varIndexBase;
+  VarIdxBase            varIndexBase; // Set to 0 in non-variable fonts.
 }
 
 struct BaseGlyphPaintRecord
