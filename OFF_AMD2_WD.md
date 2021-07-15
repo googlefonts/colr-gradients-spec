@@ -184,7 +184,7 @@ the application) should be used, and shall not be treated as an actual index
 into the CPAL ColorRecord array.
 
 The CPAL color data includes alpha information, as well as RGB values. In the
-COLR version 0 formats, a color reference is made in LayerRecord as a palette
+COLR version 0 formats, a color reference is made in a LayerRecord as a palette
 entry index alone. In the formats added for COLR version 1, color references
 include a palette entry index and a separate alpha value within the COLR
 structure for a solid color fill or gradient color stop (described below).
