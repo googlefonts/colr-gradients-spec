@@ -1465,19 +1465,21 @@ glyphID order. It is intended that a binary search can be used to find a
 matching BaseGlyphPaintRecord for a specific glyphID.
 
 The BBox subtable is used to provide the bounding box for the given color
-glyph. BBox can be static or variable.
+glyph. BBox can be static or variable. Two formats are defined: format 0 for 
+bounding boxes without variation, and format 1 for bounding boxes that allow
+for variation in a variable font.
 
-*BBox table format 0, static bbox:*
+*BBox table format 0, static bounding box:*
 
 | Type | Name | Description |
 |-|-|-|
 | uint8 | format | Set to 0 |
-| FWORD | xMin | Minimum x of bounding box. For variation, use varIndexBase + 0. |
-| FWORD | yMin | Minimum y of bounding box. For variation, use varIndexBase + 1. |
-| FWORD | xMax | Maximum x of bounding box. For variation, use varIndexBase + 2. |
-| FWORD | yMax | Maximum y of bounding box. For variation, use varIndexBase + 3. |
+| FWORD | xMin | Minimum x of bounding box. |
+| FWORD | yMin | Minimum y of bounding box. |
+| FWORD | xMax | Maximum x of bounding box. |
+| FWORD | yMax | Maximum y of bounding box. |
 
-*BBox table format 1, variable bbox:*
+*BBox table format 1, variable bounding box:*
 
 | Type | Name | Description |
 |-|-|-|
@@ -1488,8 +1490,8 @@ glyph. BBox can be static or variable.
 | FWORD | yMax | Maximum y of bounding box. For variation, use varIndexBase + 3. |
 | uint32 | varIndexBase | Base index into DeltaSetIndexMap. |
 
-Variable vs static BBox is selected on a per-glyph basis. For variable data,
-a base/sequence scheme is used to index into variation mapping data. See
+A variable or static BBox table is selected on a per-glyph basis. For variable 
+data, a base/sequence scheme is used to index into variation mapping data. See
 5.7.11.4 for details.
 
 The paint table referenced by the BaseGlyphPaintRecord is the root of the graph
