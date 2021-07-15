@@ -522,7 +522,16 @@ struct PaintComposite
   Offset24<Paint>        backdrop;
 };
 
+struct BBox {
+  uint8                 format; // = 0
+  FWORD                 xMin;
+  FWORD                 yMin;
+  FWORD                 xMax;
+  FWORD                 yMax;
+}
+
 struct VarBBox {
+  uint8                 format; // = 1
   FWORD                 xMin; // VarIdx varIndexBase + 0.
   FWORD                 yMin; // VarIdx varIndexBase + 1.
   FWORD                 xMax; // VarIdx varIndexBase + 2.
