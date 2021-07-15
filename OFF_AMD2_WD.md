@@ -1455,7 +1455,7 @@ different, however—see 5.7.11.1.
 |-|-|-|
 | uint16 | glyphID | Glyph ID of the base glyph. |
 | Offset32 | paintOffset | Offset to a Paint table. |
-| Offset32 | bboxOffset | Offset to a VarBBox table. |
+| Offset32 | bboxOffset | Offset to a BBox table. |
 
 The glyphID value shall be less than the numGlyphs value in the &#39;maxp&#39;
 table (5.2.6).
@@ -1464,22 +1464,35 @@ The records in the baseGlyphPaintRecords array shall be sorted in increasing
 glyphID order. It is intended that a binary search can be used to find a
 matching BaseGlyphPaintRecord for a specific glyphID.
 
-A VarBBox subtable is used to provide the bounding box for the given color
-glyph.
+The BBox subtable is used to provide the bounding box for the given color
+glyph. BBox can be static or variable. Two formats are defined: format 0 for 
+bounding boxes without variation, and format 1 for bounding boxes that allow
+for variation in a variable font.
 
-*VarBBox table:*
+*BBox table format 0, static bounding box:*
 
 | Type | Name | Description |
 |-|-|-|
+| uint8 | format | Set to 0 |
+| FWORD | xMin | Minimum x of bounding box. |
+| FWORD | yMin | Minimum y of bounding box. |
+| FWORD | xMax | Maximum x of bounding box. |
+| FWORD | yMax | Maximum y of bounding box. |
+
+*BBox table format 1, variable bounding box:*
+
+| Type | Name | Description |
+|-|-|-|
+| uint8 | format | Set to 1 |
 | FWORD | xMin | Minimum x of bounding box. For variation, use varIndexBase + 0. |
 | FWORD | yMin | Minimum y of bounding box. For variation, use varIndexBase + 1. |
 | FWORD | xMax | Maximum x of bounding box. For variation, use varIndexBase + 2. |
 | FWORD | yMax | Maximum y of bounding box. For variation, use varIndexBase + 3. |
 | uint32 | varIndexBase | Base index into DeltaSetIndexMap. |
 
-The same structure is used in both variable and non-variable fonts. For
-variable data, a base/sequence scheme is used to index into variation mapping
-data. See 5.7.11.4 for details.
+A variable or static BBox table is selected on a per-glyph basis. For variable 
+data, a base/sequence scheme is used to index into variation mapping data. See
+5.7.11.4 for details.
 
 The paint table referenced by the BaseGlyphPaintRecord is the root of the graph
 for a color glyph definition.
