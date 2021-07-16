@@ -1464,10 +1464,9 @@ The records in the baseGlyphPaintRecords array shall be sorted in increasing
 glyphID order. It is intended that a binary search can be used to find a
 matching BaseGlyphPaintRecord for a specific glyphID.
 
-The BBox subtable is used to provide the bounding box for the given color
-glyph. BBox can be static or variable. Two formats are defined: format 0 for 
-bounding boxes without variation, and format 1 for bounding boxes that allow
-for variation in a variable font.
+The BBox subtable is used to provide the bounding box for the given color glyph.
+Two formats are defined: format 0 for bounding boxes without variation, and
+format 1 for bounding boxes that allow for variation in a variable font.
 
 *BBox table format 0, static bounding box:*
 
