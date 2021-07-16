@@ -1473,7 +1473,7 @@ for variation in a variable font.
 
 | Type | Name | Description |
 |-|-|-|
-| uint8 | format | Set to 0 |
+| uint8 | format | Set to 0. |
 | FWORD | xMin | Minimum x of bounding box. |
 | FWORD | yMin | Minimum y of bounding box. |
 | FWORD | xMax | Maximum x of bounding box. |
@@ -1483,7 +1483,7 @@ for variation in a variable font.
 
 | Type | Name | Description |
 |-|-|-|
-| uint8 | format | Set to 1 |
+| uint8 | format | Set to 1. |
 | FWORD | xMin | Minimum x of bounding box. For variation, use varIndexBase + 0. |
 | FWORD | yMin | Minimum y of bounding box. For variation, use varIndexBase + 1. |
 | FWORD | xMax | Maximum x of bounding box. For variation, use varIndexBase + 2. |
