@@ -9,6 +9,8 @@ Changes to the following sections of ISO/IEC 14496-22:2019 Open Font Format
 - [7.1.7 Algorithm for interpolation of instance values](#changes-to-OFF-717-algorithm-for-interpolation-of-instance-values)
 - [7.2.1 Overview (Font variations common table formats)](#changes-to-off-721-overview-font-variations-common-table-formats)
 - [7.2.3 Item variation stores](#changes-to-off-723-item-variation-stores)
+- [7.3.5 HVAR – Horizontal metrics variations table](#changes-to-off-735---horizontal-metrics-variation-table)
+- [7.3.8 VVAR – Vertical metrics variations table](#changes-to-off-738---vertical-metrics-variation-table)
 - [Bibliography](#changes-to-off-bibliography)
 
 ## Changes to OFF 4.3 Data types
@@ -1298,9 +1300,9 @@ Various table and record formats are defined for COLR version 0 and version 1.
 Several values contained within the version 1 formats are variable. For items
 that vary in a variable font, the variation data is contained in an
 ItemVariationStore table (7.2.3). To associate each variable item with the
-corresponding variation data, a DeltaSetIndexMap table is used, as in the HVAR
-table (7.3.5). Within a given table that has variable items, a base/sequence
-scheme is used to index into the mapping data. See 5.7.11.4 for details.
+corresponding variation data, a DeltaSetIndexMap table (7.2.3.1) is used. Within
+a given table that has variable items, a base/sequence scheme is used to index
+into the mapping data. See 5.7.11.4 for details.
 
 All table offsets are from the start of the parent table in which the offset is
 given, unless otherwise indicated.
@@ -1352,7 +1354,7 @@ The ItemVariationStore is used in conjunction with a BaseGlyphList and its
 subtables, but only in variable fonts. If it is not used, set
 itemVariationStoreOffset to NULL.
 
-The DeltaSetIndexMap format is described in 7.3.5.2. A DeltaSetIndexMap is used
+The DeltaSetIndexMap table is described in 7.2.3.1. Within the COLR table, either format 0 or format 1 of the DeltaSetIndexMap can be used. A DeltaSetIndexMap is used
 in conjunction with the ItemVariationStore in a variable font. The
 DeltaSetIndexMap is optional: if an ItemVariationStore is present but a 
 DeltaSetIndexMap is not included (varIndexMapOffset is NULL), then an implicit
@@ -2727,32 +2729,86 @@ subtable, and use a slice of consecutive mapping entries.
 with a delta-set index using a related VariationIndex table (6.2.8) within the
 same subtable that contains the target item.
 
-In general, variation deltas are (logically) signed 16-bit integers, and in most
-cases, they are applied to signed 16-bit values (FWORDs) or unsigned 16-bit
-values (UFWORDs). In the COLR table, however, scaled deltas can be applied to
-F2DOT14 or Fixed items, which are fixed-size floating types.
+In the COLR, HVAR and VVAR tables, DeltaSetIndexMap tables are used to provide
+the mapping to delta set indices. Two formats for the DeltaSetIndexMap are
+defined: format 0 uses a 16-bit count field, and so is limited to 65,535
+entries; format 1 uses a 32-bit count field.
 
-When applying scaled deltas to an F2DOT14 value, the F2DOT14 value is treated
-like a 16-bit integer. (In this sense, the delta and the F2DOT14 value can be
-viewed as integer values in units of 1/16384ths.) If the context in which the
-F2DOT14 is used constrains the valid range for the default value, then any
-variations by applying deltas are clipped to that range.
+*DeltaSetIndexMap format 0:*
 
-Fixed is a 32-bit (16.16) type and, in the general case, requires 32-bit deltas.
-The DeltaSet record used in the ItemVariationData subtable format can
-accommodate deltas that are, logically, either 16-bit or 32-bit. (See 7.2.3.4
-for details.) When scaled deltas are applied to Fixed values, the Fixed value is
-treated like a 32-bit integer. (In this sense, the delta and the Fixed value can
-be viewed as integer values in units of 1/65536ths.)
+| Type | Name | Description |
+| -- | -- | -- |
+| uint8 | format | DeltaSetIndexMap format: set to 0. |
+| uint8 | entryFormat | A packed field that describes the compressed representation of delta-set indices. See details below. |
+| uint16 | mapCount | The number of mapping entries. |
+| uint8 | mapData[variable] | The delta-set index mapping data. See details below. |
+
+*DeltaSetIndexMap format 1:*
+
+| Type | Name | Description |
+| -- | -- | -- |
+| uint8 | format | DeltaSetIndexMap format: set to 1. |
+| uint8 | entryFormat | A packed field that describes the compressed representation of delta-set indices. See details below. |
+| uint32 | mapCount | The number of mapping entries. |
+| uint8 | mapData[variable] | The delta-set index mapping data. See details below. |
+
+NOTE: In previous versions of this specification, only one format of the
+DeltaSetIndexMap table was defined, and it began with a single, 16-bit
+_entryFormat_ field. That single 16-bit field has been subdivided into separate
+8-bit _format_ and _entryFormat_ fields. In the prior definition, the high-order
+byte of the 16-bit field was reserved and set to zero. Thus, format 0 is
+backward compatible with the definition used in previous versions.
+
+The mapCount field indicates the number of delta-set index mapping entries. The
+logical entries in the mapData array use a base-zero index. In the context in
+which a DeltaSetIndexMap table is used, if an index into the mapping array is
+used that is greater than or equal to mapCount, then the last logical entry of
+the mapping array is used.
+
+Each mapping entry represents a delta-set outer-level index and inner-level
+index combination. Logically, each of these indices is a 16-bit, unsigned value.
+These are represented in a packed format that uses one, two, three or four
+bytes. The entryFormat field is a packed bitfield that describes the compressed
+representation used in the mapData field of the given deltaSetIndexMap table.
+The format of the entryFormat field is as follows:
+
+*EntryFormat Field Masks:*
+
+| Mask | Name | Description |
+| -- | -- | -- |
+| 0x0F | INNER_INDEX_BIT_COUNT_MASK | Mask for the low 4 bits, which give the count of bits minus one that are used in each entry for the inner-level index. |
+| 0x30 | MAP_ENTRY_SIZE_MASK | Mask for bits that indicate the size in bytes minus one of each entry. |
+| 0xC0 | Reserved | Reserved for future use — set to 0. |
+
+The innerBitCountMask and mapEntrySizeMask enable the inner index to range in
+size from 1 to 16 bits, and the outer index to range in size from 0 to 31 bits,
+with the combined size determined by the mapEntrySizeMask. The size of each
+mapping entry is ((entryFormat &amp; mapEntrySizeMask) &gt;&gt; 4 + 1). The
+mapCount value gives the number of logical entries in the map data array; the
+total size of the map data array, in bytes, is entrySize &ast; mapCount.
+
+For a given entry, the outer-level and inner-level indices can be obtained as
+follows:
+
+````
+outerIndex = entry >> ((entryFormat & innerIndexBitCountMask) + 1)
+
+innerIndex = entry & ((1 << ((entryFormat & innerIndexBitCountMask) + 1)) - 1)
+````
+
+For larger sets of variation data, such as may be needed for COLR, HVAR or VVAR
+tables, optimization of the indices data as well as the delta data may have a
+significant impact on overall size. Optimizing compilers may need to consider
+the impact on representation of indices in tandem as it optimizes the item
+variation store to achieve the best overall results.
 
 _Insert a sub-clause heading, "7.2.3.2 Variation data", after the newly-inserted
 text above, and before the paragraph beginning, "The ItemVariationStore table
 includes a variation region list..." Re-number subsequent sub-clauses
 accordingly._
 
-_In the fifth paragraph that follows the figure in (now) 7.2.3.2, delete the
-first sentence, "A complete delta set index... within that subtable." Before
-that pragraph, insert the following paragraph:_
+Replace the fifth paragraph that follows the figure in (now) 7.2.3.2 ("A
+complete delta-set index..."), with the following paragraph:_ 
 
 A complete delta-set index involves an outer-level index into the
 ItemVariationData subtable array, plus an inner-level index to a delta-set row
@@ -2793,7 +2849,7 @@ have any variation.
 
 _In 7.2.3.4, in the table for the ItemVariationData subtable structure, replace
 the field name "shortDeltaCount" with "wordDeltaCount", and replace the
-description of that field with the following:"_
+description of that field with the following:_
 
 A packed field: the high bit is a flag—see details below.
 
@@ -2843,6 +2899,105 @@ flag is not set, or 2 x that amount if the flag is set.
 
 NOTE: Delta values are each represented directly. They are not packed as in the
 tuple variation store.
+
+In general, variation deltas are (logically) signed 16-bit integers, and in most
+cases, they are applied to signed 16-bit values (FWORDs) or unsigned 16-bit
+values (UFWORDs). In the COLR table, however, scaled deltas can be applied to
+F2DOT14 or Fixed items, which are fixed-size floating types.
+
+When applying scaled deltas to an F2DOT14 value, the F2DOT14 value is treated
+like a 16-bit integer. (In this sense, the delta and the F2DOT14 value can be
+viewed as integer values in units of 1/16384ths.) If the context in which the
+F2DOT14 is used constrains the valid range for the default value, then any
+variations by applying deltas are clipped to that range.
+
+Fixed is a 32-bit (16.16) type and, in the general case, requires 32-bit deltas.
+The DeltaSet record used in the ItemVariationData subtable format can
+accommodate deltas that are, logically, either 16-bit or 32-bit. (See 7.2.3.4
+for details.) When scaled deltas are applied to Fixed values, the Fixed value is
+treated like a 32-bit integer. (In this sense, the delta and the Fixed value can
+be viewed as integer values in units of 1/65536ths.)
+
+## Changes to OFF 7.3.5 - Horizontal metrics variation table
+
+_Replace the seventh and eight paragraphs with the following:_
+
+An advance width mapping subtable adds additional data within the HVAR table,
+but it also makes it possible to use a more compact representation of the data
+in the item variation store. For example, if multiple glyphs have the same
+advance widths, the mapping subtable allows all of them to reference a single
+delta set within the store. Additional optimizations within the item variation
+store are possible. See the Common Table Formats chapter for more discussion
+about size optimization. In general, inclusion of an advance width mapping
+subtable is recommended.
+
+Optional mapping subtables can also be used to provide delta-set indices for
+glyph side bearings. In variable fonts with TrueType outlines, variation data
+for side bearings is recommended. If variation data for side bearings is
+provided, it should include data for both left and right side bearings, and
+mapping subtables for left and right side bearings must also be included.
+
+_In subclause 7.3.5.2, after the table defnining the horizontal metrics
+variation table, replace the second and third paragraphs with the following:_
+
+Mapping subtables are represented using a DeltaSetIndexMap table; see 7.3.2.1
+for the definition of this table. In the HVAR table, only format 0 of the
+DeltaSetIndexMap is used. Mapping subtables are optional. If a given mapping
+subtable is not provided, the offset is set to NULL.
+
+Variation data for advance widths is required. A delta-set index mapping
+subtable for advance widths can be provided, but is optional. If a mapping
+subtable is not provided, glyph indices are used as implicit delta-set indices.
+To access the delta set for the advance of given glyph, the delta-set
+outer-level index is zero, and the glyph ID is used as the inner-level index.
+
+_In subclause 7.3.5.2, after the table defnining the horizontal metrics
+variation table, delete from the fifth paragraph ("The delta-set index mapping
+table has the following format...") to the end of subclause 7.3.5.2._
+
+_In subclause 7.3.5.3, replace the second paragraph with the following:_
+
+Delta-set indices are obtained based on the glyph ID. If there is no delta-set
+index mapping table for advance widths, then glyph IDs implicitly provide the
+indices: for a given glyph ID, the delta-set outer-level index is zero, and the
+glyph ID is the delta-set inner-level index. If delta-set index mappings are
+provided, glyph IDs are used to lookup a mapping entry, which provides the
+outer- and inner-level delta-set indices in a packed format. See 7.3.2.1 for
+details.
+
+_In subclause 7.3.5.3, delete the third paragraph._
+
+_In subclause 7.3.5.3, replace the first sentence of the last paragraph with the
+following:_
+
+The delta-set indices are used to reference a delta set for the target advance
+width or side bearing within the item variation store.
+
+## Changes to OFF 7.3.8 - Vertical metrics variation table
+
+_In subclause 7.3.8.2, after the table defining the Vertical metrics variation
+table, replace the remaining text of the subclauase with the following:_
+
+The item variation store table is documented in subclause 7.2.
+
+Mapping subtables are represented using a DeltaSetIndexMap table; see 7.2.3.1
+for the definition of this table. In the VVAR table, only format 0 of the
+DeltaSetIndexMap is used. Mapping subtables are optional. If a given mapping
+subtable is not provided, the offset is set to NULL.
+
+Variation data for advance heights is required. A delta-set index mapping
+subtable for advance heights can be provided, but is optional. If a mapping
+table is not provided, glyph indices are used as implicit delta-set indices, as
+in the HVAR table.
+
+Variation data for side bearings are optional. If included, mapping subtables
+are required to provide the delta-set index for each glyph.
+
+Mappings and variation data for vertical origins are not used in fonts with
+TrueType outlines, but can be included in variable fonts with CFF 2 outlines if
+there is variability in the Y coordinates of glyph vertical origins, the default
+values of which are recorded in the VORG table. A mapping subtable is required
+for vertical-origin variation data.
 
 ## Changes to OFF Bibliography
 
