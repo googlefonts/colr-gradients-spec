@@ -2935,7 +2935,7 @@ Optional mapping subtables can also be used to provide delta-set indices for
 glyph side bearings. In variable fonts with TrueType outlines, variation data
 for side bearings is recommended. If variation data for side bearings is
 provided, it should include data for both left and right side bearings, and
-mapping subtables for left and right side bearings must also be included.
+mapping subtables for left and right side bearings shall also be included.
 
 _In subclause 7.3.5.2, after the table defnining the horizontal metrics
 variation table, replace the second and third paragraphs with the following:_
