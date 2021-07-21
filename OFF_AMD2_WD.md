@@ -1164,9 +1164,13 @@ sub-graph is bounded.
 used and the boundedness of the referenced sub-graphs. See 5.7.11.2.5.13 for
 details.
 
-A ClipBox table (5.7.11.2.3) may be associated with a color glyph to define
-an overall bounds for the color glyph. The clip box may vary in a variable
-font.
+A ClipBox table (5.7.11.2.3) may be associated with a color glyph to define an
+overall bounds for the color glyph. The clip box may vary in a variable font. If
+a clip box is provided for a color glyph, the color glyph is bounded, and no
+inspection of the Paint graph is required to determine boundedness. If no clip
+box is defined for a color glyph, however, applications shall confirm that the
+color glyph definition is bounded, and shall not render the color glyph if the
+defining graph is not bounded.
 
 NOTE: If present, the clip box for a color glyph can be used to allocate a
 drawing surface without needing to traverse the graph of the color glyph
@@ -1175,12 +1179,6 @@ definition.
 NOTE: If no ClipBox table is present but a bounding box is required by the
 implementation, it can be computed for a given color glyph by traversing the
 graph of Paint tables that defines that color glyph.
-
-If a clip box is provided for a color glyph, the color glyph is bounded, and no
-inspection of the Paint graph is required to determine boundedness. If no clip
-box is defined for a color glyph, however, applications shall confirm that the
-color glyph definition is bounded, and shall not render the color glyph if the
-defining graph is not bounded.
 
 To ensure that rendering implementations do not clip any part of a color glyph,
 the clip box needs to be large enough to encompass the entire color glyph
