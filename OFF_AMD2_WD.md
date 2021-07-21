@@ -1511,7 +1511,7 @@ The ClipBox table is used to provide a precomputed clip box for the given color 
 Two formats are defined: format 0 for clip boxes without variation, and
 format 1 allowing for clip boxes that can vary in a variable font.
 
-Any content drawn outside the clip box should not render.
+Any content drawn outside the clip box shall not render.
 
 NOTE: The clip box is not required to be a tight bounding box around the content.
 However, as it is anticipated it may be used to guide allocation it is desirable
