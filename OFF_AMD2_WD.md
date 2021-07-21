@@ -1142,11 +1142,11 @@ used for the color glyph. The advance width and height of glyphs referenced by
 PaintGlyph tables are not required to be the same as that of the base glyph and
 are ignored.
 
-For each color glyph, the bounding box for the color glyph is defined within
-the color glyph description (see 5.7.11.2.3). The bounding box data can be
-variable within a variable font.
+For each color glyph, a clip box may be associated (see 5.7.11.2.3). The clip
+box may vary in a variable font. If no clip is present it must be computed
+by traversing the graph of Paint that describes the contents of the glyph.
 
-NOTE: The bounding box data for the color glyph can be used to allocate a
+NOTE: If present, the clip box for the color glyph can be used to allocate a
 drawing surface without needing to traverse the graph of the color glyph
 definition.
 
@@ -1154,6 +1154,8 @@ A valid color glyph definition shall define a bounded region—that is, it shall
 paint within a region for which a finite bounding box could be defined. The
 different paint formats have different boundedness characteristics:
 
+* If a clip box is provided the graph is inherantly bounded, no inspection
+of the Paint graph is required.
 * PaintGlyph is inherently bounded.
 * PaintSolid, PaintVarSolid, PaintLinearGradient, PaintVarLinearGradient,
 PaintRadialGradient, PaintVarRadialGradient, PaintSweepGradient, and
@@ -1340,6 +1342,7 @@ the COLR table require glyph ID 1 to be the .null glyph.
 | uint16 | numLayerRecords | Number of Layer records; may be 0 in a version 1 table. |
 | Offset32 | baseGlyphListOffset | Offset to BaseGlyphList table. |
 | Offset32 | layerListOffset | Offset to LayerList table (may be NULL). |
+| Offset32 | clipListOffset | Offset to ClipList table (may be NULL). |
 | Offset32 | varIndexMapOffset | Offset to DeltaSetIndexMap table (may be NULL). |
 | Offset32 | itemVariationStoreOffset | Offset to ItemVariationStore (may be NULL). |
 
@@ -1349,6 +1352,9 @@ The LayerList is only used in conjunction with the BaseGlyphList and,
 specifically, with PaintColrLayers tables (5.7.11.2.5.1); it is not required if
 no color glyphs use a PaintColrLayers table. If not used, set layerListOffset to
 NULL.
+
+The ClipList is only used in conjunction with the BaseGlyphList. If not used, set
+clipListOffset to NULL.
 
 The ItemVariationStore is used in conjunction with a BaseGlyphList and its
 subtables, but only in variable fonts. If it is not used, set
@@ -1437,7 +1443,7 @@ CPAL table (5.7.12). A paletteIndex value of 0xFFFF is a special case,
 indicating that the text foreground color (as determined by the application) is
 to be used.
 
-**5.7.11.2.3 BaseGlyphList and LayerList**
+**5.7.11.2.3 BaseGlyphList, LayerList, ClipList**
 
 The BaseGlyphList table is, conceptually, similar to the baseGlyphRecords array
 in COLR version 0, providing records that map a base glyph to a color glyph
@@ -1466,34 +1472,6 @@ The records in the baseGlyphPaintRecords array shall be sorted in increasing
 glyphID order. It is intended that a binary search can be used to find a
 matching BaseGlyphPaintRecord for a specific glyphID.
 
-The BBox subtable is used to provide the bounding box for the given color glyph.
-Two formats are defined: format 0 for bounding boxes without variation, and
-format 1 allowing for bounding boxes that can vary in a variable font.
-
-*BBox table format 0, static bounding box:*
-
-| Type | Name | Description |
-|-|-|-|
-| uint8 | format | Set to 0. |
-| FWORD | xMin | Minimum x of bounding box. |
-| FWORD | yMin | Minimum y of bounding box. |
-| FWORD | xMax | Maximum x of bounding box. |
-| FWORD | yMax | Maximum y of bounding box. |
-
-*BBox table format 1, variable bounding box:*
-
-| Type | Name | Description |
-|-|-|-|
-| uint8 | format | Set to 1. |
-| FWORD | xMin | Minimum x of bounding box. For variation, use varIndexBase + 0. |
-| FWORD | yMin | Minimum y of bounding box. For variation, use varIndexBase + 1. |
-| FWORD | xMax | Maximum x of bounding box. For variation, use varIndexBase + 2. |
-| FWORD | yMax | Maximum y of bounding box. For variation, use varIndexBase + 3. |
-| uint32 | varIndexBase | Base index into DeltaSetIndexMap. |
-
-A variable or static BBox table is selected on a per-glyph basis. For variable 
-data, a base/sequence scheme is used to index into variation mapping data. See
-5.7.11.4 for details.
 
 The paint table referenced by the BaseGlyphPaintRecord is the root of the graph
 for a color glyph definition.
@@ -1527,6 +1505,63 @@ are stacked above the top layer of this element.
 
 Offsets for paint tables not referenced by any PaintColrLayers table should not
 be included in the paintOffsets array.
+
+*ClipBox table:*
+
+The ClipBox table is used to provide a precomputed clip box for the given color glyph.
+Two formats are defined: format 0 for clip boxes without variation, and
+format 1 allowing for clip boxes that can vary in a variable font.
+
+Any content drawn outside the clip box should not render.
+
+NOTE: The clip box is not required to be a tight bounding box around the content.
+However, as it is anticipated it may be used to guide allocation it is desirable
+that it not be unnecessarily large.
+
+*ClipBox table format 0, static clip box:*
+
+| Type | Name | Description |
+|-|-|-|
+| uint8 | format | Set to 0. |
+| FWORD | xMin | Minimum x of bounding box. |
+| FWORD | yMin | Minimum y of bounding box. |
+| FWORD | xMax | Maximum x of bounding box. |
+| FWORD | yMax | Maximum y of bounding box. |
+
+*ClipBox table format 1, variable clip box:*
+
+| Type | Name | Description |
+|-|-|-|
+| uint8 | format | Set to 1. |
+| FWORD | xMin | Minimum x of bounding box. For variation, use varIndexBase + 0. |
+| FWORD | yMin | Minimum y of bounding box. For variation, use varIndexBase + 1. |
+| FWORD | xMax | Maximum x of bounding box. For variation, use varIndexBase + 2. |
+| FWORD | yMax | Maximum y of bounding box. For variation, use varIndexBase + 3. |
+| uint32 | varIndexBase | Base index into DeltaSetIndexMap. |
+
+When computing a variable ClipBox compute the min/max coordinates using floating point
+values and then round to int values such that the clip box expands. That is, round xMin
+and yMin down and round xMax and yMax up.
+
+For variable data, a base/sequence scheme is used to index into variation mapping data. See
+5.7.11.4 for details.
+
+*Clip table:*
+
+| Type | Name | Description |
+|-|-|-|
+| uint16 | glyphIDStart | The smallest glyph id this clip applies to. |
+| uint16 | glyphIDEnd | The largest glyph id (inclusive) this clip applies to |
+| Offset24 | clipBoxOffset | Offset to a ClipBox table. |
+
+*ClipList table:*
+
+| Type | Name | Description |
+|-|-|-|
+| uint32 | numClip |  |
+| Clip[numClip] | clips | Clip records. Sorted by gid range. gid ranges shall not overlap. |
+
+Presence of a precomputed clip is optional.
 
 **5.7.11.2.4 Color references, ColorStop and ColorLine**
 

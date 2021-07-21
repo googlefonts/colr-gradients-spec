@@ -522,7 +522,7 @@ struct PaintComposite
   Offset24<Paint>        backdrop;
 };
 
-struct BBox {
+struct ClipBox {
   uint8                 format; // = 0
   FWORD                 xMin;
   FWORD                 yMin;
@@ -530,13 +530,19 @@ struct BBox {
   FWORD                 yMax;
 }
 
-struct VarBBox {
+struct VarClipBox {
   uint8                 format; // = 1
   FWORD                 xMin; // VarIdx varIndexBase + 0.
   FWORD                 yMin; // VarIdx varIndexBase + 1.
   FWORD                 xMax; // VarIdx varIndexBase + 2.
   FWORD                 yMax; // VarIdx varIndexBase + 3.
   VarIdxBase            varIndexBase; // Set to 0 in non-variable fonts.
+}
+
+struct Clip {
+  uint16                gidStart;  // first gid clip applies to
+  uint16                gidEnd;    // last gid clip applies to, inclusive
+  Offset24<ClipBox>     clipBox;   // Box or VarBox
 }
 
 struct BaseGlyphPaintRecord
@@ -552,6 +558,8 @@ typedef ArrayOf<BaseGlyphPaintRecord, uint32> BaseGlyphList;
 // Only layers accessed via PaintColrLayers (format 1) need be encoded here.
 typedef ArrayOf<Offset32<Paint>, uint32> LayerList;
 
+typedef ArrayOf<Clip, uint32> ClipList;
+
 struct COLRv1
 {
   // Version-0 fields
@@ -563,6 +571,7 @@ struct COLRv1
   // Version-1 additions
   Offset32<BaseGlyphList>                           baseGlyphList;
   Offset32<LayerList>                               layerList;
+  Offset32<ClipList>                                clipList;   // May be NULL
   Offset32<VarIdxMap>                               varIdxMap;  // May be NULL
   Offset32<ItemVariationStore>                      varStore;
 };
