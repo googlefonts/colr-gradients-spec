@@ -1358,15 +1358,16 @@ NULL.
 The ClipList is only used in conjunction with the BaseGlyphList. If not used, set
 clipListOffset to NULL.
 
-The ItemVariationStore is used in conjunction with a BaseGlyphList and its
-subtables, but only in variable fonts. If it is not used, set
+The ItemVariationStore (7.2.3) is used in conjunction with a BaseGlyphList and
+its subtables, but only in variable fonts. If it is not used, set
 itemVariationStoreOffset to NULL.
 
-The DeltaSetIndexMap table is described in 7.2.3.1. Within the COLR table, either format 0 or format 1 of the DeltaSetIndexMap can be used. A DeltaSetIndexMap is used
-in conjunction with the ItemVariationStore in a variable font. The
-DeltaSetIndexMap is optional: if an ItemVariationStore is present but a 
-DeltaSetIndexMap is not included (varIndexMapOffset is NULL), then an implicit
-mapping is used. See 5.7.11.4 for details.
+The DeltaSetIndexMap table is described in 7.2.3.1. Within the COLR table,
+either format 0 or format 1 of the DeltaSetIndexMap can be used. A
+DeltaSetIndexMap is used in conjunction with the ItemVariationStore in a
+variable font. The DeltaSetIndexMap is optional: if an ItemVariationStore is
+present but a  DeltaSetIndexMap is not included (varIndexMapOffset is NULL),
+then an implicit mapping is used. See 5.7.11.4 for details.
 
 **5.7.11.2.1.3 Mixing version 0 and version 1 formats**
 
