@@ -1143,8 +1143,7 @@ PaintGlyph tables are not required to be the same as that of the base glyph and
 are ignored.
 
 For each color glyph, a clip box may be associated (see 5.7.11.2.3). The clip
-box may vary in a variable font. If no clip is present it must be computed
-by traversing the graph of Paint that describes the contents of the glyph.
+box may vary in a variable font. If no clip is present if a bounding box is required by the implementation, it must be computed by traversing the graph of Paint tables that describes the contents of the glyph.
 
 NOTE: If present, the clip box for the color glyph can be used to allocate a
 drawing surface without needing to traverse the graph of the color glyph
