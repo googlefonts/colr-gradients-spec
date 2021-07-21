@@ -583,7 +583,8 @@ struct COLRv1
 ### Pseudocode
 
 ```
-Allocate a bitmap for the glyph according to extents of base glyph contours for gid
+Allocate a bitmap for the glyph, using the ClipBox for the glyph (if present) or
+by traversing the paint graph to determine bounds.
 0) Start at base glyph paint.
  a) Paint a paint, switch:
     1) PaintColrLayers
