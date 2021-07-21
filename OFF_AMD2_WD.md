@@ -1142,19 +1142,10 @@ used for the color glyph. The advance width and height of glyphs referenced by
 PaintGlyph tables are not required to be the same as that of the base glyph and
 are ignored.
 
-For each color glyph, a clip box may be associated (see 5.7.11.2.3). The clip
-box may vary in a variable font. If no clip is present if a bounding box is required by the implementation, it must be computed by traversing the graph of Paint tables that describes the contents of the glyph.
-
-NOTE: If present, the clip box for the color glyph can be used to allocate a
-drawing surface without needing to traverse the graph of the color glyph
-definition.
-
 A valid color glyph definition shall define a bounded region—that is, it shall
 paint within a region for which a finite bounding box could be defined. The
 different paint formats have different boundedness characteristics:
 
-* If a clip box is provided the graph is inherantly bounded, no inspection
-of the Paint graph is required.
 * PaintGlyph is inherently bounded.
 * PaintSolid, PaintVarSolid, PaintLinearGradient, PaintVarLinearGradient,
 PaintRadialGradient, PaintVarRadialGradient, PaintSweepGradient, and
@@ -1170,19 +1161,31 @@ sub-graph is bounded.
 used and the boundedness of the referenced sub-graphs. See 5.7.11.2.5.13 for
 details.
 
-Applications shall confirm that a color glyph definition is bounded, and shall
-not render a color glyph if the defining graph is not bounded.
+A ClipBox table (5.7.11.2.3) may be associated with a color glyph to define
+an overall bounds for the color glyph. The clip box may vary in a variable
+font. If no ClipBox table is present but a bounding box is required by the
+implementation, it shall be computed for a given color glyph by traversing the
+graph of Paint tables that defines that color glyph.
+
+NOTE: If present, the clip box for a color glyph can be used to allocate a
+drawing surface without needing to traverse the graph of the color glyph
+definition.
+
+If a clip box is provided for a color glyph, the color glyph is bounded, and no
+inspection of the Paint graph is required to determine boundedness. If no clip
+box is defined for a color glyph, however, applications shall confirm that the
+color glyph definition is bounded, and shall not render the color glyph if the
+defining graph is not bounded.
 
 To ensure that rendering implementations do not clip any part of a color glyph,
-the bounding box of the base glyph needs to be large enough to encompass the
-entire color glyph composition. In a variable font, glyph outlines can vary, but
-transformations in a color glyph description can also vary, affecting the
-portions of the design grid to be painted. For example, a filled rectangle that
-is wide but not tall for one variation instance can be variably rotated to be
-tall but not wide for other instances. The bounding box of the base glyph either
-should be large enough to encompass the color glyph for all instances, or should
-itself vary such that each instance bounding box encompasses the instance color
-glyph.
+the clip box needs to be large enough to encompass the entire color glyph
+composition. In a variable font, glyph outlines can vary, but transformations in
+a color glyph description can also vary, affecting the portions of the design
+grid to be painted. For example, a filled rectangle that is wide but not tall
+for one variation instance can be variably rotated to be tall but not wide for
+other instances. The clip box either should be large enough to encompass the
+color glyph for all instances, or should itself vary such that each instance of
+the clip box encompasses the instance color glyph.
 
 **5.7.11.1.9 Color glyphs as a directed acyclic graph**
 
@@ -1471,7 +1474,6 @@ The records in the baseGlyphPaintRecords array shall be sorted in increasing
 glyphID order. It is intended that a binary search can be used to find a
 matching BaseGlyphPaintRecord for a specific glyphID.
 
-
 The paint table referenced by the BaseGlyphPaintRecord is the root of the graph
 for a color glyph definition.
 
@@ -1505,62 +1507,67 @@ are stacked above the top layer of this element.
 Offsets for paint tables not referenced by any PaintColrLayers table should not
 be included in the paintOffsets array.
 
-*ClipBox table:*
-
-The ClipBox table is used to provide a precomputed clip box for the given color glyph.
-Two formats are defined: format 0 for clip boxes without variation, and
-format 1 allowing for clip boxes that can vary in a variable font.
-
-Any content drawn outside the clip box shall not render.
-
-NOTE: The clip box is not required to be a tight bounding box around the content.
-However, as it is anticipated it may be used to guide allocation it is desirable
-that it not be unnecessarily large.
-
-*ClipBox table format 0, static clip box:*
-
-| Type | Name | Description |
-|-|-|-|
-| uint8 | format | Set to 0. |
-| FWORD | xMin | Minimum x of bounding box. |
-| FWORD | yMin | Minimum y of bounding box. |
-| FWORD | xMax | Maximum x of bounding box. |
-| FWORD | yMax | Maximum y of bounding box. |
-
-*ClipBox table format 1, variable clip box:*
-
-| Type | Name | Description |
-|-|-|-|
-| uint8 | format | Set to 1. |
-| FWORD | xMin | Minimum x of bounding box. For variation, use varIndexBase + 0. |
-| FWORD | yMin | Minimum y of bounding box. For variation, use varIndexBase + 1. |
-| FWORD | xMax | Maximum x of bounding box. For variation, use varIndexBase + 2. |
-| FWORD | yMax | Maximum y of bounding box. For variation, use varIndexBase + 3. |
-| uint32 | varIndexBase | Base index into DeltaSetIndexMap. |
-
-NOTE: When computing a variable ClipBox compute the min/max coordinates using floating point
-values and then round to int values such that the clip box expands. That is, round xMin
-and yMin towards negative infinity and round xMax and yMax towards positive infinity.
-
-For variable data, a base/sequence scheme is used to index into variation mapping data. See
-5.7.11.4 for details.
-
-*Clip table:*
-
-| Type | Name | Description |
-|-|-|-|
-| uint16 | glyphIDStart | The smallest glyph id this clip applies to. |
-| uint16 | glyphIDEnd | The largest glyph id (inclusive) this clip applies to |
-| Offset24 | clipBoxOffset | Offset to a ClipBox table. |
+A ClipList table is used to provide precomputed clip boxes for color glyphs. It
+contains an array of Clip records, each of which associates a range of base
+glyph IDs with a ClipBox table. The ClipBox table provides a precomputed clip
+box for the associated color glyphs. Clip boxes are optional: a font may provide
+clip boxes for some color glyphs but not others.
 
 *ClipList table:*
 
 | Type | Name | Description |
 |-|-|-|
 | uint32 | numClip |  |
-| Clip[numClip] | clips | Clip records. Sorted by gid range. gid ranges shall not overlap. |
+| Clip | clips[numClip] | Clip records. Sorted by startGlyphID. |
 
-Presence of a precomputed clip is optional.
+*Clip record:*
+
+| Type | Name | Description |
+|-|-|-|
+| uint16 | startGlyphID | First glyph ID in the range. |
+| uint16 | endGlyphID | Last glyph ID in the range. |
+| Offset24 | clipBoxOffset | Offset to a ClipBox table. |
+
+Within a ClipList table, the glyph ID ranges of Clip records shall not overlap.
+
+Two Clipbox table formats are defined: format 0 for clip boxes without
+variation, and format 1 allowing for clip boxes that can vary in a variable
+font.
+
+*ClipBox table format 0, static clip box:*
+
+| Type | Name | Description |
+|-|-|-|
+| uint8 | format | Set to 0. |
+| FWORD | xMin | Minimum x of clip box. |
+| FWORD | yMin | Minimum y of clip box. |
+| FWORD | xMax | Maximum x of clip box. |
+| FWORD | yMax | Maximum y of clip box. |
+
+*ClipBox table format 1, variable clip box:*
+
+| Type | Name | Description |
+|-|-|-|
+| uint8 | format | Set to 1. |
+| FWORD | xMin | Minimum x of clip box. For variation, use varIndexBase + 0. |
+| FWORD | yMin | Minimum y of clip box. For variation, use varIndexBase + 1. |
+| FWORD | xMax | Maximum x of clip box. For variation, use varIndexBase + 2. |
+| FWORD | yMax | Maximum y of clip box. For variation, use varIndexBase + 3. |
+| uint32 | varIndexBase | Base index into DeltaSetIndexMap. |
+
+Any content drawn outside the clip box shall not render.
+
+The clip box is not required to be a tight bounding box around the content. As
+it may be used by implementations to allocate resources, however, it should not
+be unnecessarily large.
+
+NOTE: At runtime, when computing a variable ClipBox, compute the min/max
+coordinates using floating point values and then round to integer values such
+that the clip box expands. That is, round xMin and yMin towards negative
+infinity and round xMax and yMax towards positive infinity.
+
+For variable data, a base/sequence scheme is used to index into variation
+mapping data. See 5.7.11.4 for details.
 
 **5.7.11.2.4 Color references, ColorStop and ColorLine**
 
