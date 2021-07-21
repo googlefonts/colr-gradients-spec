@@ -1449,7 +1449,7 @@ CPAL table (5.7.12). A paletteIndex value of 0xFFFF is a special case,
 indicating that the text foreground color (as determined by the application) is
 to be used.
 
-**5.7.11.2.3 BaseGlyphList, LayerList, ClipList**
+**5.7.11.2.3 BaseGlyphList, LayerList and ClipList**
 
 The BaseGlyphList table is, conceptually, similar to the baseGlyphRecords array
 in COLR version 0, providing records that map a base glyph to a color glyph
@@ -1469,7 +1469,6 @@ different, however—see 5.7.11.1.
 |-|-|-|
 | uint16 | glyphID | Glyph ID of the base glyph. |
 | Offset32 | paintOffset | Offset to a Paint table. |
-| Offset32 | bboxOffset | Offset to a BBox table. |
 
 The glyphID value shall be less than the numGlyphs value in the &#39;maxp&#39;
 table (5.2.6).
