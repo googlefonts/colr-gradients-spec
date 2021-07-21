@@ -1143,8 +1143,11 @@ PaintGlyph tables are not required to be the same as that of the base glyph and
 are ignored.
 
 A valid color glyph definition shall define a bounded region—that is, it shall
-paint within a region for which a finite bounding box could be defined. The
-different paint formats have different boundedness characteristics:
+paint within a region for which a finite bounding box could be defined. A clip
+box can be specified to set overall bounds for a color glyph (see below).
+Otherwise, boundedness is determined by the graph of paint tables that describe
+the color glyph content. The different paint formats have different boundedness
+characteristics:
 
 * PaintGlyph is inherently bounded.
 * PaintSolid, PaintVarSolid, PaintLinearGradient, PaintVarLinearGradient,
@@ -1163,13 +1166,15 @@ details.
 
 A ClipBox table (5.7.11.2.3) may be associated with a color glyph to define
 an overall bounds for the color glyph. The clip box may vary in a variable
-font. If no ClipBox table is present but a bounding box is required by the
-implementation, it shall be computed for a given color glyph by traversing the
-graph of Paint tables that defines that color glyph.
+font.
 
 NOTE: If present, the clip box for a color glyph can be used to allocate a
 drawing surface without needing to traverse the graph of the color glyph
 definition.
+
+NOTE: If no ClipBox table is present but a bounding box is required by the
+implementation, it can be computed for a given color glyph by traversing the
+graph of Paint tables that defines that color glyph.
 
 If a clip box is provided for a color glyph, the color glyph is bounded, and no
 inspection of the Paint graph is required to determine boundedness. If no clip
