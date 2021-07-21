@@ -1538,7 +1538,7 @@ that it not be unnecessarily large.
 | FWORD | yMax | Maximum y of bounding box. For variation, use varIndexBase + 3. |
 | uint32 | varIndexBase | Base index into DeltaSetIndexMap. |
 
-When computing a variable ClipBox compute the min/max coordinates using floating point
+NOTE: When computing a variable ClipBox compute the min/max coordinates using floating point
 values and then round to int values such that the clip box expands. That is, round xMin
 and yMin down and round xMax and yMax up.
 
