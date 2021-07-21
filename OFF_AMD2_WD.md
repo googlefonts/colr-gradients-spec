@@ -1540,7 +1540,7 @@ that it not be unnecessarily large.
 
 NOTE: When computing a variable ClipBox compute the min/max coordinates using floating point
 values and then round to int values such that the clip box expands. That is, round xMin
-and yMin down and round xMax and yMax up.
+and yMin towards negative infinity and round xMax and yMax towards positive infinity.
 
 For variable data, a base/sequence scheme is used to index into variation mapping data. See
 5.7.11.4 for details.
