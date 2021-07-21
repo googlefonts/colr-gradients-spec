@@ -2461,8 +2461,9 @@ NOTE: Checks for well-formedness and validity, as described in 5.7.11.1.9, are
 not repeated here. Actual implementations can integrate such checks with
 rendering processing.
 
-1. Start with an initial drawing surface. As mentioned in 5.7.11.1.8.2, the
-bounding box of the base glyph can be used to determine the size.
+1. Start with an initial drawing surface. As mentioned in 5.7.11.1.8.2, if a
+clip box is provided, it can be used to determine the size. Otherwise, the graph
+can be traversed to compute a required size.
 1. Traverse the graph of a color glyph definition, starting with the root paint
 table referenced by a BaseGlyphPaintRecord, using the following pseudo-code
 function.
