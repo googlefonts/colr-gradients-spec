@@ -2241,6 +2241,11 @@ basis vectors. In variable fonts, if a rotation angle needs to vary, it is
 easier to get smooth variation if an angle is specified directly than when using
 trigonometric functions to derive matrix elements.
 
+NOTE: The rotation angle is represented using an F2DOT14 value, which supports
+values in the range [-2, 2). Since each 1.0 unit represents a change of 180°,
+rotation angles of [-360, 360) can be represented directly. Variations of the
+rotation angle are not limited to that range, however.
+
 NOTE: If representation of rotation directly as an angle is preferred but higher
 precision is required to specify a center of rotation, a chained sequence of
 transforms can be used. For example, a PaintTransform can be used to align the
