@@ -2346,6 +2346,18 @@ variable fonts, if a skew angle needs to vary, it is easier to get smooth
 variation if an angle is specified directly than when using trigonometric
 functions to derive matrix elements.
 
+NOTE: The skew angles are represented using F2DOT14 values, which support values
+in the range [-2, 2). Since each 1.0 unit represents a change of 180°, skew
+angles of [-360, 360) can be represented directly. Variations of the skew angle
+are not limited to that range, however.
+
+NOTE: If representation of skew directly as an angle is preferred but higher
+precision is required to specify a center of rotation, a chained sequence of
+transforms can be used. For example, a PaintTransform can be used to align the
+origin to the desired center of rotation, then PaintSkew can be used for the
+desired skew rotation, and a second PaintTransform can be used to reset the
+origin.
+
 When combining the transform effect of a PaintSkew table (or variants) with
 other transforms, the result shall be the same as if the skew were represented
 using an equivalent matrix or sequence of matrices.
