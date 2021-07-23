@@ -2985,7 +2985,7 @@ mapping subtables for left and right side bearings shall also be included.
 _In subclause 7.3.5.2, after the table defnining the horizontal metrics
 variation table, replace the second and third paragraphs with the following:_
 
-Mapping subtables are represented using a DeltaSetIndexMap table; see 7.3.2.1
+Mapping subtables are represented using a DeltaSetIndexMap table; see 7.2.3.1
 for the definition of this table. In the HVAR table, only format 0 of the
 DeltaSetIndexMap is used. Mapping subtables are optional. If a given mapping
 subtable is not provided, the offset is set to NULL.
@@ -3007,7 +3007,7 @@ index mapping table for advance widths, then glyph IDs implicitly provide the
 indices: for a given glyph ID, the delta-set outer-level index is zero, and the
 glyph ID is the delta-set inner-level index. If delta-set index mappings are
 provided, glyph IDs are used to lookup a mapping entry, which provides the
-outer- and inner-level delta-set indices in a packed format. See 7.3.2.1 for
+outer- and inner-level delta-set indices in a packed format. See 7.2.3.1 for
 details.
 
 _In subclause 7.3.5.3, delete the third paragraph._
