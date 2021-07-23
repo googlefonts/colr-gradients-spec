@@ -1519,7 +1519,7 @@ clip boxes for some color glyphs but not others.
 
 | Type | Name | Description |
 |-|-|-|
-| uint32 | numClip |  |
+| uint32 | numClips | Number of Clip records. |
 | Clip | clips[numClip] | Clip records. Sorted by startGlyphID. |
 
 *Clip record:*
