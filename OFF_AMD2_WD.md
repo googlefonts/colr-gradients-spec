@@ -223,12 +223,11 @@ where to draw interpolated colors of the color line, following from the
 placement of 0 and 1.
 
 A color stop is defined by a real number, the *stop offset*, and a color. A
-color line shall have at least one color stop.
-
-(Stop offsets are represented using F2DOT14 values, therefore color stops can
-only be specified within the range [-2, 2). See 5.7.11.2.4 for format details.)
-If only one color stop is specified, that color is used for the entire color
-line; at least two color stops are needed to create color gradation.
+color line shall have at least one color stop. (Stop offsets are represented
+using F2DOT14 values, therefore color stops can only be specified within the
+range [-2, 2). See 5.7.11.2.4 for format details.) If only one color stop is
+specified, that color is used for the entire color line; at least two color
+stops are needed to create color gradation.
 
 Color gradation is defined over the interval from the color stop with the
 minimum offset, through successive color stops, to the color stop with the
