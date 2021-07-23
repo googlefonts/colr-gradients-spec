@@ -1623,7 +1623,6 @@ for details.
 | uint32 | varIndexBase | Base index into DeltaSetIndexMap. |
 
 A color line is defined by an array of color stop records plus an extend mode.
-
 Two color-line table formats are defined: one that allows for variation of color
 stop offsets positions or of alpha values, and one that does not. Different
 paint table formats for gradients use one or the other of the color line
