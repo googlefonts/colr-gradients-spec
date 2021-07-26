@@ -2761,6 +2761,12 @@ table are stored in each table.
 
 ## Changes to OFF 7.2.3 Item variation stores
 
+_Replace the first paragraph with the following paragraph:_
+
+Item variation stores are used for most variation data other than that used for
+TrueType glyph outlines, including the variation data in 'MVAR', 'HVAR', 'VVAR',
+'BASE', 'GDEF' and 'COLR' tables.
+
 _Delete the fourth paragraph, "Variation data is comprised..."._
 
 _Add a new sub-clause 7.2.3.1 after the third paragraph ("The item variation
@@ -2867,7 +2873,18 @@ text above, and before the paragraph beginning, "The ItemVariationStore table
 includes a variation region list..." Re-number subsequent sub-clauses
 accordingly._
 
-Replace the fifth paragraph that follows the figure in (now) 7.2.3.2 ("A
+_Replace the first paragraph in (now) 7.2.3.2 with the following paragraph:_
+
+The ItemVariationStore table includes a variation region list, which defines the
+different regions of the font’s variation space for which variation data is
+defined. It also includes a set of itemVariationData subtables, each of which
+provides a portion of the total variation data. Each subtable is associated with
+some subset of the defined regions, and will include deltas used for one or more
+target items. Conceptually, the deltas form a two-dimensional array, with
+delta-set rows that include a delta for each of the regions referenced by that
+subtable. From this perspective, the delta-set columns correspond to regions.
+
+_Replace the fifth paragraph that follows the figure in (now) 7.2.3.2 ("A
 complete delta-set index..."), with the following paragraph:_ 
 
 A complete delta-set index involves an outer-level index into the
