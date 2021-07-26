@@ -2884,7 +2884,15 @@ target items. Conceptually, the deltas form a two-dimensional array, with
 delta-set rows that include a delta for each of the regions referenced by that
 subtable. From this perspective, the delta-set columns correspond to regions.
 
-_Replace the fifth paragraph that follows the figure in (now) 7.2.3.2 ("A
+_Before the fourth paragraph following the figure in (now) 7.2.3.2 ("Note that there is minimal overhead..."), insert the following paragraph:_
+
+Similarly, ItemVariationData subtables can also combine delta values with 32-bit
+and 16-bit representations. An optimizing compiler can organize deltas into
+different subtables using 32-bit and 16-bit representations in some, but 16-bit
+and 8-bit representations in others, with columns re-ordered in each case to
+provide the most efficient representation of deltas.
+
+_Replace the (now) sixth paragraph that follows the figure ("A
 complete delta-set index..."), with the following paragraph:_ 
 
 A complete delta-set index involves an outer-level index into the
@@ -2947,6 +2955,9 @@ types. If the LONG_WORDS flag is set, deltas are represented using a mix of
 int32 and int16 values. If the flag is not set, deltas are presented using a
 mix of int16 and int8 values. See the description of the DeltaSet record
 below for additional details.
+
+The LONG_WORDS flag should only be used in top-level tables that include 32-bit
+values that can be variable—currently, only the COLR table.
 
 The count value indicated by WORD_DELTA_COUNT_MASK is a count of the number of
 deltas that use the long (“word”) representation, and shall be less than or
