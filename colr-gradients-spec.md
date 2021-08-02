@@ -558,7 +558,12 @@ typedef ArrayOf<BaseGlyphPaintRecord, uint32> BaseGlyphList;
 // Only layers accessed via PaintColrLayers (format 1) need be encoded here.
 typedef ArrayOf<Offset32<Paint>, uint32> LayerList;
 
-typedef ArrayOf<Clip, uint32> ClipList;
+struct ClipList
+{
+  uint8                 format;  // Set to 0.
+  uint32                numClips;
+  Clip                  clips[/*numClips*/];  // Clip records, sorted by startGlyphID
+}
 
 struct COLRv1
 {
