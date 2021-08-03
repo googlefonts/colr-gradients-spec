@@ -1537,7 +1537,7 @@ Two Clipbox table formats are defined: format 1 for clip boxes without
 variation, and format 2 allowing for clip boxes that can vary in a variable
 font.
 
-*ClipBoxFormat1, static clip box:*
+*ClipBoxFormat1 table, static clip box:*
 
 | Type | Name | Description |
 |-|-|-|
@@ -1547,7 +1547,7 @@ font.
 | FWORD | xMax | Maximum x of clip box. |
 | FWORD | yMax | Maximum y of clip box. |
 
-*ClipBoxFormat2, variable clip box:*
+*ClipBoxFormat2 table, variable clip box:*
 
 | Type | Name | Description |
 |-|-|-|
