@@ -560,8 +560,7 @@ typedef ArrayOf<Offset32<Paint>, uint32> LayerList;
 struct ClipList
 {
   uint8                 format;  // Set to 1.
-  uint32                numClips;
-  Clip                  clips[/*numClips*/];  // Clip records, sorted by startGlyphID
+  ArrayOf<Clip, uint32> clips;  // Clip records, sorted by startGlyphID
 }
 
 struct COLRv1
