@@ -1519,6 +1519,7 @@ clip boxes for some color glyphs but not others.
 
 | Type | Name | Description |
 |-|-|-|
+| uint8 | format | Set to 1. |
 | uint32 | numClips | Number of Clip records. |
 | Clip | clips[numClips] | Clip records. Sorted by startGlyphID. |
 
@@ -1532,25 +1533,25 @@ clip boxes for some color glyphs but not others.
 
 Within a ClipList table, the glyph ID ranges of Clip records shall not overlap.
 
-Two Clipbox table formats are defined: format 0 for clip boxes without
-variation, and format 1 allowing for clip boxes that can vary in a variable
+Two Clipbox table formats are defined: format 1 for clip boxes without
+variation, and format 2 allowing for clip boxes that can vary in a variable
 font.
 
-*ClipBox table format 0, static clip box:*
+*ClipBoxFormat1, static clip box:*
 
 | Type | Name | Description |
 |-|-|-|
-| uint8 | format | Set to 0. |
+| uint8 | format | Set to 1. |
 | FWORD | xMin | Minimum x of clip box. |
 | FWORD | yMin | Minimum y of clip box. |
 | FWORD | xMax | Maximum x of clip box. |
 | FWORD | yMax | Maximum y of clip box. |
 
-*ClipBox table format 1, variable clip box:*
+*ClipBoxFormat2, variable clip box:*
 
 | Type | Name | Description |
 |-|-|-|
-| uint8 | format | Set to 1. |
+| uint8 | format | Set to 2. |
 | FWORD | xMin | Minimum x of clip box. For variation, use varIndexBase + 0. |
 | FWORD | yMin | Minimum y of clip box. For variation, use varIndexBase + 1. |
 | FWORD | xMax | Maximum x of clip box. For variation, use varIndexBase + 2. |

@@ -523,7 +523,7 @@ struct PaintComposite
 };
 
 struct ClipBox {
-  uint8                 format; // = 0
+  uint8                 format; // = 1
   FWORD                 xMin;
   FWORD                 yMin;
   FWORD                 xMax;
@@ -531,7 +531,7 @@ struct ClipBox {
 }
 
 struct VarClipBox {
-  uint8                 format; // = 1
+  uint8                 format; // = 2
   FWORD                 xMin; // VarIdx varIndexBase + 0.
   FWORD                 yMin; // VarIdx varIndexBase + 1.
   FWORD                 xMax; // VarIdx varIndexBase + 2.
@@ -558,7 +558,12 @@ typedef ArrayOf<BaseGlyphPaintRecord, uint32> BaseGlyphList;
 // Only layers accessed via PaintColrLayers (format 1) need be encoded here.
 typedef ArrayOf<Offset32<Paint>, uint32> LayerList;
 
-typedef ArrayOf<Clip, uint32> ClipList;
+struct ClipList
+{
+  uint8                 format;  // Set to 1.
+  uint32                numClips;
+  Clip                  clips[/*numClips*/];  // Clip records, sorted by startGlyphID
+}
 
 struct COLRv1
 {
