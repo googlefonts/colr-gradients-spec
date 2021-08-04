@@ -142,13 +142,13 @@ enum Extend : uint8
 struct ColorLine
 {
   Extend             extend;
-  ArrayOf<ColorStop> stops;
+  ArrayOf<ColorStop> colorStops;
 };
 
 struct VarColorLine
 {
   Extend             extend;
-  ArrayOf<VarColorStop> stops;
+  ArrayOf<VarColorStop> colorStops;
 };
 
 
@@ -329,34 +329,34 @@ struct PaintGlyph
 {
   uint8                  format; // = 10
   Offset24<Paint>        paint;
-  uint16                 gid;    // not a COLR-only gid
+  uint16                 glyphID;    // not a COLR-only gid
                                  // shall be less than maxp.numGlyphs
 }
 
 struct PaintColrGlyph
 {
   uint8                  format; // = 11
-  uint16                 gid;    // shall be a COLR gid
+  uint16                 glyphID;    // shall be a COLR gid
 }
 
 struct PaintTransform
 {
   uint8                  format; // = 12
-  Offset24<Paint>        src;
+  Offset24<Paint>        paint;
   Offset24<Affine2x3>    transform;
 };
 
 struct PaintVarTransform
 {
   uint8                  format; // = 13
-  Offset24<Paint>        src;
+  Offset24<Paint>        paint;
   Offset24<VarAffine2x3> transform;
 };
 
 struct PaintTranslate
 {
   uint8                  format; // = 14
-  Offset24<Paint>        src;
+  Offset24<Paint>        paint;
   FWORD                  dx;
   FWORD                  dy;
 };
@@ -364,7 +364,7 @@ struct PaintTranslate
 struct PaintVarTranslate
 {
   uint8                  format; // = 15
-  Offset24<Paint>        src;
+  Offset24<Paint>        paint;
   FWORD                  dx; // VarIdx varIndexBase + 0
   FWORD                  dy; // VarIdx varIndexBase + 1
   VarIdxBase             varIndexBase;
@@ -373,7 +373,7 @@ struct PaintVarTranslate
 struct PaintScale
 {
   uint8                  format; // = 16
-  Offset24<Paint>        src;
+  Offset24<Paint>        paint;
   F2DOT14                scaleX;
   F2DOT14                scaleY;
 };
@@ -381,7 +381,7 @@ struct PaintScale
 struct PaintVarScale
 {
   uint8                  format; // = 17
-  Offset24<Paint>        src;
+  Offset24<Paint>        paint;
   F2DOT14                scaleX; // VarIdx varIndexBase + 0
   F2DOT14                scaleY; // VarIdx varIndexBase + 1
   VarIdxBase             varIndexBase;
@@ -390,7 +390,7 @@ struct PaintVarScale
 struct PaintScaleAroundCenter
 {
   uint8                  format; // = 18
-  Offset24<Paint>        src;
+  Offset24<Paint>        paint;
   F2DOT14                scaleX;
   F2DOT14                scaleY;
   FWORD                  centerX;
@@ -400,7 +400,7 @@ struct PaintScaleAroundCenter
 struct PaintVarScaleAroundCenter
 {
   uint8                  format; // = 19
-  Offset24<Paint>        src;
+  Offset24<Paint>        paint;
   F2DOT14                scaleX; // VarIdx varIndexBase + 0
   F2DOT14                scaleY; // VarIdx varIndexBase + 1
   FWORD                  centerX; // VarIdx varIndexBase + 2
@@ -411,14 +411,14 @@ struct PaintVarScaleAroundCenter
 struct PaintScaleUniform
 {
   uint8                  format; // = 20
-  Offset24<Paint>        src;
+  Offset24<Paint>        paint;
   F2DOT14                scale;
 };
 
 struct PaintVarScaleUniform
 {
   uint8                  format; // = 21
-  Offset24<Paint>        src;
+  Offset24<Paint>        paint;
   F2DOT14                scale; // VarIdx varIndexBase + 0
   VarIdxBase             varIndexBase;
 };
@@ -426,7 +426,7 @@ struct PaintVarScaleUniform
 struct PaintScaleUniformAroundCenter
 {
   uint8                  format; // = 22
-  Offset24<Paint>        src;
+  Offset24<Paint>        paint;
   F2DOT14                scale;
   FWORD                  centerX;
   FWORD                  centerY;
@@ -435,7 +435,7 @@ struct PaintScaleUniformAroundCenter
 struct PaintVarScaleUniformAroundCenter
 {
   uint8                  format; // = 23
-  Offset24<Paint>        src;
+  Offset24<Paint>        paint;
   F2DOT14                scale; // VarIdx varIndexBase + 0
   FWORD                  centerX; // VarIdx varIndexBase + 1
   FWORD                  centerY; // VarIdx varIndexBase + 2
@@ -445,14 +445,14 @@ struct PaintVarScaleUniformAroundCenter
 struct PaintRotate
 {
   uint8                  format; // = 24
-  Offset24<Paint>        src;
+  Offset24<Paint>        paint;
   F2DOT14                angle; // 180° in counter-clockwise degrees per 1.0 of value
 };
 
 struct PaintVarRotate
 {
   uint8                  format; // = 25
-  Offset24<Paint>        src;
+  Offset24<Paint>        paint;
   F2DOT14                angle; // VarIdx varIndexBase + 0. 180° in counter-clockwise degrees per 1.0 of value
   VarIdxBase             varIndexBase;
 };
@@ -460,7 +460,7 @@ struct PaintVarRotate
 struct PaintRotateAroundCenter
 {
   uint8                  format; // = 26
-  Offset24<Paint>        src;
+  Offset24<Paint>        paint;
   F2DOT14                angle; // 180° in counter-clockwise degrees per 1.0 of value
   FWORD                  centerX;
   FWORD                  centerY;
@@ -469,7 +469,7 @@ struct PaintRotateAroundCenter
 struct PaintVarRotateAroundCenter
 {
   uint8                  format; // = 27
-  Offset24<Paint>        src;
+  Offset24<Paint>        paint;
   F2DOT14                angle; // VarIdx varIndexBase + 0. 180° in counter-clockwise degrees per 1.0 of value
   FWORD                  centerX; // VarIdx varIndexBase + 1
   FWORD                  centerY; // VarIdx varIndexBase + 2
@@ -479,7 +479,7 @@ struct PaintVarRotateAroundCenter
 struct PaintSkew
 {
   uint8                  format; // = 28
-  Offset24<Paint>        src;
+  Offset24<Paint>        paint;
   F2DOT14                xSkewAngle; // 180° in counter-clockwise degrees per 1.0 of value
   F2DOT14                ySkewAngle; // 180° in counter-clockwise degrees per 1.0 of value
 };
@@ -487,7 +487,7 @@ struct PaintSkew
 struct PaintVarSkew
 {
   uint8                  format; // = 29
-  Offset24<Paint>        src;
+  Offset24<Paint>        paint;
   F2DOT14                xSkewAngle; // VarIdx varIndexBase + 0. 180° in counter-clockwise degrees per 1.0 of value
   F2DOT14                ySkewAngle; // VarIdx varIndexBase + 1. 180° in counter-clockwise degrees per 1.0 of value
   VarIdxBase             varIndexBase;
@@ -496,7 +496,7 @@ struct PaintVarSkew
 struct PaintSkewAroundCenter
 {
   uint8                  format; // = 30
-  Offset24<Paint>        src;
+  Offset24<Paint>        paint;
   F2DOT14                xSkewAngle; // 180° in counter-clockwise degrees per 1.0 of value
   F2DOT14                ySkewAngle; // 180° in counter-clockwise degrees per 1.0 of value
   FWORD                  centerX;
@@ -506,7 +506,7 @@ struct PaintSkewAroundCenter
 struct PaintVarSkewAroundCenter
 {
   uint8                  format; // = 31
-  Offset24<Paint>        src;
+  Offset24<Paint>        paint;
   F2DOT14                xSkewAngle; // VarIdx varIndexBase + 0. 180° in counter-clockwise degrees per 1.0 of value
   F2DOT14                ySkewAngle; // VarIdx varIndexBase + 1. 180° in counter-clockwise degrees per 1.0 of value
   FWORD                  centerX; // VarIdx varIndexBase + 2
@@ -517,9 +517,9 @@ struct PaintVarSkewAroundCenter
 struct PaintComposite
 {
   uint8                  format; // = 32
-  Offset24<Paint>        src;
-  CompositeMode          mode;   // If mode is unrecognized use COMPOSITE_CLEAR
-  Offset24<Paint>        backdrop;
+  Offset24<Paint>        sourcePaint;
+  CompositeMode          compositeMode;   // If mode is unrecognized use COMPOSITE_CLEAR
+  Offset24<Paint>        backdropPaint;
 };
 
 struct ClipBox {
@@ -540,16 +540,15 @@ struct VarClipBox {
 }
 
 struct Clip {
-  uint16                gidStart;  // first gid clip applies to
-  uint16                gidEnd;    // last gid clip applies to, inclusive
+  uint16                startGlyphID;  // first gid clip applies to
+  uint16                endGlyphID;    // last gid clip applies to, inclusive
   Offset24<ClipBox>     clipBox;   // Box or VarBox
 }
 
 struct BaseGlyphPaintRecord
 {
-  uint16                gid;
+  uint16                glyphID;
   Offset32<Paint>       paint;  // Typically PaintColrLayers
-  Offset32<VarBBox>     bbox;
 };
 
 // Entries shall be sorted in ascending order of the `glyphID` field of the `BaseGlyphPaintRecord`s.
@@ -561,8 +560,7 @@ typedef ArrayOf<Offset32<Paint>, uint32> LayerList;
 struct ClipList
 {
   uint8                 format;  // Set to 1.
-  uint32                numClips;
-  Clip                  clips[/*numClips*/];  // Clip records, sorted by startGlyphID
+  ArrayOf<Clip, uint32> clips;  // Clip records, sorted by startGlyphID
 }
 
 struct COLRv1
