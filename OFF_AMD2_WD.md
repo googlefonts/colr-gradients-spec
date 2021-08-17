@@ -2746,7 +2746,7 @@ type of the item to which deltas are applied; for example, at least [-32768,
 32767] when applying scaled deltas to an FWORD value. Also, larger ranges should
 be allowed for to avoid any possible overflow at any point during calculation,
 and to ensure that the order in which deltas are applied does not affect the
-final result. Saturation arithmetic shall be used: values shall not wrap from
+final result. Saturation arithmetic should be used: values should not wrap from
 maximum to minimum values, or vice versa.
 
 ## Changes to OFF 7.2.1 Overview (Font variations common table formats)
