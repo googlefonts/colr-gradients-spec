@@ -2758,10 +2758,11 @@ logic for that reason. (Depending on the internal representation, however,
 wrapping may produce better results for variation of rotation angles or other
 values of a modulus nature.) In general, however, behavior on overflow is not
 defined. For this reason, font developers should take note of situations in
-which a combination of deltas could exceed the range of the type to which the
-deltas are applied, and anticipate that resulting behavior could be inconsistent
-in different applications. In particular, font developers should not depend on
-the overflow behavior of particular applications.
+which a combination of deltas could exceed the range of the data type of the
+font data to which the deltas are applied, and anticipate that resulting
+behavior could be inconsistent in different applications. In particular, font
+developers should not depend on the overflow behavior of particular
+applications.
 
 ## Changes to OFF 7.2.1 Overview (Font variations common table formats)
 
