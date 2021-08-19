@@ -2740,14 +2740,28 @@ internal representation, rounding should be done only when the final result is
 used, and may retain greater fractional bit-depth than that of the data type of
 the item to which deltas are applied. 
 
-When scaled deltas are applied to a default value, the possibility of overflow
-exists. The numeric range used in calculation shall be at least that of the data
-type of the item to which deltas are applied; for example, at least [-32768,
-32767] when applying scaled deltas to an FWORD value. Also, larger ranges should
-be allowed for to avoid any possible overflow at any point during calculation,
-and to ensure that the order in which deltas are applied does not affect the
-final result. Saturation arithmetic should be used: values should not wrap from
-maximum to minimum values, or vice versa.
+When scaled deltas are applied to a default value, there is a possibility that
+overflow could occur—that is, that the result of arithmetic operations could
+exceed the range supported by the internal representation used by the
+application. The order in which the application combines deltas in not
+prescribed, but can also be a factor in whether overflow occurs and, if it does,
+what the final result could be. The numeric range used in calculation shall be
+at least that of the data type of the item to which deltas are applied; for
+example, at least [-32768, 32767] when applying scaled deltas to an FWORD value.
+
+If resources permit, applications should allow for larger ranges to avoid the
+possibility of overflow at any point during calculation, and to ensure that the
+order in which deltas are applied does not affect the final result. For many
+situations, wrapping will result in a large discontinuity, while saturation
+(clamping) would not, and some applications could choose to implement saturation
+logic for that reason. (Depending on the internal representation, however,
+wrapping may produce better results for variation of rotation angles or other
+values of a modulus nature.) In general, however, behavior on overflow is not
+defined. For this reason, font developers should take note of situations in
+which a combination of deltas could exceed the range of the type to which the
+deltas are applied, and anticipate that resulting behavior could be inconsistent
+in different applications. In particular, font developers should not depend on
+the overflow behavior of particular applications.
 
 ## Changes to OFF 7.2.1 Overview (Font variations common table formats)
 
