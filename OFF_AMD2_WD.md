@@ -2763,13 +2763,13 @@ for the default value, at least 32 significant bits should be used for
 calculations.
 
 If overflow of the internal representation is inevitable, saturation arithmetic
-(clamping) may be used to mitigate error artifacts. In general, however,
-behavior on overflow is not defined. For this reason, font developers should
-take note of situations in which a combination of deltas could exceed the range
-of the data type of the font data to which the deltas are applied, and
-anticipate that resulting behavior could be inconsistent in different
-applications. In particular, font developers should not depend on the overflow
-behavior of particular applications.
+(clamping, rather than wrapping) may be used to mitigate error artifacts. In
+general, however, behavior on overflow is not defined. For this reason, font
+developers should take note of situations in which a combination of deltas could
+exceed the range of the data type of the font data to which the deltas are
+applied, and anticipate that resulting behavior could be inconsistent in
+different applications. In particular, font developers should not depend on the
+overflow behavior of particular applications.
 
 ## Changes to OFF 7.2.1 Overview (Font variations common table formats)
 
