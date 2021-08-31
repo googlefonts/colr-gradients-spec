@@ -2732,22 +2732,44 @@ Therefore, no minimum level of precision is specified as a requirement.
 
 _At the end of 7.1.7, insert the following text._
 
-An implementation-determined representation may be used during calculation and
-for the final result (interpolatedValue). In calculation of scalars (S, AS) and
-of interpolated values (scaledDelta, netAjustment, interpolatedValue), at least
-16 fractional bits of precision should be maintained. If required for the
-internal representation, rounding should be done only when the final result is
-used, and may retain greater fractional bit-depth than that of the data type of
-the item to which deltas are applied. 
+When scaled deltas are applied to a default value, it is possible that the
+combined result will be outside the range of the data type used in the font for
+the default value. For example, the default value could be represented in the
+font as a 16-bit value, but the instance value after applying deltas might
+require more bits to represent it. An implementation-determined representation
+may be used during calculation and for the final result (interpolatedValue). The
+numeric range used in calculation shall be at least that of the data type of the
+item to which deltas are applied; for example, at least [-32768, 32767] when
+applying scaled deltas to an FWORD value.
 
-When scaled deltas are applied to a default value, the possibility of overflow
-exists. The numeric range used in calculation shall be at least that of the data
-type of the item to which deltas are applied; for example, at least [-32768,
-32767] when applying scaled deltas to an FWORD value. Also, larger ranges should
-be allowed for to avoid any possible overflow at any point during calculation,
-and to ensure that the order in which deltas are applied does not affect the
-final result. Saturation arithmetic shall be used: values shall not wrap from
-maximum to minimum values, or vice versa.
+Applying scaled variation deltas to a scalar value requires calculations that
+involve fractional values.  In calculation of scalars (S, AS) and of
+interpolated values (scaledDelta, netAjustment, interpolatedValue), at least 16
+fractional bits of precision should be maintained. If required for the internal
+representation, rounding should be done only when the final result is used, and
+may retain greater fractional bit-depth than that of the data type of the item
+to which deltas are applied. See also 7.1.4 for related discussion of precision
+and rounding.
+
+Depending on the internal representation used, there is a possibility that the
+result of arithmetic operations when applying deltas could exceed the range
+supported by the internal representation. The order in which deltas are added is
+not prescribed, but can also be a factor in whether overflow occurs and, if it
+does, what the final result could be. If resources permit, applications should
+allow for larger ranges to avoid the possibility of overflow at any point during
+calculation, and to ensure that the order in which deltas are applied does not
+affect the final result. Regardless of the type used in the font representation
+for the default value, at least 32 significant bits should be used for
+calculations.
+
+If overflow of the internal representation is inevitable, saturation arithmetic
+(clamping, rather than wrapping) may be used to mitigate error artifacts. In
+general, however, behavior on overflow is not defined. For this reason, font
+developers should take note of situations in which a combination of deltas could
+exceed the range of the data type of the font data to which the deltas are
+applied, and anticipate that resulting behavior could be inconsistent in
+different applications. In particular, font developers should not depend on the
+overflow behavior of particular applications.
 
 ## Changes to OFF 7.2.1 Overview (Font variations common table formats)
 
