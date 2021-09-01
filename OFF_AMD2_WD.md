@@ -1310,6 +1310,10 @@ corresponding variation data, a DeltaSetIndexMap table (7.2.3.1) is used. Within
 a given table that has variable items, a base/sequence scheme is used to index
 into the mapping data. See 5.7.11.4 for details.
 
+Future minor version updates of the COLR table could introduce new formats that
+extend the capabilities for color glyph descriptions using version 1 formats.
+Unrecognized formats should be ignored. See 5.7.11.1.9 for more information.
+
 All table offsets are from the start of the parent table in which the offset is
 given, unless otherwise indicated.
 
