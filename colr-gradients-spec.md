@@ -636,10 +636,12 @@ by traversing the paint graph to determine bounds.
           call a) for paint
           restore
     12) PaintComposite
+          saveLayer()
           paint Paint for backdrop, call a)
-          saveLayer() with setting composite mode, on SkPaint
+          saveLayer() with setting composite mode on SkPaint
           paint Paint for src, call a)
-          restore with save composite mode
+          restore with saved composite mode
+          restore the outer layer
 ```
 
 ## HarfBuzz
