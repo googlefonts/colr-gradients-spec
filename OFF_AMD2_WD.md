@@ -100,7 +100,7 @@ table is ignored.
 The graphic compositions in a color glyph definition use a set of 2D graphic
 concepts and constructs:
 
-* Shapes (or *geometries*)
+* Shapes (or *geometries*) 
 * Fills (or *shadings*)
 * Layering—a *z-order*—of elements
 * Composition and blending modes—different ways that the content of a layer is
