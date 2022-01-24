@@ -76,7 +76,7 @@ font formats, including COLR v1.
 
 ## Chromium, Skia, Freetype support
 
-Chrome Canary as of version 90.0.4421.5 and above supports COLRv1 fonts when switching on the COLR v1 flag.
+Chrome Canary as of version 90.0.4421.5 and above supports COLRv1 fonts when switching on the COLR v1 flag. Chrome 98+ ship COLRv1 enabled by default, see https://developer.chrome.com/blog/colrv1-fonts/.
 
 To enable the feature and experiment with it, follow these steps:
 1. Download and open [Chrome Canary](https://www.google.com/chrome/canary/),
