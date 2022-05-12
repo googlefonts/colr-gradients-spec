@@ -629,8 +629,8 @@ in figure 5.30:
 of 150°.](images/colr_conic_gradient_start_stop_angles.png)
 
 **Figure 5.30 A sweep gradient with start angle of 30° and an end angle of 150°,
-using a Color line with color stops 0 and 1 for red and yellow and extend mode
-pad. **
+using a `ColorLine` with color stops 0 and 1 for red and yellow and extend mode
+pad.**
 
 NOTE: When a sweep gradient is combined with a transformation (see 5.7.11.1.5),
 the appearance will be the same as if a circular arc of some non-zero radius
