@@ -591,26 +591,35 @@ A sweep gradient is defined by a center point, starting and ending angles, and a
 color line. The angles are expressed in counter-clockwise degrees from the
 direction of the positive x-axis on the design grid.
 
-The color line is aligned to a circular arc around the center point, with
-arbitrary radius, with stop offset 0 aligned with the starting angle, and stop
-offset 1 aligned with the ending angle. The color line progresses from the start
-angle to the end angle in the counter-clockwise direction; for example, if the
-start and end angles are both 0°, then stop offset 0.1 is at 36°
-counter-clockwise from the direction of the positive x-axis. For each position
-along the circular arc, from start to end in the counter-clockwise direction, a
-ray from the center outward is painted with the color of the color line at the
-point where the ray passes through the arc.
+For sampling colors, the color line is aligned to an infinitely spiraling
+circular arc around the center point, with arbitrary radius. The position 0° on
+the arc means the direction of the positive x-axis, 360° means one full
+counter-clockwise rotation.  The ColorLine's stop offset 0 is aligned with the
+starting angle, and stop offset 1 aligned with the ending angle.
 
-The color line may be defined using color stops outside the range [0, 1], and
-color stops outside the range [0, 1] can be used to interpolate color values
-within the range [0, 1], but only color values for the range [0, 1] are painted.
-If the specified color stops cover the entire [0, 1] range (or beyond), then the
-extend mode is not relevant and may be ignored. If the specified color stops do
-not cover the entire [0, 1] range, the extend mode is used to determine color
-values for the remainder of that range. For example, if a color line is
-specified with two color stops, red at stop offset 0.3 and yellow at stop offset
-0.6, and the pad extend mode is specified, then the extend mode is used to
-derive color values from 0.0 to 0.3 (red), and from 0.6 to 1.0 (yellow).
+Outside the defined interval of the ColorLine, the color value of a position on
+the ColorLine is filled in depending on its extend mode. See 5.7.11.1.2.1 Color
+Lines for more details. In effect, this means that the spiraling circular arc
+can be sampled for colors outside the defined ColorLine interval.
+
+To draw the sweep gradient, for each position along the circular arc, starting
+from from 0 degrees, ending at 360°, a ray from the center outward is painted
+with the color of color line where the ray intersects with the circular arc at
+that particular angle. Angle positions on the spiraling circular arc below 0°
+and above 360° are not sampled for drawing the rays.
+
+Not more than one rotation around the circle is drawn. However, start and end
+angles can be positioned at angles below 0° and above 360°. Through that, and
+through how wide the ColorLine interval is defined, color stops may lie outside
+the 0° to 360° circle. This has an effect on the computation of the gradient
+colors inside the interval of 0° to 360°, but colors are not sampled from
+outside this interval.
+
+Because the sweep gradient is drawn from 0° to 360° a sharp transition may occur
+at 0°, this can be mitigated by adjusting the color stops at the 0° and 360°
+position on the arc to have the same color. The location of the transition axis
+can also be shifted by nesting the PaintSweepGradient inside a
+PaintRotate/PaintVarRotate operation.
 
 Because a sweep gradient is defined using start and end angles, the gradient
 does not need to cover a full 360° sweep around the center. This is illustrated
@@ -619,11 +628,6 @@ in figure 5.30:
 ![A sweep gradient, from red to yellow, with start angle of 30° and an end angle of 150°.](images/colr_conic_gradient_start_stop_angles.png)
 
 **Figure 5.30 A sweep gradient with start angle of 30° and an end angle of 150°**
-
-Start and end angle values can be outside the range [0, 360), and are converted
-to values within that range by applying a modulus operation. For example, an
-angle -60° is treated the same as 300°. As a consequence, the [0, 1] range of
-the color line covers at most one full rotation around the center, never more.
 
 If the starting and ending angle are the same, a sharp color transition can
 occur if the colors at stop offsets 0 and 1 are different. This is illustrated
