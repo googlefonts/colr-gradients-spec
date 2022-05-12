@@ -608,22 +608,8 @@ with the color of color line where the ray intersects with the circular arc at
 that particular angle. Angle positions on the spiraling circular arc below 0°
 and above 360° are not sampled for drawing the rays.
 
-Not more than one rotation around the circle is drawn. However, start and end
-angles can be positioned at angles below 0° and above 360°. Through that, and
-through how wide the ColorLine interval is defined, color stops may lie outside
-the 0° to 360° circle. This has an effect on the computation of the gradient
-colors inside the interval of 0° to 360°, but colors are not sampled from
-outside this interval.
-
-Because the sweep gradient is drawn from 0° to 360° a sharp transition may occur
-at 0°, this can be mitigated by adjusting the color stops at the 0° and 360°
-position on the arc to have the same color. The location of the transition axis
-can also be shifted by nesting the PaintSweepGradient inside a
-PaintRotate/PaintVarRotate operation.
-
-Because a sweep gradient is defined using start and end angles, the gradient
-does not need to cover a full 360° sweep around the center. This is illustrated
-in figure 5.30:
+Figure 5.30 illustrates drawing direction from 0° to 360°, start and end angles
+and color stop alignment.
 
 ![A sweep gradient, from red to yellow, with start angle of 30° and an end angle
 of 150°.](images/colr_conic_gradient_start_stop_angles.png)
@@ -631,6 +617,27 @@ of 150°.](images/colr_conic_gradient_start_stop_angles.png)
 **Figure 5.30 A sweep gradient with start angle of 30° and an end angle of 150°,
 using a `ColorLine` with color stops 0 and 1 for red and yellow and extend mode
 pad.**
+
+Not more than one full rotation is drawn and there is no overlap in drawing for
+angles outside the 0° and 360° range. However, start and end angles can be
+positioned at angles below 0° and above 360°. Through that, and through how wide
+the ColorLine interval is defined, color stops may lie outside the 0° to 360°
+circle. This has an effect on the computation of the gradient colors inside the
+interval of 0° to 360°, but colors are not sampled from outside this interval.
+See figure 5.31 for an example.
+
+![A sweep gradient, from red to yellow, with start angle of 330° and an end angle
+of 390°.](images/colr_conic_gradient_stop_angle_outside.png)
+
+**Figure 5.31 A sweep gradient with start angle of 330° and an end angle of 390°,
+using a `ColorLine` with color stops 0 and 1 for red and yellow and extend mode
+pad.**
+
+Because the sweep gradient is drawn from 0° to 360° a sharp transition may occur
+at 0°, this can be mitigated by adjusting the color stops at the 0° and 360°
+position on the arc to have the same color. The location of the transition axis
+can also be shifted by nesting the PaintSweepGradient inside a
+PaintRotate/PaintVarRotate operation.
 
 NOTE: When a sweep gradient is combined with a transformation (see 5.7.11.1.5),
 the appearance will be the same as if a circular arc of some non-zero radius
