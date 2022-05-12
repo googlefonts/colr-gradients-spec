@@ -609,7 +609,8 @@ that particular angle. Angle positions on the spiraling circular arc below 0°
 and above 360° are not sampled for drawing the rays.
 
 Figure 5.30 illustrates drawing direction from 0° to 360°, start and end angles
-and color stop alignment.
+and color stop alignment. The color for angles lower than 0° is red and the
+color for angles greater than 150 is yellow due to the pad extend mode.
 
 ![A sweep gradient, from red to yellow, with start angle of 30° and an end angle
 of 150°.](images/colr_conic_gradient_start_stop_angles.png)
@@ -624,7 +625,10 @@ positioned at angles below 0° and above 360°. Through that, and through how wi
 the ColorLine interval is defined, color stops may lie outside the 0° to 360°
 circle. This has an effect on the computation of the gradient colors inside the
 interval of 0° to 360°, but colors are not sampled from outside this interval.
-See figure 5.31 for an example.
+See figure 5.31 for an example. The color for angles lower than 330° is rad due
+to the extend mode pad, then the color line transitions from 330° and red to
+400° and yellow, but only the color values up until 360° are sampled for
+drawing.
 
 ![A sweep gradient, from red to yellow, with start angle of 330° and an end angle
 of 390°.](images/colr_conic_gradient_stop_angle_outside.png)
