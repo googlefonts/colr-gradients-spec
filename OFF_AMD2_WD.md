@@ -577,7 +577,7 @@ A sweep gradient provides a gradation of colors that sweep around a center
 point. For a given color on a color line, that color projects as a ray from the
 center point in a given direction. This is illustrated in figure 5.29.
 
-NOTE: The following figures illustrate sweep gradients clipped to a circular
+NOTE: The following figures illustrate sweep gradients clipped to a
 region. Sweep gradients are not bounded, however, and fill the entire space.
 
 ![A sweep gradient](images/colr_conic_gradient.png)
@@ -1848,8 +1848,8 @@ formats, see 5.7.11.2.4. For background information on the color line, see
 | Offset24 | colorLineOffset | Offset to ColorLine table. |
 | FWORD | centerX | Center x coordinate. |
 | FWORD | centerY | Center y coordinate. |
-| F2DOT14 | startAngle | Start of the angular range of the gradient, 180° in counter-clockwise degrees per 1.0 of value. |
-| F2DOT14 | endAngle | End of the angular range of the gradient, 180° in counter-clockwise degrees per 1.0 of value. |
+| F2DOT14 | startAngle | Start of the angular range of the gradient, add 1.0 and multiply by 180° to retrieve counter-clockwise degrees. |
+| F2DOT14 | endAngle | End of the angular range of the gradient, add 1.0 and multiply by 180° to retrieve counter-clockwise degrees. |
 
 *PaintVarSweepGradient table (format 9):*
 
@@ -1859,8 +1859,8 @@ formats, see 5.7.11.2.4. For background information on the color line, see
 | Offset24 | colorLineOffset | Offset to VarColorLine table. |
 | FWORD | centerX | Center x coordinate. For variation, use varIndexBase + 0. |
 | FWORD | centerY | Center y coordinate. For variation, use varIndexBase + 1. |
-| F2DOT14 | startAngle | Start of the angular range of the gradient, 180° in counter-clockwise degrees per 1.0 of value. For variation, use varIndexBase + 2. |
-| F2DOT14 | endAngle | End of the angular range of the gradient, 180° in counter-clockwise degrees per 1.0 of value. For variation, use varIndexBase + 3. |
+| F2DOT14 | startAngle | Start of the angular range of the gradient, add 1.0 and multiply by 180° to retrieve counter-clockwise degrees. For variation, use varIndexBase + 2. |
+| F2DOT14 | endAngle | End of the angular range of the gradient, add 1.0 and multiply by 180° to retrieve counter-clockwise degrees. For variation, use varIndexBase + 3. |
 | uint32 | varIndexBase | Base index into DeltaSetIndexMap. |
 
 The PaintVarSweepGradient format uses a base/sequence scheme to index into
