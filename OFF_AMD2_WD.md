@@ -587,15 +587,19 @@ region. Sweep gradients are not bounded, however, and fill the entire space.
 NOTE: In some contexts, this type of gradient is referred to as a “conic”
 gradient, or as an “angular” gradient.
 
-A sweep gradient is defined by a center point, starting and ending angles, and a
+A sweep gradient is defined by a center point, start and end angles, and a
 color line. The angles are expressed in counter-clockwise degrees from the
 direction of the positive x-axis on the design grid.
 
-For sampling colors, the color line is aligned to an infinitely spiraling
-circular arc around the center point, with arbitrary radius. The position 0° on
-the arc means the direction of the positive x-axis, 360° means one full
-counter-clockwise rotation.  The ColorLine's stop offset 0 is aligned with the
-starting angle, and stop offset 1 aligned with the ending angle.
+For sampling and interpolating colors, the color line is aligned to an
+infinitely spiraling circular arc around the center point, with arbitrary
+radius. The position 0° on the arc means the direction of the positive x-axis,
+360° means one full counter-clockwise rotation.  The ColorLine's stop offset 0
+is aligned with the start angle, and stop offset 1 aligned with the end angle,
+independent of which angle is larger.
+
+NOTE: If the start angle is larger than the end angle, this means that the
+projection of the color line to the circular arc becomes inverted.
 
 Outside the defined interval of the ColorLine, the color value of a position on
 the ColorLine is filled in depending on its extend mode. See 5.7.11.1.2.1 Color
@@ -609,14 +613,14 @@ that particular angle. Angle positions on the spiraling circular arc below 0°
 and above 360° are not sampled for drawing the rays.
 
 Figure 5.30 illustrates drawing direction from 0° to 360°, start and end angles
-and color stop alignment. The color for angles lower than 0° is red and the
-color for angles greater than 150 is yellow due to the pad extend mode.
+and color stop alignment. The color for angles lower than 30° is red and the
+color for angles greater than 150° is yellow due to the pad extend mode.
 
-![A sweep gradient, from red to yellow, with start angle of 30° and an end angle
+![A sweep gradient, from yellow to red, with start angle of 30° and an end angle
 of 150°.](images/colr_conic_gradient_start_stop_angles.png)
 
 **Figure 5.30 A sweep gradient with start angle of 30° and an end angle of 150°,
-using a `ColorLine` with color stops 0 and 1 for red and yellow and extend mode
+using a `ColorLine` with color stops 0 and 1 for yellow and red and extend mode
 pad.**
 
 Not more than one full rotation is drawn and there is no overlap in drawing for
@@ -625,16 +629,16 @@ positioned at angles below 0° and above 360°. Through that, and through how wi
 the ColorLine interval is defined, color stops may lie outside the 0° to 360°
 circle. This has an effect on the computation of the gradient colors inside the
 interval of 0° to 360°, but colors are not sampled from outside this interval.
-See figure 5.31 for an example. The color for angles lower than 330° is rad due
+See figure 5.31 for an example. The color for angles lower than 330° is red due
 to the extend mode pad, then the color line transitions from 330° and red to
 400° and yellow, but only the color values up until 360° are sampled for
 drawing.
 
-![A sweep gradient, from red to yellow, with start angle of 330° and an end angle
+![A sweep gradient, from yellow to red, with start angle of 330° and an end angle
 of 390°.](images/colr_conic_gradient_stop_angle_outside.png)
 
 **Figure 5.31 A sweep gradient with start angle of 330° and an end angle of 390°,
-using a `ColorLine` with color stops 0 and 1 for red and yellow and extend mode
+using a `ColorLine` with color stops 0 and 1 for yellow and redd and extend mode
 pad.**
 
 Because the sweep gradient is drawn from 0° to 360° a sharp transition may occur
