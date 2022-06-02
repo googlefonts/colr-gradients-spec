@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<style>
+body {margin: 0px; background-color: white;}
+
+.container {
+	width: 800px;
+    height: 800px;
+	position:relative;
+}
+
+.back {
+	background-image: conic-gradient(from 90deg, #da0025 210deg, #ffc600 320deg);
+    clip-path: circle(120px);
+    width: 100%;
+    height: 100%;
+    position:absolute;
+}
+
+.overlay {
+	position:absolute;
+    left:0;
+    top:0;
+    width: 100%;
+    height: 100%;
+    z-index:1;
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg"
+	xmlns:xlink="http://www.w3.org/1999/xlink" 
+	viewBox="0 0 800 800"
+    class="overlay"
+    >
+ <style>
+   text {font-family: Calibri, sans-serif; font-size:20px;}
+   line {fill: none; stroke: black; stroke-width:1;}
+ </style>
+ <circle cx="285" cy="332" r="4" stroke="black" stroke-width="1" fill="#da0025" />
+ <circle cx="515" cy="332" r="4" stroke="black" stroke-width="1" fill="#ffc600" />
+ <text transform="translate(175 320)">stop offset 1</text>
+ <text transform="translate(520 320)">stop offset 0</text>
+ 
+ <circle cx="400" cy="400" r="120" stroke="black" stroke-width="1" fill="none"/>
+ <line x1="400" y1="400" x2="520" y2="400" />
+ <text transform="translate(530 405)">0º</text>
+
+<line x1="400" y1="400" x2="503.92" y2="340" />
+ <line x1="400" y1="400" x2="297.08" y2="340" />
+ <text transform="translate(477 380)">start angle: 30º</text>
+ <text transform="translate(200 380)">end angle: 150º</text>
+ 
+</svg>
+
+
+<div class="back"></div>
+
+</div>
+
+</body>
+</html>
