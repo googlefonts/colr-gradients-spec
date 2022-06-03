@@ -595,11 +595,11 @@ For sampling and interpolating colors, the color line is aligned to an
 infinitely spiraling circular arc around the center point, with arbitrary
 radius. The position 0° on the arc means the direction of the positive x-axis,
 360° means one full counter-clockwise rotation.  The ColorLine's stop offset 0
-is aligned with the start angle, and stop offset 1 aligned with the end angle,
-independent of which angle is larger.
+is aligned with the start angle, and stop offset 1 is aligned with the end
+angle, independent of which angle is larger.
 
 NOTE: If the start angle is larger than the end angle, this means that the
-projection of the color line to the circular arc becomes inverted.
+projection of the color line to the circular arc becomes inverted, see Figure 5.31.
 
 Outside the defined interval of the ColorLine, the color value of a position on
 the ColorLine is filled in depending on its extend mode. See 5.7.11.1.2.1 Color
@@ -612,16 +612,19 @@ with the color of color line where the ray intersects with the circular arc at
 that particular angle. Angle positions on the spiraling circular arc below 0°
 and above 360° are not sampled for drawing the rays.
 
-Figure 5.30 illustrates drawing direction from 0° to 360°, start and end angles
-and color stop alignment. The color for angles lower than 30° is red and the
-color for angles greater than 150° is yellow due to the pad extend mode.
+Figure 5.30 illustrates a sweep gradient with the drawing direction progressing
+from 0° to 360°. The gradient is specified with a start angle of 110° and end
+angle of 230°. The color line is specified with a yellow stop at offset 0
+(aligned to the start angle) and a red stop at offset 1 (aligned to the end
+angle). The pad extend mode is used, hence the color for angles below 110° is
+yellow, and the color for angles above 150° is red.
 
-![A sweep gradient, from yellow to red, with start angle of 30° and an end angle
-of 150°.](images/colr_conic_gradient_start_stop_angles.png)
+![A sweep gradient, from yellow to red, with start angle of 110° and an end angle
+of 230°.](images/colr_conic_gradient_start_stop_angles.png)
 
-**Figure 5.30 A sweep gradient with start angle of 30° and an end angle of 150°,
-using a `ColorLine` with color stops 0 and 1 for yellow and red and extend mode
-pad.**
+**Figure 5.30 A sweep gradient with start angle of 110° and an end angle of
+230°, using a `ColorLine` with color stops 0 and 1 for yellow and red and pad
+extend mode.**
 
 Not more than one full rotation is drawn and there is no overlap in drawing for
 angles outside the 0° and 360° range. However, start and end angles can be
@@ -629,22 +632,30 @@ positioned at angles below 0° and above 360°. Through that, and through how wi
 the ColorLine interval is defined, color stops may lie outside the 0° to 360°
 circle. This has an effect on the computation of the gradient colors inside the
 interval of 0° to 360°, but colors are not sampled from outside this interval.
-See figure 5.31 for an example. The color for angles lower than 330° is red due
-to the extend mode pad, then the color line transitions from 330° and red to
-400° and yellow, but only the color values up until 360° are sampled for
+See figure 5.32 for an example. The color for angles lower than 330° is yellow
+due to the extend mode pad, then the color line transitions from 330° and yellow
+to 400° and red, but only the color values up until 360° are sampled for
 drawing.
 
-![A sweep gradient, from yellow to red, with start angle of 330° and an end angle
-of 390°.](images/colr_conic_gradient_stop_angle_outside.png)
+![A sweep gradient, from yellow to red, with start angle from 210° to 110°,
+showing the inversion of the color
+line.](images/colr_conic_gradient_inverted.png)
 
-**Figure 5.31 A sweep gradient with start angle of 330° and an end angle of 390°,
-using a `ColorLine` with color stops 0 and 1 for yellow and redd and extend mode
+**Figure 5.31 A sweep gradient, from yellow to red, with start angle of 210° and
+end angle of 110°, showing the inversion of the color line when the start angle
+is larger than the end angle.
+
+![A sweep gradient, from yellow to red, with start angle of 330° and an end angle
+of 400°.](images/colr_conic_gradient_stop_angle_outside.png)
+
+**Figure 5.32 A sweep gradient with start angle of 330° and an end angle of 400°,
+using a `ColorLine` with color stops 0 and 1 for yellow and red and extend mode
 pad.**
 
-Because the sweep gradient is drawn from 0° to 360° a sharp transition may occur
-at 0°, this can be mitigated by adjusting the color stops at the 0° and 360°
-position on the arc to have the same color. The location of the transition axis
-can also be shifted by nesting the PaintSweepGradient inside a
+NOTE: Because the sweep gradient is drawn from 0° to 360° a sharp transition may
+occur at 0°, this can be mitigated by adjusting the color stops at the 0° and
+360° position on the arc to have the same color. The location of the transition
+axis can also be shifted by nesting the PaintSweepGradient inside a
 PaintRotate/PaintVarRotate operation.
 
 NOTE: When a sweep gradient is combined with a transformation (see 5.7.11.1.5),
@@ -656,7 +667,7 @@ through the transformed color arc. When aligning the color line to the
 transformed arc, stop offset 0 would be aligned to the transformed point derived
 from the start angle, with stop offset 1 aligned to the transformed point
 derived from the end angle. Thus, a transform can result in the color line
-progressing in a clockwise rather than counter-clockwise direction.
+progressing in the opposite direction compared to the non-transformed gradient.
 
 Sweep gradients are specified using a PaintVarSweepGradient or
 PaintSweepGradient table, with or without variation support, respectively. See
@@ -1856,8 +1867,8 @@ formats, see 5.7.11.2.4. For background information on the color line, see
 | Offset24 | colorLineOffset | Offset to ColorLine table. |
 | FWORD | centerX | Center x coordinate. |
 | FWORD | centerY | Center y coordinate. |
-| F2DOT14 | startAngle | Start of the angular range of the gradient, add 1.0 and multiply by 180° to retrieve counter-clockwise degrees. |
-| F2DOT14 | endAngle | End of the angular range of the gradient, add 1.0 and multiply by 180° to retrieve counter-clockwise degrees. |
+| F2DOT14 | startAngle | Start of the angular range of the gradient: add 1.0 and multiply by 180° to retrieve counter-clockwise degrees. |
+| F2DOT14 | endAngle | End of the angular range of the gradient: add 1.0 and multiply by 180° to retrieve counter-clockwise degrees. |
 
 *PaintVarSweepGradient table (format 9):*
 
@@ -1867,8 +1878,8 @@ formats, see 5.7.11.2.4. For background information on the color line, see
 | Offset24 | colorLineOffset | Offset to VarColorLine table. |
 | FWORD | centerX | Center x coordinate. For variation, use varIndexBase + 0. |
 | FWORD | centerY | Center y coordinate. For variation, use varIndexBase + 1. |
-| F2DOT14 | startAngle | Start of the angular range of the gradient, add 1.0 and multiply by 180° to retrieve counter-clockwise degrees. For variation, use varIndexBase + 2. |
-| F2DOT14 | endAngle | End of the angular range of the gradient, add 1.0 and multiply by 180° to retrieve counter-clockwise degrees. For variation, use varIndexBase + 3. |
+| F2DOT14 | startAngle | Start of the angular range of the gradient: add 1.0 and multiply by 180° to retrieve counter-clockwise degrees. For variation, use varIndexBase + 2. |
+| F2DOT14 | endAngle | End of the angular range of the gradient: add 1.0 and multiply by 180° to retrieve counter-clockwise degrees. For variation, use varIndexBase + 3. |
 | uint32 | varIndexBase | Base index into DeltaSetIndexMap. |
 
 The PaintVarSweepGradient format uses a base/sequence scheme to index into
@@ -1876,6 +1887,10 @@ mapping data; see 5.7.11.4 for details.
 
 Angles are expressed in counter-clockwise degrees from the direction of the
 positive x-axis in the design grid.
+
+NOTE: A bias of 1.0 is used in the representation of start and end angles of
+sweep gradients. This is not done, however, for angles in rotate and skew
+transforms (5.7.11.2.5.11 and 5.7.11.2.5.12).
 
 **5.7.11.2.5.6 Format 10: PaintGlyph**
 
