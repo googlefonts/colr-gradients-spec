@@ -598,8 +598,11 @@ radius. The position 0° on the arc means the direction of the positive x-axis,
 is aligned with the start angle, and stop offset 1 is aligned with the end
 angle, independent of which angle is larger.
 
-NOTE: If the start angle is larger than the end angle, this means that the
-projection of the color line to the circular arc becomes inverted, see Figure 5.31.
+NOTE: If the start angle is less than or equal to the end angle, the color line
+progresses from smaller to larger offsets in the counter-clockwise direction
+along the circular arc. If the start angle is larger than the end angle,
+however, the color line is inverted and progresses in the clockwise direction,
+see Figure 5.31.
 
 Outside the defined interval of the ColorLine, the color value of a position on
 the ColorLine is filled in depending on its extend mode. See 5.7.11.1.2.1 Color
@@ -607,10 +610,18 @@ Lines for more details. In effect, this means that the spiraling circular arc
 can be sampled for colors outside the defined ColorLine interval.
 
 To draw the sweep gradient, for each position along the circular arc, starting
-from from 0 degrees, ending at 360°, a ray from the center outward is painted
-with the color of color line where the ray intersects with the circular arc at
-that particular angle. Angle positions on the spiraling circular arc below 0°
-and above 360° are not sampled for drawing the rays.
+from from 0° up to but not including 360°, a ray from the center outward is
+painted with the color of color line where the ray intersects with the circular
+arc at that particular angle. Angle positions on the spiraling circular arc
+below 0° and equal to or above 360° are not sampled for drawing the rays.
+
+If the ColorLine's extend mode is reflect or repeat and start and end angle are
+equal, nothing must be drawn.
+
+NOTE: When the sweep gradient's ColorLine uses the repeat or reflect extend mode
+and, the angular distance between start and end angle is small, results in very
+high spatial-frequency transitions that can lead to Moiré patterns or other
+display artifacts.
 
 Figure 5.30 illustrates a sweep gradient with the drawing direction progressing
 from 0° to 360°. The gradient is specified with a start angle of 110° and end
