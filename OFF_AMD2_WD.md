@@ -621,7 +621,8 @@ equal, nothing must be drawn.
 NOTE: When the sweep gradient's ColorLine uses the repeat or reflect extend mode
 and, the angular distance between start and end angle is small, results in very
 high spatial-frequency transitions that can lead to Moiré patterns or other
-display artifacts.
+display artifacts (compare Figure 5.28 where this effect is shown for radial
+gradients).
 
 Figure 5.30 illustrates a sweep gradient with the drawing direction progressing
 from 0° to 360°. The gradient is specified with a start angle of 110° and end
@@ -654,7 +655,7 @@ line.](images/colr_conic_gradient_inverted.png)
 
 **Figure 5.31 A sweep gradient, from yellow to red, with start angle of 210° and
 end angle of 110°, showing the inversion of the color line when the start angle
-is larger than the end angle.
+is larger than the end angle.**
 
 ![A sweep gradient, from yellow to red, with start angle of 330° and an end angle
 of 400°.](images/colr_conic_gradient_stop_angle_outside.png)
