@@ -636,7 +636,7 @@ NOTE: If the start angle is less than or equal to the end angle, the color line
 progresses from smaller to larger offsets in the counter-clockwise direction
 along the circular arc. If the start angle is larger than the end angle,
 however, the color line is inverted and progresses in the clockwise direction,
-see figure 5.31.
+as illustrated in figure 5.31.
 
 ![A sweep gradient, from yellow to red, with start angle from 210° to 110°,
 showing the inversion of the color
@@ -649,25 +649,27 @@ is larger than the end angle.**
 Not more than one full rotation is drawn and there is no overlap in drawing for
 angles outside the 0° and 360° range. However, start and end angles can be
 positioned at angles below 0° and above 360°. Through that, and through how wide
-the ColorLine interval is defined, color stops may lie outside the 0° to 360°
+the color line interval is defined, color stops may lie outside the 0° to 360°
 circle. This has an effect on the computation of the gradient colors inside the
 interval of 0° to 360°, but colors are not sampled from outside this interval.
-See figure 5.32 for an example. The color for angles lower than 330° is yellow
-due to the pad extend mode, then the color line transitions from yellow at 330°
-to red at 400°, but only the color values up until 360° are sampled for drawing.
+See figure 5.32 for an example. The color line goes from yellow to red with a
+start angle of 330° and an end angle of 400°. The color for angles lower than
+330° is yellow due to the pad extend mode, then the color line transitions from
+yellow at 330° to red at 400°, but only the color values up until 360° are
+sampled for drawing.
 
-![A sweep gradient, from yellow to red, with start angle of 330° and an end angle
-of 400°.](images/colr_conic_gradient_stop_angle_outside.png)
+![A sweep gradient, from yellow to red, with a start angle of 330° and an end
+angle of 400°.](images/colr_conic_gradient_stop_angle_outside.png)
 
 **Figure 5.32 A sweep gradient with start angle of 330° and an end angle of 400°,
-using a `ColorLine` with color stops 0 and 1 for yellow and red and extend mode
+using a color line with color stops 0 and 1 for yellow and red and extend mode
 pad.**
 
 NOTE: Because the sweep gradient is drawn from 0° to 360° a sharp transition may
 occur at 0°. This can be mitigated by adjusting the color stops at the 0° and
 360° position on the arc to have the same color. The location of the transition
-axis can also be shifted by nesting the PaintSweepGradient inside a
-PaintRotate/PaintVarRotate operation.
+axis can also be shifted by nesting the sweep gradient inside a
+a rotation transformation (see 5.7.11.1.5).
 
 NOTE: When a sweep gradient is combined with a transformation (see 5.7.11.1.5),
 the appearance will be the same as if a circular arc of some non-zero radius
