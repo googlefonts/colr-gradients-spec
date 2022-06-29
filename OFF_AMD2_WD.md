@@ -625,8 +625,8 @@ angle of 230°. The color line is specified with a yellow stop at offset 0
 angle). The pad extend mode is used, hence the color for angles below 110° is
 yellow, and the color for angles above 150° is red.
 
-![A sweep gradient, from yellow to red, with start angle of 110° and an end angle
-of 230°.](images/colr_conic_gradient_start_stop_angles.png)
+![A sweep gradient, from yellow to red, with a start angle of 110° and an end
+angle of 230°.](images/colr_conic_gradient_start_stop_angles.png)
 
 **Figure 5.30 A sweep gradient with start angle of 110° and an end angle of
 230°, using a `ColorLine` with color stops 0 and 1 for yellow and red and pad
