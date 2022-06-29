@@ -1901,9 +1901,13 @@ mapping data; see 5.7.11.4 for details.
 Angles are expressed in counter-clockwise degrees from the direction of the
 positive x-axis in the design grid.
 
-NOTE: A bias of 1.0 is used in the representation of start and end angles of
-sweep gradients. This is not done, however, for angles in rotate and skew
-transforms (5.7.11.2.5.11 and 5.7.11.2.5.12).
+NOTE: To allow for a representation of +360°, a bias of 1.0 is used in the
+representation of start and end angles of sweep gradients. For example, an
+F2DOT14 value of -2.0 (0x8000) represents -180°; an F2DOT14 value of 0.0
+(0x0000) represents +180°; an F2DOT14 value of 0.25 (0x1000) represents +225°;
+an F2DOT14 value of 1.0 (0x4000) represents +360°. However, a bias is not used
+for representation of angles in rotate or skew transforms (5.7.11.2.5.11,
+5.7.11.2.5.12).
 
 **5.7.11.2.5.6 Format 10: PaintGlyph**
 
