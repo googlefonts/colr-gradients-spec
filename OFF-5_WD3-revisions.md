@@ -1,4 +1,10 @@
-# Proposed revisions to ISO/IEC 14492 5th Edition Working Draft
+# Proposed COLR revisions to ISO/IEC 14492 5th Edition Working Draft
+
+_Peter Constable, Microsoft_  
+_Dominik Röttsches, Google_  
+_Jonathan Kew, Mozilla_
+
+_October 10, 2022_
 
 _These are proposed changes to the WD reflected in ISO/IEC JTC 1/SC 29/WG 03 N0631. The main focus of these proposed revisions is on clause 5.7.11, COLR – Color Table, based on insights gains from vendors implementing support for enhancements to the COLR table introduced in Amendment 2 to ISO/IEC 14496-22:2019._
 
